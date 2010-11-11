@@ -15,5 +15,5 @@ newScript1.src = 'js/jquery-1.3.2.min.js';
 headID.appendChild(newScript1);
 var newScript2 = document.createElement('script');
 newScript2.type = 'text/javascript';
-newScript2.src = 'http://code.google.com/p/pefladdons/source/browse/trunk/divtable/divtable.js';
+newScript2.src = 'http://pefladdons.googlecode.com/svn/trunk/divtable/divtable.js';
 headID.appendChild(newScript2);
