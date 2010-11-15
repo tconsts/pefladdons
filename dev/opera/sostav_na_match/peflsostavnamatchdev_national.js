@@ -28,7 +28,7 @@ function change_field_player_uniform() {
 	newfp_value = prompt("Вставьте адрес картинки", field_player_img_src);
 	if (newfp_value) {
 		field_player_img_src = newfp_value;
-		setCookie("fp_uniform", newfp_value);
+		setCookie("fp_uniform_national", newfp_value);
 		$('#fp_uniform_image').attr('src', newfp_value);
 		fillTextarea();
 	}
@@ -38,7 +38,7 @@ function change_goalkeeper_uniform() {
 	newfp_value = prompt("Вставьте адрес картинки", goalkeeper_player_img_src);
 	if (newfp_value) {
 		goalkeeper_player_img_src = newfp_value;
-		setCookie("gk_uniform", newfp_value);
+		setCookie("gk_uniform_national", newfp_value);
 		$('#gk_uniform_image').attr('src', newfp_value);
 		fillTextarea();	
 	}
@@ -142,12 +142,12 @@ var players = []; // массив игроков, в котором ключ м�
 var sostav = []; // массив, в котором ключ - позиция на поле, а значение - id игрока
 var positions = [];
 var field_player_img_src = '/field/img/146cd60f8c4985270b74f7839e98059a.png';
-fp_cookie_value = getCookie("fp_uniform");
+fp_cookie_value = getCookie("fp_uniform_national");
 if (fp_cookie_value) {
 	field_player_img_src = fp_cookie_value;
 }
 var goalkeeper_player_img_src = '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png';	
-gk_cookie_value = getCookie("gk_uniform");
+gk_cookie_value = getCookie("gk_uniform_national");
 if (gk_cookie_value) {
 	goalkeeper_player_img_src = gk_cookie_value;
 }
