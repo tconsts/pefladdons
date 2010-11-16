@@ -36,6 +36,7 @@ function change_goalkeeper_uniform() {
 
 function fillTextarea() {
 		preparedhtml = '';
+		preparedhtml += '[b]Стартовый состав:[/b]';
 		preparedhtml += '[table]';
 		
 		// нападение
@@ -47,7 +48,7 @@ function fillTextarea() {
 		preparedhtml += '[/td]';
 		
 		for(j=0;j<3;j++) {
-			preparedhtml += '[td valign=top width=20% height=60][center]';
+			preparedhtml += '[td valign=top width=20%][center]';
 			if (sostav[23+j]) {
 				playerid = sostav[23+j];
 				playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
@@ -71,7 +72,11 @@ function fillTextarea() {
 			preparedhtml += '[tr]';
 			
 			for(j=0;j<5;j++) {
-				preparedhtml += '[td valign=top width=20% height=60][center]';
+				preparedhtml += '[td valign=top width=20%';
+				if (! sostav[18-k] && ! sostav[19-k] && ! sostav[20-k] && ! sostav[21-k] && !sostav[22-k]) {
+					preparedhtml += ' height=50';
+				}
+				preparedhtml += '][center]';
 				if (sostav[18-k+j]) {
 					playerid = sostav[18-k+j];
 					playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
@@ -91,12 +96,16 @@ function fillTextarea() {
 			preparedhtml += '[tr]';
 			
 			for(j=0;j<2;j++) {
-				preparedhtml += '[td width=20%]';
+				preparedhtml += '[td width=20%';
+				if (! sostav[k]) {
+					preparedhtml += ' height=50';
+				}
+				preparedhtml += ']';
 				preparedhtml += ' ';
 				preparedhtml += '[/td]';
 			}
 			
-			preparedhtml += '[td valign=top width=20% height=60][center]';
+			preparedhtml += '[td valign=top width=20%][center]';
 			
 			if ( sostav[k] ) {
 				playerid = sostav[k];
@@ -123,6 +132,34 @@ function fillTextarea() {
 		}
 				
 		preparedhtml += '[/table]';
+		
+		preparedhtml += "\n\n";
+		preparedhtml += '[b]Скамейка запасных:[/b]';
+		preparedhtml += '[table]';
+		preparedhtml += '[tr]';
+		
+		for(j=12;j<=16;j++) {
+		preparedhtml += '[td valign=top width=20%][center]';
+			
+			if ( pids[j] ) {
+				playerid = pids[j];
+				playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
+				if (players[playerid]["position"] == "GK") {
+					playertext = '[img]'+ goalkeeper_player_img_src +'[/img]'+ "\n" + playertext;
+				} else {
+					playertext = '[img]'+ field_player_img_src +'[/img]'+ "\n" + playertext;
+				}
+				preparedhtml += playertext;
+			} else {
+				preparedhtml += ' ';
+			}
+			preparedhtml += '[/center][/td]';
+			
+		}
+		
+		preparedhtml += '[/tr]';
+		preparedhtml += '[/table]';
+		
 		$('#sostav_na_match').html(preparedhtml);
 }
 
