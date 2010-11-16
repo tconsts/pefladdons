@@ -47,7 +47,7 @@ function fillTextarea() {
 		preparedhtml += '[/td]';
 		
 		for(j=0;j<3;j++) {
-			preparedhtml += '[td valign=top width=20%][center]';
+			preparedhtml += '[td valign=top width=20% height=60][center]';
 			if (sostav[23+j]) {
 				playerid = sostav[23+j];
 				playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
@@ -96,7 +96,7 @@ function fillTextarea() {
 				preparedhtml += '[/td]';
 			}
 			
-			preparedhtml += '[td valign=top width=20%][center]';
+			preparedhtml += '[td valign=top width=20% height=60][center]';
 			
 			if ( sostav[k] ) {
 				playerid = sostav[k];
