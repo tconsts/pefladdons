@@ -486,7 +486,7 @@ $().ready(function() {
 		text += '<td valign=top>' +ShowPos(posfilter[37],poss[37])+ '</td>'
 		text += '<td></td></tr></table>'
 
-		text += '<br><br><table bgcolor=#A3DE8F><tr><td><img src="http://const.fanstvo.com/monkey/crab1.png"></td><td>'
+		text += '<br><br><table bgcolor=#A3DE8F><tr><td><img src="http://pefladdons.googlecode.com/svn/trunk/crab1.png"></td><td>'
 		text += '<a href="forums.php?m=posts&q=173605">Cостав v1.2</a> (c) <a href="users.php?m=details&id=661">const</a></td></tr></table>'
 /**/	$('.contentframer').html(text)
 	})
