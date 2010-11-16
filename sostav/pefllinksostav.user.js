@@ -13,8 +13,8 @@ function ChangePage() {
  $().ready(function() {
 	var search = 'Состав на матч';
 	$('.back3 td').each(function() {
-	  if ($(this).html().indexOf(search)!=-1){
-		var newbody = $(this).html().replace(search,search+'</a><br><img src=\'http://const.fanstvo.com/monkey/crab1.png\' width=16 height=16><a href=\'pfs.php?sostav\'> Состав +');
+	  if ($(this).html().indexOf(search) != -1){
+		var newbody = $(this).html().replace(search,search+'</a><br><img src=\'http://pefladdons.googlecode.com/svn/trunk/crab1.png\' width=16 height=16><a href=\'pfs.php?sostav\'> Состав +');
 		$(this).html(newbody);
 	  }
 	});
