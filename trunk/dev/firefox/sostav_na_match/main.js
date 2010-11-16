@@ -213,6 +213,7 @@ $().ready(function() {
 			var tmpplayer = [];
 			tmpplayer["firstname"] = data_assoc["firstname"+i];
 			tmpplayer["secondname"] = data_assoc["secondname"+i];
+			tmpplayer["position"] = data_assoc["position"+i];
 			var playerid = data_assoc["id" + i];
 			players[playerid] = tmpplayer;
 		}
