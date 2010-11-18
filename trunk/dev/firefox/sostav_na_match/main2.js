@@ -60,11 +60,11 @@ function fillTextarea() {
 
 				preparedhtml += '[tr][td colspan=2][b]' + players[playerid]["firstname"][0] + '.' + (players[playerid]["secondname"]).replace(' ','') + '[/b][/td][/tr]';
 				preparedhtml += '[tr][td][player=' + playerid + '][img]'+ field_player_img_src +'[/img][/player][/td]';
-				preparedhtml += '[td valign=top align=center height=41 ]';
+				preparedhtml += '[td valign=top height=41]';
 				if (playergames != 0) {
 					preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
-					preparedhtml += 'И ' + playergames + '\n';
-					preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '');
+					preparedhtml += 'И ' + playergames;
+					preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
 					preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ГП ' + playergoals + '+' + playerpasses : '');
 				} else {
 					preparedhtml += ' ';
@@ -87,9 +87,6 @@ function fillTextarea() {
 			preparedhtml += '[tr]';
 			
 			for(j=0;j<5;j++) {
-				//if (! sostav[18-k] && ! sostav[19-k] && ! sostav[20-k] && ! sostav[21-k] && !sostav[22-k]) {
-				//	preparedhtml += ' height=50';
-				//}
 				if (sostav[18-k+j]) {
 					preparedhtml += td_st + '[table width=100% bgcolor=#A3DE8F]';
 					playerid = sostav[18-k+j];
@@ -100,11 +97,11 @@ function fillTextarea() {
 
 					preparedhtml += '[tr][td colspan=2][b]' + players[playerid]["firstname"][0] + '.' + (players[playerid]["secondname"]).replace(' ','') + '[/b][/td][/tr]';
 					preparedhtml += '[tr][td][player=' + playerid + '][img]'+ field_player_img_src +'[/img][/player][/td]';
-					preparedhtml += '[td valign=top align=center height=41 ]';
+					preparedhtml += '[td valign=top height=41 ]';
 					if (playergames != 0) {
 						preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
-						preparedhtml += 'И ' + playergames + '\n';
-						preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '');
+						preparedhtml += 'И ' + playergames;
+						preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
 						preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ГП ' + playergoals + '+' + playerpasses : '');
 					} else {
 						preparedhtml += ' ';
@@ -134,56 +131,74 @@ function fillTextarea() {
 				preparedhtml += '[/td]';
 			}
 			
-			preparedhtml += td_st;
-			
 			if ( sostav[k] ) {
+				preparedhtml += td_st + '[table width=100% bgcolor=#A3DE8F]';
 				playerid = sostav[k];
-				playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
-				if (k == 1) {
-					playertext = '[img]'+ goalkeeper_player_img_src +'[/img]'+ "\n" + playertext;
+				var playergames = players[playerid]["games"]
+				var playermom = players[playerid]["mom"]
+				var playergoals = players[playerid]["goals"]
+				var playerpasses = players[playerid]["passes"]
+
+				preparedhtml += '[tr][td colspan=2][b]' + players[playerid]["firstname"][0] + '.' + (players[playerid]["secondname"]).replace(' ','') + '[/b][/td][/tr]';
+				preparedhtml += '[tr][td][player=' + playerid + '][img]'+ (k == 1 ? goalkeeper_player_img_src : field_player_img_src) +'[/img][/player][/td]';
+				preparedhtml += '[td valign=top height=41]';
+				if (playergames != 0) {
+					preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
+					preparedhtml += 'И ' + playergames;
+					preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
+					preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ГП ' + playergoals + '+' + playerpasses : '');
 				} else {
-					playertext = '[img]'+ field_player_img_src +'[/img]'+ "\n" + playertext;
+					preparedhtml += ' ';
 				}
-				preparedhtml += playertext;
+				preparedhtml += '[/td][/tr]';
+				preparedhtml += '[tr][td colspan=2 align=right]фрм' + players[playerid]["form"] + ' мрл' + players[playerid]["morale"] + '[/td][/tr]';
+				preparedhtml += '[/table]' + td_fn;
 			} else {
-				preparedhtml += ' ';
+				preparedhtml += '[td width=20% height=50] [/td]';
 			}
-			preparedhtml += td_fn;
 			
 			for(j=0;j<2;j++) {
 				preparedhtml += '[td width=20%]';
 				preparedhtml += ' ';
 				preparedhtml += '[/td]';
 			}
-			
 			preparedhtml += '[/tr]';
-				
 		}
 				
 		preparedhtml += '[/table]';
 		
 		preparedhtml += "\n\n";
-		preparedhtml += '[b]Скамейка запасных:[/b]';
+		preparedhtml += '[hr][b]Скамейка запасных:[/b]';
 		preparedhtml += '[table]';
 		preparedhtml += '[tr]';
 		
 		for(j=12;j<=16;j++) {
-		preparedhtml += td_st;
-			
 			if ( pids[j] ) {
+				preparedhtml += td_st + '[table width=100% bgcolor=#A3DE8F]';
 				playerid = pids[j];
-				playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
-				if (players[playerid]["position"] == "GK") {
-					playertext = '[img]'+ goalkeeper_player_img_src +'[/img]'+ "\n" + playertext;
+				var playergames = players[playerid]["games"]
+				var playermom = players[playerid]["mom"]
+				var playergoals = players[playerid]["goals"]
+				var playerpasses = players[playerid]["passes"]
+
+				preparedhtml += '[tr][td colspan=2][b]' + players[playerid]["firstname"][0] + '.' + (players[playerid]["secondname"]).replace(' ','') + '[/b][/td][/tr]';
+				preparedhtml += '[tr][td][player=' + playerid + '][img]'+ (players[playerid]["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src) +'[/img][/player][/td]';
+				preparedhtml += '[td valign=top height=41]';
+				if (playergames != 0) {
+					preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
+					preparedhtml += 'И ' + playergames;
+					preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
+					preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ГП ' + playergoals + '+' + playerpasses : '');
 				} else {
-					playertext = '[img]'+ field_player_img_src +'[/img]'+ "\n" + playertext;
+					preparedhtml += ' ';
 				}
-				preparedhtml += playertext;
+				preparedhtml += '[/td][/tr]';
+				preparedhtml += '[tr][td colspan=2 align=right]фрм' + players[playerid]["form"] + ' мрл' + players[playerid]["morale"] + '[/td][/tr]';
+				preparedhtml += '[tr][td colspan=2]' + players[playerid]["position"] + '[/td][/tr]';
+				preparedhtml += '[/table]' + td_fn;
 			} else {
-				preparedhtml += ' ';
+				preparedhtml += '[td width=20% height=50] [/td]';
 			}
-			preparedhtml += td_fn;
-			
 		}
 		
 		preparedhtml += '[/tr]';
