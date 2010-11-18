@@ -62,10 +62,10 @@ function fillTextarea() {
 				preparedhtml += '[tr][td][player=' + playerid + '][img]'+ field_player_img_src +'[/img][/player][/td]';
 				preparedhtml += '[td valign=top align=center height=41 ]';
 				if (playergames != 0) {
-					preparedhtml += 'CP' + players[playerid]["ratingav"] + '\n';
-					preparedhtml += 'È ' + playergames;
+					preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
+					preparedhtml += 'È ' + playergames + '\n';
 					preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '');
-					preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ/' + playergoals + '+' + playerpasses : '');
+					preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ ' + playergoals + '+' + playerpasses : '');
 				} else {
 					preparedhtml += ' ';
 				}
@@ -87,25 +87,39 @@ function fillTextarea() {
 			preparedhtml += '[tr]';
 			
 			for(j=0;j<5;j++) {
-				preparedhtml += td_st;
-				if (! sostav[18-k] && ! sostav[19-k] && ! sostav[20-k] && ! sostav[21-k] && !sostav[22-k]) {
-					preparedhtml += ' height=50';
-				}
-				preparedhtml += '][center]';
+				//if (! sostav[18-k] && ! sostav[19-k] && ! sostav[20-k] && ! sostav[21-k] && !sostav[22-k]) {
+				//	preparedhtml += ' height=50';
+				//}
 				if (sostav[18-k+j]) {
+					preparedhtml += td_st + '[table width=100% bgcolor=#A3DE8F]';
 					playerid = sostav[18-k+j];
-					playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
-					playertext = '[img]'+ field_player_img_src +'[/img]'+ "\n" + playertext;
-					preparedhtml += playertext;
+					var playergames = players[playerid]["games"]
+					var playermom = players[playerid]["mom"]
+					var playergoals = players[playerid]["goals"]
+					var playerpasses = players[playerid]["passes"]
+
+					preparedhtml += '[tr][td colspan=2][b]' + players[playerid]["firstname"][0] + '.' + (players[playerid]["secondname"]).replace(' ','') + '[/b][/td][/tr]';
+					preparedhtml += '[tr][td][player=' + playerid + '][img]'+ field_player_img_src +'[/img][/player][/td]';
+					preparedhtml += '[td valign=top align=center height=41 ]';
+					if (playergames != 0) {
+						preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
+						preparedhtml += 'È ' + playergames + '\n';
+						preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '');
+						preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ ' + playergoals + '+' + playerpasses : '');
+					} else {
+						preparedhtml += ' ';
+					}
+					preparedhtml += '[/td][/tr]';
+					preparedhtml += '[tr][td colspan=2 align=right]ôğì' + players[playerid]["form"] + ' ìğë' + players[playerid]["morale"] + '[/td][/tr]';
+					preparedhtml += '[/table]' + td_fn;
 				} else {
-					preparedhtml += ' ';
+					preparedhtml += '[td width=20% height=50] [/td]';
 				}
-				preparedhtml += td_fn;
 			}
-			
 			preparedhtml += '[/tr]';
 		}
 		
+		// SW GK
 		for(k=2;k>0;k--) {
 		
 			preparedhtml += '[tr]';
