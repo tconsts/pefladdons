@@ -35,7 +35,7 @@ function change_goalkeeper_uniform() {
 }
 
 function fillTextarea() {
-		var td_st = '[td valign=top width=20% bgcolor=#C9F8B7]'
+		var td_st = '[td valign=top width=20% bgcolor=#C9F8B7] '
 		var td_fn = '[/td]';
 
 		preparedhtml = '';
@@ -70,7 +70,7 @@ function fillTextarea() {
 					preparedhtml += ' ';
 				}
 				preparedhtml += '[/td][/tr]';
-				preparedhtml += '[tr][td colspan=2 align=right][b]פנל' + players[playerid]["form"] + ' לנכ' + players[playerid]["morale"] + '[/td][/tr]';
+				preparedhtml += '[tr][td colspan=2 align=right]פנל' + players[playerid]["form"] + ' לנכ' + players[playerid]["morale"] + '[/td][/tr]';
 				preparedhtml += '[/table]' + td_fn;
 			} else {
 				preparedhtml += '[td width=20% height=50] [/td]';
@@ -234,6 +234,8 @@ $().ready(function() {
 			tmpplayer["mom"] = data_assoc["mom"+i];
 			tmpplayer["goals"] = data_assoc["goals"+i];
 			tmpplayer["passes"] = data_assoc["passes"+i];
+			tmpplayer["form"] = data_assoc["form"+i];
+			tmpplayer["morale"] = data_assoc["morale"+i];
 			var playerid = data_assoc["id" + i];
 			players[playerid] = tmpplayer;
 		}
