@@ -64,7 +64,7 @@ function fillTextarea() {
 				if (playergames != 0) {
 					preparedhtml += 'CP' + players[playerid]["ratingav"] + '\n';
 					preparedhtml += 'х ' + playergames;
-					preparedhtml += (playersmom != 0 ? '(' + playermom + ')\n' : '');
+					preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '');
 					preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'цо/' + playergoals + '+' + playerpasses : '');
 				} else {
 					preparedhtml += ' ';
