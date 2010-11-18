@@ -168,7 +168,7 @@ function fillTextarea() {
 		preparedhtml += '[/table]';
 		
 		preparedhtml += "\n\n";
-		preparedhtml += '[hr][b]Скамейка запасных:[/b]';
+		preparedhtml += '[b]Скамейка запасных:[/b]';
 		preparedhtml += '[table]';
 		preparedhtml += '[tr]';
 		
@@ -194,7 +194,7 @@ function fillTextarea() {
 				}
 				preparedhtml += '[/td][/tr]';
 				preparedhtml += '[tr][td colspan=2 align=right]фрм' + players[playerid]["form"] + ' мрл' + players[playerid]["morale"] + '[/td][/tr]';
-				preparedhtml += '[tr][td colspan=2]' + players[playerid]["position"] + '[/td][/tr]';
+				preparedhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + players[playerid]["position"] + '[/td][/tr]';
 				preparedhtml += '[/table]' + td_fn;
 			} else {
 				preparedhtml += '[td width=20% height=50] [/td]';
