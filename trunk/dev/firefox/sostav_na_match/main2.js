@@ -35,13 +35,13 @@ function change_goalkeeper_uniform() {
 }
 
 // pl = player id, type = id position, if 0 = zamena
-function printCard (pl,type){
-
-	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
+function printCard (plid,type){
+	var pl = players[plid];
 	var playergames = pl["games"]
 	var playermom = pl["mom"]
 	var playergoals = pl["goals"]
 	var playerpasses = pl["passes"]
+	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
 
 	cardhtml += '[tr][td colspan=2][b]' + pl["firstname"][0] + '.' + (pl["secondname"]).replace(' ','') + '[/b][/td][/tr]';
 	cardhtml += '[tr][td][player=' + playerid + '][img]';
