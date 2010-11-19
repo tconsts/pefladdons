@@ -44,7 +44,7 @@ function printCard (plid,type){
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
 
 	cardhtml += '[tr][td colspan=2][b]' + pl["firstname"][0] + '.' + (pl["secondname"]).replace(' ','') + '[/b][/td][/tr]';
-	cardhtml += '[tr][td][player=' + playerid + '][img]';
+	cardhtml += '[tr][td][player=' + plid + '][img]';
 	if (type == 0){
 		cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
 	} else {
