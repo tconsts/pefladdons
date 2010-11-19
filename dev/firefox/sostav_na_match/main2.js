@@ -86,7 +86,7 @@ function fillTextarea() {
 		
 		for(j=0;j<3;j++) {
 			if (sostav[23+j]) {
-				printCard(sostav[23+j],23+j);
+				preparedhtml += printCard(sostav[23+j],23+j);
 			} else {
 				preparedhtml += '[td width=20% height=50] [/td]';
 			}
@@ -103,7 +103,7 @@ function fillTextarea() {
 			
 			for(j=0;j<5;j++) {
 				if (sostav[18-k+j]) {
-					printCard(sostav[18-k+j],18-k+j)
+					preparedhtml += printCard(sostav[18-k+j],18-k+j)
 				} else {
 					preparedhtml += '[td width=20% height=50] [/td]';
 				}
@@ -127,7 +127,7 @@ function fillTextarea() {
 			}
 			
 			if ( sostav[k] ) {
-					printCard(sostav[k],k)
+					preparedhtml += printCard(sostav[k],k)
 			} else {
 				preparedhtml += '[td width=20% height=50] [/td]';
 			}
@@ -149,7 +149,7 @@ function fillTextarea() {
 		
 		for(j=12;j<=16;j++) {
 			if ( pids[j] ) {
-				printCard(pids[j],0)
+				preparedhtml += printCard(pids[j],0)
 			} else {
 				preparedhtml += '[td width=20% height=50] [/td]';
 			}
