@@ -56,12 +56,12 @@ function printCard (plid,type){
 		cardhtml += 'P ' + pl["ratingav"] + '\n';
 		cardhtml += 'È ' + playergames;
 		cardhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
-		cardhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ ' + playergoals + '+' + playerpasses : '');
+		cardhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ/' + playergoals + '+' + playerpasses : '');
 	} else {
 		cardhtml += ' ';
 	}
 	cardhtml += '[/td][/tr]';
-	cardhtml += '[tr][td colspan=2 align=right]פנל' + pl["form"] + ' לנכ' + pl["morale"] + '[/td][/tr]';
+	cardhtml += '[tr][td colspan=2 align=right]פנל' + pl["form"] + '/לנכ' + pl["morale"] + '[/td][/tr]';
 	if (type == 0) {
 		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + pl["position"] + '[/td][/tr]';
 	}
