@@ -34,9 +34,45 @@ function change_goalkeeper_uniform() {
 	}
 }
 
+// pl = player id, type = id position, if 0 = zamena
+function printCard (pl,type){
+
+	var cardhtml += '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
+	var playergames = pl["games"]
+	var playermom = pl["mom"]
+	var playergoals = pl["goals"]
+	var playerpasses = pl["passes"]
+
+	cardhtml += '[tr][td colspan=2][b]' + pl["firstname"][0] + '.' + (pl["secondname"]).replace(' ','') + '[/b][/td][/tr]';
+	cardhtml += '[tr][td][player=' + playerid + '][img]';
+	if (type == 0){
+		cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
+	} else {
+		cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
+	}
+	cardhtml += '[/img][/player][/td]';
+	cardhtml += '[td valign=top height=41 ]';
+	if (playergames != 0) {
+		cardhtml += 'P ' + pl["ratingav"] + '\n';
+		cardhtml += 'È ' + playergames;
+		cardhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
+		cardhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ ' + playergoals + '+' + playerpasses : '');
+	} else {
+		cardhtml += ' ';
+	}
+	cardhtml += '[/td][/tr]';
+	cardhtml += '[tr][td colspan=2 align=right]פנל' + pl["form"] + ' לנכ' + pl["morale"] + '[/td][/tr]';
+	if (type == 0) {
+		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + pl["position"] + '[/td][/tr]';
+	}
+	cardhtml += '[/table][/td]';
+
+	return cardhtml;
+}
+
 function fillTextarea() {
-		var td_st = '[td valign=top width=20% bgcolor=#C9F8B7] '
-		var td_fn = '[/td]';
+		var td_st = ''
+		var td_fn = '';
 
 		preparedhtml = '';
 		preparedhtml += '[b]Ñעאנעמגûי סמסעאג:[/b]';
@@ -49,29 +85,8 @@ function fillTextarea() {
 		preparedhtml += '[td width=20% height=50] [/td]';
 		
 		for(j=0;j<3;j++) {
-
 			if (sostav[23+j]) {
-				preparedhtml += td_st + '[table width=100% bgcolor=#A3DE8F]';
-				playerid = sostav[23+j];
-				var playergames = players[playerid]["games"]
-				var playermom = players[playerid]["mom"]
-				var playergoals = players[playerid]["goals"]
-				var playerpasses = players[playerid]["passes"]
-
-				preparedhtml += '[tr][td colspan=2][b]' + players[playerid]["firstname"][0] + '.' + (players[playerid]["secondname"]).replace(' ','') + '[/b][/td][/tr]';
-				preparedhtml += '[tr][td][player=' + playerid + '][img]'+ field_player_img_src +'[/img][/player][/td]';
-				preparedhtml += '[td valign=top height=41]';
-				if (playergames != 0) {
-					preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
-					preparedhtml += 'È ' + playergames;
-					preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
-					preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ ' + playergoals + '+' + playerpasses : '');
-				} else {
-					preparedhtml += ' ';
-				}
-				preparedhtml += '[/td][/tr]';
-				preparedhtml += '[tr][td colspan=2 align=right]פנל' + players[playerid]["form"] + ' לנכ' + players[playerid]["morale"] + '[/td][/tr]';
-				preparedhtml += '[/table]' + td_fn;
+				printCard(sostav[23+j],23+j);
 			} else {
 				preparedhtml += '[td width=20% height=50] [/td]';
 			}
@@ -88,27 +103,7 @@ function fillTextarea() {
 			
 			for(j=0;j<5;j++) {
 				if (sostav[18-k+j]) {
-					preparedhtml += td_st + '[table width=100% bgcolor=#A3DE8F]';
-					playerid = sostav[18-k+j];
-					var playergames = players[playerid]["games"]
-					var playermom = players[playerid]["mom"]
-					var playergoals = players[playerid]["goals"]
-					var playerpasses = players[playerid]["passes"]
-
-					preparedhtml += '[tr][td colspan=2][b]' + players[playerid]["firstname"][0] + '.' + (players[playerid]["secondname"]).replace(' ','') + '[/b][/td][/tr]';
-					preparedhtml += '[tr][td][player=' + playerid + '][img]'+ field_player_img_src +'[/img][/player][/td]';
-					preparedhtml += '[td valign=top height=41 ]';
-					if (playergames != 0) {
-						preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
-						preparedhtml += 'È ' + playergames;
-						preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
-						preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ ' + playergoals + '+' + playerpasses : '');
-					} else {
-						preparedhtml += ' ';
-					}
-					preparedhtml += '[/td][/tr]';
-					preparedhtml += '[tr][td colspan=2 align=right]פנל' + players[playerid]["form"] + ' לנכ' + players[playerid]["morale"] + '[/td][/tr]';
-					preparedhtml += '[/table]' + td_fn;
+					printCard(sostav[18-k+j],18-k+j)
 				} else {
 					preparedhtml += '[td width=20% height=50] [/td]';
 				}
@@ -132,27 +127,7 @@ function fillTextarea() {
 			}
 			
 			if ( sostav[k] ) {
-				preparedhtml += td_st + '[table width=100% bgcolor=#A3DE8F]';
-				playerid = sostav[k];
-				var playergames = players[playerid]["games"]
-				var playermom = players[playerid]["mom"]
-				var playergoals = players[playerid]["goals"]
-				var playerpasses = players[playerid]["passes"]
-
-				preparedhtml += '[tr][td colspan=2][b]' + players[playerid]["firstname"][0] + '.' + (players[playerid]["secondname"]).replace(' ','') + '[/b][/td][/tr]';
-				preparedhtml += '[tr][td][player=' + playerid + '][img]'+ (k == 1 ? goalkeeper_player_img_src : field_player_img_src) +'[/img][/player][/td]';
-				preparedhtml += '[td valign=top height=41]';
-				if (playergames != 0) {
-					preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
-					preparedhtml += 'È ' + playergames;
-					preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
-					preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ ' + playergoals + '+' + playerpasses : '');
-				} else {
-					preparedhtml += ' ';
-				}
-				preparedhtml += '[/td][/tr]';
-				preparedhtml += '[tr][td colspan=2 align=right]פנל' + players[playerid]["form"] + ' לנכ' + players[playerid]["morale"] + '[/td][/tr]';
-				preparedhtml += '[/table]' + td_fn;
+					printCard(sostav[k],k)
 			} else {
 				preparedhtml += '[td width=20% height=50] [/td]';
 			}
@@ -174,28 +149,7 @@ function fillTextarea() {
 		
 		for(j=12;j<=16;j++) {
 			if ( pids[j] ) {
-				preparedhtml += td_st + '[table width=100% bgcolor=#A3DE8F]';
-				playerid = pids[j];
-				var playergames = players[playerid]["games"]
-				var playermom = players[playerid]["mom"]
-				var playergoals = players[playerid]["goals"]
-				var playerpasses = players[playerid]["passes"]
-
-				preparedhtml += '[tr][td colspan=2][b]' + players[playerid]["firstname"][0] + '.' + (players[playerid]["secondname"]).replace(' ','') + '[/b][/td][/tr]';
-				preparedhtml += '[tr][td][player=' + playerid + '][img]'+ (players[playerid]["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src) +'[/img][/player][/td]';
-				preparedhtml += '[td valign=top height=41]';
-				if (playergames != 0) {
-					preparedhtml += 'P ' + players[playerid]["ratingav"] + '\n';
-					preparedhtml += 'È ' + playergames;
-					preparedhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
-					preparedhtml += (playergoals != 0 || playerpasses != 0 ? 'ÃÏ ' + playergoals + '+' + playerpasses : '');
-				} else {
-					preparedhtml += ' ';
-				}
-				preparedhtml += '[/td][/tr]';
-				preparedhtml += '[tr][td colspan=2 align=right]פנל' + players[playerid]["form"] + ' לנכ' + players[playerid]["morale"] + '[/td][/tr]';
-				preparedhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + players[playerid]["position"] + '[/td][/tr]';
-				preparedhtml += '[/table]' + td_fn;
+				printCard(pids[j],0)
 			} else {
 				preparedhtml += '[td width=20% height=50] [/td]';
 			}
