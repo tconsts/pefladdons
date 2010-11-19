@@ -37,7 +37,7 @@ function change_goalkeeper_uniform() {
 // pl = player id, type = id position, if 0 = zamena
 function printCard (pl,type){
 
-	var cardhtml += '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
+	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
 	var playergames = pl["games"]
 	var playermom = pl["mom"]
 	var playergoals = pl["goals"]
@@ -75,7 +75,7 @@ function fillTextarea() {
 		var td_fn = '';
 
 		preparedhtml = '';
-		preparedhtml += '[b]Стартовый состав:[/b]';
+		preparedhtml += '[b]Стартовый состав:[/b]\n\n';
 		preparedhtml += '[table]';
 
 		// нападение
@@ -143,7 +143,7 @@ function fillTextarea() {
 		preparedhtml += '[/table]';
 		
 		preparedhtml += "\n\n";
-		preparedhtml += '[b]Скамейка запасных:[/b]';
+		preparedhtml += '[b]Скамейка запасных:[/b]\n\n';
 		preparedhtml += '[table]';
 		preparedhtml += '[tr]';
 		
