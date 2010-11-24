@@ -176,7 +176,7 @@ function fillTextarea(pt) {
 		preparedhtml += '[/table]';
 		
 		$('#sostav_na_match').html(preparedhtml);
-		$('#preview').html(preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'\n'))
+		$('#preview').html(preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>'))
 }
 var printtype = 2;
 var data_assoc = [];
