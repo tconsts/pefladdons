@@ -60,7 +60,7 @@ function printCard (plid,type){
 	var playerpasses = pl["passes"]
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
 
-	cardhtml += '[tr][td colspan=2][b]' + pl["firstname"][0] + '.' + (pl["secondname"]).replace(' ','') + '[/b][/td][/tr]';
+	cardhtml += '[tr][td colspan=2][b]' + pl["firstname"][0] + '.' + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
 	cardhtml += '[tr][td][player=' + plid + '][img]';
 	if (type == 0){
 		cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
@@ -88,8 +88,6 @@ function printCard (plid,type){
 }
 
 function fillTextarea(pt) {
-		var td_st = ''
-		var td_fn = '';
 
 		preparedhtml = '';
 		preparedhtml += ' [b]Стартовый состав:[/b]\n\n';
@@ -176,6 +174,8 @@ function fillTextarea(pt) {
 		preparedhtml += '[/table]';
 		
 		$('#sostav_na_match').html(preparedhtml);
+		preparedhtml = preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>')
+		$('#preview').html(preparedhtml)
 }
 var printtype = 2;
 var data_assoc = [];
@@ -268,6 +268,7 @@ $().ready(function() {
 
 		preparedhtml += '<textarea rows="10" cols="80" readonly="readonly" id="sostav_na_match">';
 		preparedhtml += '</textarea>';
+		preparedhtml += '<br><br><table bgcolor=#A3DE8F width=80%><tr><td><span id="preview"></span></td></tr></table>'
 		$('.contentframer').html(preparedhtml);	
 		fillTextarea(printtype);
 	});
