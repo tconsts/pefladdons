@@ -60,7 +60,7 @@ function printCard (plid,type){
 	var playerpasses = pl["passes"]
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
 
-	cardhtml += '[tr][td colspan=2][b]' + pl["firstname"][0] + '.' + (pl["secondname"]).replace(' ','') + '[/b][/td][/tr]';
+	cardhtml += '[tr][td colspan=2][b]' + pl["firstname"][0] + '.' + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
 	cardhtml += '[tr][td][player=' + plid + '][img]';
 	if (type == 0){
 		cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
@@ -176,7 +176,7 @@ function fillTextarea(pt) {
 		preparedhtml += '[/table]';
 		
 		$('#sostav_na_match').html(preparedhtml);
-		$('#preview').html(preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'"').replace(/\[/g,'<').replace(/\]/g,'>'))
+		$('#preview').html(preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'\n'))
 }
 var printtype = 2;
 var data_assoc = [];
