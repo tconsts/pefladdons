@@ -48,7 +48,7 @@ function printClassic (plid,type){
 	cardhtml += '[/img]'+ "\n"
 	cardhtml += pl["firstname"] + ' ' + pl["secondname"];
 	cardhtml += '[/center][/td]';
-alert(cardhtml)
+
 	return cardhtml;
 }
 
