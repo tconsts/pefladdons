@@ -20,7 +20,7 @@ function change_field_player_uniform() {
 		field_player_img_src = newfp_value;
 		setCookie("fp_uniform", newfp_value);
 		$('#fp_uniform_image').attr('src', newfp_value);
-		fillTextarea();
+		fillTextarea(printtype);
 	}
 }
 
@@ -30,41 +30,88 @@ function change_goalkeeper_uniform() {
 		goalkeeper_player_img_src = newfp_value;
 		setCookie("gk_uniform", newfp_value);
 		$('#gk_uniform_image').attr('src', newfp_value);
-		fillTextarea();	
+		fillTextarea(printtype);	
 	}
 }
 
-function fillTextarea() {
+// plid = player id, type = id position, for 0 zamena
+function printClassic (plid,type){
+	var pl = players[plid];
+	var cardhtml = '[td valign=top width=20%][center]';
+
+	cardhtml += '[img]'
+	if (type == 0){
+		cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
+	} else {
+		cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
+	}
+	cardhtml += '[/img]'+ "\n"
+	cardhtml += pl["firstname"] + ' ' + pl["secondname"];
+	cardhtml += '[/center][/td]';
+
+	return cardhtml;
+}
+
+function printCard (plid,type){
+	var pl = players[plid];
+	var playergames = pl["games"]
+	var playermom = pl["mom"]
+	var playergoals = pl["goals"]
+	var playerpasses = pl["passes"]
+	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
+
+	cardhtml += '[tr][td colspan=2][b]' + pl["firstname"][0] + '.' + (pl["secondname"]).replace(' ','') + '[/b][/td][/tr]';
+	cardhtml += '[tr][td][player=' + plid + '][img]';
+	if (type == 0){
+		cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
+	} else {
+		cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
+	}
+	cardhtml += '[/img][/player][/td]';
+	cardhtml += '[td valign=top height=41 ]';
+	if (playergames != 0) {
+		cardhtml += 'P ' + pl["ratingav"] + '\n';
+		cardhtml += 'И ' + playergames;
+		cardhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
+		cardhtml += (playergoals != 0 || playerpasses != 0 ? 'ГП/' + playergoals + '+' + playerpasses : '');
+	} else {
+		cardhtml += ' ';
+	}
+	cardhtml += '[/td][/tr]';
+	cardhtml += '[tr][td colspan=2 align=right]фрм' + pl["form"] + '/мрл' + pl["morale"] + '[/td][/tr]';
+	if (type == 0) {
+		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + pl["position"] + '[/td][/tr]';
+	}
+	cardhtml += '[/table][/td]';
+
+	return cardhtml;
+}
+
+function fillTextarea(pt) {
+		var td_st = ''
+		var td_fn = '';
+
 		preparedhtml = '';
-		preparedhtml += '[b]Стартовый состав:[/b]';
+		preparedhtml += ' [b]Стартовый состав:[/b]\n\n';
 		preparedhtml += '[table]';
-		
+
 		// нападение
 		preparedhtml += '[tr]';
 		
 		// 1
-		preparedhtml += '[td width=20%]';
-		preparedhtml += ' ';
-		preparedhtml += '[/td]';
+		preparedhtml += '[td width=20% height=50] [/td]';
 		
 		for(j=0;j<3;j++) {
-			preparedhtml += '[td valign=top width=20%][center]';
 			if (sostav[23+j]) {
-				playerid = sostav[23+j];
-				playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
-				playertext = '[img]'+ field_player_img_src +'[/img]'+ "\n" + playertext;
-				preparedhtml += playertext;
+				preparedhtml += ( pt==2 ? printCard(sostav[23+j],23+j) : printClassic(sostav[23+j],23+j));
 			} else {
-				preparedhtml += ' ';
+				preparedhtml += '[td width=20% height=50] [/td]';
 			}
-			preparedhtml += '[/center][/td]';
+
 		}
 		
 		// 5
-		preparedhtml += '[td width=20%]';
-		preparedhtml += ' ';
-		preparedhtml += '[/td]';
-		
+		preparedhtml += '[td width=20% height=50] [/td]';
 		preparedhtml += '[/tr]';
 		
 		// для // AM // MF // DM // DF
@@ -72,25 +119,16 @@ function fillTextarea() {
 			preparedhtml += '[tr]';
 			
 			for(j=0;j<5;j++) {
-				preparedhtml += '[td valign=top width=20%';
-				if (! sostav[18-k] && ! sostav[19-k] && ! sostav[20-k] && ! sostav[21-k] && !sostav[22-k]) {
-					preparedhtml += ' height=50';
-				}
-				preparedhtml += '][center]';
 				if (sostav[18-k+j]) {
-					playerid = sostav[18-k+j];
-					playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
-					playertext = '[img]'+ field_player_img_src +'[/img]'+ "\n" + playertext;
-					preparedhtml += playertext;
+					preparedhtml += (pt==2 ? printCard(sostav[18-k+j],18-k+j) : printClassic(sostav[18-k+j],18-k+j))
 				} else {
-					preparedhtml += ' ';
+					preparedhtml += '[td width=20% height=50] [/td]';
 				}
-				preparedhtml += '[/center][/td]';
 			}
-			
 			preparedhtml += '[/tr]';
 		}
 		
+		// SW GK
 		for(k=2;k>0;k--) {
 		
 			preparedhtml += '[tr]';
@@ -105,56 +143,33 @@ function fillTextarea() {
 				preparedhtml += '[/td]';
 			}
 			
-			preparedhtml += '[td valign=top width=20%][center]';
-			
 			if ( sostav[k] ) {
-				playerid = sostav[k];
-				playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
-				if (k == 1) {
-					playertext = '[img]'+ goalkeeper_player_img_src +'[/img]'+ "\n" + playertext;
-				} else {
-					playertext = '[img]'+ field_player_img_src +'[/img]'+ "\n" + playertext;
-				}
-				preparedhtml += playertext;
+					preparedhtml += (pt==2 ? printCard(sostav[k],k) : printClassic(sostav[k],k))
 			} else {
-				preparedhtml += ' ';
+				preparedhtml += '[td width=20% height=50] [/td]';
 			}
-			preparedhtml += '[/center][/td]';
 			
 			for(j=0;j<2;j++) {
 				preparedhtml += '[td width=20%]';
 				preparedhtml += ' ';
 				preparedhtml += '[/td]';
 			}
-			
 			preparedhtml += '[/tr]';
-				
 		}
 				
 		preparedhtml += '[/table]';
 		
 		preparedhtml += "\n\n";
-		preparedhtml += '[b]Скамейка запасных:[/b]';
+		preparedhtml += '[b]Скамейка запасных:[/b]\n\n';
 		preparedhtml += '[table]';
 		preparedhtml += '[tr]';
 		
 		for(j=12;j<=16;j++) {
-		preparedhtml += '[td valign=top width=20%][center]';
-			
 			if ( pids[j] ) {
-				playerid = pids[j];
-				playertext = players[playerid]["firstname"] + ' ' + players[playerid]["secondname"];
-				if (players[playerid]["position"] == "GK") {
-					playertext = '[img]'+ goalkeeper_player_img_src +'[/img]'+ "\n" + playertext;
-				} else {
-					playertext = '[img]'+ field_player_img_src +'[/img]'+ "\n" + playertext;
-				}
-				preparedhtml += playertext;
+				preparedhtml += (pt==2 ? printCard(pids[j],0) : printClassic(pids[j],0))
 			} else {
-				preparedhtml += ' ';
+				preparedhtml += '[td width=20% height=50] [/td]';
 			}
-			preparedhtml += '[/center][/td]';
-			
 		}
 		
 		preparedhtml += '[/tr]';
@@ -162,7 +177,7 @@ function fillTextarea() {
 		
 		$('#sostav_na_match').html(preparedhtml);
 }
-
+var printtype = 2;
 var data_assoc = [];
 var pids = [];		// id игроков, заявленных в состав
 var players = []; // массив игроков, в котором ключ массива - id игрока, а данные - каждые под своим ключом
@@ -214,26 +229,47 @@ $().ready(function() {
 			tmpplayer["firstname"] = data_assoc["firstname"+i];
 			tmpplayer["secondname"] = data_assoc["secondname"+i];
 			tmpplayer["position"] = data_assoc["position"+i];
+			tmpplayer["ratingav"] = data_assoc["ratingav"+i];
+			tmpplayer["games"] = data_assoc["games"+i];
+			tmpplayer["mom"] = data_assoc["mom"+i];
+			tmpplayer["goals"] = data_assoc["goals"+i];
+			tmpplayer["passes"] = data_assoc["passes"+i];
+			tmpplayer["form"] = data_assoc["form"+i];
+			tmpplayer["morale"] = data_assoc["morale"+i];
 			var playerid = data_assoc["id" + i];
 			players[playerid] = tmpplayer;
 		}
 		
 		
 		// сбор данных закончен, можно выводить
-		preparedhtml = '';
-		preparedhtml += 'Форма полевого игрока:<br />';
-		preparedhtml += '<img src="'+ field_player_img_src +'" alt="" id="fp_uniform_image" /><br />';
+		preparedhtml = '<table><tr><td>';
+
+		preparedhtml += '<b>Форма игрока</b><br><table><tr><td>'
+		preparedhtml += '<img src="'+ field_player_img_src +'" alt="" id="fp_uniform_image" />'
+		preparedhtml += '</td><td>'
+		preparedhtml += 'Полевого<br />';
 		preparedhtml += '<a href="javascript: change_field_player_uniform();">Поменять</a><br />';
-		
-		preparedhtml += 'Форма вратаря:<br />';
-		preparedhtml += '<img src="'+ goalkeeper_player_img_src +'" alt="" id="gk_uniform_image" /><br />';
+		preparedhtml += '</td></tr>'
+		preparedhtml += '<tr><td>';
+		preparedhtml += '<img src="'+ goalkeeper_player_img_src +'" alt="" id="gk_uniform_image" />';
+		preparedhtml += '</td><td>'
+		preparedhtml += 'Вратаря<br />';
 		preparedhtml += '<a href="javascript: change_goalkeeper_uniform();">Поменять</a><br /><br />';
-		
-		preparedhtml += '<textarea rows="10" cols="60" readonly="readonly" id="sostav_na_match">';
+		preparedhtml += '</td></tr></table>'
+
+		preparedhtml += '</td><td valign=top>'
+
+		preparedhtml += '<b>Вид отображения</b><br>'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=1;fillTextarea(printtype)"> классический<br>'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=2;fillTextarea(printtype)" checked> карточка игрока'
+		preparedhtml += ''
+
+		preparedhtml += '</td></tr></table>'
+
+		preparedhtml += '<textarea rows="10" cols="80" readonly="readonly" id="sostav_na_match">';
 		preparedhtml += '</textarea>';
 		$('.contentframer').html(preparedhtml);	
-		fillTextarea();
-		
+		fillTextarea(printtype);
 	});
 	
 }, false);
