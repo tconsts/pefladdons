@@ -93,7 +93,7 @@ function fillTextarea(pt) {
 
 		preparedhtml = '';
 		preparedhtml += ' [b]Стартовый состав:[/b]\n\n';
-		preparedhtml += '[table]';
+		preparedhtml += '[table bgcolor=#C9F8B7]';
 
 		// нападение
 		preparedhtml += '[tr]';
@@ -161,7 +161,7 @@ function fillTextarea(pt) {
 		
 		preparedhtml += "\n\n";
 		preparedhtml += '[b]Скамейка запасных:[/b]\n\n';
-		preparedhtml += '[table]';
+		preparedhtml += '[table bgcolor=#C9F8B7]';
 		preparedhtml += '[tr]';
 		
 		for(j=12;j<=16;j++) {
@@ -176,6 +176,7 @@ function fillTextarea(pt) {
 		preparedhtml += '[/table]';
 		
 		$('#sostav_na_match').html(preparedhtml);
+		$('#preview').html(preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'"').replace(/\[/g,'<').replace(/\]/g,'>'))
 }
 var printtype = 2;
 var data_assoc = [];
@@ -268,6 +269,7 @@ $().ready(function() {
 
 		preparedhtml += '<textarea rows="10" cols="80" readonly="readonly" id="sostav_na_match">';
 		preparedhtml += '</textarea>';
+		preparedhtml += '<br><br><span id="preview"></span>'
 		$('.contentframer').html(preparedhtml);	
 		fillTextarea(printtype);
 	});
