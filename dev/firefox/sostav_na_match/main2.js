@@ -83,17 +83,14 @@ function printCard (plid,type){
 		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + pl["position"] + '[/td][/tr]';
 	}
 	cardhtml += '[/table][/td]';
-
 	return cardhtml;
 }
 
 function fillTextarea(pt) {
-		var td_st = ''
-		var td_fn = '';
 
 		preparedhtml = '';
 		preparedhtml += ' [b]Стартовый состав:[/b]\n\n';
-		preparedhtml += '[table bgcolor=#C9F8B7]';
+		preparedhtml += '[table]';
 
 		// нападение
 		preparedhtml += '[tr]';
@@ -161,7 +158,7 @@ function fillTextarea(pt) {
 		
 		preparedhtml += "\n\n";
 		preparedhtml += '[b]Скамейка запасных:[/b]\n\n';
-		preparedhtml += '[table bgcolor=#C9F8B7]';
+		preparedhtml += '[table]';
 		preparedhtml += '[tr]';
 		
 		for(j=12;j<=16;j++) {
@@ -174,9 +171,11 @@ function fillTextarea(pt) {
 		
 		preparedhtml += '[/tr]';
 		preparedhtml += '[/table]';
+		preparedhtml += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------\n';
 		
 		$('#sostav_na_match').html(preparedhtml);
-		$('#preview').html(preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>'))
+		preparedhtml = preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>')
+		$('#preview').html(preparedhtml)
 }
 var printtype = 2;
 var data_assoc = [];
@@ -269,7 +268,7 @@ $().ready(function() {
 
 		preparedhtml += '<textarea rows="10" cols="80" readonly="readonly" id="sostav_na_match">';
 		preparedhtml += '</textarea>';
-		preparedhtml += '<br><br><span id="preview"></span>'
+		preparedhtml += '<br><br><table bgcolor=#A3DE8F width=80%><tr><td><span id="preview"></span></td></tr></table>'
 		$('.contentframer').html(preparedhtml);	
 		fillTextarea(printtype);
 	});

@@ -83,7 +83,6 @@ function printCard (plid,type){
 		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + pl["position"] + '[/td][/tr]';
 	}
 	cardhtml += '[/table][/td]';
-
 	return cardhtml;
 }
 
@@ -172,6 +171,7 @@ function fillTextarea(pt) {
 		
 		preparedhtml += '[/tr]';
 		preparedhtml += '[/table]';
+		preparedhtml += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------\n';
 		
 		$('#sostav_na_match').html(preparedhtml);
 		preparedhtml = preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>')
