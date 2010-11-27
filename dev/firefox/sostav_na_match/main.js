@@ -137,7 +137,7 @@ function fillTextarea(pt) {
 				switch(pt) {
 					case 3: preparedhtml += printCard2(sostav[num],num);break;
 					case 2: preparedhtml += printCard(sostav[num],num);break;
-					default: printClassic(sostav[num],num)
+					default: preparedhtml += printClassic(sostav[num],num)
 				}
 			} else {
 				preparedhtml += '[td width=20%] [/td]';
@@ -159,7 +159,7 @@ function fillTextarea(pt) {
 					switch(pt) {
 						case 3: preparedhtml += printCard2(sostav[num],num);break;
 						case 2: preparedhtml += printCard(sostav[num],num);break;
-						default: printClassic(sostav[num],num)
+						default: preparedhtml += printClassic(sostav[num],num)
 					}
 				} else {
 					preparedhtml += '[td width=20% height=50] [/td]';
@@ -179,7 +179,7 @@ function fillTextarea(pt) {
 				switch(pt) {
 					case 3: preparedhtml += printCard2(sostav[k],k);break;
 					case 2: preparedhtml += printCard(sostav[k],k);break;
-					default: printClassic(sostav[k],k)
+					default: preparedhtml += printClassic(sostav[k],k)
 				}
 			} else {
 				preparedhtml += '[td width=20% height=50] [/td]';
@@ -202,7 +202,7 @@ function fillTextarea(pt) {
 				switch(pt) {
 					case 3: preparedhtml += printCard2(pids[j],0);break;
 					case 2: preparedhtml += printCard(pids[j],0);break;
-					default: printClassic(pids[j],0)
+					default: preparedhtml += printClassic(pids[j],0)
 				}
 			} else {
 				preparedhtml += '[td width=20%] [/td]';
