@@ -283,11 +283,12 @@ $().ready(function() {
 		
 		
 		// сбор данных закончен, можно выводить
-		preparedhtml = 'Код для форума<br>'
-		preparedhtml += '<textarea rows="10" cols="80" readonly="readonly" id="sostav_na_match"></textarea>';
+		preparedhtml = '<b>Код для форума</b><br>'
+		preparedhtml += '<textarea rows="10" cols="90" readonly="readonly" id="sostav_na_match"></textarea>';
 
-		preparedhtml += '<br><br><table><tr><td>';
-
+		preparedhtml += '<br><br><hr><table width=100%>';
+		preparedhtml += '<tr><th width=128></th><th>Предосмотр</th></tr>';
+		preparedhtml += '<tr><td valign=top>';
 		preparedhtml += '<b>Форма игрока</b><br><table><tr><td>'
 		preparedhtml += '<img src="'+ field_player_img_src +'" alt="" id="fp_uniform_image" />'
 		preparedhtml += '</td><td>'
@@ -301,17 +302,22 @@ $().ready(function() {
 		preparedhtml += '<a href="javascript: change_goalkeeper_uniform();">Поменять</a><br /><br />';
 		preparedhtml += '</td></tr></table>'
 
-		preparedhtml += '</td><td valign=top>'
-
-		preparedhtml += '<b>Вид отображения</b><br>'
+		preparedhtml += '<br><b>Стиль показа</b><br>'
 		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=1;fillTextarea(printtype)"> классический<br>'
-		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=2;fillTextarea(printtype)"> карточка игрока<br>'
-		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=3;fillTextarea(printtype)" checked> карточка игрока(2)'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=2;fillTextarea(printtype)"> карточка<br>'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=3;fillTextarea(printtype)" checked> карточка(2)'
 		preparedhtml += ''
+
+		preparedhtml += '</td>'
+		preparedhtml += '<td bgcolor=#A3DE8F width=100%>'
+
+		preparedhtml += '<span id="preview"></span>'
 
 		preparedhtml += '</td></tr></table>'
 
-		preparedhtml += '<br><br><table bgcolor=#A3DE8F width=128><tr><td><span id="preview"></span></td></tr></table>'
+
+
+		preparedhtml += '</tr></table>'
 		$('.contentframer').html(preparedhtml);	
 		fillTextarea(printtype);
 	});
