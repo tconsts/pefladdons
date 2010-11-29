@@ -1,9 +1,8 @@
 $().ready(function() {
 	var szp=0
 	$('td.back4 td').each(function(i,val){
-		if ($(val).text().indexOf('$') != -1){
-			if (szp!=0) szp += +$(val).html().replace('$','')
-			else szp++
+		if ($(val).html().indexOf('$') != -1 && !isNaN(+$(val).html().replace('$',''))){
+			szp += +$(val).html().replace('$','')
 		}
 	});
 	var txt='<br>Сумма зарплат:';
