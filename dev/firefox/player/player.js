@@ -147,9 +147,16 @@ $().ready(function() {
 					var x = $(val).find('center').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-€] -->/g,'').split('<br>',6)
 					var j = 0
 					var name = x[j].split(' (',1)[0]
+
+					player[st['id']]  = location.href.split('?',2)[1].split('&',3)[2].split('=',2)[1]
+					player[st['hash']]  = location.href.split('?',2)[1].split('&',4)[3].split('=',2)[1]
+					if (location.href.split('?',2)[1].split('&',2)[1].split('=',2)[1] == 'yp') { 
+						player[st['f']]  = 5		// школ€р!
+					}
+
 					if (name.indexOf(' ')!=-1){
 						player[st['»м€']] = name.split(' ',1)[0]
-						player[st['‘ам']] = name.replace(player[st['»м€']]+' ','')
+						player[st['‘ам']] = name.replace(player[st['»м€']]+' ','').replace(player[st['»м€']]+'-','')
 					} else {
 						player[st['»м€']] = ''
 						player[st['‘ам']] = name
@@ -157,18 +164,42 @@ $().ready(function() {
 					j++
 					if (x[j].indexOf('в аренде') !=-1) j++
 					player[st['взр']] = +x[j].split(' ',1)[0]
-					player[st['стр']] = x[j].split(', ',2)[1].split(' (',1)[0]
-					player[st['и—б']] = +x[j].split(', ',2)[1].split('матчей ',2)[1]
-					player[st['г—б']] = +x[j].split(', ',3)[2].split(' ',2)[1].replace(')','')
-					player[st['ићл']] = (x[j].indexOf('U21')!=-1 ? +x[j].split('/ U21 матчей ',2)[1].split(',',1)[0] : 0)
-					player[st['гћл']] = (x[j].indexOf('U21')!=-1 ? +x[j].split('/ U21 матчей ',2)[1].split(', голов ',2)[1].replace(')','') : 0); j++
-					player[st['кнт']] = +x[j].split(' ',4)[1]
-					player[st['зрп']] = +x[j].split(' ',4)[3].replace(/,/g,'').replace('$','');j++
-					player[st['ном']] = +x[j].split(' ',2)[1].replace(/,/g,'').replace('$','');j++
+					if (x[j].indexOf('(матчей')!=-1){
+						player[st['стр']] = x[j].split(', ',2)[1].split(' (',1)[0]
+						player[st['и—б']] = +x[j].split(', ',2)[1].split('матчей ',2)[1]
+						player[st['г—б']] = +x[j].split(', ',3)[2].split(' ',2)[1].replace(')','')
+						if (x[j].indexOf('U21')!=-1){
+							player[st['ићл']] = +x[j].split('/ U21 матчей ',2)[1].split(',',1)[0]
+							player[st['гћл']] = +x[j].split('/ U21 матчей ',2)[1].split(', голов ',2)[1].replace(')','')
+						} else {
+							player[st['ићл']] = 0
+							player[st['гћл']] = 0
+						}
+					} else {
+						player[st['стр']] = ' '
+						player[st['и—б']] = 0
+						player[st['г—б']] = 0
+						player[st['ићл']] = 0
+						player[st['гћл']] = 0
+					}
+					j++
+					if (x[j].indexOf(' онтракт:')!=-1) {
+						player[st['кнт']] = +x[j].split(' ',4)[1]
+						player[st['зрп']] = +x[j].split(' ',4)[3].replace(/,/g,'').replace('$','')
+						j++
+					} else {
+						player[st['кнт']] = 0
+						player[st['зрп']] = 0
+					}
+					if (x[j].indexOf('Ќоминал:') != -1) {
+						player[st['ном']] = +x[j].split(' ',2)[1].replace(/,/g,'').replace('$','')
+						j++
+					} else {
+						player[st['ном']] = 0
+					}
 					if (x[j].indexOf(' луб требует:') != -1) j++
 					player[st['поз']] = x[j]
-					player[st['id']]  = location.href.split('?',2)[1].split('&',3)[2].split('=',2)[1]
-					player[st['hash']]  = location.href.split('?',2)[1].split('&',4)[3].split('=',2)[1]
+
 				} else if (m==2){
 					var j = 0
 					var x = $(valm).html().replace(/<!-- [а-€] -->/g,'').split('<br>')
