@@ -3,13 +3,14 @@
 // @namespace      pefl
 // @description    modification player page (PEFL.ru)
 // @include        http://www.pefl.ru/plug.php?p=refl&t=p*
-// @include        http://pefl.ru/plug.php?p=refl&t=p*
-// @include        http://www.pefl.net/plug.php?p=refl&t=p*
-// @include        http://pefl.net/plug.php?p=refl&t=p*
 // @include        http://www.pefl.ru/plug.php?p=refl&t=yp2*
+// @include        http://pefl.ru/plug.php?p=refl&t=p*
 // @include        http://pefl.ru/plug.php?p=refl&t=yp2*
+// @include        http://www.pefl.net/plug.php?p=refl&t=p*
 // @include        http://www.pefl.net/plug.php?p=refl&t=yp2*
+// @include        http://pefl.net/plug.php?p=refl&t=p*
 // @include        http://pefl.net/plug.php?p=refl&t=yp2*
+
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
