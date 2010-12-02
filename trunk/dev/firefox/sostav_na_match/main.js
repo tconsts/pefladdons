@@ -111,7 +111,11 @@ function printCard2 (plid,type){
 		cardhtml += (playergoals != 0 || playerpasses != 0 ? '\nÃÏ/' + playergoals + '+' + playerpasses : '');
 	}
 	cardhtml += '[/td][/tr]';
-	cardhtml += '[tr][td align=center]' + (playervalue >= 1000 ? (playervalue/1000).toFixed(1) + 'ì' : playervalue + 'ò') + '$[/td][/tr]';
+	cardhtml += '[tr][td align=center]';
+	if (playervalue == 0 ) cardhtml +=  'øêë';
+	else if (playervalue >= 1000) cardhtml += (playervalue/1000).toFixed(1) + 'ì$'
+	else cardhtml += playervalue + 'ò$';
+	cardhtml += '[/td][/tr]';
 	if (type == 0) {
 		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + pl["position"] + '[/td][/tr]';
 	}
