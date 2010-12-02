@@ -131,8 +131,10 @@ $().ready(function() {
 		if ($(val).html().replace(/<!-- [а-я] -->/g,'').indexOf(str3) != -1) {
 			fr = i;
 		} else {
-			// видимо школьник
-			fr = 9999999999;
+			// для школьников
+			if ($(val).html() == '<span class="text2b"></span>') {
+				fr = i+1;
+			}
 		}
 	})
 
