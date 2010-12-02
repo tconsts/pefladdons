@@ -128,7 +128,12 @@ $().ready(function() {
 		var str3 = 'Ќациональные турниры:'
 //		if ($(val).html().replace(/<!-- [а-€] -->/g,'').indexOf(str) != -1) um = i
 		if ($(val).html().replace(/<!-- [а-€] -->/g,'').indexOf(str2) != -1) ld = i
-		if ($(val).html().replace(/<!-- [а-€] -->/g,'').indexOf(str3) != -1) fr = i
+		if ($(val).html().replace(/<!-- [а-€] -->/g,'').indexOf(str3) != -1) {
+			fr = i;
+		} else {
+			// видимо школьник
+			fr = 9999999999;
+		}
 	})
 
 	var player = [] 
