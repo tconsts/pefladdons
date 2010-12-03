@@ -14,8 +14,6 @@ function getCookie(name) {
 }
 
 function ColorTable(tableid){
-
-	// need develop function of get(and set) from cockie... debug:
 	if (diap[tableid]){
 		$('td u').each(function(i,val){
 			var x = $(val).text()
@@ -27,46 +25,91 @@ function ColorTable(tableid){
 			}
 		})
 	}
-
 }
 
 function SelectTeam(teamid){
 	$("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().css("font-weight", "bold")
 }
 
-function getValue(curVal){
-	var retVal = prompt('Задайте цвет таблицы', curVal);
+function getValue(tableid,curVal){
+	var retVal = prompt('Задайте цвет таблицы', curVal.join().replace(/!/g,'='));
 
-	if (retVal != null) setCookie('pefltables',retVal)
+	diap[tableid] = retVal.replace(/=/,'!').split(',');
+
+	ColorTable(tableid);
+
+	var cookie = ''
+	for (var i in diap) cookie += (i==0 ? '' : '.') + i +'*' + diap[i].join('*');
+	if (retVal != null) setCookie('pefltables',cookie)
 
 	return true
+}
+function TableCodeForForum(){
+	var x = '[b]'
+	x += $('td.back4 td.back1').text()
+	x += '[/b][spoiler]'
+	x += $('td.back4 td.back1').parent().next().find('table').html()
+		.replace(/<tbody>/g,'<table width=100%>')
+		.replace(/tbody/g,'table')
+		.replace(/<th/g,'[td')
+		.replace(/<\/th>/g,'[/td]')
+		.replace(/\</g,'[')
+		.replace(/\>/g,']')
+		.replace(/ height=\"12\"/g,'')
+		.replace(/a href=\"/g,'url=')
+		.replace(/\/a/g,'/url')
+		.replace(/\&amp\;/g,'&')
+		.replace(/img src="/g,'img]')
+		.replace(/.gif/g,'.gif[/img')
+		.replace(/.png/g,'.png[/img')
+		.replace(/"/g,'')
+		.replace(/#a3de8f/g,'C9F8B7')
+		.replace(/\n/g,'')
+	x += '[/spoiler]'
+	return x;
+}
 
+function UrlValue(key){
+	var pf = location.href.split('?',2)[1].split('&')
+	for (n in pf) {
+		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
+	}
+	return false
 }
 
 var diap = []
+var url = {}
+var def = []
+def[0] = ['1-1!yellow','2-2!white']
+
 $().ready(function() {
-	
-//	setCookie('pefltables','0*18-22!D3D7CF*1-2!white.43*15-16!D3D7CF*1-6!FCE94F*1-2!white.44*18-22!D3D7CF*1-2!white');
-//	var m='0*18-22!D3D7CF*1-2!white.43*15-16!D3D7CF*1-6!FCE94F*1-2!white.44*18-22!D3D7CF*1-2!white'
 
-	if (getCookie('pefltables')) {
-		var tbid = location.href.split('?',2)[1].split('&',4)[3].split('=',2)[1]
-		var dp = getCookie('pefltables').split('.') //m.split('.')
+	// code for forum
+	var pre = '<br><hr>Код для форума<br><textarea rows="5" cols="70" readonly="readonly" id="CodeTableForForum">'+TableCodeForForum()+'</textarea>'
+	$('td.back4 hr').parent().append(pre)
 
-		for (var p in dp) diap[dp[p].split('*',2)[0]] =dp[p].split('*');
-//		diap[0]=['18-22:D3D7CF','1-2:white']					// my current div
-//		diap[43]=['15-16:D3D7CF','1-6:FCE94F','1-2:white']		// Russian PL
-//		diap[44]=['18-22:D3D7CF','1-2:white']					// Russian PD
+	// select as bold self team in my table with id=0
+	if( UrlValue('k') && UrlValue('k')!=0) SelectTeam(UrlValue('k'))
 
+	var tbid = -1;
+	if ( UrlValue('j') ) tbid = UrlValue('j');
+
+	//setCookie('pefltables','0*18-22!D3D7CF*1-2!white.43*15-16!D3D7CF*1-7!FCE94F*1-2!white.44*18-22!D3D7CF*1-2!white');
+	//var m='0*18-22!D3D7CF*1-2!white.43*15-16!D3D7CF*1-7!FCE94F*1-2!white.44*18-22!D3D7CF*1-2!white'
+
+	if (getCookie('pefltables') && tbid >= 0) {
+//		var dp = m.split('.')
+		var dp = getCookie('pefltables').split('.')
+		for (var p in dp) {
+			var name = dp[p].split('*',1)[0] 
+			var key = dp[p].split('*')
+			key.shift()
+			diap[name] = key
+		}
 		ColorTable(tbid);
 	}
 
-	$('td.back1 span').parent().append(' <a href="javascript:void(getValue(\''+ diap +'\'))">#</a> ') //css("border", "1px solid black");
+	if(tbid>=0) $('td.back1 span').parent().append(' <a href="javascript:void(getValue(' + tbid + ',\''+ (diap[tbid]?diap[tbid]:def[0]) +'\'))">#</a> ') //css("border", "1px solid black");
 
-
-
-
-	// select as bold self team in my table with id=0
-	SelectTeam(location.href.split('?',2)[1].split('&',3)[2].split('=',2)[1])
 
 });
