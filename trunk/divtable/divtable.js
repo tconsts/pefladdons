@@ -34,13 +34,14 @@ function SelectTeam(teamid){
 function getValue(tableid,curVal){
 	var retVal = prompt('Задайте цвет таблицы', curVal.replace(/!/g,'='));
 
-	diap[tableid] = retVal.replace(/=/,'!').split(',');
+	diap[tableid] = retVal.replace(/=/g,'!').split(',');
 
 	ColorTable(tableid);
 
 	var cookie = ''
-	for (var i in diap) cookie += (i==0 ? '' : '.') + i +'*' + diap[i].join('*');
-	if (retVal != null) setCookie('pefltables',cookie)
+	for (var i in diap) cookie += '.' + i +'*' + diap[i].join('*');
+
+	if (retVal != null) setCookie('pefltables',cookie.replace('.',''))
 
 	return true
 }
