@@ -20,7 +20,7 @@ function ColorTable(tableid){
 			for (var j in diap[tableid]) {
 				var d = diap[tableid][j]
 				if (x>= +d.split('!')[0].split('-')[0] && x <= +d.split('!')[0].split('-')[1]) {
-					$(val).parent().parent().css("background-color", d.split('!')[1])
+					$(val).parent().parent().parent().css("background-color", d.split('!')[1])
 				}
 			}
 		})
@@ -66,6 +66,7 @@ function TableCodeForForum(){
 		.replace(/"/g,'')
 		.replace(/#a3de8f/g,'C9F8B7')
 		.replace(/\n/g,'')
+	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Êğàáîâûé VIP[/url] ---------------[/center]\n';
 	x += '[/spoiler]'
 	return x;
 }
