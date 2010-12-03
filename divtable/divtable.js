@@ -39,7 +39,7 @@ function getValue(tableid,curVal){
 	ColorTable(tableid);
 
 	var cookie = ''
-	for (var i in diap) if(diap[i].join('*')!='') cookie += '.' + i +'*' + diap[i].join('*');
+	for (var i in diap) if(i!=0 && diap[i].join('*')!='') cookie += '.' + i +'*' + diap[i].join('*');
 
 	if (retVal != null) setCookie('pefltables',cookie.replace('.',''))
 
@@ -71,8 +71,8 @@ function TableCodeForForum(){
 	return x;
 }
 
-function UrlValue(key){
-	var pf = location.href.split('?',2)[1].split('&')
+function UrlValue(key,url){
+	var pf = (url ? url : location.href).split('?',2)[1].split('&')
 	for (n in pf) {
 		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
 	}
@@ -94,6 +94,16 @@ $().ready(function() {
 
 	var tbid = -1;
 	if ( UrlValue('j') ) tbid = UrlValue('j');
+
+	if (tbid == 0){
+		var divname = 
+		$("td.back4 a").each(function(){
+			if ($(this).text() == $('td.back1 span').text().split(', ',2)[1]) {
+				tbid = UrlValue('j',$(this).attr('href'))
+			}
+		})
+	}
+
 
 	if (getCookie('pefltables') && tbid >= 0) {
 		var dp = getCookie('pefltables').split('.')
