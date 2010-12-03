@@ -32,7 +32,7 @@ function SelectTeam(teamid){
 }
 
 function getValue(tableid,curVal){
-	var retVal = prompt('Задайте цвет таблицы', curVal.join().replace(/!/g,'='));
+	var retVal = prompt('Задайте цвет таблицы', curVal.replace(/!/g,'='));
 
 	diap[tableid] = retVal.replace(/=/,'!').split(',');
 
@@ -79,8 +79,7 @@ function UrlValue(key){
 
 var diap = []
 var url = {}
-var def = []
-def[0] = ['1-1!yellow','2-2!white']
+var def = '1-1!yellow,2-2!white'
 
 $().ready(function() {
 
@@ -109,7 +108,7 @@ $().ready(function() {
 		ColorTable(tbid);
 	}
 
-	if(tbid>=0) $('td.back1 span').parent().append(' <a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid]?diap[tbid]:def[0]) +'\'))">#</a> ') //css("border", "1px solid black");
+	if(tbid>=0) $('td.back1 span').parent().append(' <a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">#</a> ') //css("border", "1px solid black");
 
 
 });
