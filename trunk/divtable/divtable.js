@@ -109,7 +109,7 @@ $().ready(function() {
 		ColorTable(tbid);
 	}
 
-	if(tbid>=0) $('td.back1 span').parent().append(' <a href="javascript:void(getValue('\' + tbid + '\',\''+ (diap[tbid]?diap[tbid]:def[0]) +'\'))">#</a> ') //css("border", "1px solid black");
+	if(tbid>=0) $('td.back1 span').parent().append(' <a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid]?diap[tbid]:def[0]) +'\'))">#</a> ') //css("border", "1px solid black");
 
 
 });
