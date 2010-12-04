@@ -142,8 +142,8 @@ $().ready(function() {
 				var sum15 = 0
 				//var sum17 = 0
 				for (var i in tt) for (var j in tt[i]) {
-					if (tt[i][j] == 15) sum15 += tt[i][0]
-					//if (tt[i][j] == 17) sum17 += tt[i][0]
+					if (i!=0 && tt[i][j] == 15) sum15 += tt[i][0]
+					//if (i!=0 && tt[i][j] == 17) sum17 += tt[i][0]
 				}
 				trn0text  = (sum15==0 ? '' : '<tr><td><table width=100%><tr><td>Тактическое занятие</td><td width=1>'+((sum15/nump*100).toFixed(0) +'%').fontsize(1)+'</td></tr></table></td><td></td></tr>')
 				//trn0text += (sum17==0 ? '' : '<tr><td><table width=100%><tr><td>Тренировочный матч</td><td width=1>'+((sum17/nump*100).toFixed(0) +'%').fontsize(1)+'</td></tr></table></td><td></td></tr>')
