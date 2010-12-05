@@ -13,6 +13,15 @@ function getCookie(name) {
 	    return false
 }
 
+function PlusMinus(){
+	$('td u').each(function(i,val){
+		if (i==0) $(val).parent().parent().parent().prev().append('<th width="6%">М+/-</td>')
+		var gz = +$(val).parent().parent().next().next().next().next().next().next().text()
+		var gp = +$(val).parent().parent().next().next().next().next().next().next().next().text()
+		$(val).parent().parent().parent().append('<td>'+(gz>gp ? '+' :'')+(gz-gp)+'</td>')
+	})
+}
+
 function ColorTable(tableid){
 	if (diap[tableid]){
 		$('td u').each(function(i,val){
@@ -84,6 +93,10 @@ var url = {}
 var def = '1-1!FCE94F,2-2!white,3-3!E9B96E'
 
 $().ready(function() {
+
+
+	// add column with goals +/- (will be include to code for forum)
+	PlusMinus();
 
 	// code for forum
 	var pre = '<br><hr>Код для форума<br><textarea rows="5" cols="70" readonly="readonly" id="CodeTableForForum">'+TableCodeForForum()+'</textarea>'
