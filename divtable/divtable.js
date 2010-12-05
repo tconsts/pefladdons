@@ -50,7 +50,7 @@ function TableCodeForForum(){
 	x += $('td.back4 td.back1').text()
 	x += '[/b][spoiler]'
 	x += $('td.back4 td.back1').parent().next().find('table').html()
-		.replace(/<tbody>/g,'<table width=100%>')
+		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
 		.replace(/tbody/g,'table')
 		.replace(/<th/g,'[td')
 		.replace(/<\/th>/g,'[/td]')
@@ -64,7 +64,7 @@ function TableCodeForForum(){
 		.replace(/.gif/g,'.gif[/img')
 		.replace(/.png/g,'.png[/img')
 		.replace(/"/g,'')
-		.replace(/#a3de8f/g,'C9F8B7')
+//		.replace(/#a3de8f/g,'C9F8B7')
 		.replace(/\n/g,'')
 	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
 	x += '[/spoiler]'
