@@ -55,6 +55,20 @@ function getValue(tableid,curVal){
 	return true
 }
 function TableCodeForForum(){
+
+	// change big flags for eurocups in table
+	var flags = []
+
+	// need fill base key=peflid, value=2 symbols tag: system/img/flags/155.gif -> system/img/flags/f-ru.gif
+	flags[155]='f-ru';
+
+//	$('td.back4 td.back1').parent().next().find('table').find('img[src*=system/img/flags/]').each(function(){
+//		var f=$(this).attr('src').split('flags/')[1].split('.')[0]
+//		$(this).parent().prepend('<img src="system/img/flags/'+flags[f]+'.gif"> ')
+//		$(this).remove()
+//	})
+
+	// generate code for forum
 	var x = '[b]'
 	x += $('td.back4 td.back1').text()
 	x += '[/b][spoiler]'
@@ -74,6 +88,7 @@ function TableCodeForForum(){
 		.replace(/.png/g,'.png[/img')
 		.replace(/"/g,'')
 //		.replace(/#a3de8f/g,'C9F8B7')
+		.replace(/ width=25/g,'')
 		.replace(/\n/g,'')
 	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
 	x += '[/spoiler]'
