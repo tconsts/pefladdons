@@ -14,22 +14,22 @@ function getCookie(name) {
 }
 
 function PlusMinus(){
-	$('td u').each(function(i,val){
-		if (i==0) $(val).parent().parent().parent().prev().append('<th width="6%">Ì+/-</td>')
-		var gz = +$(val).parent().parent().next().next().next().next().next().next().text()
-		var gp = +$(val).parent().parent().next().next().next().next().next().next().next().text()
-		$(val).parent().parent().parent().append('<td>'+(gz>gp ? '+' :'')+(gz-gp)+'</td>')
+	$('th:last').before('<th width="6%">+/-</td>')
+	$('th:contains(¹)').parent().parent().find('tr').each(function(){
+		var gz = +$(this).find('td:last').prev().prev().text()
+		var gp = +$(this).find('td:last').prev().text()
+		var td  = '<td>' +  (gz > gp ? '+' : '') + (gz-gp) + '</td>'
+		$(this).find('td:last').before(td)
 	})
 }
 
 function ColorTable(tableid){
 	if (diap[tableid]){
-		$('td u').each(function(i,val){
-			var x = $(val).text()
+		$('th:contains(¹)').parent().parent().find('tr').each(function(i,val){
 			for (var j in diap[tableid]) {
 				var d = diap[tableid][j]
-				if (x>= +d.split('!')[0].split('-')[0] && x <= +d.split('!')[0].split('-')[1]) {
-					$(val).parent().parent().parent().css("background-color", d.split('!')[1])
+				if (i>= +d.split('!')[0].split('-')[0] && i <= +d.split('!')[0].split('-')[1]) {
+					$(val).css("background-color", d.split('!')[1])
 				}
 			}
 		})
@@ -81,7 +81,7 @@ function TableCodeForForum(){
 }
 
 function UrlValue(key,url){
-	var pf = (url ? url : location.href).split('?',2)[1].split('&')
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) {
 		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
 	}
