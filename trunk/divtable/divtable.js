@@ -42,16 +42,15 @@ function SelectTeam(teamid){
 
 function getValue(tableid,curVal){
 	var retVal = prompt('Задайте цвет таблицы', curVal.replace(/!/g,'='));
+	if (retVal != null) {
+		var cookie = ''
+		diap[tableid] = retVal.replace(/=/g,'!').split(',');
+		ColorTable(tableid);
 
-	diap[tableid] = retVal.replace(/=/g,'!').split(',');
+		for (var i in diap) if(i!=0 && diap[i].join('*')!='') cookie += '.' + i +'*' + diap[i].join('*');
 
-	ColorTable(tableid);
-
-	var cookie = ''
-	for (var i in diap) if(i!=0 && diap[i].join('*')!='') cookie += '.' + i +'*' + diap[i].join('*');
-
-	if (retVal != null) setCookie('pefltables',cookie.replace('.',''))
-
+		setCookie('pefltables',cookie.replace('.',''))
+	}
 	return true
 }
 function TableCodeForForum(){
