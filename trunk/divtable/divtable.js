@@ -57,16 +57,97 @@ function getValue(tableid,curVal){
 function TableCodeForForum(){
 
 	// change big flags for eurocups in table
-	var flags = []
-
+	$('td.back4 td.back1').parent().next().find('table').find('img[src*=system/img/flags/]').each(function(){
 	// need fill base key=peflid, value=2 symbols tag: system/img/flags/155.gif -> system/img/flags/f-ru.gif
-	flags[155]='f-ru';
+		var f = []
+		f[1]='al';	//Албания
+		f[2]='dz';	//Алжир
+		f[8]='ar';	//Аргентина
+		f[9]='am';	//Армения
+		f[11]='au';	//Австралия
+		f[12]='at';	//Австрия
+		f[13]='az';	//Азербайджан
+		f[18]='by';	//Беларусь
+		f[19]='be';	//Бельгия
+		f[24]='bo';	//Боливия
+		f[25]='ba';	//Босния
+		f[27]='br';	//Бразилия
+		f[30]='bg';	//Болгария
+		f[41]='cl';	//Чили
+		f[42]='cn';	//Китай
+		f[44]='co';	//Колумбия
+		f[47]='cr';	//Коста-Рика
+		f[48]='hr';	//Хорватия
+		f[50]='cy';	//Кипр
+		f[51]='cz';	//Чехия
+		f[53]='dk';	//Дания
+		f[58]='ec';	//Эквадор
+		f[59]='eg';	//Египет
+		f[61]='en';	//Англия
+		f[64]='ee';	//Эстония
+		f[66]='mk';	//Македония
+		f[69]='fi';	//Финляндия
+		f[70]='fr';	//Aранция
+		f[73]='ge';	//Грузия
+		f[74]='de';	//Германия
+		f[76]='gr';	//Греция
+		f[84]='nl';	//Голландия
+		f[87]='hu';	//Венгрия
+		f[88]='is';	//Исландия
+		f[91]='ir';	//Иран
+		f[93]='ie';	//Ирландия
+		f[94]='il';	//Израиль
+		f[95]='it';	//Италия
+		f[96]='ci';	//Кот`д`Ивуар
+		f[98]='jp';	//Япония
+		f[100]='kz';	//Казахстан
+		f[105]='lv';	//Латвия
+		f[111]='lt';	//Литва
+		f[122]='mx';	//Мексика
+		f[123]='md';	//Молдова
+		f[126]='ma';	//Морокко
+		f[129]='nt';	//Сев. Ирландия
+		f[137]='ng';	//Нигерия
+		f[139]='no';	//Норвегия
+		f[145]='py';	//Парагвай
+		f[147]='pe';	//Перу
+		f[149]='pl';	//Польша
+		f[150]='pt';	//Португалия
+		f[152]='qa';	//Катар
+		f[154]='ro';	//Румыния
+		f[155]='ru';	//Россия
+		f[160]='sa';	//Сау. Аравия
+		f[161]='http://img.cyberfight.ru/v2/new-img/flags/SC.gif';	//Шотландия	
+		f[166]='sk';	//Словакия
+		f[167]='si';	//Словения
+		f[170]='za';	//ЮАР
+		f[171]='kr';	//Корея
+		f[172]='es';	//Испания
+		f[180]='se';	//Швеция
+		f[181]='ch';	//Швейцария
+		f[191]='tn';	//Тунис
+		f[192]='tr';	//Турция
+		f[195]='ae';	//ОАЭ
+		f[196]='us';	//США
+		f[200]='ua';	//Украина
+		f[201]='uy';	//Уругвай
+		f[202]='uz';	//Узбекистан
+		f[204]='ve';	//Венесуэла
+		f[207]='wl';	//Уэльс
+		f[209]='yu';	//!!Сербия
+		f[214]='yu';	//!!Черногория
 
-//	$('td.back4 td.back1').parent().next().find('table').find('img[src*=system/img/flags/]').each(function(){
-//		var f=$(this).attr('src').split('flags/')[1].split('.')[0]
-//		$(this).parent().prepend('<img src="system/img/flags/'+flags[f]+'.gif"> ')
-//		$(this).remove()
-//	})
+		var fid=$(this).attr('src').split('flags/')[1].split('.')[0]
+		var img = '<img src="'
+		if (f[fid]) {
+			if (fid == 161) img += f[fid]
+			else img += 'system/img/flags/f-' + f[fid] + '.gif'
+		} else img += 'system/img/flags/f-00.gif'
+		img += '"> '
+
+		$(this).parent().prepend(img)
+		$(this).remove()
+	})
 
 	// generate code for forum
 	var x = '[b]'
@@ -115,7 +196,7 @@ $().ready(function() {
 
 	// code for forum
 	var pre = '<br><hr>Код для форума<br><textarea rows="5" cols="70" readonly="readonly" id="CodeTableForForum">'+TableCodeForForum()+'</textarea>'
-	$('td.back4 hr').parent().append(pre)
+	$('td.back4').append(pre)
 
 	// select as bold self team in my table with id=0
 	if( UrlValue('k') && UrlValue('k')!=0) SelectTeam(UrlValue('k'))
