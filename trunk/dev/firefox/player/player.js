@@ -12,12 +12,19 @@ function getPairKey(str,def,delim) {
 	return (arr[0] == str ? def : arr[0])
 }
 
+function setCookie(name, value) {
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() + 356); // +1 year
+	if (!name || !value) return false;
+	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
+	return true
+}
 
 function getCookie(name) {
-	    var pattern = "(?:; )?" + name + "=([^;]*);?"
-	    var regexp  = new RegExp(pattern)
-	    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
-	    return false
+	var pattern = "(?:; )?" + name + "=([^;]*);?"
+	var regexp  = new RegExp(pattern)
+	if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
+	return false
 }
 
 function sSkills(i, ii) { // По SumSkills (убыванию)
@@ -58,6 +65,14 @@ function CheckPlayer(x){
 	if (x==1) alert('Запомнить игрока')
 }
 
+function UrlValue(key,url){
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
+	for (n in pf) {
+		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
+	}
+	return false
+}
+
 $().ready(function() {
 /**/
 	var sk = {'лд':'Лидерство','др':'Дриблинг','уд':'Удары','пс':'Игра в пас','ви':'Видение поля','гл':'Игра головой','вх':'Игра на выходах','нв':'Навесы','ду':'Дальние удары','по':'Перс. опека','ре':'Реакция',
@@ -79,7 +94,7 @@ $().ready(function() {
 	}
 
 
-	var poss = [['','','',''],
+	var poss = [['','','','','',''],
 		['GK','skillsgk',  '', 'GK',0,'!сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс=*0.5,f=*0,Фам'],
 		['SW(либеро)','skillssw',  'C','SW',0,'!сст,!s=*0,от=*2,вп=*2,гл=*1.6,ск=*1.5,мщ=*1.4,f=*0,Фам'],
 		['L DF','skillsldf', 'L','DF',0,'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб,f=*0,Фам'],
@@ -105,7 +120,7 @@ $().ready(function() {
 		['C FW(офсайды)','skillslcfw','C','FW',0,'!сст,!s=*0,вп=*3,уд=*2,ск=*2,тх=*1.5,др,f=*0,Фам'],
 		['C FW(дриблер)','skillsccfw','C','FW',0,'!сст,!s=*0,др=*3,уд=*2,тх=*2,ск,f=*0,Фам'],
 		['C FW(головастик)','skillsrcfw','C','FW',0,'!сст,!s=*0,гл=*3,уд=*2,мщ=*2,вп=*2,ск,f=*0,Фам'],
-/**/]
+	]
 	
 	for (var i in poss) {
 		psi = poss[i]
@@ -119,7 +134,6 @@ $().ready(function() {
 			psi[5] = getPairValue(x,psi[5],':')
 		}
 	}
-/**/
 
 	// отдельный цикл чтобы получить id именно последнего td - как сделать по другому пока не думал
 	$('td').each(function(i,val){
@@ -155,11 +169,10 @@ $().ready(function() {
 					var j = 0
 					var name = x[j].split(' (',1)[0]
 
-					player[st['id']]  = location.href.split('?',2)[1].split('&',3)[2].split('=',2)[1]
-					player[st['hash']]  = location.href.split('?',2)[1].split('&',4)[3].split('=',2)[1]
-					if (location.href.split('?',2)[1].split('&',2)[1].split('=',2)[1] == 'yp') { 
-						player[st['f']]  = 5		// школяр!
-					}
+
+					player[st['id']]  = UrlValue('j')
+					player[st['hash']]  = UrlValue('z')
+					if (UrlValue('t') == 'yp') player[st['f']]  = 5	// школяр!
 
 					if (name.indexOf(' ')!=-1){
 						player[st['Имя']] = name.split(' ',1)[0]
@@ -261,12 +274,10 @@ $().ready(function() {
 		posfilter[j][1] = psj[0]		// GK
 	}
 
-
 	posfilter.sort(sSkills)
 	player[st['сс']] = ss
 	player[st['идл']] = posfilter[1][2]
 	player[st['ИдлПоз']] = posfilter[1][1]
-
 
 	var tmp=''
 	for (var i in posfilter) for (var s in posfilter[i]) tmp += posfilter[i][s] + '\n'
@@ -290,7 +301,7 @@ $().ready(function() {
 		var pfs3pre = posfilter[s][3]
 		var pflinkpre = linktext
 	}
-	for (i in st) text2 += i + ':' + player[st[i]]+'<br>'
+//	for (i in st) text2 += i + ':' + player[st[i]]+'<br>'
 
 	text2 += '</div></td></tr></table>'
 
