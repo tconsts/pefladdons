@@ -12,12 +12,19 @@ function getPairKey(str,def,delim) {
 	return (arr[0] == str ? def : arr[0])
 }
 
+function setCookie(name, value) {
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() + 356); // +1 year
+	if (!name || !value) return false;
+	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
+	return true
+}
 
 function getCookie(name) {
-	    var pattern = "(?:; )?" + name + "=([^;]*);?"
-	    var regexp  = new RegExp(pattern)
-	    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
-	    return false
+	var pattern = "(?:; )?" + name + "=([^;]*);?"
+	var regexp  = new RegExp(pattern)
+	if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
+	return false
 }
 
 function sSkills(i, ii) { // ѕо SumSkills (убыванию)
@@ -54,6 +61,18 @@ function OpenAll(){
 	else $("#mydiv").hide()
 }
 
+function CheckPlayer(x){
+	if (x==1) alert('«апомнить игрока')
+}
+
+function UrlValue(key,url){
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
+	for (n in pf) {
+		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
+	}
+	return false
+}
+
 $().ready(function() {
 /**/
 	var sk = {'лд':'Ћидерство','др':'ƒриблинг','уд':'”дары','пс':'»гра в пас','ви':'¬идение пол€','гл':'»гра головой','вх':'»гра на выходах','нв':'Ќавесы','ду':'ƒальние удары','по':'ѕерс. опека','ре':'–еакци€',
@@ -62,7 +81,7 @@ $().ready(function() {
 			'—корость':'ск','Ўтрафные':'шт','¬ыбор позиции':'вп','”гловые':'уг','»гра руками':'ру','“ехника':'тх','ћощь':'мщ','ќтбор м€ча':'от','–аботоспособность':'рб','¬ыносливость':'вн'}
 
 
-	var sto = 's,f,сс,сст,са,со, —т,стр,‘ам,»м€,взр,id,и—б,г—Ѕ,кнт,зрп,ном,уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,оиг,огл,опс,оим,тре,трв,дск,сыг,пн,иш,иу,кп,идл,»длѕоз'.split(',');
+	var sto = 's,f,сс,сст,са,со, —т,стр,‘ам,»м€,взр,id,и—б,г—б,кнт,зрп,ном,уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,оиг,огл,опс,оим,тре,трв,дск,сыг,пн,иш,иу,кп,идл,»длѕоз,hash,ићл,гћл'.split(',');
 	var st = {}
 	var k = 0
 	for (var i in sto) {
@@ -75,7 +94,7 @@ $().ready(function() {
 	}
 
 
-	var poss = [['','','',''],
+	var poss = [['','','','','',''],
 		['GK','skillsgk',  '', 'GK',0,'!сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс=*0.5,f=*0,‘ам'],
 		['SW(либеро)','skillssw',  'C','SW',0,'!сст,!s=*0,от=*2,вп=*2,гл=*1.6,ск=*1.5,мщ=*1.4,f=*0,‘ам'],
 		['L DF','skillsldf', 'L','DF',0,'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб,f=*0,‘ам'],
@@ -101,7 +120,7 @@ $().ready(function() {
 		['C FW(офсайды)','skillslcfw','C','FW',0,'!сст,!s=*0,вп=*3,уд=*2,ск=*2,тх=*1.5,др,f=*0,‘ам'],
 		['C FW(дриблер)','skillsccfw','C','FW',0,'!сст,!s=*0,др=*3,уд=*2,тх=*2,ск,f=*0,‘ам'],
 		['C FW(головастик)','skillsrcfw','C','FW',0,'!сст,!s=*0,гл=*3,уд=*2,мщ=*2,вп=*2,ск,f=*0,‘ам'],
-/**/]
+	]
 	
 	for (var i in poss) {
 		psi = poss[i]
@@ -115,14 +134,22 @@ $().ready(function() {
 			psi[5] = getPairValue(x,psi[5],':')
 		}
 	}
-/**/
 
-	// отдельный цикл чтобы получить id именно последнего td - как сделать по дургому пока не думал
+	// отдельный цикл чтобы получить id именно последнего td - как сделать по другому пока не думал
 	$('td').each(function(i,val){
-		var str = '”мени€'
+//		var str = '”мени€'
 		var str2 = 'Ћидерство'
-		if ($(val).html().replace(/<!-- [а-€] -->/g,'').indexOf(str) != -1) um = i
+		var str3 = 'Ќациональные турниры:'
+//		if ($(val).html().replace(/<!-- [а-€] -->/g,'').indexOf(str) != -1) um = i
 		if ($(val).html().replace(/<!-- [а-€] -->/g,'').indexOf(str2) != -1) ld = i
+		if ($(val).html().replace(/<!-- [а-€] -->/g,'').indexOf(str3) != -1) {
+			fr = i;
+		} else {
+			// дл€ школьников
+			if ($(val).html() == '<span class="text2b"></span>') {
+				fr = i+1;
+			}
+		}
 	})
 
 	var player = [] 
@@ -134,20 +161,74 @@ $().ready(function() {
 	var ssp = 0
 	var umval = ''
 	$('td').each(function(i,val){
-		if (i == um){
+		if (i == fr) {
 			umval = val
-			var x = $(val).find('center').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-€] -->/g,'').split('<br>',6)
-			//for (var p in x) text += p+':'+x[p]+'\n'
-			var j = 0
-			player[st['‘ам']] = x[j].split(' (',1)[0]; j++
-			if (x[j].indexOf('в аренде') !=-1) j++
-			player[st['взр']] = +x[j].split(' ',3)[0]
-			player[st['стр']] = x[j].split(', ',2)[1].split(' (',1)[0]; j++
-			player[st['кнт']] = +x[j].split(' ',4)[1]
-			player[st['зрп']] = +x[j].split(' ',4)[3].replace(/,/g,'').replace('$','');j++
-			player[st['ном']] = +x[j].split(' ',2)[1].replace(/,/g,'').replace('$','');j++
-			if (x[j].indexOf(' луб требует:') != -1) j++
-			player[st['поз']] = x[j]
+			$(val).find('center').each(function(m,valm){
+				if (m==0) {
+					var x = $(val).find('center').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-€] -->/g,'').split('<br>',6)
+					var j = 0
+					var name = x[j].split(' (',1)[0]
+
+
+					player[st['id']]  = UrlValue('j')
+					player[st['hash']]  = UrlValue('z')
+					if (UrlValue('t') == 'yp') player[st['f']]  = 5	// школ€р!
+
+					if (name.indexOf(' ')!=-1){
+						player[st['»м€']] = name.split(' ',1)[0]
+						player[st['‘ам']] = name.replace(player[st['»м€']]+' ','').replace(player[st['»м€']]+'-','')
+					} else {
+						player[st['»м€']] = ''
+						player[st['‘ам']] = name
+					}	
+					j++
+					if (x[j].indexOf('в аренде') !=-1) j++
+					player[st['взр']] = +x[j].split(' ',1)[0]
+					if (x[j].indexOf('(матчей')!=-1){
+						player[st['стр']] = x[j].split(', ',2)[1].split(' (',1)[0]
+						player[st['и—б']] = +x[j].split(', ',2)[1].split('матчей ',2)[1]
+						player[st['г—б']] = +x[j].split(', ',3)[2].split(' ',2)[1].replace(')','')
+						if (x[j].indexOf('U21')!=-1){
+							player[st['ићл']] = +x[j].split('/ U21 матчей ',2)[1].split(',',1)[0]
+							player[st['гћл']] = +x[j].split('/ U21 матчей ',2)[1].split(', голов ',2)[1].replace(')','')
+						} else {
+							player[st['ићл']] = 0
+							player[st['гћл']] = 0
+						}
+					} else {
+						player[st['стр']] = ' '
+						player[st['и—б']] = 0
+						player[st['г—б']] = 0
+						player[st['ићл']] = 0
+						player[st['гћл']] = 0
+					}
+					j++
+					if (x[j].indexOf(' онтракт:')!=-1) {
+						player[st['кнт']] = +x[j].split(' ',4)[1]
+						player[st['зрп']] = +x[j].split(' ',4)[3].replace(/,/g,'').replace('$','')
+						j++
+					} else {
+						player[st['кнт']] = 0
+						player[st['зрп']] = 0
+					}
+					if (x[j].indexOf('Ќоминал:') != -1) {
+						player[st['ном']] = +x[j].split(' ',2)[1].replace(/,/g,'').replace('$','')
+						j++
+					} else {
+						player[st['ном']] = 0
+					}
+					if (x[j].indexOf(' луб требует:') != -1) j++
+					player[st['поз']] = x[j]
+
+				} else if (m==2){
+					var j = 0
+					var x = $(valm).html().replace(/<!-- [а-€] -->/g,'').split('<br>')
+					player[st['фрм']] = +x[j].split(': ',2)[1].split('%',1)[0]
+					player[st['мрл']] = +x[j].split(': ',3)[2].replace('%</i>','')
+
+				}
+			})
+			
 		}
 
 		if (i>=ld && i<ld+36 && next==0){
@@ -156,7 +237,6 @@ $().ready(function() {
 		}
 		if (i>=ld && i<ld+36 && i == next){
 			skillvalue = parseInt($(val).find('script').empty().end().html().replace('<script></script>','').replace('<script type="text/javascript"></script>','').replace('<b>',''))
-			//alert(skillname+"("+skr[skillname]+")='"+skillvalue+"'")
 			next = 0
 			if (skr[skillname]) {
 				player[st[skr[skillname]]] = skillvalue
@@ -185,52 +265,45 @@ $().ready(function() {
 				posfilter[j][3] += sk[sks[0]]+','
 				ideal += eval(15+(sks[1]?sks[1]:''))
 				sst += eval((player[st[sks[0]]]?player[st[sks[0]]]:1)+(sks[1]?sks[1]:''))
-
-//				if (j==2) alert(sks[0]+':'+ideal+':'+player[st[sks[0]]]+(sks[1]?sks[1]:''))
-
-
 			}
 			
 		}
 		posfilter[j][0] = sst/ideal*100
 		posfilter[j][2] = posfilter[j][0].toFixed(1)
 		posfilter[j][0] = posfilter[j][0]/koff
-		//posfilter[j][0] = ssp
-		//posfilter[j][2] = ssp/100
-
 		posfilter[j][1] = psj[0]		// GK
-
-		// подставл€ем значени€ дл€ отображени
-		//posfilter[j][3] = '–еакци€,¬ыбор позиции,»гра на выходах,»гра руками,ћощь,»гра в пас'
 	}
-
 
 	posfilter.sort(sSkills)
 	player[st['сс']] = ss
+	player[st['идл']] = posfilter[1][2]
+	player[st['»длѕоз']] = posfilter[1][1]
 
 	var tmp=''
 	for (var i in posfilter) for (var s in posfilter[i]) tmp += posfilter[i][s] + '\n'
 
 
 	var text1 = '<table width=100%><tr><td valign=top>'
-	var text2 = '</td><td valign=top width=1%><b>—ила&nbsp;игрока</b><br>'
+	var text2 = '</td><td valign=top width=1%><a onclick="ShowAll('+(ld+1)+')">'+('—бросить').fontsize(1)+'</a><br><b>—ила&nbsp;игрока</b><br>'
 	var hidden = 0
+	var pfs3pre = ''
+	var pflinkpre = ''
 	for (var s in posfilter) {
 		if (!isNaN(posfilter[s][2])) {
 			var linktext = String(posfilter[s][2]+':'+posfilter[s][1].replace(' ','&nbsp;'))
-			if (posfilter[s][0]<1 && hidden == 0) {
-				//linktext = String(linktext).italic()
-				hidden = 1
-			}
-
+			if (posfilter[s][0]<1 && hidden == 0) hidden = 1
 			if ( hidden ==1) {
-				text2 += '<a id="mya" onclick="OpenAll()">...</a><br><div id="mydiv">'
 				hidden = 2
+				text2 += '<a id="mya" onclick="OpenAll()">...</a><br><div id="mydiv">'
 			}
-			text2 += '<a onclick="ShowSkills('+(ld+1)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a><br>'
+			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text2 += '<a onclick="ShowSkills('+(ld+1)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a><br>'
 		}
+		var pfs3pre = posfilter[s][3]
+		var pflinkpre = linktext
 	}
-	text2 += '</div><a onclick="ShowAll('+(ld+1)+')">'+('—бросить').fontsize(1)+'</a></td></tr></table>'
+//	for (i in st) text2 += i + ':' + player[st[i]]+'<br>'
+
+	text2 += '</div></td></tr></table>'
 
 	$(umval).each(function(j,val2){if (j==0) $(val2).html(text1+$(val2).html().replace('”мени€</b>','”мени€</b>(сс='+String(player[st['сс']]).fontsize(1)+')')+text2)})
 	$("#mydiv").hide()
