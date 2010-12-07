@@ -116,7 +116,7 @@ function TableCodeForForum(){
 		f[154]='ro';	//Румыния
 		f[155]='ru';	//Россия
 		f[160]='sa';	//Сау. Аравия
-		f[161]='http://img.cyberfight.ru/v2/new-img/flags/SC.gif';	//Шотландия	
+		f[161]='http://pefladdons.googlecode.com/svn/trunk/f-161.gif';	//Шотландия	
 		f[166]='sk';	//Словакия
 		f[167]='si';	//Словения
 		f[170]='za';	//ЮАР
@@ -134,12 +134,12 @@ function TableCodeForForum(){
 		f[204]='ve';	//Венесуэла
 		f[207]='wl';	//Уэльс
 		f[209]='yu';	//!!Сербия
-		f[214]='yu';	//!!Черногория
+		f[214]='http://pefladdons.googlecode.com/svn/trunk/f-214.png';	//Черногория
 
 		var fid=$(this).attr('src').split('flags/')[1].split('.')[0]
 		var img = '<img src="'
 		if (f[fid]) {
-			if (fid == 161) img += f[fid]
+			if (fid == 161 || fid ==214) img += f[fid]
 			else img += 'system/img/flags/f-' + f[fid] + '.gif'
 		} else img += 'system/img/flags/f-00.gif'
 		img += '"> '
