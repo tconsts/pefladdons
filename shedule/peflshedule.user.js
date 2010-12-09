@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name           peflsheduke
+// @name           peflshedule
 // @namespace      pefl
 // @description    modification shedule page (PEFL.ru and .net)
 // @include        http://www.pefl.ru/plug.php?p=refl&t=last&j=*
