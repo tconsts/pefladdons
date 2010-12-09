@@ -9,7 +9,7 @@ $().ready(function() {
 			dt[2] = parseInt((dt[2][0]==0? dt[2][1]:dt[2]))+2000
 
 			var dateObj = new Date(dt[2],dt[1],dt[0])
-			$(val).html($(val).text()+'&nbsp;' + day[getDay(dateObj)])
+			$(val).html($(val).text()+'&nbsp;' + day[dateObj.getDay()])
 		}
 	})
 })
