@@ -3,13 +3,13 @@
 // @namespace      pefl
 // @description    modification player page (PEFL.ru and .net) and school boys
 // @include        http://www.pefl.ru/plug.php?p=refl&t=p*
-// @include        http://www.pefl.ru/plug.php?p=refl&t=yp2*
+// @include        http://www.pefl.ru/plug.php?p=refl&t=yp*
 // @include        http://pefl.ru/plug.php?p=refl&t=p*
-// @include        http://pefl.ru/plug.php?p=refl&t=yp2*
+// @include        http://pefl.ru/plug.php?p=refl&t=yp*
 // @include        http://www.pefl.net/plug.php?p=refl&t=p*
-// @include        http://www.pefl.net/plug.php?p=refl&t=yp2*
+// @include        http://www.pefl.net/plug.php?p=refl&t=yp*
 // @include        http://pefl.net/plug.php?p=refl&t=p*
-// @include        http://pefl.net/plug.php?p=refl&t=yp2*
+// @include        http://pefl.net/plug.php?p=refl&t=yp*
 
 // ==/UserScript==
 
