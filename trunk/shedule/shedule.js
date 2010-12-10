@@ -1,7 +1,7 @@
 $().ready(function() {
+	var text = ''
+	var prevdt = ''
 	$('td.back4 td').each(function(i,val){
-		var prevdt = ''
-		var text = ''
 		if ($(val).text().search(/[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]/) == 0) {
 			//$(val).css("border", "1px solid red");
 			var day = ['вск','пнд','втр','срд','чтв','птн','суб']
@@ -28,6 +28,6 @@ $().ready(function() {
 			$(val).html($(val).text()+'&nbsp;' + day[curdt.getDay()])
 			prevdt = curdt
 		}
-		alert(text)
 	})
+	alert(text)
 })
