@@ -28,5 +28,6 @@ $().ready(function() {
 			$(val).html($(val).text()+'&nbsp;' + day[curdt.getDay()])
 			prevdt = curdt
 		}
+		alert(text)
 	})
 })
