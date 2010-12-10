@@ -1,5 +1,4 @@
 $().ready(function() {
-	var text = ''
 	var prevdt = ''
 	$('td.back4 td').each(function(i,val){
 		if ($(val).text().search(/[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]/) == 0) {
@@ -11,17 +10,18 @@ $().ready(function() {
 			dt[2] = parseInt((dt[2][0]==0? dt[2][1]:dt[2]))+2000
 
 			var curdt = new Date(dt[2],dt[1],dt[0])
-			text += curdt + ' ' + prevdt + ' '
 			if (prevdt!=''){
 				var p = (prevdt - curdt)/1000/60/60/24
 				var i=1
-				text += p + ' ' 
 				while ( i < p ){
 					var dd = new Date(prevdt - i*60*60*24*1000)
-					text += dd + ' '
 					var d = day[dd.getDay()]
-					text += d + '\n'
-					if (d=='пнд' || d=='срд' || d=='птн') $(val).parent().before('<tr bgcolor=white><td></td><td>' + dd + ' ' + d +'</td><td></td><td></td><td></td></tr>')
+					if (d=='пнд' || d=='срд' || d=='птн') {
+						var str += (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
+						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
+						str += (dd.getYear()-2000) + '&nbsp;' + d +
+						$(val).parent().before('<tr bgcolor=white><td></td><td>'+str.fontsize(1)+'</td><td></td><td></td><td></td></tr>')
+					}
 					i++
 				}
 			}
@@ -29,5 +29,4 @@ $().ready(function() {
 			prevdt = curdt
 		}
 	})
-	alert(text)
 })
