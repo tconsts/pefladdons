@@ -17,7 +17,7 @@ $().ready(function() {
 					var dd = new Date(prevdt - i*60*60*24*1000)
 					var d = day[dd.getDay()]
 					if (d=='пнд' || d=='срд' || d=='птн') {
-						var str += (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
+						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getYear()-2000) + '&nbsp;' + d +
 						$(val).parent().before('<tr bgcolor=white><td></td><td>'+str.fontsize(1)+'</td><td></td><td></td><td></td></tr>')
