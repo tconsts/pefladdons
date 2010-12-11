@@ -20,7 +20,7 @@ $().ready(function() {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000) + '&nbsp;' + d
-						$(val).parent().before('<tr bgcolor=white><td></td><td>'+str.fontsize(1)+'</td><td></td><td></td><td></td></tr>')
+						$(val).parent().before('<tr bgcolor=#e0e0e0><td></td><td>'+str+'</td><td></td><td></td><td></td></tr>')
 					}
 					i++
 				}
