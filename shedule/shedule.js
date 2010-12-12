@@ -21,7 +21,7 @@ $().ready(function() {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000) + '&nbsp;' + d
-						if (curdt == today) str.bold()
+						if (curdt.getDate() == today.getDate() && curdt.getMonth() == today.getMonth()) str.bold()
 						$(val).parent().before('<tr><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
 					}
 					i++
@@ -31,7 +31,7 @@ $().ready(function() {
 			prevdt = curdt
 		}
 	})
-	if( today!=prevdt ) {
+	if( prevdt.getDate() != today.getDate() && prev.getMonth() != today.getMonth() ) {
 		var td = (today.getDate()<10 ? '0' : '' ) + today.getDate() + '.'
 		td += (today.getMonth()<9 ? '0' : '') + (today.getMonth()+1) + '.'
 		td += (today.getFullYear()-2000) + '&nbsp;' + day[today.getDay()]
@@ -49,8 +49,8 @@ $().ready(function() {
 				}
 				i++
 			}
-			$(this).append('<tr><td></td><td height=25><b>' + td.fontcolor('#888A85') + '</b></td><td colspan=3></td>')
+			$(this).append('<tr><td></td><td height=25 class="now"><b>' + td.fontcolor('#888A85') + '</b></td><td colspan=3></td>')
 		})
-
+		$('td.now').css("border", "1px solid #a3de8f");
 	}
 })
