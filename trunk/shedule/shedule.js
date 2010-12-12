@@ -2,6 +2,7 @@ $().ready(function() {
 	var day = ['вск','пнд','втр','срд','чтв','птн','суб']
 	var prevdt = ''
 	var today = new Date()
+	var shownow = 0
 	$('td.back4 td').each(function(i,val){
 		if ($(val).text().search(/[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]/) == 0) {
 			$(val).parent().attr('bgcolor','#a3de8f')
@@ -11,6 +12,10 @@ $().ready(function() {
 			dt[2] = parseInt((dt[2][0]==0? dt[2][1]:dt[2]))+2000
 
 			var curdt = new Date(dt[2],dt[1],dt[0])
+			if (curdt.getDate() == today.getDate() && curdt.getMonth() == today.getMonth()) {
+				$(val).html($(val).html().bold())
+				shownow = 1;
+			}
 			if (prevdt!=''){
 				var p = (prevdt - curdt)/1000/60/60/24
 				var i=1
@@ -21,7 +26,6 @@ $().ready(function() {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000) + '&nbsp;' + d
-						if (curdt.getDate() == today.getDate() && curdt.getMonth() == today.getMonth()) str.bold()
 						$(val).parent().before('<tr><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
 					}
 					i++
@@ -31,7 +35,7 @@ $().ready(function() {
 			prevdt = curdt
 		}
 	})
-	if( prevdt.getDate() != today.getDate() && prevdt.getMonth() != today.getMonth() ) {
+	if (shownow == 0) {
 		var td = (today.getDate()<10 ? '0' : '' ) + today.getDate() + '.'
 		td += (today.getMonth()<9 ? '0' : '') + (today.getMonth()+1) + '.'
 		td += (today.getFullYear()-2000) + '&nbsp;' + day[today.getDay()]
