@@ -2,7 +2,7 @@ $().ready(function() {
 	var prevdt = ''
 	$('td.back4 td').each(function(i,val){
 		if ($(val).text().search(/[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]/) == 0) {
-			//$(val).css("border", "1px solid red");
+			$(val).parent().attr('bgcolor','#a3de8f')
 			var day = ['вск','пнд','втр','срд','чтв','птн','суб']
 			var dt = $(val).text().split('.')
 			dt[0] = parseInt((dt[0][0]==0? dt[0][1]:dt[0]))
@@ -20,7 +20,8 @@ $().ready(function() {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000) + '&nbsp;' + d
-						$(val).parent().before('<tr bgcolor=#e0e0e0><td></td><td>'+str.fontcolor('#555753')+'</td><td></td><td></td><td></td></tr>')
+
+						$(val).parent().before('<tr><td></td><td>'+str.fontcolor('#BABDB6')+'</td><td></td><td></td><td></td></tr>')
 					}
 					i++
 				}
