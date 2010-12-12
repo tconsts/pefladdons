@@ -31,7 +31,7 @@ $().ready(function() {
 			prevdt = curdt
 		}
 	})
-	if( prevdt.getDate() != today.getDate() && prev.getMonth() != today.getMonth() ) {
+	if( prevdt.getDate() != today.getDate() && prevdt.getMonth() != today.getMonth() ) {
 		var td = (today.getDate()<10 ? '0' : '' ) + today.getDate() + '.'
 		td += (today.getMonth()<9 ? '0' : '') + (today.getMonth()+1) + '.'
 		td += (today.getFullYear()-2000) + '&nbsp;' + day[today.getDay()]
