@@ -22,7 +22,6 @@ $().ready(function() {
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000) + '&nbsp;' + d
 						if (curdt == today) str.bold()
-
 						$(val).parent().before('<tr><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
 					}
 					i++
@@ -46,9 +45,8 @@ $().ready(function() {
 					var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 					str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 					str += (dd.getFullYear()-2000) + '&nbsp;' + d
-					if (curdt == today) str.bold()
-						$(this).append('<tr><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
-					}
+					$(this).append('<tr><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
+				}
 				i++
 			}
 			$(this).append('<tr><td></td><td height=25><b>' + td.fontcolor('#888A85') + '</b></td><td colspan=3></td>')
