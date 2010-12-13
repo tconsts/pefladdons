@@ -149,14 +149,14 @@ function ShowForumCode(fc,a){
 		var txt = '<textarea cols=20 rows=5 readonly>[table width=100%]'
 		txt += '[tr][td] [/td]' + (fc[23]?fc[23]:empty) + (fc[24]?fc[24]:empty) + (fc[25]?fc[25]:empty) + '[td] [/td][/tr]'
 		txt += '[tr]' + (fc[18]?fc[18]:empty) + (fc[19]?fc[19]:empty) + (fc[20]?fc[20]:empty) + (fc[21]?fc[21]:empty) + (fc[22]?fc[22]:empty) + '[/tr]'
-		txt += '[tr]' + (fc[13]?fc[13]:empty) + (fc[14]?fc[14]:empty) + (fc[15]?fc[15]:empty) + (fc[16]?fc[16]:empty) + (fc[17]?fc[17]:empty) + '[/td][/tr]'
-		txt += '[tr]' + (fc[8]?fc[8]:empty) + (fc[9]?fc[9]:empty) + (fc[10]?fc[10]:empty) + (fc[11]?fc[11]:empty) + (fc[12]?fc[12]:empty) + '[/td][/tr]'
-		txt += '[tr]' + (fc[3]?fc[3]:empty) + (fc[4]?fc[4]:empty) + (fc[5]?fc[5]:empty) + (fc[6]?fc[6]:empty) + (fc[7]?fc[7]:empty) + '[/td][/tr]'
+		txt += '[tr]' + (fc[13]?fc[13]:empty) + (fc[14]?fc[14]:empty) + (fc[15]?fc[15]:empty) + (fc[16]?fc[16]:empty) + (fc[17]?fc[17]:empty) + '[/tr]'
+		txt += '[tr]' + (fc[8]?fc[8]:empty) + (fc[9]?fc[9]:empty) + (fc[10]?fc[10]:empty) + (fc[11]?fc[11]:empty) + (fc[12]?fc[12]:empty) + '[/tr]'
+		txt += '[tr]' + (fc[3]?fc[3]:empty) + (fc[4]?fc[4]:empty) + (fc[5]?fc[5]:empty) + (fc[6]?fc[6]:empty) + (fc[7]?fc[7]:empty) + '[/tr]'
 		txt += '[tr][td colspan=2] [/td]' + (fc[2]?fc[2]:empty) + '[td colspan=2] [/td][/tr]'
 		txt += '[tr][td colspan=2] [/td]' + (fc[1]?fc[1]:empty) + '[td colspan=2] [/td][/tr]'
 		txt += '[/table]'
 		txt += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n'
-		txt += '</textarea><br><b>Состав для форума (<a href="/?team">advanced</a>)</b>'
+		txt += '</textarea><br><b>Состав для форума<br>(<a href="/?team">advanced</a>)</b>'
 		return txt
 	}
 }
@@ -407,7 +407,7 @@ $().ready(function() {
 					forumcode[i] += '[td valign=top height=50 rowspan=2]';
 					forumcode[i] += pl[st["фрм"]] + '/' + pl[st["мрл"]];
 					if (pl[st["оиг"]] != 0) {
-						forumcode[i] += '\nP ' + pl["ratingav"];
+						forumcode[i] += '\nP ' + pl[st["орт"]];
 						forumcode[i] += '\nИ ' + pl[st["оиг"]] + (pl[st["оим"]] != 0 ? '(' + pl[st["оим"]] + ')' : '');
 						forumcode[i] += (pl[st["огл"]] != 0 || pl[st["опс"]] != 0 ? '\nГП/' + pl[st["огл"]] + '+' + pl[st["опс"]] : '');
 					}
@@ -415,8 +415,8 @@ $().ready(function() {
 					forumcode[i] += '[tr][td align=center]';
 
 					if (pl[st["ном"]] == 0 ) forumcode[i] +=  'шкл';
-					else if (pl[st["ном"]] >= 1000) forumcode[i] += (pl[st["ном"]]/1000).toFixed(1) + 'м$'
-					else forumcode[i] += pl[st["ном"]] + 'т$';
+					else if (pl[st["ном"]] >= 1000) forumcode[i] += (pl[st["ном"]].replace(/,/g,'')/1000/1000).toFixed(1) + 'м$'
+					else forumcode[i] += pl[st["ном"]].replace(/,/g,'')/1000 + 'т$';
 
 					forumcode[i] += '[/td][/tr]';
 					forumcode[i] += '[/table][/td]';
