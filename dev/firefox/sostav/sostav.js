@@ -395,6 +395,7 @@ $().ready(function() {
 
 				// добавить в состав дл€ форума
 				if (+pfi1 == -plid && auto == 1) {
+					var value = pl[st["ном"]].replace(/,/g,'')/1000
 					forumcode[i] = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% height=100% bgcolor=#A3DE8F]';
 					forumcode[i] += '[tr][td colspan=2][b]' + (pl[st["»м€"]].charAt(0)!='?' ? pl[st["»м€"]].charAt(0) + '.' : '') + (pl[st["‘ам"]]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
 					forumcode[i] += '[tr][td][player=' + plid + '][img]';
@@ -414,9 +415,9 @@ $().ready(function() {
 					forumcode[i] += '[/td][/tr]';
 					forumcode[i] += '[tr][td align=center]';
 
-					if (pl[st["ном"]] == 0 ) forumcode[i] +=  'шкл';
-					else if (pl[st["ном"]] >= 1000) forumcode[i] += (pl[st["ном"]].replace(/,/g,'')/1000/1000).toFixed(1) + 'м$'
-					else forumcode[i] += pl[st["ном"]].replace(/,/g,'')/1000 + 'т$';
+					if (+pl[st["ном"]] == 0 ) forumcode[i] +=  'шкл';
+					else if (value >= 1000) forumcode[i] += (value/1000).toFixed(1) + 'м$'
+					else forumcode[i] += value + 'т$';
 
 					forumcode[i] += '[/td][/tr]';
 					forumcode[i] += '[/table][/td]';
