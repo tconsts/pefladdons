@@ -40,12 +40,15 @@ function sSkills(i, ii) { // По SumSkills (убыванию)
 }
 
 function getValue(pname,cname,curVal){
-	var retVal = prompt('Введите новые значения для ' + pname + ', варианты(через запятую без пробелов):\n \
-s,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСБ,кнт,зрп,ном,пн,иш,иу,кп,идл,ИдлПоз\n уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,трв,дск,сыг\n\nЗначения до ":", имя и кол-во записей в таблице (0=все) \n коэф. скилов для сортировки задавать через "=" и операция, например лд=*2\n! - не показывать, f - флаг состояния, s - попадания в состав', curVal);
+	// Загружаем куки
+	var currentCookie = getCookie(cname);
+	// если куки существует - используем ее в промпте
+	if (currentCookie!=false ) curVal = currentCookie;
+	var retVal = prompt('Введите новые значения для ' + pname + ', варианты(через запятую без пробелов):\n \ s,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСБ,кнт,зрп,ном,пн,иш,иу,кп,идл,ИдлПоз\n уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,трв,дск,сыг\n\nЗначения до ":", имя и кол-во записей в таблице (0=все) \n коэф. скилов для сортировки задавать через "=" и операция, например лд=*2\n! - не показывать, f - флаг состояния, s - попадания в состав', curVal);
 
 	if (retVal != null) setCookie(cname,retVal)
 	return true
-}
+	} 
 
 function ShowPos(pfarr, psarr){
 	var fonselectpos= ' bgcolor=#A3DE8F'
@@ -142,16 +145,18 @@ function ShowHelp(){
 function ShowForumCode(fc,a){
 	if (a == 0) return 'Автосостав'
 	else {
-		var empty = '[table][tr][td][color=#A3DE8F].[/color][/td][/tr][tr][td][color=#A3DE8F].[/color][/td][/tr][/table]'
-		var txt = '<textarea cols=20 rows=5 readonly>[table width=100% ]'
-		txt += '[tr][td] [/td][td width=20%]'+(fc[23]?fc[23]:empty)+'[/td][td width=20%]'+(fc[24]?fc[24]:empty)+'[/td][td width=20%]'+(fc[25]?fc[25]:empty)+'[/td][td] [/td][/tr]'
-		txt += '[tr][td width=20%]'+(fc[18]?fc[18]:empty)+'[/td][td width=20%]'+(fc[19]?fc[19]:empty)+'[/td][td width=20%]'+(fc[20]?fc[20]:empty)+'[/td][td width=20%]'+(fc[21]?fc[21]:empty)+'[/td][td width=20%]'+(fc[22]?fc[22]:empty)+'[/td][/tr]'
-		txt += '[tr][td width=20%]'+(fc[13]?fc[13]:empty)+'[/td][td width=20%]'+(fc[14]?fc[14]:empty)+'[/td][td width=20%]'+(fc[15]?fc[15]:empty)+'[/td][td width=20%]'+(fc[16]?fc[16]:empty)+'[/td][td width=20%]'+(fc[17]?fc[17]:empty)+'[/td][/tr]'
-		txt += '[tr][td width=20%]'+(fc[8]?fc[8]:empty)+'[/td][td width=20%]'+(fc[9]?fc[9]:empty)+'[/td][td width=20%]'+(fc[10]?fc[10]:empty)+'[/td][td width=20%]'+(fc[11]?fc[11]:empty)+'[/td][td width=20%]'+(fc[12]?fc[12]:empty)+'[/td][/tr]'
-		txt += '[tr][td width=20%]'+(fc[3]?fc[3]:empty)+'[/td][td width=20%]'+(fc[4]?fc[4]:empty)+'[/td][td width=20%]'+(fc[5]?fc[5]:empty)+'[/td][td width=20%]'+(fc[6]?fc[6]:empty)+'[/td][td width=20%]'+(fc[7]?fc[7]:empty)+'[/td][/tr]'
-		txt += '[tr][td] [/td][td] [/td][td width=20%]'+(fc[2]?fc[2]:empty)+'[/td][td] [/td][td] [/td][/tr]'
-		txt += '[tr][td] [/td][td] [/td][td width=20%]'+(fc[1]?fc[1]:empty)+'[/td][td] [/td][td] [/td][/tr]'
-		txt += '[/table]</textarea><br><b>Состав для форума</b>'
+		var empty = '[td height=50] [/td]'
+		var txt = '<textarea cols=20 rows=5 readonly>[table width=100%]'
+		txt += '[tr][td] [/td]' + (fc[23]?fc[23]:empty) + (fc[24]?fc[24]:empty) + (fc[25]?fc[25]:empty) + '[td] [/td][/tr]'
+		txt += '[tr]' + (fc[18]?fc[18]:empty) + (fc[19]?fc[19]:empty) + (fc[20]?fc[20]:empty) + (fc[21]?fc[21]:empty) + (fc[22]?fc[22]:empty) + '[/tr]'
+		txt += '[tr]' + (fc[13]?fc[13]:empty) + (fc[14]?fc[14]:empty) + (fc[15]?fc[15]:empty) + (fc[16]?fc[16]:empty) + (fc[17]?fc[17]:empty) + '[/tr]'
+		txt += '[tr]' + (fc[8]?fc[8]:empty) + (fc[9]?fc[9]:empty) + (fc[10]?fc[10]:empty) + (fc[11]?fc[11]:empty) + (fc[12]?fc[12]:empty) + '[/tr]'
+		txt += '[tr]' + (fc[3]?fc[3]:empty) + (fc[4]?fc[4]:empty) + (fc[5]?fc[5]:empty) + (fc[6]?fc[6]:empty) + (fc[7]?fc[7]:empty) + '[/tr]'
+		txt += '[tr][td colspan=2] [/td]' + (fc[2]?fc[2]:empty) + '[td colspan=2] [/td][/tr]'
+		txt += '[tr][td colspan=2] [/td]' + (fc[1]?fc[1]:empty) + '[td colspan=2] [/td][/tr]'
+		txt += '[/table]'
+		txt += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n'
+		txt += '</textarea><br><b>Состав для форума<br>(<a href="/?team">advanced</a>)</b>'
 		return txt
 	}
 }
@@ -390,12 +395,32 @@ $().ready(function() {
 
 				// добавить в состав для форума
 				if (+pfi1 == -plid && auto == 1) {
-					forumcode[i] = '[table bgcolor=#C9F8B7 width=100%]'
-					forumcode[i] += '[tr][td][player='+plid+'][b]'+pl[st["Имя"]].charAt(0)+'.'+(pl[st["Фам"]]).replace(' ','')+'[/b][/player][/td][/tr]'
-					forumcode[i] += '[tr][td]фрм'+pl[st["фрм"]]+'/мрл'+pl[st["мрл"]]+'[/td][/tr]'
-					forumcode[i] += '[tr][td]'+(pl[st["оиг"]] !=0 ? 'ИГП '+pl[st["оиг"]]+'('+pl[st["огл"]]+'+'+pl[st["опс"]]+')':'...')+'[/td][/tr]'
-					forumcode[i] += '[tr][td]'+(pl[st["орт"]] ? 'Р/ИМ '+pl[st["орт"]]+'('+pl[st["оим"]]+')' : '...')+'[/td][/tr]'
-					forumcode[i] += '[/table]'
+					var value = pl[st["ном"]].replace(/,/g,'')/1000
+					forumcode[i] = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% height=100% bgcolor=#A3DE8F]';
+					forumcode[i] += '[tr][td colspan=2][b]' + (pl[st["Имя"]].charAt(0)!='?' ? pl[st["Имя"]].charAt(0) + '.' : '') + (pl[st["Фам"]]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
+					forumcode[i] += '[tr][td][player=' + plid + '][img]';
+					if (pl[st["поз"]] == "GK") {
+						forumcode[i] += '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png'
+					} else {
+						forumcode[i] += '/field/img/146cd60f8c4985270b74f7839e98059a.png'
+					}
+					forumcode[i] += '[/img][/player][/td]';
+					forumcode[i] += '[td valign=top height=50 rowspan=2]';
+					forumcode[i] += pl[st["фрм"]] + '/' + pl[st["мрл"]];
+					if (pl[st["оиг"]] != 0) {
+						forumcode[i] += '\nP ' + pl[st["орт"]];
+						forumcode[i] += '\nИ ' + pl[st["оиг"]] + (pl[st["оим"]] != 0 ? '(' + pl[st["оим"]] + ')' : '');
+						forumcode[i] += (pl[st["огл"]] != 0 || pl[st["опс"]] != 0 ? '\nГП/' + pl[st["огл"]] + '+' + pl[st["опс"]] : '');
+					}
+					forumcode[i] += '[/td][/tr]';
+					forumcode[i] += '[tr][td align=center]';
+
+					if (+pl[st["ном"]] == 0 ) forumcode[i] +=  'шкл';
+					else if (value >= 1000) forumcode[i] += (value/1000).toFixed(1) + 'м$'
+					else forumcode[i] += value + 'т$';
+
+					forumcode[i] += '[/td][/tr]';
+					forumcode[i] += '[/table][/td]';
 				}
 
 				// пометить игрока не своей позиции назначеного в состав
