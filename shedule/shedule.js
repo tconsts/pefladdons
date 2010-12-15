@@ -58,4 +58,20 @@ $().ready(function() {
 		})
 		$('td.now').css("border", "1px solid #a3de8f");
 	}
+	
+	
+	function filter(criteria){
+		$('.back4 tr').each(function(index,value){
+			if ($(this).html().indexOf('Матч')<0 && $(this).html().indexOf('now')<0){
+			    if($(this).html().indexOf(criteria)<0){
+			        $(this).fadeOut();
+			    } else {
+			    	$(this).fadeIn();
+			    }
+			}
+		})
+	}
+
+	$('.back4 p:last').html('<a href="#" onclick="filter(\'Чемпионат\'); return false;">Чемпионат</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Кубок\'); return false;">Кубок</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Лига Европы\'); return false;">Лига Европы</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Товарищеский\'); return false;">Товарищеские</a><t/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>')
+
 })
