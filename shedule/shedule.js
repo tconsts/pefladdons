@@ -1,3 +1,15 @@
+function filter(criteria){
+		$('.back4 tr').each(function(index,value){
+			if ($(this).html().indexOf('Матч')<0 && $(this).html().indexOf('now')<0){
+			    if($(this).html().indexOf(criteria)<0){
+			        $(this).fadeOut();
+			    } else {
+			    	$(this).fadeIn();
+			    }
+			}
+		})
+}
+
 $().ready(function() {
 	var day = ['вск','пнд','втр','срд','чтв','птн','суб'] 
 	var prevdt = ''
@@ -62,15 +74,3 @@ $().ready(function() {
 	$('.back4 p:last').html('<a href="#" onclick="filter(\'Чемпионат\'); return false;">Чемпионат</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Кубок\'); return false;">Кубок</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Лига Европы\'); return false;">Лига Европы</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Товарищеский\'); return false;">Товарищеские</a><t/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>')
 	
 })
-
-function filter(criteria){
-		$('.back4 tr').each(function(index,value){
-			if ($(this).html().indexOf('Матч')<0 && $(this).html().indexOf('now')<0){
-			    if($(this).html().indexOf(criteria)<0){
-			        $(this).fadeOut();
-			    } else {
-			    	$(this).fadeIn();
-			    }
-			}
-		})
-	};
