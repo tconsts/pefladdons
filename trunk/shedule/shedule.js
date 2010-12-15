@@ -1,5 +1,5 @@
 $().ready(function() {
-	var day = ['вск','пнд','втр','срд','чтв','птн','суб']
+	var day = ['вск','пнд','втр','срд','чтв','птн','суб'] 
 	var prevdt = ''
 	var today = new Date()
 	var shownow = 0
