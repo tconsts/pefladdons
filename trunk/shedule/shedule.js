@@ -1,5 +1,5 @@
 $().ready(function() {
-	var day = ['РІСЃРє','РїРЅРґ','РІС‚СЂ','СЃСЂРґ','С‡С‚РІ','РїС‚РЅ','СЃСѓР±'] 
+	var day = ['вск','пнд','втр','срд','чтв','птн','суб']
 	var prevdt = ''
 	var today = new Date()
 	var shownow = 0
@@ -21,7 +21,7 @@ $().ready(function() {
 				while ( i < p ){
 					var dd = new Date(prevdt - i*60*60*24*1000)
 					var d = day[dd.getDay()]
-					if (d=='РїРЅРґ' || d=='СЃСЂРґ' || d=='РїС‚РЅ') {
+					if (d=='пнд' || d=='срд' || d=='птн') {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000) + '&nbsp;' + d
@@ -40,13 +40,13 @@ $().ready(function() {
 		var td = (today.getDate()<10 ? '0' : '' ) + today.getDate() + '.'
 		td += (today.getMonth()<9 ? '0' : '') + (today.getMonth()+1) + '.'
 		td += (today.getFullYear()-2000) + '&nbsp;' + day[today.getDay()]
-		$('td.back4 td:contains("РџСЂРµРґСЃС‚РѕСЏС‰РёРµ РёРіСЂС‹") table:first').each(function(){
+		$('td.back4 td:contains("Предстоящие игры") table:first').each(function(){
 			var p = (prevdt - today)/1000/60/60/24
 			var i=1
 			while ( i < p ){
 				var dd = new Date(prevdt - i*60*60*24*1000)
 				var d = day[dd.getDay()]
-				if (d=='РїРЅРґ' || d=='СЃСЂРґ' || d=='РїС‚РЅ') {
+				if (d=='пнд' || d=='срд' || d=='птн') {
 					var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 					str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 					str += (dd.getFullYear()-2000) + '&nbsp;' + d
@@ -59,10 +59,9 @@ $().ready(function() {
 		$('td.now').css("border", "1px solid #a3de8f");
 	}
 	
-	
 	function filter(criteria){
 		$('.back4 tr').each(function(index,value){
-			if ($(this).html().indexOf('пїЅпїЅпїЅпїЅ')<0 && $(this).html().indexOf('now')<0){
+			if ($(this).html().indexOf('Матч')<0 && $(this).html().indexOf('now')<0){
 			    if($(this).html().indexOf(criteria)<0){
 			        $(this).fadeOut();
 			    } else {
@@ -72,6 +71,6 @@ $().ready(function() {
 		})
 	}
 
-	$('.back4 p:last').html('<a href="#" onclick="filter(\'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\'); return false;">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'пїЅпїЅпїЅпїЅпїЅ\'); return false;">пїЅпїЅпїЅпїЅпїЅ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\'); return false;">пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\'); return false;">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a><t/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">пїЅпїЅпїЅ</a><t/>')
-
+	$('.back4 p:last').html('<a href="#" onclick="filter(\'Чемпионат\'); return false;">Чемпионат</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Кубок\'); return false;">Кубок</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Лига Европы\'); return false;">Лига Европы</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Товарищеский\'); return false;">Товарищеские</a><t/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>')
+	
 })
