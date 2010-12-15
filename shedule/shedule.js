@@ -1,5 +1,5 @@
 $().ready(function() {
-	var day = ['РІСЃРє','РїРЅРґ','РІС‚СЂ','СЃСЂРґ','С‡С‚РІ','РїС‚РЅ','СЃСѓР±']
+	var day = ['РІСЃРє','РїРЅРґ','РІС‚СЂ','СЃСЂРґ','С‡С‚РІ','РїС‚РЅ','СЃСѓР±'] 
 	var prevdt = ''
 	var today = new Date()
 	var shownow = 0
@@ -62,7 +62,7 @@ $().ready(function() {
 	
 	function filter(criteria){
 		$('.back4 tr').each(function(index,value){
-			if ($(this).html().indexOf('Матч')<0 && $(this).html().indexOf('now')<0){
+			if ($(this).html().indexOf('пїЅпїЅпїЅпїЅ')<0 && $(this).html().indexOf('now')<0){
 			    if($(this).html().indexOf(criteria)<0){
 			        $(this).fadeOut();
 			    } else {
@@ -72,6 +72,6 @@ $().ready(function() {
 		})
 	}
 
-	$('.back4 p:last').html('<a href="#" onclick="filter(\'Чемпионат\'); return false;">Чемпионат</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Кубок\'); return false;">Кубок</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Лига Европы\'); return false;">Лига Европы</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Товарищеский\'); return false;">Товарищеские</a><t/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>')
+	$('.back4 p:last').html('<a href="#" onclick="filter(\'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\'); return false;">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'пїЅпїЅпїЅпїЅпїЅ\'); return false;">пїЅпїЅпїЅпїЅпїЅ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\'); return false;">пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\'); return false;">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a><t/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">пїЅпїЅпїЅ</a><t/>')
 
 })
