@@ -71,11 +71,11 @@ $().ready(function() {
 		$('td.now').css("border", "1px solid #a3de8f");
 	}
 	var filtertext = '<br><b>Фильтр:</b> '
-	filtertext += '<a href="#" onclick="filter(\'Чемпионат\'); return false;">Чемпионат</a> | '
-	filtertext += '<a href="#" onclick="filter(\'Кубок\'); return false;">Кубок</a> | '
-	filtertext += '<a href="#" onclick="filter(\'Лига Европы\'); return false;">Лига Европы</a> | '
-	filtertext += '<a href="#" onclick="filter(\'Товарищеский\'); return false;">Товарищеские</a> | '
-	filtertext += '<t/><a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>'
+	filtertext += ' | <a href="#" onclick="filter(\'Чемпионат\'); return false;">Чемпионат</a>'
+	filtertext += ' | <a href="#" onclick="filter(\'Кубок\'); return false;">Кубок</a>'
+	filtertext += ' | <a href="#" onclick="filter(\'Лига Европы\'); return false;">Лига Европы</a>'
+	filtertext += ' | <a href="#" onclick="filter(\'Товарищеский\'); return false;">Товарищеские</a>'
+	filtertext += ' | <t/><a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>'
 	$('.back4').prepend(filtertext)
 	
 })
