@@ -1,6 +1,6 @@
 function filter(criteria){
 		$('.back4 tr').each(function(index,value){
-			if ($(this).html().indexOf('Матч')<0 && $(this).html().indexOf('now')<0){
+			if ($(this).html().indexOf('РњР°С‚С‡')<0 && $(this).html().indexOf('now')<0){
 			    if($(this).html().indexOf(criteria)<0){
 			        $(this).fadeOut();
 			    } else {
@@ -11,7 +11,7 @@ function filter(criteria){
 }
 
 $().ready(function() {
-	var day = ['вск','пнд','втр','срд','чтв','птн','суб'] 
+	var day = ['РІСЃРє','РїРЅРґ','РІС‚СЂ','СЃСЂРґ','С‡С‚РІ','РїС‚РЅ','СЃСѓР±'] 
 	var prevdt = ''
 	var today = new Date()
 	var shownow = 0
@@ -33,7 +33,7 @@ $().ready(function() {
 				while ( i < p ){
 					var dd = new Date(prevdt - i*60*60*24*1000)
 					var d = day[dd.getDay()]
-					if (d=='пнд' || d=='срд' || d=='птн') {
+					if (d=='РїРЅРґ' || d=='СЃСЂРґ' || d=='РїС‚РЅ') {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000) + '&nbsp;' + d
@@ -52,13 +52,13 @@ $().ready(function() {
 		var td = (today.getDate()<10 ? '0' : '' ) + today.getDate() + '.'
 		td += (today.getMonth()<9 ? '0' : '') + (today.getMonth()+1) + '.'
 		td += (today.getFullYear()-2000) + '&nbsp;' + day[today.getDay()]
-		$('td.back4 td:contains("Предстоящие игры") table:first').each(function(){
+		$('td.back4 td:contains("РџСЂРµРґСЃС‚РѕСЏС‰РёРµ РёРіСЂС‹") table:first').each(function(){
 			var p = (prevdt - today)/1000/60/60/24
 			var i=1
 			while ( i < p ){
 				var dd = new Date(prevdt - i*60*60*24*1000)
 				var d = day[dd.getDay()]
-				if (d=='пнд' || d=='срд' || d=='птн') {
+				if (d=='РїРЅРґ' || d=='СЃСЂРґ' || d=='РїС‚РЅ') {
 					var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 					str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 					str += (dd.getFullYear()-2000) + '&nbsp;' + d
@@ -70,7 +70,12 @@ $().ready(function() {
 		})
 		$('td.now').css("border", "1px solid #a3de8f");
 	}
-	
-	$('.back4 p:last').html('<a href="#" onclick="filter(\'Чемпионат\'); return false;">Чемпионат</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Кубок\'); return false;">Кубок</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Лига Европы\'); return false;">Лига Европы</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="filter(\'Товарищеский\'); return false;">Товарищеские</a><t/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>')
+	var filtertext = '<br><b>Р¤РёР»СЊС‚СЂ:</b> '
+	filtertext += '<a href="#" onclick="filter(\'Р§РµРјРїРёРѕРЅР°С‚\'); return false;">Р§РµРјРїРёРѕРЅР°С‚</a> | '
+	filtertext += '<a href="#" onclick="filter(\'РљСѓР±РѕРє\'); return false;">РљСѓР±РѕРє</a> | '
+	filtertext += '<a href="#" onclick="filter(\'Р›РёРіР° Р•РІСЂРѕРїС‹\'); return false;">Р›РёРіР° Р•РІСЂРѕРїС‹</a> | '
+	filtertext += '<a href="#" onclick="filter(\'РўРѕРІР°СЂРёС‰РµСЃРєРёР№\'); return false;">РўРѕРІР°СЂРёС‰РµСЃРєРёРµ</a> | '
+	filtertext += '<t/><a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Р’СЃРµ</a><t/>'
+	$('.back4').prepend(filtertext)
 	
 })
