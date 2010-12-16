@@ -11,6 +11,23 @@ function filter(criteria){
 }
 
 $().ready(function() {
+	
+	var competitions=[];
+	var i=0;
+	$('td.back4 td:contains("Предстоящие игры") table tr:not(:contains("Матч")) td:last-child').contents().each(function(index,value){
+	    if ($.inArray(value.textContent, competitions)<0){
+	        competitions[i++]=value.textContent
+	    }
+	})
+	
+	var filtertext = '<br><b>Фильтр:</b> '
+	
+	for (var i in competitions){
+		filtertext += ' | <a href="#" onclick="filter(\''+competitions[i]+'\'); return false;">'+competitions[i]+'</a>'
+	}
+	filtertext += ' | <t/><a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>'
+	$('.back4').prepend(filtertext)
+	
 	var day = ['вск','пнд','втр','срд','чтв','птн','суб'] 
 	var prevdt = ''
 	var today = new Date()
@@ -37,7 +54,7 @@ $().ready(function() {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000) + '&nbsp;' + d
-						$(val).parent().before('<tr><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
+						$(val).parent().before('<tr class="freeId"><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
 					}
 					i++
 				}
@@ -70,12 +87,6 @@ $().ready(function() {
 		})
 		$('td.now').css("border", "1px solid #a3de8f");
 	}
-	var filtertext = '<br><b>Фильтр:</b> '
-	filtertext += ' | <a href="#" onclick="filter(\'Чемпионат\'); return false;">Чемпионат</a>'
-	filtertext += ' | <a href="#" onclick="filter(\'Кубок\'); return false;">Кубок</a>'
-	filtertext += ' | <a href="#" onclick="filter(\'Лига Европы\'); return false;">Лига Европы</a>'
-	filtertext += ' | <a href="#" onclick="filter(\'Товарищеский\'); return false;">Товарищеские</a>'
-	filtertext += ' | <t/><a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>'
-	$('.back4').prepend(filtertext)
+	
 	
 })
