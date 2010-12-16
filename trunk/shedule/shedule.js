@@ -12,7 +12,21 @@ function filter(criteria){
 
 $().ready(function() {
 	
+	var competitions=[];
+	var i=0;
+	$('td.back4 td:contains("Предстоящие игры") table tr:not(:contains("Матч")) td:last-child').contents().each(function(index,value){
+	    if ($.inArray(value.textContent, competitions)<0){
+	        competitions[i++]=value.textContent
+	    }
+	})
 	
+	var filtertext = '<br><b>Фильтр:</b> '
+	
+	for (var i in competitions){
+		filtertext += ' | <a href="#" onclick="filter(\''+competitions[i]+'\'); return false;">'+competitions[i]+'</a>'
+	}
+	filtertext += ' | <t/><a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>'
+	$('.back4').prepend(filtertext)
 	
 	var day = ['вск','пнд','втр','срд','чтв','птн','суб'] 
 	var prevdt = ''
