@@ -73,6 +73,25 @@ function UrlValue(key,url){
 	return false
 }
 
+function CodeForForum(player,st){
+	var x = '' 
+
+	x += '[url=plug.php?' + location.search.substring(1) + ']' + player[st['Имя']] + '  ' + player[st['Фам']] + '[/url] (сс=' + player[st['сс']] + ')'
+
+	if (UrlValue('t') == 'p') x += ' | [player=' + player[st["id"]] + '][img]images/eye.png[/img][/player]'
+
+	if (player[st['стр']] != ' ') x+= ' | [b]' + player[st['стр']] + '[/b]'
+
+	x += ' | ' + player[st['поз']] + ' ' + player[st['взр']]
+
+	if (player[st['трн']] == 1)	x += ' | [img]system/img/g/sale.png[/img]'
+
+	if (player[st['turl']] == '') x += ' | ' + player[st['ком']]
+	else x += ' | [url=' + player[st['turl']] + ']' + player[st['ком']] + '[/url]'
+
+	return x
+}
+
 $().ready(function() {
 /**/
 	var sk = {'лд':'Лидерство','др':'Дриблинг','уд':'Удары','пс':'Игра в пас','ви':'Видение поля','гл':'Игра головой','вх':'Игра на выходах','нв':'Навесы','ду':'Дальние удары','по':'Перс. опека','ре':'Реакция',
@@ -81,7 +100,7 @@ $().ready(function() {
 			'Скорость':'ск','Штрафные':'шт','Выбор позиции':'вп','Угловые':'уг','Игра руками':'ру','Техника':'тх','Мощь':'мщ','Отбор мяча':'от','Работоспособность':'рб','Выносливость':'вн'}
 
 
-	var sto = 's,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСб,кнт,зрп,ном,уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,оиг,огл,опс,оим,тре,трв,дск,сыг,пн,иш,иу,кп,идл,ИдлПоз,hash,иМл,гМл'.split(',');
+	var sto = 's,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСб,кнт,зрп,ном,уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,оиг,огл,опс,оим,тре,трв,дск,сыг,пн,иш,иу,кп,идл,ИдлПоз,hash,иМл,гМл,ком,turl,трн'.split(',');
 	var st = {}
 	var k = 0
 	for (var i in sto) {
@@ -151,7 +170,6 @@ $().ready(function() {
 			}
 		}
 	})
-
 	var player = [] 
 	var posfilter = []
 	var next = 0
@@ -169,6 +187,16 @@ $().ready(function() {
 					var j = 0
 					var name = x[j].split(' (',1)[0]
 
+					player[st['ком']] = ''
+					player[st['turl']] = ''
+					player[st['трн']] = 0
+
+					if (UrlValue('t') =='p') {
+						player[st['turl']] = $('td.back4 a:first').attr('href')
+						player[st['ком']] = $('td.back4 a:first').text()
+					} else if (UrlValue('t') =='p2'){
+						player[st['ком']] = 'свободный'
+					}
 
 					player[st['id']]  = UrlValue('j')
 					player[st['hash']]  = UrlValue('z')
@@ -217,7 +245,10 @@ $().ready(function() {
 					} else {
 						player[st['ном']] = 0
 					}
-					if (x[j].indexOf('Клуб требует:') != -1) j++
+					if (x[j].indexOf('Клуб требует:') != -1) {
+						j++
+						player[st['трн']] = 1
+					}
 					player[st['поз']] = x[j]
 
 				} else if (m==2){
@@ -309,4 +340,9 @@ $().ready(function() {
 	$("#mydiv").hide()
 
 	//ShowSkills(ld,'"'+skills[0]+'"')
+	if (UrlValue('t') != 'yp' && UrlValue('t') != 'yp2') {
+		var prehtml = '<br>Код для форума:<hr>' + CodeForForum(player,st) + '<hr>'
+		$("td.back4").append(prehtml)
+	}
+
 });
