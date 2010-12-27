@@ -299,7 +299,7 @@ $().ready(function() {
 			var sks = sksstr[s].replace('!','').split('=',2)
 			if (sk[sks[0]] ) {
 				posfilter[j][3] += sk[sks[0]]+','
-				ideal += eval(15+(sks[1]?sks[1]:''))
+				ideal += eval(10+(sks[1]?sks[1]:''))
 				sst += eval((player[st[sks[0]]]?player[st[sks[0]]]:1)+(sks[1]?sks[1]:''))
 			}
 			
@@ -318,10 +318,7 @@ $().ready(function() {
 	var tmp=''
 	for (var i in posfilter) for (var s in posfilter[i]) tmp += posfilter[i][s] + '\n'
 
-
-//	var text1 = '<table width=100%><tr><td valign=top>'
-//	var text2 = '</td><td valign=top width=1%>'
-	var text3 = '<a onclick="ShowAll('+(ld+1)+')">'+('Сбросить').fontsize(1)+'</a><br><b>Сила&nbsp;игрока</b><br>'
+	var text3 = '<a onclick="ShowAll('+(ld+2)+')">'+('Сбросить').fontsize(1)+'</a><br><b>Сила&nbsp;игрока</b><br>'
 	var hidden = 0
 	var pfs3pre = ''
 	var pflinkpre = ''
@@ -333,15 +330,12 @@ $().ready(function() {
 				hidden = 2
 				text3 += '<a id="mya" onclick="OpenAll()">...</a><br><div id="mydiv">'
 			}
-			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<a onclick="ShowSkills('+(ld+1)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a><br>'
+			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<a onclick="ShowSkills('+(ld+2)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a><br>'
 		}
 		var pfs3pre = posfilter[s][3]
 		var pflinkpre = linktext
 	}
-//	for (i in st) text2 += i + ':' + player[st[i]]+'<br>'
-
 	text3 += '</div>'
-//	var text4 = '</td></tr></table>'
 
 	$(umval).each(function(j,val2){
 			if (j==0) {
@@ -350,7 +344,7 @@ $().ready(function() {
 	})
 
 	var body = $('body').html()
-	$('body').html('<table align=center><tr><td width=150></td><td>'+body+'</td><td width=150 valign=top><table height=100%  width=100%><tr><td height=86></td></tr><tr><td height=20></td></tr><tr><td height=100% valign=top id="crabright"></td></tr></table></td></tr></table>')
+	$('body').html('<table align=center cellspacing="0" cellpadding="0"><tr><td width=200></td><td>'+body+'</td><td width=200 valign=top><table height=100%  width=100%><tr><td height=86></td></tr><tr><td height=20></td></tr><tr><td height=100% valign=top id="crabright"></td></tr></table></td></tr></table>')
 
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
