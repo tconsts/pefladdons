@@ -61,8 +61,14 @@ function OpenAll(){
 	else $("#mydiv").hide()
 }
 
-function CheckPlayer(x){
-	if (x==1) alert('Запомнить игрока')
+function CheckPlayer(x ,y){
+	if (x==1) {
+		// Save data to a the current session's store
+		sessionStorage.peflplayer = 'запомнили: ' + y + ' ';
+	} else {
+		// Access some stored data
+		alert( "peflplayer = " + sessionStorage.peflplayer );
+	}
 }
 
 function UrlValue(key,url){
@@ -95,6 +101,7 @@ function CodeForForum(player,st){
 $().ready(function() {
 /**/
 
+	var rempid = 1
 	var sk = {'лд':'Лидерство','др':'Дриблинг','уд':'Удары','пс':'Игра в пас','ви':'Видение поля','гл':'Игра головой','вх':'Игра на выходах','нв':'Навесы','ду':'Дальние удары','по':'Перс. опека','ре':'Реакция',
 			'ск':'Скорость','шт':'Штрафные','вп':'Выбор позиции','уг':'Угловые','ру':'Игра руками','тх':'Техника','мщ':'Мощь','от':'Отбор мяча','рб':'Работоспособность','вн':'Выносливость'}
 	var skr = {'Лидерство':'лд','Дриблинг':'др','Удары':'уд','Игра в пас':'пс','Видение поля':'ви','Игра головой':'гл','Игра на выходах':'вх','Навесы':'нв','Дальние удары':'ду','Перс. опека':'по','Реакция':'ре',
@@ -268,11 +275,11 @@ $().ready(function() {
 
 		// })
 		if (i>=ld && i<ld+36 && next==0){
-			skillname = $(val).find('script').empty().end().html().replace('<script></script>','').replace('<script type="text/javascript"></script>','').replace(/<!-- [а-я] -->/g,'')
+			skillname = $(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')
 			next = i + 1
 		}
 		if (i>=ld && i<ld+36 && i == next){
-			skillvalue = parseInt($(val).find('script').empty().end().html().replace('<script></script>','').replace('<script type="text/javascript"></script>','').replace('<b>',''))
+			skillvalue = parseInt($(val).find('script').remove().end().html().replace('<b>',''))
 			next = 0
 			if (skr[skillname]) {
 				player[st[skr[skillname]]] = skillvalue
@@ -299,7 +306,7 @@ $().ready(function() {
 			var sks = sksstr[s].replace('!','').split('=',2)
 			if (sk[sks[0]] ) {
 				posfilter[j][3] += sk[sks[0]]+','
-				ideal += eval(10+(sks[1]?sks[1]:''))
+				ideal += eval(15+(sks[1]?sks[1]:''))
 				sst += eval((player[st[sks[0]]]?player[st[sks[0]]]:1)+(sks[1]?sks[1]:''))
 			}
 			
@@ -318,7 +325,12 @@ $().ready(function() {
 	var tmp=''
 	for (var i in posfilter) for (var s in posfilter[i]) tmp += posfilter[i][s] + '\n'
 
-	var text3 = '<a onclick="ShowAll('+(ld+2)+')">'+('Сбросить').fontsize(1)+'</a><br><b>Сила&nbsp;игрока</b><br>'
+	var text3 = ''
+	text3 += '<br><a id="remember" onclick="CheckPlayer(1,'+player[st['id']]+')">'+('Запомнить').fontsize(1)+'</a>'
+	text3 += '<br><a id="compare" onclick="CheckPlayer(0)">'+('Сравнить').fontsize(1)+'</a><br>'
+
+	text3 += '<br><a onclick="ShowAll('+(ld+2)+')">'+('Сбросить').fontsize(1)+'</a>'
+	text3 += '<br><b>Сила&nbsp;игрока</b><br>'
 	var hidden = 0
 	var pfs3pre = ''
 	var pflinkpre = ''
@@ -343,8 +355,9 @@ $().ready(function() {
 			}
 	})
 
-	var body = $('body').html()
-	$('body').html('<table align=center cellspacing="0" cellpadding="0"><tr><td width=200></td><td>'+body+'</td><td width=200 valign=top><table height=100%  width=100%><tr><td height=86></td></tr><tr><td height=20></td></tr><tr><td height=100% valign=top id="crabright"></td></tr></table></td></tr></table>')
+//	$('td.back4 script').remove()
+	$('body').append('<table align=center cellspacing="0" cellpadding="0"><tr><td width=200></td><td id="crabcenter"></td><td width=200 valign=top><table height=100%  width=100%><tr><td height=86></td></tr><tr><td height=20></td></tr><tr><td height=100% valign=top id="crabright"></td></tr></table></td></tr></table>')
+	$('table.border').appendTo( $('td#crabcenter') );
 
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
