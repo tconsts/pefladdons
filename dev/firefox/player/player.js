@@ -186,9 +186,8 @@ $().ready(function() {
 	var ssp = 0
 	var umval = ''
 
-	// из-за добавлени доп таблиц корректируем номер td для раскраски скилов
-    var tdcorrection = 3
-	if (UrlValue('t') =='p') tdcorrection--;
+	// из-за добавления доп таблиц корректируем номер td для раскраски скилов
+    var tdcorrection = 2
 
 	$('td').each(function(i,val){
 		if (i == fr) {
@@ -364,8 +363,8 @@ $().ready(function() {
 	})
 
 //	$('td.back4 script').remove()
-	$('body').append('<table align=center cellspacing="0" cellpadding="0"><tr><td width=200></td><td id="crabcenter"></td><td width=200 valign=top><table height=100%  width=100%><tr><td height=86></td></tr><tr><td height=20></td></tr><tr><td height=100% valign=top id="crabright"></td></tr></table></td></tr></table>')
-	$('table.border').appendTo( $('td#crabcenter') );
+	$('body').append('<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabcenter"></td><td width=200 valign=top><table height=100%  width=100%><tr><td height=86></td></tr><tr><td height=20></td></tr><tr><td height=100% valign=top id="crabright"></td></tr></table></td></tr></table>')
+	$('body').children('table:not(#crabglobal)').appendTo( $('td#crabcenter') );
 
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
