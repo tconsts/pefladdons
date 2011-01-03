@@ -100,7 +100,6 @@ function CodeForForum(player,st){
 
 $().ready(function() {
 /**/
-
 	var rempid = 1
 	var sk = {'лд':'Лидерство','др':'Дриблинг','уд':'Удары','пс':'Игра в пас','ви':'Видение поля','гл':'Игра головой','вх':'Игра на выходах','нв':'Навесы','ду':'Дальние удары','по':'Перс. опека','ре':'Реакция',
 			'ск':'Скорость','шт':'Штрафные','вп':'Выбор позиции','уг':'Угловые','ру':'Игра руками','тх':'Техника','мщ':'Мощь','от':'Отбор мяча','рб':'Работоспособность','вн':'Выносливость'}
@@ -186,6 +185,11 @@ $().ready(function() {
 	var ss = 0
 	var ssp = 0
 	var umval = ''
+
+	// из-за добавлени доп таблиц корректируем номер td для раскраски скилов
+    var tdcorrection = 3
+	if (UrlValue('t') =='p') tdcorrection--;
+
 	$('td').each(function(i,val){
 		if (i == fr) {
 			umval = val
@@ -208,7 +212,9 @@ $().ready(function() {
 
 					player[st['id']]  = UrlValue('j')
 					player[st['hash']]  = UrlValue('z')
-					if (UrlValue('t') == 'yp') player[st['f']]  = 5	// школяр!
+					if (UrlValue('t') == 'yp') {			// школяр!
+						player[st['f']]  = 5
+					}
 
 					if (name.indexOf(' ')!=-1){
 						player[st['Имя']] = name.split(' ',1)[0]
@@ -330,7 +336,7 @@ $().ready(function() {
 //	text3 += '<br><a id="compare" onclick="CheckPlayer(0)">'+('Сравнить').fontsize(1)+'</a><br>'
 
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
-	text3 += '&nbsp;(<a onclick="ShowAll('+(ld+2)+')">'+('x').fontsize(1)+'</a>)'
+	text3 += '&nbsp;(<a onclick="ShowAll('+(ld+tdcorrection)+')">'+('x').fontsize(1)+'</a>)'
 
 	var hidden = 0
 	var pfs3pre = ''
@@ -342,9 +348,9 @@ $().ready(function() {
 			if ( hidden ==1) {
 				hidden = 2
 				text3 += '<br><a id="mya" onclick="OpenAll()">...</a>'
-				text3 += '<br><div id="mydiv">'
+				text3 += '<div id="mydiv">'
 			}
-			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a onclick="ShowSkills('+(ld+2)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a>'
+			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a onclick="ShowSkills('+(ld+tdcorrection)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a>'
 		}
 		var pfs3pre = posfilter[s][3]
 		var pflinkpre = linktext
