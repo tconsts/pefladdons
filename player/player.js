@@ -61,8 +61,14 @@ function OpenAll(){
 	else $("#mydiv").hide()
 }
 
-function CheckPlayer(x){
-	if (x==1) alert('Запомнить игрока')
+function CheckPlayer(x ,y){
+	if (x==1) {
+		// Save data to a the current session's store
+		sessionStorage.peflplayer = 'запомнили: ' + y + ' ';
+	} else {
+		// Access some stored data
+		alert( "peflplayer = " + sessionStorage.peflplayer );
+	}
 }
 
 function UrlValue(key,url){
@@ -94,6 +100,8 @@ function CodeForForum(player,st){
 
 $().ready(function() {
 /**/
+
+	var rempid = 1
 	var sk = {'лд':'Лидерство','др':'Дриблинг','уд':'Удары','пс':'Игра в пас','ви':'Видение поля','гл':'Игра головой','вх':'Игра на выходах','нв':'Навесы','ду':'Дальние удары','по':'Перс. опека','ре':'Реакция',
 			'ск':'Скорость','шт':'Штрафные','вп':'Выбор позиции','уг':'Угловые','ру':'Игра руками','тх':'Техника','мщ':'Мощь','от':'Отбор мяча','рб':'Работоспособность','вн':'Выносливость'}
 	var skr = {'Лидерство':'лд','Дриблинг':'др','Удары':'уд','Игра в пас':'пс','Видение поля':'ви','Игра головой':'гл','Игра на выходах':'вх','Навесы':'нв','Дальние удары':'ду','Перс. опека':'по','Реакция':'ре',
@@ -262,12 +270,16 @@ $().ready(function() {
 			
 		}
 
+		// $('td.back4 table:first table:first td').each(function(){
+		//		if (x % 2 == 0)
+
+		// })
 		if (i>=ld && i<ld+36 && next==0){
-			skillname = $(val).find('script').empty().end().html().replace('<script></script>','').replace('<script type="text/javascript"></script>','').replace(/<!-- [а-я] -->/g,'')
+			skillname = $(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')
 			next = i + 1
 		}
 		if (i>=ld && i<ld+36 && i == next){
-			skillvalue = parseInt($(val).find('script').empty().end().html().replace('<script></script>','').replace('<script type="text/javascript"></script>','').replace('<b>',''))
+			skillvalue = parseInt($(val).find('script').remove().end().html().replace('<b>',''))
 			next = 0
 			if (skr[skillname]) {
 				player[st[skr[skillname]]] = skillvalue
@@ -313,9 +325,13 @@ $().ready(function() {
 	var tmp=''
 	for (var i in posfilter) for (var s in posfilter[i]) tmp += posfilter[i][s] + '\n'
 
+	var text3 = ''
+//	text3 += '<br><a id="remember" onclick="CheckPlayer(1,'+player[st['id']]+')">'+('Запомнить').fontsize(1)+'</a>'
+//	text3 += '<br><a id="compare" onclick="CheckPlayer(0)">'+('Сравнить').fontsize(1)+'</a><br>'
 
-	var text1 = '<table width=100%><tr><td valign=top>'
-	var text2 = '</td><td valign=top width=1%><a onclick="ShowAll('+(ld+1)+')">'+('Сбросить').fontsize(1)+'</a><br><b>Сила&nbsp;игрока</b><br>'
+	text3 += '<br><b>Сила&nbsp;игрока</b>'
+	text3 += '&nbsp;(<a onclick="ShowAll('+(ld+2)+')">'+('x').fontsize(1)+'</a>)'
+
 	var hidden = 0
 	var pfs3pre = ''
 	var pflinkpre = ''
@@ -325,19 +341,29 @@ $().ready(function() {
 			if (posfilter[s][0]<1 && hidden == 0) hidden = 1
 			if ( hidden ==1) {
 				hidden = 2
-				text2 += '<a id="mya" onclick="OpenAll()">...</a><br><div id="mydiv">'
+				text3 += '<br><a id="mya" onclick="OpenAll()">...</a>'
+				text3 += '<br><div id="mydiv">'
 			}
-			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text2 += '<a onclick="ShowSkills('+(ld+1)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a><br>'
+			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a onclick="ShowSkills('+(ld+2)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a>'
 		}
 		var pfs3pre = posfilter[s][3]
 		var pflinkpre = linktext
 	}
-//	for (i in st) text2 += i + ':' + player[st[i]]+'<br>'
+	text3 += '</div>'
 
-	text2 += '</div></td></tr></table>'
+	$(umval).each(function(j,val2){
+			if (j==0) {
+				$(val2).html($(val2).html().replace('Умения</b>','Умения</b>(сс='+String(player[st['сс']]).fontsize(1)+')'))
+			}
+	})
 
-	$(umval).each(function(j,val2){if (j==0) $(val2).html(text1+$(val2).html().replace('Умения</b>','Умения</b>(сс='+String(player[st['сс']]).fontsize(1)+')')+text2)})
+//	$('td.back4 script').remove()
+	$('body').append('<table align=center cellspacing="0" cellpadding="0"><tr><td width=200></td><td id="crabcenter"></td><td width=200 valign=top><table height=100%  width=100%><tr><td height=86></td></tr><tr><td height=20></td></tr><tr><td height=100% valign=top id="crabright"></td></tr></table></td></tr></table>')
+	$('table.border').appendTo( $('td#crabcenter') );
+
+	$("#crabright").html(text3)
 	$("#mydiv").hide()
+
 
 	//ShowSkills(ld,'"'+skills[0]+'"')
 	if (UrlValue('t') != 'yp' && UrlValue('t') != 'yp2') {
