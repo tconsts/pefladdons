@@ -326,11 +326,12 @@ $().ready(function() {
 	for (var i in posfilter) for (var s in posfilter[i]) tmp += posfilter[i][s] + '\n'
 
 	var text3 = ''
-	text3 += '<br><a id="remember" onclick="CheckPlayer(1,'+player[st['id']]+')">'+('Запомнить').fontsize(1)+'</a>'
-	text3 += '<br><a id="compare" onclick="CheckPlayer(0)">'+('Сравнить').fontsize(1)+'</a><br>'
+//	text3 += '<br><a id="remember" onclick="CheckPlayer(1,'+player[st['id']]+')">'+('Запомнить').fontsize(1)+'</a>'
+//	text3 += '<br><a id="compare" onclick="CheckPlayer(0)">'+('Сравнить').fontsize(1)+'</a><br>'
 
-	text3 += '<br><a onclick="ShowAll('+(ld+2)+')">'+('Сбросить').fontsize(1)+'</a>'
-	text3 += '<br><b>Сила&nbsp;игрока</b><br>'
+	text3 += '<br><b>Сила&nbsp;игрока</b>'
+	text3 += '&nbsp;(<a onclick="ShowAll('+(ld+2)+')">'+('x').fontsize(1)+'</a>)'
+
 	var hidden = 0
 	var pfs3pre = ''
 	var pflinkpre = ''
@@ -340,9 +341,10 @@ $().ready(function() {
 			if (posfilter[s][0]<1 && hidden == 0) hidden = 1
 			if ( hidden ==1) {
 				hidden = 2
-				text3 += '<a id="mya" onclick="OpenAll()">...</a><br><div id="mydiv">'
+				text3 += '<br><a id="mya" onclick="OpenAll()">...</a>'
+				text3 += '<br><div id="mydiv">'
 			}
-			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<a onclick="ShowSkills('+(ld+2)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a><br>'
+			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a onclick="ShowSkills('+(ld+2)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a>'
 		}
 		var pfs3pre = posfilter[s][3]
 		var pflinkpre = linktext
