@@ -335,7 +335,7 @@ $().ready(function() {
 //	text3 += '<br><a id="compare" onclick="CheckPlayer(0)">'+('Сравнить').fontsize(1)+'</a><br>'
 
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
-	text3 += '&nbsp;(<a onclick="ShowAll('+(ld+tdcorrection)+')">'+('x').fontsize(1)+'</a>)'
+	text3 += '&nbsp;(<a href="javascript:void(ShowAll('+(ld+tdcorrection)+'))">'+('x').fontsize(1)+'</a>)'
 
 	var hidden = 0
 	var pfs3pre = ''
@@ -346,10 +346,10 @@ $().ready(function() {
 			if (posfilter[s][0]<1 && hidden == 0) hidden = 1
 			if ( hidden ==1) {
 				hidden = 2
-				text3 += '<br><a id="mya" onclick="OpenAll()">...</a>'
+				text3 += '<br><a id="mya" href="javascript:void(OpenAll())">...</a>'
 				text3 += '<div id="mydiv">'
 			}
-			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a onclick="ShowSkills('+(ld+tdcorrection)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a>'
+			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a href="javascript:void(ShowSkills('+(ld+tdcorrection)+',\''+posfilter[s][3]+'\'))">'+linktext.fontsize(1)+'</a>'
 		}
 		var pfs3pre = posfilter[s][3]
 		var pflinkpre = linktext
