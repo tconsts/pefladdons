@@ -80,9 +80,9 @@ function UrlValue(key,url){
 }
 
 function CodeForForum(player,st){
-	var x = '' 
+	var x = ''
 
-	x += '[url=plug.php?' + location.search.substring(1) + ']' + player[st['Имя']] + '  ' + player[st['Фам']] + '[/url] (сс=' + player[st['сс']] + ')'
+	x += '<br><br>[url=plug.php?' + location.search.substring(1) + ']' + player[st['Имя']] + '  ' + player[st['Фам']] + '[/url] (сс=' + player[st['сс']] + ')'
 
 	if (UrlValue('t') == 'p') x += ' | [player=' + player[st["id"]] + '][img]images/eye.png[/img][/player]'
 
@@ -95,8 +95,13 @@ function CodeForForum(player,st){
 	if (player[st['turl']] == '') x += ' | ' + player[st['ком']]
 	else x += ' | [url=' + player[st['turl']] + ']' + player[st['ком']] + '[/url]'
 
-	return x
+	$('td.back4').html(x)
+	$('td#crabright').empty()
+	return true
 }
+
+var player = []
+var st = {}
 
 $().ready(function() {
 /**/
@@ -108,7 +113,6 @@ $().ready(function() {
 
 
 	var sto = 's,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСб,кнт,зрп,ном,уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,оиг,огл,опс,оим,тре,трв,дск,сыг,пн,иш,иу,кп,идл,ИдлПоз,hash,иМл,гМл,ком,turl,трн'.split(',');
-	var st = {}
 	var k = 0
 	for (var i in sto) {
 		if (sto[i] == 'вх') {
@@ -177,7 +181,6 @@ $().ready(function() {
 			}
 		}
 	})
-	var player = [] 
 	var posfilter = []
 	var next = 0
 	var skillname = ''
@@ -331,8 +334,12 @@ $().ready(function() {
 	for (var i in posfilter) for (var s in posfilter[i]) tmp += posfilter[i][s] + '\n'
 
 	var text3 = ''
-//	text3 += '<br><a id="remember" onclick="CheckPlayer(1,'+player[st['id']]+')">'+('Запомнить').fontsize(1)+'</a>'
-//	text3 += '<br><a id="compare" onclick="CheckPlayer(0)">'+('Сравнить').fontsize(1)+'</a><br>'
+//	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1,'+player[st['id']]+'))">'+('Запомнить').fontsize(1)+'</a>'
+//	text3 += '<br><a id="compare" href="javascript:void(CheckPlayer(0))">'+('Сравнить').fontsize(1)+'</a><br>'
+
+	if (UrlValue('t') != 'yp' && UrlValue('t') != 'yp2') {
+		text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum(player,st))">'+('Код для форума').fontsize(1)+'</a><br>'
+	}
 
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
 	text3 += '&nbsp;(<a href="javascript:void(ShowAll('+(ld+tdcorrection)+'))">'+('x').fontsize(1)+'</a>)'
@@ -362,18 +369,12 @@ $().ready(function() {
 			}
 	})
 
-//	$('td.back4 script').remove()
-	$('body').append('<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabcenter"></td><td width=200 valign=top><table height=100%  width=100%><tr><td height=86></td></tr><tr><td height=20></td></tr><tr><td height=100% valign=top id="crabright"></td></tr></table></td></tr></table>')
-	$('body').children('table:not(#crabglobal)').appendTo( $('td#crabcenter') );
+	$('body table.border:first').before('<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabcenter"></td><td width=200 valign=top><table height=100%  width=100%><tr><td height=86></td></tr><tr><td height=20></td></tr><tr><td height=100% valign=top id="crabright"></td></tr></table></td></tr></table>')
+	$('body table.border').appendTo( $('td#crabcenter') );
 
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
 
 
 	//ShowSkills(ld,'"'+skills[0]+'"')
-	if (UrlValue('t') != 'yp' && UrlValue('t') != 'yp2') {
-		var prehtml = '<br>Код для форума:<hr>' + CodeForForum(player,st) + '<hr>'
-		$("td.back4").append(prehtml)
-	}
-
 });
