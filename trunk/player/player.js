@@ -368,8 +368,8 @@ $().ready(function() {
 				$(val2).html($(val2).html().replace('Умения</b>','Умения</b>(сс='+String(player[st['сс']]).fontsize(1)+')'))
 			}
 	})
-	var preparedhtml = '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabcenter"></td><td width=200 valign=top id="crabright">'
-//	preparedhtml += '<table height=100%  width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
+	var preparedhtml = '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabcenter"></td><td width=200 valign=top>'
+	preparedhtml += '<table bgcolor="#C9F8B7" height=100%  width=100% bordercolor="#222222" border=1><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 	preparedhtml += '</td></tr></table>'
 	$('body table.border:last').before(preparedhtml)
 	$('td.back4 script').remove()
