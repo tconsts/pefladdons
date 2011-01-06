@@ -61,8 +61,14 @@ function OpenAll(){
 	else $("#mydiv").hide()
 }
 
-function CheckPlayer(x){
-	if (x==1) alert('Запомнить игрока')
+function CheckPlayer(x ,y){
+	if (x==1) {
+		// Save data to a the current session's store
+		sessionStorage.peflplayer = 'запомнили: ' + y + ' ';
+	} else {
+		// Access some stored data
+		alert( "peflplayer = " + sessionStorage.peflplayer );
+	}
 }
 
 function UrlValue(key,url){
@@ -74,9 +80,9 @@ function UrlValue(key,url){
 }
 
 function CodeForForum(player,st){
-	var x = '' 
+	var x = ''
 
-	x += '[url=plug.php?' + location.search.substring(1) + ']' + player[st['Имя']] + '  ' + player[st['Фам']] + '[/url] (сс=' + player[st['сс']] + ')'
+	x += '<br><br>[url=plug.php?' + location.search.substring(1) + ']' + player[st['Имя']] + '  ' + player[st['Фам']] + '[/url] (сс=' + player[st['сс']] + ')'
 
 	if (UrlValue('t') == 'p') x += ' | [player=' + player[st["id"]] + '][img]images/eye.png[/img][/player]'
 
@@ -89,11 +95,17 @@ function CodeForForum(player,st){
 	if (player[st['turl']] == '') x += ' | ' + player[st['ком']]
 	else x += ' | [url=' + player[st['turl']] + ']' + player[st['ком']] + '[/url]'
 
-	return x
+	$('td.back4').html(x)
+	$('td#crabright').empty()
+	return true
 }
+
+var player = []
+var st = {}
 
 $().ready(function() {
 /**/
+	var rempid = 1
 	var sk = {'лд':'Лидерство','др':'Дриблинг','уд':'Удары','пс':'Игра в пас','ви':'Видение поля','гл':'Игра головой','вх':'Игра на выходах','нв':'Навесы','ду':'Дальние удары','по':'Перс. опека','ре':'Реакция',
 			'ск':'Скорость','шт':'Штрафные','вп':'Выбор позиции','уг':'Угловые','ру':'Игра руками','тх':'Техника','мщ':'Мощь','от':'Отбор мяча','рб':'Работоспособность','вн':'Выносливость'}
 	var skr = {'Лидерство':'лд','Дриблинг':'др','Удары':'уд','Игра в пас':'пс','Видение поля':'ви','Игра головой':'гл','Игра на выходах':'вх','Навесы':'нв','Дальние удары':'ду','Перс. опека':'по','Реакция':'ре',
@@ -101,7 +113,6 @@ $().ready(function() {
 
 
 	var sto = 's,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСб,кнт,зрп,ном,уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,оиг,огл,опс,оим,тре,трв,дск,сыг,пн,иш,иу,кп,идл,ИдлПоз,hash,иМл,гМл,ком,turl,трн'.split(',');
-	var st = {}
 	var k = 0
 	for (var i in sto) {
 		if (sto[i] == 'вх') {
@@ -170,7 +181,6 @@ $().ready(function() {
 			}
 		}
 	})
-	var player = [] 
 	var posfilter = []
 	var next = 0
 	var skillname = ''
@@ -178,6 +188,10 @@ $().ready(function() {
 	var ss = 0
 	var ssp = 0
 	var umval = ''
+
+	// из-за добавления доп таблиц корректируем номер td для раскраски скилов
+    var tdcorrection = 2
+
 	$('td').each(function(i,val){
 		if (i == fr) {
 			umval = val
@@ -200,7 +214,9 @@ $().ready(function() {
 
 					player[st['id']]  = UrlValue('j')
 					player[st['hash']]  = UrlValue('z')
-					if (UrlValue('t') == 'yp') player[st['f']]  = 5	// школяр!
+					if (UrlValue('t') == 'yp') {			// школяр!
+						player[st['f']]  = 5
+					}
 
 					if (name.indexOf(' ')!=-1){
 						player[st['Имя']] = name.split(' ',1)[0]
@@ -262,12 +278,16 @@ $().ready(function() {
 			
 		}
 
+		// $('td.back4 table:first table:first td').each(function(){
+		//		if (x % 2 == 0)
+
+		// })
 		if (i>=ld && i<ld+36 && next==0){
-			skillname = $(val).find('script').empty().end().html().replace('<script></script>','').replace('<script type="text/javascript"></script>','').replace(/<!-- [а-я] -->/g,'')
+			skillname = $(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')
 			next = i + 1
 		}
 		if (i>=ld && i<ld+36 && i == next){
-			skillvalue = parseInt($(val).find('script').empty().end().html().replace('<script></script>','').replace('<script type="text/javascript"></script>','').replace('<b>',''))
+			skillvalue = parseInt($(val).find('script').remove().end().html().replace('<b>',''))
 			next = 0
 			if (skr[skillname]) {
 				player[st[skr[skillname]]] = skillvalue
@@ -313,9 +333,17 @@ $().ready(function() {
 	var tmp=''
 	for (var i in posfilter) for (var s in posfilter[i]) tmp += posfilter[i][s] + '\n'
 
+	var text3 = ''
+//	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1,'+player[st['id']]+'))">'+('Запомнить').fontsize(1)+'</a>'
+//	text3 += '<br><a id="compare" href="javascript:void(CheckPlayer(0))">'+('Сравнить').fontsize(1)+'</a><br>'
 
-	var text1 = '<table width=100%><tr><td valign=top>'
-	var text2 = '</td><td valign=top width=1%><a onclick="ShowAll('+(ld+1)+')">'+('Сбросить').fontsize(1)+'</a><br><b>Сила&nbsp;игрока</b><br>'
+	if (UrlValue('t') != 'yp' && UrlValue('t') != 'yp2') {
+		text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum(player,st))">'+('Код для форума').fontsize(1)+'</a><br>'
+	}
+
+	text3 += '<br><b>Сила&nbsp;игрока</b>'
+	text3 += '&nbsp;(<a href="javascript:void(ShowAll('+(ld+tdcorrection)+'))">'+('x').fontsize(1)+'</a>)'
+
 	var hidden = 0
 	var pfs3pre = ''
 	var pflinkpre = ''
@@ -325,24 +353,31 @@ $().ready(function() {
 			if (posfilter[s][0]<1 && hidden == 0) hidden = 1
 			if ( hidden ==1) {
 				hidden = 2
-				text2 += '<a id="mya" onclick="OpenAll()">...</a><br><div id="mydiv">'
+				text3 += '<br><a id="mya" href="javascript:void(OpenAll())">...</a>'
+				text3 += '<div id="mydiv">'
 			}
-			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text2 += '<a onclick="ShowSkills('+(ld+1)+',\''+posfilter[s][3]+'\')">'+linktext.fontsize(1)+'</a><br>'
+			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a href="javascript:void(ShowSkills('+(ld+tdcorrection)+',\''+posfilter[s][3]+'\'))">'+linktext.fontsize(1)+'</a>'
 		}
 		var pfs3pre = posfilter[s][3]
 		var pflinkpre = linktext
 	}
-//	for (i in st) text2 += i + ':' + player[st[i]]+'<br>'
+	text3 += '</div>'
 
-	text2 += '</div></td></tr></table>'
+	$(umval).each(function(j,val2){
+			if (j==0) {
+				$(val2).html($(val2).html().replace('Умения</b>','Умения</b>(сс='+String(player[st['сс']]).fontsize(1)+')'))
+			}
+	})
+	var preparedhtml = '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabcenter"></td><td width=200 valign=top id="crabright">'
+//	preparedhtml += '<table height=100%  width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
+	preparedhtml += '</td></tr></table>'
+	$('body table.border:last').before(preparedhtml)
+	$('td.back4 script').remove()
+	$('body table.border:has(td.back4)').appendTo( $('td#crabcenter') );
 
-	$(umval).each(function(j,val2){if (j==0) $(val2).html(text1+$(val2).html().replace('Умения</b>','Умения</b>(сс='+String(player[st['сс']]).fontsize(1)+')')+text2)})
+	$("#crabright").html(text3)
 	$("#mydiv").hide()
 
-	//ShowSkills(ld,'"'+skills[0]+'"')
-	if (UrlValue('t') != 'yp' && UrlValue('t') != 'yp2') {
-		var prehtml = '<br>Код для форума:<hr>' + CodeForForum(player,st) + '<hr>'
-		$("td.back4").append(prehtml)
-	}
 
+	//ShowSkills(ld,'"'+skills[0]+'"')
 });
