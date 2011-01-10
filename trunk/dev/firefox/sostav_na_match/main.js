@@ -107,7 +107,7 @@ function printCard2 (plid,type){
 	cardhtml += pl["form"] + '/' + pl["morale"];
 	if (playergames != 0) {
 		cardhtml += '\nP ' + pl["ratingav"];
-		cardhtml += '\n» ' + playergames + (playermom != 0 ? '(' + playermom + ')' : '');
+		cardhtml += '\n»/' + playergames + (playermom != 0 ? '(' + playermom + ')' : '');
 		cardhtml += (playergoals != 0 || playerpasses != 0 ? '\n√œ/' + playergoals + '+' + playerpasses : '');
 	}
 	cardhtml += '[/td][/tr]';
