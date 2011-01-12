@@ -71,7 +71,7 @@ function printCard (plid,type){
 	cardhtml += '[td valign=top height=41]';
 	if (playergames != 0) {
 		cardhtml += 'P ' + pl["ratingav"] + '\n';
-		cardhtml += 'И ' + playergames;
+		cardhtml += 'И/' + playergames;
 		cardhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
 		cardhtml += (playergoals != 0 || playerpasses != 0 ? 'ГП/' + playergoals + '+' + playerpasses : '');
 	} else {
