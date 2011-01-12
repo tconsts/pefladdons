@@ -15,7 +15,7 @@ function getCookie(name) {
 }
 
 function change_field_player_uniform() {
-	newfp_value = prompt("Вставьте адрес картинки", field_player_img_src);
+	newfp_value = prompt("Р’СЃС‚Р°РІСЊС‚Рµ Р°РґСЂРµСЃ РєР°СЂС‚РёРЅРєРё", field_player_img_src);
 	if (newfp_value) {
 		field_player_img_src = newfp_value;
 		setCookie("fp_uniform", newfp_value);
@@ -25,7 +25,7 @@ function change_field_player_uniform() {
 }
 
 function change_goalkeeper_uniform() {
-	newfp_value = prompt("Вставьте адрес картинки", goalkeeper_player_img_src);
+	newfp_value = prompt("Р’СЃС‚Р°РІСЊС‚Рµ Р°РґСЂРµСЃ РєР°СЂС‚РёРЅРєРё", goalkeeper_player_img_src);
 	if (newfp_value) {
 		goalkeeper_player_img_src = newfp_value;
 		setCookie("gk_uniform", newfp_value);
@@ -71,14 +71,14 @@ function printCard (plid,type){
 	cardhtml += '[td valign=top height=41]';
 	if (playergames != 0) {
 		cardhtml += 'P ' + pl["ratingav"] + '\n';
-		cardhtml += 'И ' + playergames;
+		cardhtml += 'Р ' + playergames;
 		cardhtml += (playermom != 0 ? '(' + playermom + ')\n' : '\n');
-		cardhtml += (playergoals != 0 || playerpasses != 0 ? 'ГП/' + playergoals + '+' + playerpasses : '');
+		cardhtml += (playergoals != 0 || playerpasses != 0 ? 'Р“Рџ/' + playergoals + '+' + playerpasses : '');
 	} else {
 		cardhtml += ' ';
 	}
 	cardhtml += '[/td][/tr]';
-	cardhtml += '[tr][td]фрм' + pl["form"] + '[/td][td]мрл' + pl["morale"] + '[/td][/tr]';
+	cardhtml += '[tr][td]С„СЂРј' + pl["form"] + '[/td][td]РјСЂР»' + pl["morale"] + '[/td][/tr]';
 	if (type == 0) {
 		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + pl["position"] + '[/td][/tr]';
 	}
@@ -103,18 +103,18 @@ function printCard2 (plid,type){
 		cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
 	}
 	cardhtml += '[/img][/player][/td]';
-	cardhtml += '[td valign=top height=50 rowspan=2]';
+	cardhtml += '[td valign=top height=60 rowspan=2]';
 	cardhtml += pl["form"] + '/' + pl["morale"];
 	if (playergames != 0) {
 		cardhtml += '\nP ' + pl["ratingav"];
-		cardhtml += '\nИ/' + playergames + (playermom != 0 ? '(' + playermom + ')' : '');
-		cardhtml += (playergoals != 0 || playerpasses != 0 ? '\nГП/' + playergoals + '+' + playerpasses : '');
+		cardhtml += '\nР/' + playergames + (playermom != 0 ? '(' + playermom + ')' : '');
+		cardhtml += (playergoals != 0 || playerpasses != 0 ? '\nР“Рџ/' + playergoals + '+' + playerpasses : '');
 	}
 	cardhtml += '[/td][/tr]';
 	cardhtml += '[tr][td align=center]';
-	if (playervalue == 0 ) cardhtml +=  'шкл';
-	else if (playervalue >= 1000) cardhtml += (playervalue/1000).toFixed(1) + 'м$'
-	else cardhtml += playervalue + 'т$';
+	if (playervalue == 0 ) cardhtml +=  'С€РєР»';
+	else if (playervalue >= 1000) cardhtml += (playervalue/1000).toFixed(1) + 'Рј$'
+	else cardhtml += playervalue + 'С‚$';
 	cardhtml += '[/td][/tr]';
 	if (type == 0) {
 		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + pl["position"] + '[/td][/tr]';
@@ -126,10 +126,10 @@ function printCard2 (plid,type){
 function fillTextarea(pt) {
 
 		preparedhtml = '';
-		preparedhtml += ' [b]Стартовый состав:[/b]\n\n';
+		preparedhtml += ' [b]РЎС‚Р°СЂС‚РѕРІС‹Р№ СЃРѕСЃС‚Р°РІ:[/b]\n\n';
 		preparedhtml += '[table]';
 
-		// нападение
+		// РЅР°РїР°РґРµРЅРёРµ
 		preparedhtml += '[tr]';
 		
 		// 1
@@ -153,7 +153,7 @@ function fillTextarea(pt) {
 		preparedhtml += '[td width=20%] [/td]';
 		preparedhtml += '[/tr]';
 		
-		// для // AM // MF // DM // DF
+		// РґР»СЏ // AM // MF // DM // DF
 		for(k=0;k<20;k+=5) {
 			preparedhtml += '[tr]';
 			
@@ -197,7 +197,7 @@ function fillTextarea(pt) {
 		preparedhtml += '[/table]';
 		
 		preparedhtml += "\n\n";
-		preparedhtml += '[b]Скамейка запасных:[/b]\n\n';
+		preparedhtml += '[b]РЎРєР°РјРµР№РєР° Р·Р°РїР°СЃРЅС‹С…:[/b]\n\n';
 		preparedhtml += '[table]';
 		preparedhtml += '[tr]';
 		
@@ -215,7 +215,7 @@ function fillTextarea(pt) {
 		
 		preparedhtml += '[/tr]';
 		preparedhtml += '[/table]';
-		preparedhtml += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
+		preparedhtml += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]РљСЂР°Р±РѕРІС‹Р№ VIP[/url] ---------------[/center]\n';
 		
 		$('#sostav_na_match').html(preparedhtml);
 		preparedhtml = preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>')
@@ -223,9 +223,9 @@ function fillTextarea(pt) {
 }
 var printtype = 3
 var data_assoc = [];
-var pids = [];		// id игроков, заявленных в состав
-var players = []; // массив игроков, в котором ключ массива - id игрока, а данные - каждые под своим ключом
-var sostav = []; // массив, в котором ключ - позиция на поле, а значение - id игрока
+var pids = [];		// id РёРіСЂРѕРєРѕРІ, Р·Р°СЏРІР»РµРЅРЅС‹С… РІ СЃРѕСЃС‚Р°РІ
+var players = []; // РјР°СЃСЃРёРІ РёРіСЂРѕРєРѕРІ, РІ РєРѕС‚РѕСЂРѕРј РєР»СЋС‡ РјР°СЃСЃРёРІР° - id РёРіСЂРѕРєР°, Р° РґР°РЅРЅС‹Рµ - РєР°Р¶РґС‹Рµ РїРѕРґ СЃРІРѕРёРј РєР»СЋС‡РѕРј
+var sostav = []; // РјР°СЃСЃРёРІ, РІ РєРѕС‚РѕСЂРѕРј РєР»СЋС‡ - РїРѕР·РёС†РёСЏ РЅР° РїРѕР»Рµ, Р° Р·РЅР°С‡РµРЅРёРµ - id РёРіСЂРѕРєР°
 var positions = [];
 var field_player_img_src = '/field/img/146cd60f8c4985270b74f7839e98059a.png';
 fp_cookie_value = getCookie("fp_uniform");
@@ -244,10 +244,10 @@ $().ready(function() {
 	$.get('fieldnew.php', {}, function(data){
 		var dataarray = data.split('&');
 		
-		// бежим по всему массиву dataarray
-		// и преобразовываем его в ассоциативный, например:
+		// Р±РµР¶РёРј РїРѕ РІСЃРµРјСѓ РјР°СЃСЃРёРІСѓ dataarray
+		// Рё РїСЂРµРѕР±СЂР°Р·РѕРІС‹РІР°РµРј РµРіРѕ РІ Р°СЃСЃРѕС†РёР°С‚РёРІРЅС‹Р№, РЅР°РїСЂРёРјРµСЂ:
 		// data_assoc["corners9"] = 9;
-		// и так далее
+		// Рё С‚Р°Рє РґР°Р»РµРµ
 		var i = 0;
 		while(dataarray[i] != null) {
 			tmparr = dataarray[i].split('=');
@@ -257,18 +257,18 @@ $().ready(function() {
 			i++;
 		}
 		
-		// теперь мы собираем id всех игроков, заявленных в состав
+		// С‚РµРїРµСЂСЊ РјС‹ СЃРѕР±РёСЂР°РµРј id РІСЃРµС… РёРіСЂРѕРєРѕРІ, Р·Р°СЏРІР»РµРЅРЅС‹С… РІ СЃРѕСЃС‚Р°РІ
 		for(i=1;i<=16;i++) {
 			pids[i] = data_assoc["pid" + i];
 			var position = data_assoc["p0_" + i];
-			sostav[position] = pids[i]; // сохраняем позиции на поле
+			sostav[position] = pids[i]; // СЃРѕС…СЂР°РЅСЏРµРј РїРѕР·РёС†РёРё РЅР° РїРѕР»Рµ
 		}
 		
-		// теперь собираем данные об игроках
+		// С‚РµРїРµСЂСЊ СЃРѕР±РёСЂР°РµРј РґР°РЅРЅС‹Рµ РѕР± РёРіСЂРѕРєР°С…
 		var num_players = data_assoc["n"];
 		
 		for(i=0;i<num_players;i++) {
-			// пока только имя и фамилию
+			// РїРѕРєР° С‚РѕР»СЊРєРѕ РёРјСЏ Рё С„Р°РјРёР»РёСЋ
 			var tmpplayer = [];
 			tmpplayer["firstname"] = data_assoc["firstname"+i];
 			tmpplayer["secondname"] = data_assoc["secondname"+i];
@@ -286,30 +286,30 @@ $().ready(function() {
 		}
 		
 		
-		// сбор данных закончен, можно выводить
-		preparedhtml = '<b>Код для форума</b><br>'
+		// СЃР±РѕСЂ РґР°РЅРЅС‹С… Р·Р°РєРѕРЅС‡РµРЅ, РјРѕР¶РЅРѕ РІС‹РІРѕРґРёС‚СЊ
+		preparedhtml = '<b>РљРѕРґ РґР»СЏ С„РѕСЂСѓРјР°</b><br>'
 		preparedhtml += '<textarea rows="10" cols="90" readonly="readonly" id="sostav_na_match"></textarea>';
 
 		preparedhtml += '<br><br><hr><table width=100%>';
-		preparedhtml += '<tr><th width=128></th><th>Предосмотр</th></tr>';
+		preparedhtml += '<tr><th width=128></th><th>РџСЂРµРґРѕСЃРјРѕС‚СЂ</th></tr>';
 		preparedhtml += '<tr><td valign=top>';
-		preparedhtml += '<b>Форма игрока</b><br><table><tr><td>'
+		preparedhtml += '<b>Р¤РѕСЂРјР° РёРіСЂРѕРєР°</b><br><table><tr><td>'
 		preparedhtml += '<img src="'+ field_player_img_src +'" alt="" id="fp_uniform_image" />'
 		preparedhtml += '</td><td>'
-		preparedhtml += 'Полевого<br />';
-		preparedhtml += '<a href="javascript: change_field_player_uniform();">Поменять</a><br />';
+		preparedhtml += 'РџРѕР»РµРІРѕРіРѕ<br />';
+		preparedhtml += '<a href="javascript: change_field_player_uniform();">РџРѕРјРµРЅСЏС‚СЊ</a><br />';
 		preparedhtml += '</td></tr>'
 		preparedhtml += '<tr><td>';
 		preparedhtml += '<img src="'+ goalkeeper_player_img_src +'" alt="" id="gk_uniform_image" />';
 		preparedhtml += '</td><td>'
-		preparedhtml += 'Вратаря<br />';
-		preparedhtml += '<a href="javascript: change_goalkeeper_uniform();">Поменять</a><br /><br />';
+		preparedhtml += 'Р’СЂР°С‚Р°СЂСЏ<br />';
+		preparedhtml += '<a href="javascript: change_goalkeeper_uniform();">РџРѕРјРµРЅСЏС‚СЊ</a><br /><br />';
 		preparedhtml += '</td></tr></table>'
 
-		preparedhtml += '<br><b>Стиль показа</b><br>'
-		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=1;fillTextarea(printtype)"> классический<br>'
-		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=2;fillTextarea(printtype)"> карточка<br>'
-		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=3;fillTextarea(printtype)" checked> карточка(2)'
+		preparedhtml += '<br><b>РЎС‚РёР»СЊ РїРѕРєР°Р·Р°</b><br>'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=1;fillTextarea(printtype)"> РєР»Р°СЃСЃРёС‡РµСЃРєРёР№<br>'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=2;fillTextarea(printtype)"> РєР°СЂС‚РѕС‡РєР°<br>'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=3;fillTextarea(printtype)" checked> РєР°СЂС‚РѕС‡РєР°(2)'
 		preparedhtml += ''
 
 		preparedhtml += '</td>'
