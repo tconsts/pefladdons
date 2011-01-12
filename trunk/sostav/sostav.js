@@ -33,18 +33,18 @@ function getCookie(name) {
 	    return false
 	}
 
-function sSkills(i, ii) { // По SumSkills (убыванию)
+function sSkills(i, ii) { // РџРѕ SumSkills (СѓР±С‹РІР°РЅРёСЋ)
     if 		(i[0] < ii[0])	return  1
     else if	(i[0] > ii[0])	return -1
     else					return  0
 }
 
 function getValue(pname,cname,curVal){
-	// Загружаем куки
+	// Р—Р°РіСЂСѓР¶Р°РµРј РєСѓРєРё
 	var currentCookie = getCookie(cname);
-	// если куки существует - используем ее в промпте
+	// РµСЃР»Рё РєСѓРєРё СЃСѓС‰РµСЃС‚РІСѓРµС‚ - РёСЃРїРѕР»СЊР·СѓРµРј РµРµ РІ РїСЂРѕРјРїС‚Рµ
 	if (currentCookie!=false ) curVal = currentCookie;
-	var retVal = prompt('Введите новые значения для ' + pname + ', варианты(через запятую без пробелов):\n \ s,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСБ,кнт,зрп,ном,пн,иш,иу,кп,идл,ИдлПоз\n уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,трв,дск,сыг\n\nЗначения до ":", имя и кол-во записей в таблице (0=все) \n коэф. скилов для сортировки задавать через "=" и операция, например лд=*2\n! - не показывать, f - флаг состояния, s - попадания в состав', curVal);
+	var retVal = prompt('Р’РІРµРґРёС‚Рµ РЅРѕРІС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РґР»СЏ ' + pname + ', РІР°СЂРёР°РЅС‚С‹(С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ Р±РµР· РїСЂРѕР±РµР»РѕРІ):\n \ s,f,СЃСЃ,СЃСЃС‚,СЃР°,СЃРѕ,РљРЎС‚,СЃС‚СЂ,Р¤Р°Рј,РРјСЏ,РІР·СЂ,id,РёРЎР±,РіРЎР‘,РєРЅС‚,Р·СЂРї,РЅРѕРј,РїРЅ,РёС€,РёСѓ,РєРї,РёРґР»,РРґР»РџРѕР·\n СѓРі,РЅРІ,РґСЂ,СѓРґ,С€С‚,СЂСѓ,РіР»,РІС…,Р»Рґ,РґСѓ,РїРѕ,СЃРє,РїСЃ,РІРї,СЂРµ,РІРЅ,РјС‰,РѕС‚,РІРё,СЂР±,С‚С…,РјСЂР»,С„СЂРј,РїРѕР·,С‚СЂРІ,РґСЃРє,СЃС‹Рі\n\nР—РЅР°С‡РµРЅРёСЏ РґРѕ ":", РёРјСЏ Рё РєРѕР»-РІРѕ Р·Р°РїРёСЃРµР№ РІ С‚Р°Р±Р»РёС†Рµ (0=РІСЃРµ) \n РєРѕСЌС„. СЃРєРёР»РѕРІ РґР»СЏ СЃРѕСЂС‚РёСЂРѕРІРєРё Р·Р°РґР°РІР°С‚СЊ С‡РµСЂРµР· "=" Рё РѕРїРµСЂР°С†РёСЏ, РЅР°РїСЂРёРјРµСЂ Р»Рґ=*2\n! - РЅРµ РїРѕРєР°Р·С‹РІР°С‚СЊ, f - С„Р»Р°Рі СЃРѕСЃС‚РѕСЏРЅРёСЏ, s - РїРѕРїР°РґР°РЅРёСЏ РІ СЃРѕСЃС‚Р°РІ', curVal);
 
 	if (retVal != null) setCookie(cname,retVal)
 	return true
@@ -58,8 +58,8 @@ function ShowPos(pfarr, psarr){
 	var fonsus 		= ' bgcolor=#A40000'
 	var foninj 		= ' bgcolor=#EF2929'
 	var fonsostav	= ' bgcolor=#FFFFFF'
-	var fоnsostavw	= ' bgcolor=red'
-	var fоnzamena	= ' bgcolor=#BABDB6'
+	var fРѕnsostavw	= ' bgcolor=red'
+	var fРѕnzamena	= ' bgcolor=#BABDB6'
 	var table2	= 'table width=100% height=100%'
 	var tr2		= 'tr'
 	var tr2f	= 'tr'
@@ -86,9 +86,9 @@ function ShowPos(pfarr, psarr){
 			var pfij = pf[i][j]
 			if (pf0j.replace(/!/g,'') == 's'){
 				switch (+pfij){
-					case 1:  tr2f += fоnzamena;break
+					case 1:  tr2f += fРѕnzamena;break
 					case 2:  tr2f += fonsostav;break
-					case 3:  tr2f += fоnsostavw;break
+					case 3:  tr2f += fРѕnsostavw;break
 					default: tr2f += ''
 				}
 			}
@@ -100,11 +100,11 @@ function ShowPos(pfarr, psarr){
 				var pfij = pf[i][j]
 				if (pf0j.replace(/!/g,'') == 'f'){
 					switch (+pfij){
-						case 1:  td2f += foninj;break;		//травма
-						case 2:  td2f += fonsus;break;		//дисква
-						case 3:  td2f += fonform;break;		//форма
-						case 4:  td2f += fonmorale;break;	//мораль
-						case 5:  td2f += fonschool;break;	//школяр
+						case 1:  td2f += foninj;break;		//С‚СЂР°РІРјР°
+						case 2:  td2f += fonsus;break;		//РґРёСЃРєРІР°
+						case 3:  td2f += fonform;break;		//С„РѕСЂРјР°
+						case 4:  td2f += fonmorale;break;	//РјРѕСЂР°Р»СЊ
+						case 5:  td2f += fonschool;break;	//С€РєРѕР»СЏСЂ
 						default: td2f += ''
 					}
 					if (i>0) pfij = ''
@@ -130,20 +130,20 @@ function ShowHelp(){
 	var html = ''
 	html += '<table bgcolor=#A3DE8F>'
 	html += '<tr><th colspan=4>'+'HELP'.fontsize(1)+'</th></tr>'
-	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'основа'.fontsize(1)+'</td>'
-	html += '<td bgcolor=#BABDB6 colspan=2>'+'замена'.fontsize(1)+'</td></tr>'
-	html += '<tr bgcolor=red><td colspan=4>'+'не своя позиция'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor=#EF2929></td><td>'+'трв'.fontsize(1)+'</td>'
-	html += '<td bgcolor=#A40000></td><td>'+'дск'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor=#FCE94F></td><td>'+'фрм<90'.fontsize(1)+'</td>'
-	html += '<td bgcolor=#E9B96E></td><td>'+'мрл<80'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor=#729FCF></td><td>'+'шкл'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'РѕСЃРЅРѕРІР°'.fontsize(1)+'</td>'
+	html += '<td bgcolor=#BABDB6 colspan=2>'+'Р·Р°РјРµРЅР°'.fontsize(1)+'</td></tr>'
+	html += '<tr bgcolor=red><td colspan=4>'+'РЅРµ СЃРІРѕСЏ РїРѕР·РёС†РёСЏ'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor=#EF2929></td><td>'+'С‚СЂРІ'.fontsize(1)+'</td>'
+	html += '<td bgcolor=#A40000></td><td>'+'РґСЃРє'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor=#FCE94F></td><td>'+'С„СЂРј<90'.fontsize(1)+'</td>'
+	html += '<td bgcolor=#E9B96E></td><td>'+'РјСЂР»<80'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor=#729FCF></td><td>'+'С€РєР»'.fontsize(1)+'</td></tr>'
 	html += '</table>'
 	return html
 }
 
 function ShowForumCode(fc,a){
-	if (a == 0) return 'Автосостав'
+	if (a == 0) return 'РђРІС‚РѕСЃРѕСЃС‚Р°РІ'
 	else {
 		var empty = '[td height=50] [/td]'
 		var txt = '<textarea cols=20 rows=5 readonly>[table width=100%]'
@@ -155,8 +155,8 @@ function ShowForumCode(fc,a){
 		txt += '[tr][td colspan=2] [/td]' + (fc[2]?fc[2]:empty) + '[td colspan=2] [/td][/tr]'
 		txt += '[tr][td colspan=2] [/td]' + (fc[1]?fc[1]:empty) + '[td colspan=2] [/td][/tr]'
 		txt += '[/table]'
-		txt += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n'
-		txt += '</textarea><br><b>Состав для форума<br>(<a href="/?team">advanced</a>)</b>'
+		txt += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]РљСЂР°Р±РѕРІС‹Р№ VIP[/url] ---------------[/center]\n'
+		txt += '</textarea><br><b>РЎРѕСЃС‚Р°РІ РґР»СЏ С„РѕСЂСѓРјР°<br>(<a href="/?team">advanced</a>)</b>'
 		return txt
 	}
 }
@@ -166,50 +166,50 @@ $().ready(function() {
 	var posfilter = []
 	var forumcode = []
 	var poss = [['','','',''],
-		['GK','skillsgk',  '', 'GK',0,'!сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс=*0.5,f=*0,Фам'],
-		['SW(либеро)','skillssw',  'C','SW',0,'!сст,!s=*0,от=*2,вп=*2,гл=*1.6,ск=*1.5,мщ=*1.4,f=*0,Фам'],
-		['L DF','skillsldf', 'L','DF',0,'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб,f=*0,Фам'],
-		['C DF(защитник)','skillslcdf','C','DF',0,'!сст,!s=*0,от=*3,мщ=*1.7,вп=*1.5,ск=*1.3,f=*0,Фам'],
-		['C DF(персональщик)','skillsccdf','C','DF',0,'!сст,!s=*0,по=*3,от=*3,мщ=*1.7,вп=*1.5,ск=1.3,f=*0,Фам'],
-		['C DF(головастик)','skillsrcdf','C','DF',0,'!сст,!s=*0,гл=*3,вп=*2.1,от=*2,мщ=*1.9,ск=*1.3,ви,f=*0,Фам'],
-		['R DF','skillsrdf', 'R','DF',0,'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб,f=*0,Фам'],
-		['L DM','skillsldm', 'L','DM',0,'!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп,ск,ви,f=*0,Фам'],
-		['C DM(стоппер)','skillslcdm','C','DM',0,'!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви,тх,f=*0,Фам'],
-		['C DM(персональщик)','skillsccmd','C','DM',0,'!сст,!s=*0,по=*3,от=*2.5,вп=*1.5,мщ=*1.5,ск,f=*0,Фам'],
-		['C DM(стоппер)','skillsrcdm','C','DM',0,'!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви,тх,f=*0,Фам'],
-		['R DM','skillsrdm', 'R','DM',0,'!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп,ск,ви,f=*0,Фам'],
-		['L MF','skillslmf', 'L','M',0,'!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам'],
-		['C MF(дальнобойщик)','skillslcmf','C','M',0,'!сст,!s=*0,ду=*3,пс=*2,тх=*2,уд=*2,ви=*1.5,др=*1.5,f=*0,Фам'],
-		['C MF(диспечер)','skillsccmf','C','M',0,'!сст,!s=*0,ви=*3,пс=*2,тх=*2,ду=*1.5,др=*1.5,f=*0,Фам'],
-		['C MF(стоппер)','skillsrcmf','C','M',0,'!сст,!s=*0,от=2.5,вп=2,пс=*2,тх=*2,ви=*1.5,f=*0,Фам'],
-		['R MF','skillsrmf', 'R','M',0,'!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам'],
-		['L AM','skillslam', 'L','AM',0,'!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=2,ви=*1.5,пс=*1.5,f=*0,Фам'],
-		['C AM(дальнобойщик)','skillslcam','C','AM',0,'!сст,!s=*0,ду=*3,пс=*2,тх=*2,уд=*2,ви=*1.5,др=*1.5,f=*0,Фам'],
-		['C AM(диспечер)','skillsccam','C','AM',0,'!сст,!s=*0,ви=*3,пс=*2,тх=*2,др=*2,ду,f=*0,Фам'],
-		['C AM(отянутый FW)','skillsrcam','C','AM',0,'!сст,!s=*0,тх=*2.5,др=*2.5,уд=*2,ду=*2,ви,пс,f=*0,Фам'],
-		['R AM','skillsram', 'R','AM',0,'!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=2,ви=*1.5,пс=*1.5,f=*0,Фам'],
-		['C FW(офсайды)','skillslcfw','C','FW',0,'!сст,!s=*0,вп=*3,уд=*2,ск=*2,тх=*1.5,др,f=*0,Фам'],
-		['C FW(дриблер)','skillsccfw','C','FW',0,'!сст,!s=*0,др=*3,уд=*2,тх=*2,ск,f=*0,Фам'],
-		['C FW(головастик)','skillsrcfw','C','FW',0,'!сст,!s=*0,гл=*3,уд=*2,мщ=*2,вп=*2,ск,f=*0,Фам'],
-		['Стд. атаки','skillsstda','','',16,'!сст,!s=*100,вп=*3,гл=*3,мщ=*2,ск,са,f=*0,Фам,ск=*0,от=*-1'],
-		['Стд. обороны','skillsstdd','','',16,'!сст,!s=*100,вп=*3,гл=*3,мщ=*2,ск,со,f=*0,Фам,ск=*0,др=*-1,уд=*-1'],
-		['Исп. угловых','skillscor','','',16,'!сст,!s=*100,уг,нв,ви,f=*0,Фам,иу=*0'],
-		['Исп. штрафных','skillsfre','','',16,'!сст,!s=*100,шт=*2,нв=*1.1,ду=*1.2,ви=*1.1,f=*0,Фам,иш=*0'],
-		['Исп. пенальти','skillspen','','',16,'!сст,!s=*100,взр=/10,уд,лд,f=*0,Фам,пн=*0'],
-		['Капитаны','skillscap','','',16,'!сст,!s=*100,лд=*3-5*3,рб=/2,мрл=/2-45,фрм=-90,взр=*5/10-23*5/10+10,орт=*4-6*4,f=*0,Фам,кп=*0'],
-		['Команда','skillstm','','',0,'!сст,ном,сс,стр,взр,f=*0,Фам'],
-		['Физ. состояние','skillsc1','','',0,'!сст,!s=*0,дск=*-100,трв=*-100,фрм=-100,мрл=/2-50,f=*0,Фам'],
-		['Зарплаты','skillsc2','','',0,'!сст,зрп,кнт=*0.1,f=*0,Фам'],
-		['Сыгранность','skillsc3','','',0,'!сст,!s=*0,Фам,f=*0,поз,сыг'],
-		['Идеальная позиция(%)','skillsc4','','',0,'!сст,Фам,идл,ИдлПоз'],
-		['GK скилы','skillsc5','','',0,'!сст,!s=*0,ре=*2,ру=*1.5,вп=*2,вх=*2,f=*0,Фам'],
+		['GK','skillsgk',  '', 'GK',0,'!СЃСЃС‚,!s=*0,СЂРµ=*2,РІРї=*2,РІС…=*2,СЂСѓ=*1.5,РјС‰=*1.5,РїСЃ=*0.5,f=*0,Р¤Р°Рј'],
+		['SW(Р»РёР±РµСЂРѕ)','skillssw',  'C','SW',0,'!СЃСЃС‚,!s=*0,РѕС‚=*2,РІРї=*2,РіР»=*1.6,СЃРє=*1.5,РјС‰=*1.4,f=*0,Р¤Р°Рј'],
+		['L DF','skillsldf', 'L','DF',0,'!СЃСЃС‚,!s=*0,РѕС‚=*3,РІРї=*1.5,РїСЃ=*1.5,СЃРє=*1.3,РЅРІ=*1.3,СЂР±,f=*0,Р¤Р°Рј'],
+		['C DF(Р·Р°С‰РёС‚РЅРёРє)','skillslcdf','C','DF',0,'!СЃСЃС‚,!s=*0,РѕС‚=*3,РјС‰=*1.7,РІРї=*1.5,СЃРє=*1.3,f=*0,Р¤Р°Рј'],
+		['C DF(РїРµСЂСЃРѕРЅР°Р»СЊС‰РёРє)','skillsccdf','C','DF',0,'!СЃСЃС‚,!s=*0,РїРѕ=*3,РѕС‚=*3,РјС‰=*1.7,РІРї=*1.5,СЃРє=1.3,f=*0,Р¤Р°Рј'],
+		['C DF(РіРѕР»РѕРІР°СЃС‚РёРє)','skillsrcdf','C','DF',0,'!СЃСЃС‚,!s=*0,РіР»=*3,РІРї=*2.1,РѕС‚=*2,РјС‰=*1.9,СЃРє=*1.3,РІРё,f=*0,Р¤Р°Рј'],
+		['R DF','skillsrdf', 'R','DF',0,'!СЃСЃС‚,!s=*0,РѕС‚=*3,РІРї=*1.5,РїСЃ=*1.5,СЃРє=*1.3,РЅРІ=*1.3,СЂР±,f=*0,Р¤Р°Рј'],
+		['L DM','skillsldm', 'L','DM',0,'!СЃСЃС‚,!s=*0,РѕС‚=*2.5,РЅРІ=*2,СЂР±=*2,РїСЃ=*2,РІРї,СЃРє,РІРё,f=*0,Р¤Р°Рј'],
+		['C DM(СЃС‚РѕРїРїРµСЂ)','skillslcdm','C','DM',0,'!СЃСЃС‚,!s=*0,РѕС‚=*2.5,РїСЃ=*2.5,РіР»=*2,РІРї=*1.5,РјС‰=*1.5,РІРё,С‚С…,f=*0,Р¤Р°Рј'],
+		['C DM(РїРµСЂСЃРѕРЅР°Р»СЊС‰РёРє)','skillsccmd','C','DM',0,'!СЃСЃС‚,!s=*0,РїРѕ=*3,РѕС‚=*2.5,РІРї=*1.5,РјС‰=*1.5,СЃРє,f=*0,Р¤Р°Рј'],
+		['C DM(СЃС‚РѕРїРїРµСЂ)','skillsrcdm','C','DM',0,'!СЃСЃС‚,!s=*0,РѕС‚=*2.5,РїСЃ=*2.5,РіР»=*2,РІРї=*1.5,РјС‰=*1.5,РІРё,С‚С…,f=*0,Р¤Р°Рј'],
+		['R DM','skillsrdm', 'R','DM',0,'!СЃСЃС‚,!s=*0,РѕС‚=*2.5,РЅРІ=*2,СЂР±=*2,РїСЃ=*2,РІРї,СЃРє,РІРё,f=*0,Р¤Р°Рј'],
+		['L MF','skillslmf', 'L','M',0,'!СЃСЃС‚,!s=*0,РЅРІ=*2.5,С‚С…=*2,РґСЂ=*2,РІРё=*2,РїСЃ=*2,f=*0,Р¤Р°Рј'],
+		['C MF(РґР°Р»СЊРЅРѕР±РѕР№С‰РёРє)','skillslcmf','C','M',0,'!СЃСЃС‚,!s=*0,РґСѓ=*3,РїСЃ=*2,С‚С…=*2,СѓРґ=*2,РІРё=*1.5,РґСЂ=*1.5,f=*0,Р¤Р°Рј'],
+		['C MF(РґРёСЃРїРµС‡РµСЂ)','skillsccmf','C','M',0,'!СЃСЃС‚,!s=*0,РІРё=*3,РїСЃ=*2,С‚С…=*2,РґСѓ=*1.5,РґСЂ=*1.5,f=*0,Р¤Р°Рј'],
+		['C MF(СЃС‚РѕРїРїРµСЂ)','skillsrcmf','C','M',0,'!СЃСЃС‚,!s=*0,РѕС‚=2.5,РІРї=2,РїСЃ=*2,С‚С…=*2,РІРё=*1.5,f=*0,Р¤Р°Рј'],
+		['R MF','skillsrmf', 'R','M',0,'!СЃСЃС‚,!s=*0,РЅРІ=*2.5,С‚С…=*2,РґСЂ=*2,РІРё=*2,РїСЃ=*2,f=*0,Р¤Р°Рј'],
+		['L AM','skillslam', 'L','AM',0,'!СЃСЃС‚,!s=*0,РґСЂ=*2.5,РЅРІ=*2.5,С‚С…=*2,СѓРґ=2,РІРё=*1.5,РїСЃ=*1.5,f=*0,Р¤Р°Рј'],
+		['C AM(РґР°Р»СЊРЅРѕР±РѕР№С‰РёРє)','skillslcam','C','AM',0,'!СЃСЃС‚,!s=*0,РґСѓ=*3,РїСЃ=*2,С‚С…=*2,СѓРґ=*2,РІРё=*1.5,РґСЂ=*1.5,f=*0,Р¤Р°Рј'],
+		['C AM(РґРёСЃРїРµС‡РµСЂ)','skillsccam','C','AM',0,'!СЃСЃС‚,!s=*0,РІРё=*3,РїСЃ=*2,С‚С…=*2,РґСЂ=*2,РґСѓ,f=*0,Р¤Р°Рј'],
+		['C AM(РѕС‚СЏРЅСѓС‚С‹Р№ FW)','skillsrcam','C','AM',0,'!СЃСЃС‚,!s=*0,С‚С…=*2.5,РґСЂ=*2.5,СѓРґ=*2,РґСѓ=*2,РІРё,РїСЃ,f=*0,Р¤Р°Рј'],
+		['R AM','skillsram', 'R','AM',0,'!СЃСЃС‚,!s=*0,РґСЂ=*2.5,РЅРІ=*2.5,С‚С…=*2,СѓРґ=2,РІРё=*1.5,РїСЃ=*1.5,f=*0,Р¤Р°Рј'],
+		['C FW(РѕС„СЃР°Р№РґС‹)','skillslcfw','C','FW',0,'!СЃСЃС‚,!s=*0,РІРї=*3,СѓРґ=*2,СЃРє=*2,С‚С…=*1.5,РґСЂ,f=*0,Р¤Р°Рј'],
+		['C FW(РґСЂРёР±Р»РµСЂ)','skillsccfw','C','FW',0,'!СЃСЃС‚,!s=*0,РґСЂ=*3,СѓРґ=*2,С‚С…=*2,СЃРє,f=*0,Р¤Р°Рј'],
+		['C FW(РіРѕР»РѕРІР°СЃС‚РёРє)','skillsrcfw','C','FW',0,'!СЃСЃС‚,!s=*0,РіР»=*3,СѓРґ=*2,РјС‰=*2,РІРї=*2,СЃРє,f=*0,Р¤Р°Рј'],
+		['РЎС‚Рґ. Р°С‚Р°РєРё','skillsstda','','',16,'!СЃСЃС‚,!s=*100,РІРї=*3,РіР»=*3,РјС‰=*2,СЃРє,СЃР°,f=*0,Р¤Р°Рј,СЃРє=*0,РѕС‚=*-1'],
+		['РЎС‚Рґ. РѕР±РѕСЂРѕРЅС‹','skillsstdd','','',16,'!СЃСЃС‚,!s=*100,РІРї=*3,РіР»=*3,РјС‰=*2,СЃРє,СЃРѕ,f=*0,Р¤Р°Рј,СЃРє=*0,РґСЂ=*-1,СѓРґ=*-1'],
+		['РСЃРї. СѓРіР»РѕРІС‹С…','skillscor','','',16,'!СЃСЃС‚,!s=*100,СѓРі,РЅРІ,РІРё,f=*0,Р¤Р°Рј,РёСѓ=*0'],
+		['РСЃРї. С€С‚СЂР°С„РЅС‹С…','skillsfre','','',16,'!СЃСЃС‚,!s=*100,С€С‚=*2,РЅРІ=*1.1,РґСѓ=*1.2,РІРё=*1.1,f=*0,Р¤Р°Рј,РёС€=*0'],
+		['РСЃРї. РїРµРЅР°Р»СЊС‚Рё','skillspen','','',16,'!СЃСЃС‚,!s=*100,РІР·СЂ=/10,СѓРґ,Р»Рґ,f=*0,Р¤Р°Рј,РїРЅ=*0'],
+		['РљР°РїРёС‚Р°РЅС‹','skillscap','','',16,'!СЃСЃС‚,!s=*100,Р»Рґ=*3-5*3,СЂР±=/2,РјСЂР»=/2-45,С„СЂРј=-90,РІР·СЂ=*5/10-23*5/10+10,РѕСЂС‚=*4-6*4,f=*0,Р¤Р°Рј,РєРї=*0'],
+		['РљРѕРјР°РЅРґР°','skillstm','','',0,'!СЃСЃС‚,РЅРѕРј,СЃСЃ,СЃС‚СЂ,РІР·СЂ,f=*0,Р¤Р°Рј'],
+		['Р¤РёР·. СЃРѕСЃС‚РѕСЏРЅРёРµ','skillsc1','','',0,'!СЃСЃС‚,!s=*0,РґСЃРє=*-100,С‚СЂРІ=*-100,С„СЂРј=-100,РјСЂР»=/2-50,f=*0,Р¤Р°Рј'],
+		['Р—Р°СЂРїР»Р°С‚С‹','skillsc2','','',0,'!СЃСЃС‚,Р·СЂРї,РєРЅС‚=*0.1,f=*0,Р¤Р°Рј'],
+		['РЎС‹РіСЂР°РЅРЅРѕСЃС‚СЊ','skillsc3','','',0,'!СЃСЃС‚,!s=*0,Р¤Р°Рј,f=*0,РїРѕР·,СЃС‹Рі'],
+		['РРґРµР°Р»СЊРЅР°СЏ РїРѕР·РёС†РёСЏ(%)','skillsc4','','',0,'!СЃСЃС‚,Р¤Р°Рј,РёРґР»,РРґР»РџРѕР·'],
+		['GK СЃРєРёР»С‹','skillsc5','','',0,'!СЃСЃС‚,!s=*0,СЂРµ=*2,СЂСѓ=*1.5,РІРї=*2,РІС…=*2,f=*0,Р¤Р°Рј'],
 
 	]
 
-	// прописывается заголовок в posfilter из poss
+	// РїСЂРѕРїРёСЃС‹РІР°РµС‚СЃСЏ Р·Р°РіРѕР»РѕРІРѕРє РІ posfilter РёР· poss
 	for (var i in poss) {
 		var psi = poss[i]
-		// если есть такая куки, то данные берем оттуда
+		// РµСЃР»Рё РµСЃС‚СЊ С‚Р°РєР°СЏ РєСѓРєРё, С‚Рѕ РґР°РЅРЅС‹Рµ Р±РµСЂРµРј РѕС‚С‚СѓРґР°
 		if (getCookie(psi[1])) {
 			var x = getCookie(psi[1])
 			var y = getPairKey(x,'none',':')
@@ -221,7 +221,7 @@ $().ready(function() {
 		}
 		posfilter[i] = [psi[5].split(',')]
 
-		//вырезаем коффициенты и операции
+		//РІС‹СЂРµР·Р°РµРј РєРѕС„С„РёС†РёРµРЅС‚С‹ Рё РѕРїРµСЂР°С†РёРё
 		var pfi0 = posfilter[i][0]
 		for (var p in pfi0) posfilter[i][0][p] = getPairKey(pfi0[p],pfi0[p])
 	}
@@ -229,20 +229,20 @@ $().ready(function() {
 
 	$.get('fieldnew.php', {}, function(data){
 		var dataarray = data.split('&');
-		var pid = [];		// id игроков заявленых в состав
-		var p0 = [];		// тактика1, всего 5 тактик.
-		var z0 = [];		// задания в тактике
+		var pid = [];		// id РёРіСЂРѕРєРѕРІ Р·Р°СЏРІР»РµРЅС‹С… РІ СЃРѕСЃС‚Р°РІ
+		var p0 = [];		// С‚Р°РєС‚РёРєР°1, РІСЃРµРіРѕ 5 С‚Р°РєС‚РёРє.
+		var z0 = [];		// Р·Р°РґР°РЅРёСЏ РІ С‚Р°РєС‚РёРєРµ
 		var pen = [];		// 
 		var fre = [];		// 
 		var cor = [];		// 
 		var cap = [];		// 
 
-		var sto = 's,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСБ,кнт,зрп,ном,уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,оиг,огл,опс,оим,орт,тре,трв,дск,сыг,пн,иш,иу,кп,идл,ИдлПоз'.split(',');
+		var sto = 's,f,СЃСЃ,СЃСЃС‚,СЃР°,СЃРѕ,РљРЎС‚,СЃС‚СЂ,Р¤Р°Рј,РРјСЏ,РІР·СЂ,id,РёРЎР±,РіРЎР‘,РєРЅС‚,Р·СЂРї,РЅРѕРј,СѓРі,РЅРІ,РґСЂ,СѓРґ,С€С‚,СЂСѓ,РіР»,РІС…,Р»Рґ,РґСѓ,РїРѕ,СЃРє,РїСЃ,РІРї,СЂРµ,РІРЅ,РјС‰,РѕС‚,РІРё,СЂР±,С‚С…,РјСЂР»,С„СЂРј,РїРѕР·,РѕРёРі,РѕРіР»,РѕРїСЃ,РѕРёРј,РѕСЂС‚,С‚СЂРµ,С‚СЂРІ,РґСЃРє,СЃС‹Рі,РїРЅ,РёС€,РёСѓ,РєРї,РёРґР»,РРґР»РџРѕР·'.split(',');
 		var st = {}
 		var k = 0
 		for (var i in sto) {
-			if (sto[i] == 'вх') {
-				st[sto[i]] = st['гл']
+			if (sto[i] == 'РІС…') {
+				st[sto[i]] = st['РіР»']
 			} else {
 				st[sto[i]] = k
 				k++
@@ -261,15 +261,15 @@ $().ready(function() {
 		while(dataarray[i] != null) {
 			var cur = dataarray[i]
 			var curval = getPairValue(cur)
-			var stcc = st["сс"]
-			var stcor = st["уг"]
-			var sttex = st["тх"]
+			var stcc = st["СЃСЃ"]
+			var stcor = st["СѓРі"]
+			var sttex = st["С‚С…"]
 			var stln = 41
 
-			//  автосос? 0/1
+			//  Р°РІС‚РѕСЃРѕСЃ? 0/1
 			if (cur.indexOf('new') != -1) var auto = +curval
 
-			// собираем id игроков заявленых в состав
+			// СЃРѕР±РёСЂР°РµРј id РёРіСЂРѕРєРѕРІ Р·Р°СЏРІР»РµРЅС‹С… РІ СЃРѕСЃС‚Р°РІ
 			if (cur.indexOf('pid') != -1) {
 				
 				pid.push(curval)
@@ -278,55 +278,55 @@ $().ready(function() {
 				pnum++
 			}
 
-			// сопоставить позицию игроков начальной тактики 
+			// СЃРѕРїРѕСЃС‚Р°РІРёС‚СЊ РїРѕР·РёС†РёСЋ РёРіСЂРѕРєРѕРІ РЅР°С‡Р°Р»СЊРЅРѕР№ С‚Р°РєС‚РёРєРё 
 			if (cur.indexOf('p0_') != -1) {
 				p0.push(getPairValue(cur))
 
-				// указываем id игрока играющего на данной позиции
+				// СѓРєР°Р·С‹РІР°РµРј id РёРіСЂРѕРєР° РёРіСЂР°СЋС‰РµРіРѕ РЅР° РґР°РЅРЅРѕР№ РїРѕР·РёС†РёРё
 				posfilter[getPairValue(cur)][1] = [-pid[p0num]]
 				p0num++
 			}
 
-			// собираем z0 (перс задания 1й тактики)
+			// СЃРѕР±РёСЂР°РµРј z0 (РїРµСЂСЃ Р·Р°РґР°РЅРёСЏ 1Р№ С‚Р°РєС‚РёРєРё)
 			if (cur.indexOf('z0') != -1) {
 				z0.push(curval);
-				if (+curval >= 513) players[pid[z0num]][st["со"]] = '*'
-				if (+curval >= 700 || (+curval>=213 && +curval < 500)) players[pid[z0num]][st["са"]] = '*'
+				if (+curval >= 513) players[pid[z0num]][st["СЃРѕ"]] = '*'
+				if (+curval >= 700 || (+curval>=213 && +curval < 500)) players[pid[z0num]][st["СЃР°"]] = '*'
 				z0num++
 			}
 
-			// собираем капитанов
+			// СЃРѕР±РёСЂР°РµРј РєР°РїРёС‚Р°РЅРѕРІ
 			if (cur.indexOf('cap') != -1) {
 				cap.push(curval)
-				if (curval != 0) players[curval][st["кп"]] = capnum
+				if (curval != 0) players[curval][st["РєРї"]] = capnum
 				capnum++
 			}
 
-			// собираем fre
+			// СЃРѕР±РёСЂР°РµРј fre
 			if (cur.indexOf('fre') != -1) {
 				fre.push(curval)
-				if (curval != 0) players[curval][st["иш"]] = frenum
+				if (curval != 0) players[curval][st["РёС€"]] = frenum
 				frenum++
 			}
 
-			// собираем cor
+			// СЃРѕР±РёСЂР°РµРј cor
 			if (cur.indexOf('cor') != -1) {
 				cor.push(curval)
-				if (curval != 0) players[curval][st["иу"]] = cornum
+				if (curval != 0) players[curval][st["РёСѓ"]] = cornum
 				cornum++
 			}
 
-			// собираем pen
+			// СЃРѕР±РёСЂР°РµРј pen
 			if (cur.indexOf('pen') != -1) {
 				pen.push(curval)
-				if (curval != 0) players[curval][st["пн"]] = pennum
+				if (curval != 0) players[curval][st["РїРЅ"]] = pennum
 				pennum++
 			}
 
-			//прописываем чтоб прочие таблички цвет имели как в состав
+			//РїСЂРѕРїРёСЃС‹РІР°РµРј С‡С‚РѕР± РїСЂРѕС‡РёРµ С‚Р°Р±Р»РёС‡РєРё С†РІРµС‚ РёРјРµР»Рё РєР°Рє РІ СЃРѕСЃС‚Р°РІ
 			for (p=26;p<posfilter.length;p++) posfilter[p][1] = [-10000]
 
-			// получить данные на игроков
+			// РїРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ РЅР° РёРіСЂРѕРєРѕРІ
 			if (cur.indexOf('secondname') != -1) {
 				var id = getPairValue(dataarray[i+3])
 				if (!players[id]) {
@@ -337,37 +337,37 @@ $().ready(function() {
 				var plid = players[id]
 				plid[st["f"]] = 0
 				plid[stcc] = 0
-				plid[st["сст"]] = 0
+				plid[st["СЃСЃС‚"]] = 0
 
-				if (!players[id][st["со"]]) players[id][st["со"]] = ''
-				if (!players[id][st["са"]]) players[id][st["са"]] = ''
+				if (!players[id][st["СЃРѕ"]]) players[id][st["СЃРѕ"]] = ''
+				if (!players[id][st["СЃР°"]]) players[id][st["СЃР°"]] = ''
 
-				// собираем данные
+				// СЃРѕР±РёСЂР°РµРј РґР°РЅРЅС‹Рµ
 				for (var x=0; x<=stln-3; x++) plid.push(getPairValue(dataarray[i+x-2]))
-				plid.push(getPairValue(dataarray[i+58]))	// инфа о тренировке
-				plid.push(getPairValue(dataarray[i+59]))	// инфа о травме
-				plid.push(getPairValue(dataarray[i+60]))	// инфа о дискве
-				plid.push(getPairValue(dataarray[i+61]))	// инфа о сыгрыности
+				plid.push(getPairValue(dataarray[i+58]))	// РёРЅС„Р° Рѕ С‚СЂРµРЅРёСЂРѕРІРєРµ
+				plid.push(getPairValue(dataarray[i+59]))	// РёРЅС„Р° Рѕ С‚СЂР°РІРјРµ
+				plid.push(getPairValue(dataarray[i+60]))	// РёРЅС„Р° Рѕ РґРёСЃРєРІРµ
+				plid.push(getPairValue(dataarray[i+61]))	// РёРЅС„Р° Рѕ СЃС‹РіСЂС‹РЅРѕСЃС‚Рё
 
-				if (!players[id][st["кп"]]) players[id][st["кп"]] = ''
-				if (!players[id][st["иш"]]) players[id][st["иш"]] = ''
-				if (!players[id][st["иу"]]) players[id][st["иу"]] = ''
-				if (!players[id][st["пн"]]) players[id][st["пн"]] = ''
+				if (!players[id][st["РєРї"]]) players[id][st["РєРї"]] = ''
+				if (!players[id][st["РёС€"]]) players[id][st["РёС€"]] = ''
+				if (!players[id][st["РёСѓ"]]) players[id][st["РёСѓ"]] = ''
+				if (!players[id][st["РїРЅ"]]) players[id][st["РїРЅ"]] = ''
 
-				// сичтаем сумму скилов (включая вратарские у полевых).
-				for (var x=st["уг"]; x<=st["тх"]; x++) plid[stcc] += +plid[x]
+				// СЃРёС‡С‚Р°РµРј СЃСѓРјРјСѓ СЃРєРёР»РѕРІ (РІРєР»СЋС‡Р°СЏ РІСЂР°С‚Р°СЂСЃРєРёРµ Сѓ РїРѕР»РµРІС‹С…).
+				for (var x=st["СѓРі"]; x<=st["С‚С…"]; x++) plid[stcc] += +plid[x]
 
 
-				//проставляем зп=100 у школяров и контракт до истечения срока (21-взр)
-				if (plid[st["кнт"]]==0) plid[st["кнт"]] = 21-plid[st["взр"]]
-				if (plid[st["зрп"]]==0) plid[st["зрп"]] = 100;
+				//РїСЂРѕСЃС‚Р°РІР»СЏРµРј Р·Рї=100 Сѓ С€РєРѕР»СЏСЂРѕРІ Рё РєРѕРЅС‚СЂР°РєС‚ РґРѕ РёСЃС‚РµС‡РµРЅРёСЏ СЃСЂРѕРєР° (21-РІР·СЂ)
+				if (plid[st["РєРЅС‚"]]==0) plid[st["РєРЅС‚"]] = 21-plid[st["РІР·СЂ"]]
+				if (plid[st["Р·СЂРї"]]==0) plid[st["Р·СЂРї"]] = 100;
 
-				// назначить флаг отображения
-				if		(plid[st["трв"]] >  0) 	plid[st["f"]] = 1 // травма
-				else if	(plid[st["дск"]] >  0) 	plid[st["f"]] = 2 // дисквалификация
-				else if	(plid[st["фрм"]] < 90) 	plid[st["f"]] = 3 // плохая форма
-				else if	(plid[st["мрл"]] < 80) 	plid[st["f"]] = 4 // плохая мораль
-				else if	(plid[st["ном"]] == 0) 	plid[st["f"]] = 5 // школьник
+				// РЅР°Р·РЅР°С‡РёС‚СЊ С„Р»Р°Рі РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ
+				if		(plid[st["С‚СЂРІ"]] >  0) 	plid[st["f"]] = 1 // С‚СЂР°РІРјР°
+				else if	(plid[st["РґСЃРє"]] >  0) 	plid[st["f"]] = 2 // РґРёСЃРєРІР°Р»РёС„РёРєР°С†РёСЏ
+				else if	(plid[st["С„СЂРј"]] < 90) 	plid[st["f"]] = 3 // РїР»РѕС…Р°СЏ С„РѕСЂРјР°
+				else if	(plid[st["РјСЂР»"]] < 80) 	plid[st["f"]] = 4 // РїР»РѕС…Р°СЏ РјРѕСЂР°Р»СЊ
+				else if	(plid[st["РЅРѕРј"]] == 0) 	plid[st["f"]] = 5 // С€РєРѕР»СЊРЅРёРє
 
 				i = i + 59;
 			}
@@ -382,48 +382,48 @@ $().ready(function() {
 			var koff = 1
 
 			for (var p in players){
-			  if (players[p][st['поз']]){
+			  if (players[p][st['РїРѕР·']]){
 				var pl = players[p]
-				var plpos = pl[st['поз']]
+				var plpos = pl[st['РїРѕР·']]
 				var plid = pl[st['id']]
 				var osnova = 0
 				if (auto == 0) {
 					pl[st["s"]] = 0
-					pl[st["са"]] = ''
-					pl[st["со"]] = ''
+					pl[st["СЃР°"]] = ''
+					pl[st["СЃРѕ"]] = ''
 				}
 
-				// добавить в состав для форума
+				// РґРѕР±Р°РІРёС‚СЊ РІ СЃРѕСЃС‚Р°РІ РґР»СЏ С„РѕСЂСѓРјР°
 				if (+pfi1 == -plid && auto == 1) {
-					var value = pl[st["ном"]].replace(/,/g,'')/1000
+					var value = pl[st["РЅРѕРј"]].replace(/,/g,'')/1000
 					forumcode[i] = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% height=100% bgcolor=#A3DE8F]';
-					forumcode[i] += '[tr][td colspan=2][b]' + (pl[st["Имя"]].charAt(0)!='?' ? pl[st["Имя"]].charAt(0) + '.' : '') + (pl[st["Фам"]]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
+					forumcode[i] += '[tr][td colspan=2][b]' + (pl[st["РРјСЏ"]].charAt(0)!='?' ? pl[st["РРјСЏ"]].charAt(0) + '.' : '') + (pl[st["Р¤Р°Рј"]]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
 					forumcode[i] += '[tr][td][player=' + plid + '][img]';
-					if (pl[st["поз"]] == "GK") {
+					if (pl[st["РїРѕР·"]] == "GK") {
 						forumcode[i] += '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png'
 					} else {
 						forumcode[i] += '/field/img/146cd60f8c4985270b74f7839e98059a.png'
 					}
 					forumcode[i] += '[/img][/player][/td]';
-					forumcode[i] += '[td valign=top height=50 rowspan=2]';
-					forumcode[i] += pl[st["фрм"]] + '/' + pl[st["мрл"]];
-					if (pl[st["оиг"]] != 0) {
-						forumcode[i] += '\nP ' + pl[st["орт"]];
-						forumcode[i] += '\nИ ' + pl[st["оиг"]] + (pl[st["оим"]] != 0 ? '(' + pl[st["оим"]] + ')' : '');
-						forumcode[i] += (pl[st["огл"]] != 0 || pl[st["опс"]] != 0 ? '\nГП/' + pl[st["огл"]] + '+' + pl[st["опс"]] : '');
+					forumcode[i] += '[td valign=top height=60 rowspan=2]';
+					forumcode[i] += pl[st["С„СЂРј"]] + '/' + pl[st["РјСЂР»"]];
+					if (pl[st["РѕРёРі"]] != 0) {
+						forumcode[i] += '\nP ' + pl[st["РѕСЂС‚"]];
+						forumcode[i] += '\nР/' + pl[st["РѕРёРі"]] + (pl[st["РѕРёРј"]] != 0 ? '(' + pl[st["РѕРёРј"]] + ')' : '');
+						forumcode[i] += (pl[st["РѕРіР»"]] != 0 || pl[st["РѕРїСЃ"]] != 0 ? '\nР“Рџ/' + pl[st["РѕРіР»"]] + '+' + pl[st["РѕРїСЃ"]] : '');
 					}
 					forumcode[i] += '[/td][/tr]';
 					forumcode[i] += '[tr][td align=center]';
 
-					if (+pl[st["ном"]] == 0 ) forumcode[i] +=  'шкл';
-					else if (value >= 1000) forumcode[i] += (value/1000).toFixed(1) + 'м$'
-					else forumcode[i] += value + 'т$';
+					if (+pl[st["РЅРѕРј"]] == 0 ) forumcode[i] +=  'С€РєР»';
+					else if (value >= 1000) forumcode[i] += (value/1000).toFixed(1) + 'Рј$'
+					else forumcode[i] += value + 'С‚$';
 
 					forumcode[i] += '[/td][/tr]';
 					forumcode[i] += '[/table][/td]';
 				}
 
-				// пометить игрока не своей позиции назначеного в состав
+				// РїРѕРјРµС‚РёС‚СЊ РёРіСЂРѕРєР° РЅРµ СЃРІРѕРµР№ РїРѕР·РёС†РёРё РЅР°Р·РЅР°С‡РµРЅРѕРіРѕ РІ СЃРѕСЃС‚Р°РІ
 				if (((plpos.indexOf(psi[2]) == -1) || (plpos.indexOf(psi[3]) == -1)) && +pfi1 == -plid) {
 					osnova = 3
 					koff = 0.5
@@ -432,7 +432,7 @@ $().ready(function() {
 					var ss = 0;
 					posfilter[i][p] = []
 
-					// 	добавить информацию об основе только на нужную позицию
+					// 	РґРѕР±Р°РІРёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РѕСЃРЅРѕРІРµ С‚РѕР»СЊРєРѕ РЅР° РЅСѓР¶РЅСѓСЋ РїРѕР·РёС†РёСЋ
 					if (pl[st["s"]] == 1)	osnova = 1 
 					else if (((+pfi1 == -plid) || pfi1==-10000) && pl[st["s"]] == 2 && osnova != 3)	osnova = 2
 					else if (osnova == 3)	osnova = 3
@@ -449,26 +449,26 @@ $().ready(function() {
 						var ske = sk.replace(/,/g,'')
 						var sks = (isNaN(parseFloat(ske)) ? 0 : eval(parseFloat(ske)+skv))
 
-						if (st[zagolovok] >= st['уг'] && st[zagolovok] <= st['тх']) {
+						if (st[zagolovok] >= st['СѓРі'] && st[zagolovok] <= st['С‚С…']) {
 							sum += +sks
 							summax += eval(mx+skv)
 						}
 						switch (zagolovok) {
-							case 'сст':	sstnum = +j
+							case 'СЃСЃС‚':	sstnum = +j
 							case 's':	sk = osnova
-							//case 'Фам':	sk = pl[st['Имя']].charAt(0)+'.'+sk	// подписать первую букву имени к фамилии
+							//case 'Р¤Р°Рј':	sk = pl[st['РРјСЏ']].charAt(0)+'.'+sk	// РїРѕРґРїРёСЃР°С‚СЊ РїРµСЂРІСѓСЋ Р±СѓРєРІСѓ РёРјРµРЅРё Рє С„Р°РјРёР»РёРё
 							default:						
 								posfilter[i][p].push(sk)
 								ss += +sks
 						}
 					}
 					var sila = sum/summax*100
-					if (i>0 && i<=25 && (!pl[st['идл']] || pl[st['идл']]<sila)) {
-						pl[st['идл']] = sila.toFixed(1)
-						pl[st['ИдлПоз']] = psi[0]
+					if (i>0 && i<=25 && (!pl[st['РёРґР»']] || pl[st['РёРґР»']]<sila)) {
+						pl[st['РёРґР»']] = sila.toFixed(1)
+						pl[st['РРґР»РџРѕР·']] = psi[0]
 					}
 
-					// добавляем сумму выделенных скилов
+					// РґРѕР±Р°РІР»СЏРµРј СЃСѓРјРјСѓ РІС‹РґРµР»РµРЅРЅС‹С… СЃРєРёР»РѕРІ
 					ss = +ss*koff
 					if (sstnum!=-1) posfilter[i][p][sstnum] = +ss.toFixed(1)
 				}				
@@ -512,7 +512,7 @@ $().ready(function() {
 		text += '<td></td></tr></table>'
 
 		text += '<br><br><table bgcolor=#A3DE8F><tr><td><img src="http://pefladdons.googlecode.com/svn/trunk/crab1.png"></td><td>'
-		text += '<a href="forums.php?m=posts&q=173605">Cостав v1.2</a> (c) <a href="users.php?m=details&id=661">const</a></td></tr></table>'
+		text += '<a href="forums.php?m=posts&q=173605">CРѕСЃС‚Р°РІ v1.2</a> (c) <a href="users.php?m=details&id=661">const</a></td></tr></table>'
 /**/	$('.contentframer').html(text)
 	})
 
