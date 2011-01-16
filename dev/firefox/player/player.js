@@ -33,41 +33,20 @@ function sSkills(i, ii) { // По SumSkills (убыванию)
     else					return  0
 }
 
-function ShowAll(k){
+function ShowAll(){
 	$('td.back4 table:first table:first td').each(function(){
 		$(this).css('color','black').css('background-color','#A3DE8F').find('img').show()
 	})
-/**
-	$('td').each(function(i,val){
-		if (i>=k && i<k+36) $(val).css('color','black').css('background-color','#A3DE8F')
-		if ($(val).find('img')) $(val).find('img').show()
-	})
-/**/
 }
 
-function ShowSkills(k,skl){
-	ShowAll(k)
-//	var flag = 1
-
+function ShowSkills(skl){
+	ShowAll()
 	$('td.back4 table:first table:first td:even').each(function(){
 		if (skl.indexOf($(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
 			$(this).css('color','#888A85').css('background-color','#C9F8B7')
 			.next().css('color','#888A85').css('background-color','#C9F8B7').find('img').hide();
 		}
 	})
-/**
-	$('td').each(function(i,val){
-		if (i>=k && i<k+36) {
-			var data = $(val).find('script').empty().end().html().replace('<script></script>','').replace('<script type="text/javascript"></script>','').replace(/<!-- [а-я] -->/g,'')
-			if (skl.indexOf(data) == -1 && flag != 0){ 
-				$(val).css('color','#888A85').css('background-color','#C9F8B7');
-				if ($(val).find('img')) $(val).find('img').hide()
-			} else {
-				flag = (flag == 0 ? 1 : 0)
-			}
-		}
-	});
-/**/
 }
 
 function OpenAll(){
@@ -182,11 +161,7 @@ $().ready(function() {
 	// отдельный цикл чтобы получить id именно последнего td - как сделать по другому пока не думал
 	// придумал - скоро переделаю
 	$('td').each(function(i,val){
-//		var str = 'Умения'
-		var str2 = 'Лидерство'
 		var str3 = 'Национальные турниры:'
-//		if ($(val).html().replace(/<!-- [а-я] -->/g,'').indexOf(str) != -1) um = i
-		if ($(val).html().replace(/<!-- [а-я] -->/g,'').indexOf(str2) != -1) ld = i
 		if ($(val).html().replace(/<!-- [а-я] -->/g,'').indexOf(str3) != -1) {
 			fr = i;
 		} else {
@@ -203,9 +178,6 @@ $().ready(function() {
 	var ss = 0
 	var ssp = 0
 	var umval = ''
-
-	// из-за добавления доп таблиц корректируем номер td для раскраски скилов
-    var tdcorrection = 2
 
 	$('td').each(function(i,val){
 		if (i == fr) {
@@ -297,21 +269,6 @@ $().ready(function() {
 		$('td.back4 table:first table:first td:even').each(function(){
 			player[st[skr[$(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')]]] = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''))
 		})
-
-/**
-		if (i>=ld && i<ld+36 && next==0){
-			skillname = $(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')
-			next = i + 1
-		}
-		if (i>=ld && i<ld+36 && i == next){
-			skillvalue = parseInt($(val).find('script').remove().end().html().replace('<b>',''))
-			next = 0
-			if (skr[skillname]) {
-				player[st[skr[skillname]]] = skillvalue
-				ss += skillvalue
-			}
-		}
-/**/
 	})
 
 	for (var j in poss) {
@@ -359,7 +316,7 @@ $().ready(function() {
 	}
 
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
-	text3 += '&nbsp;(<a href="javascript:void(ShowAll('+(ld+tdcorrection)+'))">'+('x').fontsize(1)+'</a>)'
+	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
 
 	var hidden = 0
 	var pfs3pre = ''
@@ -373,7 +330,7 @@ $().ready(function() {
 				text3 += '<br><a id="mya" href="javascript:void(OpenAll())">...</a>'
 				text3 += '<div id="mydiv">'
 			}
-			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a href="javascript:void(ShowSkills('+(ld+tdcorrection)+',\''+posfilter[s][3]+'\'))">'+linktext.fontsize(1)+'</a>'
+			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a href="javascript:void(ShowSkills(\''+posfilter[s][3]+'\'))">'+linktext.fontsize(1)+'</a>'
 		}
 		var pfs3pre = posfilter[s][3]
 		var pflinkpre = linktext
@@ -396,5 +353,5 @@ $().ready(function() {
 	$("#mydiv").hide()
 
 
-	//ShowSkills(ld,'"'+skills[0]+'"')
+	//ShowSkills('"'+skills[0]+'"')
 });
