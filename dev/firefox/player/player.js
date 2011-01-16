@@ -34,15 +34,28 @@ function sSkills(i, ii) { // По SumSkills (убыванию)
 }
 
 function ShowAll(k){
+	$('td.back4 table:first table:first td').each(function(){
+		$(this).css('color','black').css('background-color','#A3DE8F').find('img').show()
+	})
+/**
 	$('td').each(function(i,val){
 		if (i>=k && i<k+36) $(val).css('color','black').css('background-color','#A3DE8F')
 		if ($(val).find('img')) $(val).find('img').show()
 	})
+/**/
 }
 
 function ShowSkills(k,skl){
 	ShowAll(k)
-	var flag = 1
+//	var flag = 1
+
+	$('td.back4 table:first table:first td:even').each(function(){
+		if (skl.indexOf($(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
+			$(this).css('color','#888A85').css('background-color','#C9F8B7')
+			.next().css('color','#888A85').css('background-color','#C9F8B7').find('img').hide();
+		}
+	})
+/**
 	$('td').each(function(i,val){
 		if (i>=k && i<k+36) {
 			var data = $(val).find('script').empty().end().html().replace('<script></script>','').replace('<script type="text/javascript"></script>','').replace(/<!-- [а-я] -->/g,'')
@@ -54,6 +67,7 @@ function ShowSkills(k,skl){
 			}
 		}
 	});
+/**/
 }
 
 function OpenAll(){
@@ -166,6 +180,7 @@ $().ready(function() {
 	}
 
 	// отдельный цикл чтобы получить id именно последнего td - как сделать по другому пока не думал
+	// придумал - скоро переделаю
 	$('td').each(function(i,val){
 //		var str = 'Умения'
 		var str2 = 'Лидерство'
@@ -278,10 +293,12 @@ $().ready(function() {
 			
 		}
 
-		// $('td.back4 table:first table:first td').each(function(){
-		//		if (x % 2 == 0)
+		// get skills
+		$('td.back4 table:first table:first td:even').each(function(){
+			player[st[skr[$(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')]]] = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''))
+		})
 
-		// })
+/**
 		if (i>=ld && i<ld+36 && next==0){
 			skillname = $(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')
 			next = i + 1
@@ -294,7 +311,7 @@ $().ready(function() {
 				ss += skillvalue
 			}
 		}
-
+/**/
 	})
 
 	for (var j in poss) {
