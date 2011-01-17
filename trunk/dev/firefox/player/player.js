@@ -317,11 +317,8 @@ $().ready(function() {
 	}
 	text3 += '</div>'
 
-	$(umval).each(function(j,val2){
-			if (j==0) {
-				$(val2).html($(val2).html().replace('Умения</b>','Умения</b>(сс='+String(player[st['сс']]).fontsize(1)+')'))
-			}
-	})
+	$('td.back4 table center:first').html($('td.back4 table center:first').replace('Умения</b>','Умения</b>(сс='+String(player[st['сс']]).fontsize(1)+')'))
+
 	var preparedhtml = '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 	preparedhtml += '</td></tr></table>'
