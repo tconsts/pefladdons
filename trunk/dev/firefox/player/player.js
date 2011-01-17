@@ -158,119 +158,104 @@ $().ready(function() {
 		}
 	}
 
-	// отдельный цикл чтобы получить id именно последнего td - как сделать по другому пока не думал
-	// придумал - скоро переделаю
-	$('td').each(function(i,val){
-		var str3 = 'Национальные турниры:'
-		if ($(val).html().replace(/<!-- [а-я] -->/g,'').indexOf(str3) != -1) {
-			fr = i;
-		} else {
-			// для школьников
-			if ($(val).html() == '<span class="text2b"></span>') {
-				fr = i+1;
-			}
-		}
-	})
 	var posfilter = []
-	var next = 0
-	var skillname = ''
-	var skillvalue = 0
-	var ss = 0
 	var ssp = 0
 	var umval = ''
 
-	$('td').each(function(i,val){
-		if (i == fr) {
-			umval = val
-			$(val).find('center').each(function(m,valm){
-				if (m==0) {
-					var x = $(val).find('center').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
-					var j = 0
-					var name = x[j].split(' (',1)[0]
+	var skillname = ''
+	var skillvalue = 0
+	var skillsum = 0
 
-					player[st['ком']] = ''
-					player[st['turl']] = ''
-					player[st['трн']] = 0
-
-					if (UrlValue('t') =='p') {
-						player[st['turl']] = $('td.back4 a:first').attr('href')
-						player[st['ком']] = $('td.back4 a:first').text()
-					} else if (UrlValue('t') =='p2'){
-						player[st['ком']] = 'свободный'
-					}
-
-					player[st['id']]  = UrlValue('j')
-					player[st['hash']]  = UrlValue('z')
-					if (UrlValue('t') == 'yp') {			// школяр!
-						player[st['f']]  = 5
-					}
-
-					if (name.indexOf(' ')!=-1){
-						player[st['Имя']] = name.split(' ',1)[0]
-						player[st['Фам']] = name.replace(player[st['Имя']]+' ','').replace(player[st['Имя']]+'-','')
-					} else {
-						player[st['Имя']] = ''
-						player[st['Фам']] = name
-					}	
-					j++
-					if (x[j].indexOf('в аренде') !=-1) j++
-					player[st['взр']] = +x[j].split(' ',1)[0]
-					if (x[j].indexOf('(матчей')!=-1){
-						player[st['стр']] = x[j].split(', ',2)[1].split(' (',1)[0]
-						player[st['иСб']] = +x[j].split(', ',2)[1].split('матчей ',2)[1]
-						player[st['гСб']] = +x[j].split(', ',3)[2].split(' ',2)[1].replace(')','')
-						if (x[j].indexOf('U21')!=-1){
-							player[st['иМл']] = +x[j].split('/ U21 матчей ',2)[1].split(',',1)[0]
-							player[st['гМл']] = +x[j].split('/ U21 матчей ',2)[1].split(', голов ',2)[1].replace(')','')
-						} else {
-							player[st['иМл']] = 0
-							player[st['гМл']] = 0
-						}
-					} else {
-						player[st['стр']] = ' '
-						player[st['иСб']] = 0
-						player[st['гСб']] = 0
-						player[st['иМл']] = 0
-						player[st['гМл']] = 0
-					}
-					j++
-					if (x[j].indexOf('Контракт:')!=-1) {
-						player[st['кнт']] = +x[j].split(' ',4)[1]
-						player[st['зрп']] = +x[j].split(' ',4)[3].replace(/,/g,'').replace('$','')
-						j++
-					} else {
-						player[st['кнт']] = 0
-						player[st['зрп']] = 0
-					}
-					if (x[j].indexOf('Номинал:') != -1) {
-						player[st['ном']] = +x[j].split(' ',2)[1].replace(/,/g,'').replace('$','')
-						j++
-					} else {
-						player[st['ном']] = 0
-					}
-					if (x[j].indexOf('Клуб требует:') != -1) {
-						j++
-						player[st['трн']] = 1
-					}
-					player[st['поз']] = x[j]
-
-				} else if (m==2){
-					var j = 0
-					var x = $(valm).html().replace(/<!-- [а-я] -->/g,'').split('<br>')
-					player[st['фрм']] = +x[j].split(': ',2)[1].split('%',1)[0]
-					player[st['мрл']] = +x[j].split(': ',3)[2].replace('%</i>','')
-
-				}
-			})
-			
-		}
-
-		// get skills
-		$('td.back4 table:first table:first td:even').each(function(){
-			player[st[skr[$(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')]]] = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''))
-		})
+	// get skills
+	$('td.back4 table:first table:first td:even').each(function(){
+		skillname = $(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'');
+		skillvalue = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''));
+		player[st[skr[skillname]]] = skillvalue;
+		skillsum += skillvalue;
 	})
+	player[st['сс']] = skillsum
 
+
+	//get header
+	var x = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
+	var j = 0
+	var name = x[j].split(' (',1)[0]
+
+	player[st['ком']] = ''
+	player[st['turl']] = ''
+	player[st['трн']] = 0
+
+	if (UrlValue('t') =='p') {
+		player[st['turl']] = $('td.back4 a:first').attr('href')
+		player[st['ком']] = $('td.back4 a:first').text()
+	} else if (UrlValue('t') =='p2'){
+		player[st['ком']] = 'свободный'
+	}
+
+	player[st['id']]  = UrlValue('j')
+	player[st['hash']]  = UrlValue('z')
+	if (UrlValue('t') == 'yp') {			// школяр!
+		player[st['f']]  = 5
+	}
+
+	if (name.indexOf(' ')!=-1){
+		player[st['Имя']] = name.split(' ',1)[0]
+		player[st['Фам']] = name.replace(player[st['Имя']]+' ','').replace(player[st['Имя']]+'-','')
+	} else {
+		player[st['Имя']] = ''
+		player[st['Фам']] = name
+	}	
+	j++
+	if (x[j].indexOf('в аренде') !=-1) j++
+	player[st['взр']] = +x[j].split(' ',1)[0]
+	if (x[j].indexOf('(матчей')!=-1){
+		player[st['стр']] = x[j].split(', ',2)[1].split(' (',1)[0]
+		player[st['иСб']] = +x[j].split(', ',2)[1].split('матчей ',2)[1]
+		player[st['гСб']] = +x[j].split(', ',3)[2].split(' ',2)[1].replace(')','')
+		if (x[j].indexOf('U21')!=-1){
+			player[st['иМл']] = +x[j].split('/ U21 матчей ',2)[1].split(',',1)[0]
+			player[st['гМл']] = +x[j].split('/ U21 матчей ',2)[1].split(', голов ',2)[1].replace(')','')
+		} else {
+			player[st['иМл']] = 0
+			player[st['гМл']] = 0
+		}
+	} else {
+		player[st['стр']] = ' '
+		player[st['иСб']] = 0
+		player[st['гСб']] = 0
+		player[st['иМл']] = 0
+		player[st['гМл']] = 0
+	}
+	j++
+	if (x[j].indexOf('Контракт:')!=-1) {
+		player[st['кнт']] = +x[j].split(' ',4)[1]
+		player[st['зрп']] = +x[j].split(' ',4)[3].replace(/,/g,'').replace('$','')
+		j++
+	} else {
+		player[st['кнт']] = 0
+		player[st['зрп']] = 0
+	}
+	if (x[j].indexOf('Номинал:') != -1) {
+		player[st['ном']] = +x[j].split(' ',2)[1].replace(/,/g,'').replace('$','')
+		j++
+	} else {
+		player[st['ном']] = 0
+	}
+	if (x[j].indexOf('Клуб требует:') != -1) {
+		j++
+		player[st['трн']] = 1
+	}
+	player[st['поз']] = x[j]
+
+
+	// get post-info
+	var x = $('td.back4 > center:first').html().replace(/<!-- [а-я] -->/g,'').split('<br>')
+	var j = 0
+	player[st['фрм']] = +x[j].split(': ',2)[1].split('%',1)[0]
+	player[st['мрл']] = +x[j].split(': ',3)[2].replace('%</i>','')
+
+
+	// fill poss masive
 	for (var j in poss) {
 		posfilter[j] = [0]
 		posfilter[j][3] = ''
@@ -300,12 +285,8 @@ $().ready(function() {
 	}
 
 	posfilter.sort(sSkills)
-	player[st['сс']] = ss
 	player[st['идл']] = posfilter[1][2]
 	player[st['ИдлПоз']] = posfilter[1][1]
-
-	var tmp=''
-	for (var i in posfilter) for (var s in posfilter[i]) tmp += posfilter[i][s] + '\n'
 
 	var text3 = ''
 //	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1,'+player[st['id']]+'))">'+('Запомнить').fontsize(1)+'</a>'
@@ -351,7 +332,6 @@ $().ready(function() {
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
-
 
 	//ShowSkills('"'+skills[0]+'"')
 });
