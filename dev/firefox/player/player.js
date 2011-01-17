@@ -160,7 +160,6 @@ $().ready(function() {
 
 	var posfilter = []
 	var ssp = 0
-	var umval = ''
 
 	var skillname = ''
 	var skillvalue = 0
@@ -177,9 +176,17 @@ $().ready(function() {
 
 
 	//get header
-	var x = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
+	var ms = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
 	var j = 0
-	var name = x[j].split(' (',1)[0]
+
+	var name = ms[j].split(' (',1)[0]
+	if (name.indexOf(' ')!=-1){
+		player[st['Имя']] = name.split(' ',1)[0]
+		player[st['Фам']] = name.replace(player[st['Имя']]+' ','').replace(player[st['Имя']]+'-','')
+	} else {
+		player[st['Имя']] = ''
+		player[st['Фам']] = name
+	}	
 
 	player[st['ком']] = ''
 	player[st['turl']] = ''
@@ -197,24 +204,16 @@ $().ready(function() {
 	if (UrlValue('t') == 'yp') {			// школяр!
 		player[st['f']]  = 5
 	}
-
-	if (name.indexOf(' ')!=-1){
-		player[st['Имя']] = name.split(' ',1)[0]
-		player[st['Фам']] = name.replace(player[st['Имя']]+' ','').replace(player[st['Имя']]+'-','')
-	} else {
-		player[st['Имя']] = ''
-		player[st['Фам']] = name
-	}	
-	j++
-	if (x[j].indexOf('в аренде') !=-1) j++
-	player[st['взр']] = +x[j].split(' ',1)[0]
-	if (x[j].indexOf('(матчей')!=-1){
-		player[st['стр']] = x[j].split(', ',2)[1].split(' (',1)[0]
-		player[st['иСб']] = +x[j].split(', ',2)[1].split('матчей ',2)[1]
-		player[st['гСб']] = +x[j].split(', ',3)[2].split(' ',2)[1].replace(')','')
-		if (x[j].indexOf('U21')!=-1){
-			player[st['иМл']] = +x[j].split('/ U21 матчей ',2)[1].split(',',1)[0]
-			player[st['гМл']] = +x[j].split('/ U21 матчей ',2)[1].split(', голов ',2)[1].replace(')','')
+ 	j++
+	if (ms[j].indexOf('в аренде') !=-1) j++
+	player[st['взр']] = +ms[j].split(' ',1)[0]
+	if (ms[j].indexOf('(матчей')!=-1){
+		player[st['стр']] = ms[j].split(', ',2)[1].split(' (',1)[0]
+		player[st['иСб']] = +ms[j].split(', ',2)[1].split('матчей ',2)[1]
+		player[st['гСб']] = +ms[j].split(', ',3)[2].split(' ',2)[1].replace(')','')
+		if (ms[j].indexOf('U21')!=-1){
+			player[st['иМл']] = +ms[j].split('/ U21 матчей ',2)[1].split(',',1)[0]
+			player[st['гМл']] = +ms[j].split('/ U21 матчей ',2)[1].split(', голов ',2)[1].replace(')','')
 		} else {
 			player[st['иМл']] = 0
 			player[st['гМл']] = 0
@@ -227,32 +226,32 @@ $().ready(function() {
 		player[st['гМл']] = 0
 	}
 	j++
-	if (x[j].indexOf('Контракт:')!=-1) {
-		player[st['кнт']] = +x[j].split(' ',4)[1]
-		player[st['зрп']] = +x[j].split(' ',4)[3].replace(/,/g,'').replace('$','')
+	if (ms[j].indexOf('Контракт:')!=-1) {
+		player[st['кнт']] = +ms[j].split(' ',4)[1]
+		player[st['зрп']] = +ms[j].split(' ',4)[3].replace(/,/g,'').replace('$','')
 		j++
 	} else {
 		player[st['кнт']] = 0
 		player[st['зрп']] = 0
 	}
-	if (x[j].indexOf('Номинал:') != -1) {
-		player[st['ном']] = +x[j].split(' ',2)[1].replace(/,/g,'').replace('$','')
+	if (ms[j].indexOf('Номинал:') != -1) {
+		player[st['ном']] = +ms[j].split(' ',2)[1].replace(/,/g,'').replace('$','')
 		j++
 	} else {
 		player[st['ном']] = 0
 	}
-	if (x[j].indexOf('Клуб требует:') != -1) {
+	if (ms[j].indexOf('Клуб требует:') != -1) {
 		j++
 		player[st['трн']] = 1
 	}
-	player[st['поз']] = x[j]
+	player[st['поз']] = ms[j]
 
 
 	// get post-info
-	x = $('td.back4 > center:first').html().replace(/<!-- [а-я] -->/g,'').split('<br>')
-	j = 0
-	player[st['фрм']] = +x[j].split(': ',2)[1].split('%',1)[0]
-	player[st['мрл']] = +x[j].split(': ',3)[2].replace('%</i>','')
+	var ms2 = $('td.back4 > center:first').html().replace(/<!-- [а-я] -->/g,'').split('<br>')
+	var j2 = 0
+	player[st['фрм']] = +ms2[j2].split(': ',2)[1].split('%',1)[0]
+	player[st['мрл']] = +ms2[j2].split(': ',3)[2].replace('%</i>','')
 
 
 	// fill poss masive
