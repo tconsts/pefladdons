@@ -165,7 +165,7 @@ $().ready(function() {
 	var skillvalue = 0
 	var skillsum = 0
 
-	// get skills
+	// get player skills
 	$('td.back4 table:first table:first td:even').each(function(){
 		skillname = $(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'');
 		skillvalue = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''));
@@ -174,8 +174,10 @@ $().ready(function() {
 	})
 	player[st['сс']] = skillsum
 
+	//add sum of skills to page
+	$('td.back4 table center:first').append('(сс='+String(skillsum).fontsize(1)+')')
 
-	//get header
+	//get player header info
 	var ms = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
 	var j = 0
 
@@ -316,8 +318,6 @@ $().ready(function() {
 		var pflinkpre = linktext
 	}
 	text3 += '</div>'
-
-	$('td.back4 table center:first').html($('td.back4 table center:first').html().replace('Умения</b>','Умения</b>(сс='+String(player[st['сс']]).fontsize(1)+')'))
 
 	var preparedhtml = '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
