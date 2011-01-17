@@ -249,8 +249,8 @@ $().ready(function() {
 
 
 	// get post-info
-	var x = $('td.back4 > center:first').html().replace(/<!-- [а-я] -->/g,'').split('<br>')
-	var j = 0
+	x = $('td.back4 > center:first').html().replace(/<!-- [а-я] -->/g,'').split('<br>')
+	j = 0
 	player[st['фрм']] = +x[j].split(': ',2)[1].split('%',1)[0]
 	player[st['мрл']] = +x[j].split(': ',3)[2].replace('%</i>','')
 
