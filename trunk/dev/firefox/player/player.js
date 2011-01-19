@@ -72,21 +72,21 @@ function UrlValue(key,url){
 	return false
 }
 
-function CodeForForum(player,st){
+function CodeForForum(players){
 	var x = ''
+	var pl = players[0]
+	x += '<br><br>[url=plug.php?' + location.search.substring(1) + ']' + pl.firstname + ' ' + pl.secondname + '[/url] (сс=' + pl.sumskills + ')'
 
-	x += '<br><br>[url=plug.php?' + location.search.substring(1) + ']' + player[st['Имя']] + '  ' + player[st['Фам']] + '[/url] (сс=' + player[st['сс']] + ')'
+	if (UrlValue('t') == 'p') x += ' | [player=' + pl.id + '][img]images/eye.png[/img][/player]'
 
-	if (UrlValue('t') == 'p') x += ' | [player=' + player[st["id"]] + '][img]images/eye.png[/img][/player]'
+	if (pl.natfull != ' ') x+= ' | [b]' + pl.natfull + '[/b]'
 
-	if (player[st['стр']] != ' ') x+= ' | [b]' + player[st['стр']] + '[/b]'
+	x += ' | ' + pl.position + ' ' + pl.age
 
-	x += ' | ' + player[st['поз']] + ' ' + player[st['взр']]
+	if (pl.sale == 1)	x += ' | [img]system/img/g/sale.png[/img]'
 
-	if (player[st['трн']] == 1)	x += ' | [img]system/img/g/sale.png[/img]'
-
-	if (player[st['turl']] == '') x += ' | ' + player[st['ком']]
-	else x += ' | [url=' + player[st['turl']] + ']' + player[st['ком']] + '[/url]'
+	if (pl.teamurl == '') x += ' | ' + pl.team
+	else x += ' | [url=' + pl.teamurl + ']' + pl.team + '[/url]'
 
 	$('td.back4').html(x)
 	$('td#crabglobalright').empty()
@@ -96,104 +96,106 @@ function CodeForForum(player,st){
 var players = [[]]
 var pl0 = players[0]
 
-$().ready(function() {
+$().ready(function(){
 
-var skl = []
-var sklf = []
-var sklfr = []
+	var skl = []
+	var sklf = []
+	var sklfr = []
 
-skl['nation']	= ['nt' ,'КСт','Код страны']
-skl['natfull']	= ['ntf','стр','страна']
-skl['secondname']= ['snm','Фам','Фамилия']
-skl['firstname']= ['fnm','Имя','Имя']
-skl['age']		= ['age','взр','Возраст']
-skl['id']		= ['id' ,'id','id игрока']
-skl['internationalapps'] = ['inl','иСб','Игр за сборную']
-skl['internationalgoals']= ['ing','гСб','Голов за сборную']
-skl['contract']	= ['cnt','кнт','Контракт']
-skl['wage']		= ['wag','зрп','Зарплата']
-skl['value']	= ['val','ном','Номинал']
-skl['corners']	= ['cn','уг','Угловые']
-skl['crossing']	= ['cr','нв','Навесы']
-skl['dribbling']= ['dr','др','Дриблинг']
-skl['finishing']= ['fn','уд','Удары']
-skl['freekicks']= ['fk','шт','Штрафные']
-skl['handling']	= ['hl','ру','Игра руками']
-skl['heading']	= ['hd','гл','Игра головой']
-//skl['heading']	= ['hd','вх','Игра на выходах'
-skl['leadership']= ['ld','лд','Лидерство']
-skl['longshots']	= ['ls','ду','Дальние удары']
-skl['marking']	= ['mr','по','Перс. опека']
-skl['pace']		= ['pc','ск','Скорость']
-skl['passing']	= ['ps','пс','Игра в пас']
-skl['positioning']= ['pt','вп','Выбор позиции']
-skl['reflexes']	= ['rf','ре','Реакция']
-skl['stamina']	= ['st','вн','Выносливость']
-skl['strength']	= ['sr','мщ','Мощь']
-skl['tackling']	= ['tc','от','Отбор мяча']
-skl['vision']	= ['vs','ви','Видение поля']
-skl['workrate']	= ['wr','рб','Работоспособность']
-skl['technique']	= ['tc','тх','Техника']
-skl['morale']	= ['mrl','мрл','Мораль']
-skl['form']		= ['frm','фрм','Форма']
-skl['position']	= ['pos','поз','Позиция']
-// champ
-skl['games']	= ['gms','игр','']
-skl['goals']	= ['gls','гол','']
-skl['passes']	= ['pss','пас','']
-skl['mom']		= ['mom','им','']
-skl['ratingav']	= ['rat','ртг','']						
-// c = cup?
-skl['cgames']	= ['cgm','','']
-skl['cgoals']	= ['cgl','','']
-skl['cpasses']	= ['cps','','']
-skl['cmom']		= ['cmm','','']
-skl['cratingav']	= ['crt','','']
-//e = eurocup? (международные)
-skl['egames']	= ['egm','','']
-skl['egoals']	= ['egl','','']
-skl['epasses']	= ['eps','','']
-skl['emom']		= ['emm','','']
-skl['eratingav']	= ['ert','','']
-//w =  (сборные)
-skl['wgames']	= ['wgm','','']
-skl['wgoals']	= ['wgl','','']
-skl['wpasses']	= ['wps','','']
-skl['wmom']		= ['wmm','','']
-skl['wratingav']= ['wrt','','']
-// f = friends
-skl['fgames']	= ['fgm','','']
-skl['fgoals']	= ['fgl','','']
-skl['fpasses']	= ['fps','','']
-skl['fmom']		= ['fmm','','']
-skl['fratingav']= ['frt','','']
-// a = all (все)
-skl['vratingav']= ['art','',''] // округленый
-skl['agames']	= ['agm','','']
-skl['agoals']	= ['agl','','']
-skl['apasses']	= ['aps','','']
-skl['amom']		= ['amm','','']
+	skl['nation']	= ['nt' ,'КСт','Код страны']
+	skl['natfull']	= ['ntf','стр','страна']
+	skl['secondname']= ['snm','Фам','Фамилия']
+	skl['firstname']= ['fnm','Имя','Имя']
+	skl['age']		= ['age','взр','Возраст']
+	skl['id']		= ['id' ,'id','id игрока']
+	skl['internationalapps'] = ['inl','иСб','Игр за сборную']
+	skl['internationalgoals']= ['ing','гСб','Голов за сборную']
+	skl['contract']	= ['cnt','кнт','Контракт']
+	skl['wage']		= ['wag','зрп','Зарплата']
+	skl['value']	= ['val','ном','Номинал']
+	skl['corners']	= ['cn','уг','Угловые']
+	skl['crossing']	= ['cr','нв','Навесы']
+	skl['dribbling']= ['dr','др','Дриблинг']
+	skl['finishing']= ['fn','уд','Удары']
+	skl['freekicks']= ['fk','шт','Штрафные']
+	skl['handling']	= ['hl','ру','Игра руками']
+	skl['heading']	= ['hd','гл','Игра головой']
+	skl['exiting']	= ['ex','вх','Игра на выходах']
+	skl['leadership']= ['ld','лд','Лидерство']
+	skl['longshots']= ['ls','ду','Дальние удары']
+	skl['marking']	= ['mr','по','Перс. опека']
+	skl['pace']		= ['pc','ск','Скорость']
+	skl['passing']	= ['ps','пс','Игра в пас']
+	skl['positioning']= ['pt','вп','Выбор позиции']
+	skl['reflexes']	= ['rf','ре','Реакция']
+	skl['stamina']	= ['st','вн','Выносливость']
+	skl['strength']	= ['sr','мщ','Мощь']
+	skl['tackling']	= ['tc','от','Отбор мяча']
+	skl['vision']	= ['vs','ви','Видение поля']
+	skl['workrate']	= ['wr','рб','Работоспособность']
+	skl['technique']= ['tc','тх','Техника']
+	skl['morale']	= ['mrl','мрл','Мораль']
+	skl['form']		= ['frm','фрм','Форма']
+	skl['position']	= ['pos','поз','Позиция']
+	// champ
+	skl['games']	= ['gms','игр','']
+	skl['goals']	= ['gls','гол','']
+	skl['passes']	= ['pss','пас','']
+	skl['mom']		= ['mom','им','']
+	skl['ratingav']	= ['rat','ртг','']						
+	// c = cup?
+	skl['cgames']	= ['cgm','','']
+	skl['cgoals']	= ['cgl','','']
+	skl['cpasses']	= ['cps','','']
+	skl['cmom']		= ['cmm','','']
+	skl['cratingav']= ['crt','','']
+	//e = eurocup? (международные)
+	skl['egames']	= ['egm','','']
+	skl['egoals']	= ['egl','','']
+	skl['epasses']	= ['eps','','']
+	skl['emom']		= ['emm','','']
+	skl['eratingav']= ['ert','','']
+	//w =  (сборные)
+	skl['wgames']	= ['wgm','','']
+	skl['wgoals']	= ['wgl','','']
+	skl['wpasses']	= ['wps','','']
+	skl['wmom']		= ['wmm','','']
+	skl['wratingav']= ['wrt','','']
+	// f = friends
+	skl['fgames']	= ['fgm','','']
+	skl['fgoals']	= ['fgl','','']
+	skl['fpasses']	= ['fps','','']
+	skl['fmom']		= ['fmm','','']
+	skl['fratingav']= ['frt','','']
+	// a = all (все)
+	skl['vratingav']= ['art','',''] // округленый
+	skl['agames']	= ['agm','','']
+	skl['agoals']	= ['agl','','']
+	skl['apasses']	= ['aps','','']
+	skl['amom']		= ['amm','','']
 
-skl['training']	= ['trn','тре','Тренировка']
-skl['inj']		= ['inj','трв','Травма']
-skl['sus']		= ['sus','дск','Дисквалификация']
-skl['syg']		= ['syg','сыг','Сыгранность']
+	skl['training']	= ['trn','тре','Тренировка']
+	skl['inj']		= ['inj','трв','Травма']
+	skl['sus']		= ['sus','дск','Дисквалификация']
+	skl['syg']		= ['syg','сыг','Сыгранность']
 
-skl['sumskills']= ['ss','сс','Сумма скилов']
-skl['team']		= ['team','ком','Команда']
-skl['teamurl']	= ['turl','turl','Урл команды']
-skl['sale']		= ['sale','трн','На трансфере?']
-skl['hash']		= ['hash','хэш','Хэш']
-skl['flag']		= ['f','фс','флаг состояния']
-skl['u21apps']	= ['uap','иМл','Игр за U21']
-skl['u21goals']	= ['ugl','гМл','Голов за U21']
+	skl['sumskills']= ['ss','сс','Сумма скилов']
+	skl['team']		= ['team','ком','Команда']
+	skl['teamurl']	= ['turl','turl','Урл команды']
+	skl['sale']		= ['sale','трн','На трансфере?']
+	skl['hash']		= ['hash','хэш','Хэш']
+	skl['flag']		= ['f','фс','флаг состояния']
+	skl['u21apps']	= ['uap','иМл','Игр за U21']
+	skl['u21goals']	= ['ugl','гМл','Голов за U21']
+
+	skl['idealnum']	= ['inum','идл','Сила игрока в % от идеала']
+	skl['idealpos']	= ['ipos','ИдлПоз','Идеальная позиция']
 
 
-
-for (i in skl) {
-	sklf[skl[i][0]] = i
-	sklfr[skl[i][2]] = i
-}
+	for (i in skl) {
+		sklf[skl[i][0]] = i
+		sklfr[skl[i][2]] = i
+	}
 
 
 	var poss = [['','','','','',''],
@@ -221,7 +223,7 @@ for (i in skl) {
 		['R AM','skillsram', 'R','AM',0,'!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=2,ви=*1.5,пс=*1.5,f=*0,Фам'],
 		['C FW(офсайды)','skillslcfw','C','FW',0,'!сст,!s=*0,вп=*3,уд=*2,ск=*2,тх=*1.5,др,f=*0,Фам'],
 		['C FW(дриблер)','skillsccfw','C','FW',0,'!сст,!s=*0,др=*3,уд=*2,тх=*2,ск,f=*0,Фам'],
-		['C FW(головастик)','skillsrcfw','C','FW',0,'!сст,!s=*0,гл=*3,уд=*2,мщ=*2,вп=*2,ск,f=*0,Фам'],
+		['C FW(головастик)','skillsrcfw','C','FW',0,'!сст,!s=*0,гл=*3,уд=*2,мщ=*2,вп=*2,ск,f=*0,Фам']
 	]
 	
 	for (var i in poss) {
@@ -348,7 +350,7 @@ for (i in skl) {
 		var sksstr = psj[5].split(',') 					// !сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс,f=*0,Фам
 		var koff = 1
 
-		if ((pl0.position.indexOf(psj[2]) == -1) || (player[st['поз']].indexOf(psj[3]) == -1)) koff = 1000
+		if ((pl0.['position'].indexOf(psj[2]) == -1) || (pl0.['position'].indexOf(psj[3]) == -1)) koff = 1000
 
 		for (var s in sksstr) {
 			var sks = sksstr[s].replace('!','').split('=',2)
@@ -362,19 +364,19 @@ for (i in skl) {
 		posfilter[j][0] = sst/ideal*100
 		posfilter[j][2] = posfilter[j][0].toFixed(1)
 		posfilter[j][0] = posfilter[j][0]/koff
-		posfilter[j][1] = psj[0]		// GK
+		posfilter[j][1] = psj[0]
 	}
 
 	posfilter.sort(sSkills)
-	player[st['идл']] = posfilter[1][2]
-	player[st['ИдлПоз']] = posfilter[1][1]
+	pl0.idealnum = posfilter[1][2]
+	pl0.idealpos = posfilter[1][1]
 
 	var text3 = ''
-//	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1,'+player[st['id']]+'))">'+('Запомнить').fontsize(1)+'</a>'
+//	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1,'+pl0.id'))">'+('Запомнить').fontsize(1)+'</a>'
 //	text3 += '<br><a id="compare" href="javascript:void(CheckPlayer(0))">'+('Сравнить').fontsize(1)+'</a><br>'
 
 	if (UrlValue('t') != 'yp' && UrlValue('t') != 'yp2') {
-		text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum(player,st))">'+('Код для форума').fontsize(1)+'</a><br>'
+		text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum(players))">'+('Код для форума').fontsize(1)+'</a><br>'
 	}
 
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
@@ -399,7 +401,8 @@ for (i in skl) {
 	}
 	text3 += '</div>'
 
-	var preparedhtml = '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
+	var preparedhtml = ''
+	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 	preparedhtml += '</td></tr></table>'
 	$('body table.border:last').before(preparedhtml)
@@ -409,5 +412,4 @@ for (i in skl) {
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
 
-	//ShowSkills('"'+skills[0]+'"')
 });
