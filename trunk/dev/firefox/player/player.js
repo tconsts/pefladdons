@@ -99,7 +99,8 @@ var pl0 = players[0]
 $().ready(function(){
 
 	var skl = []
-	var sklf = []
+	var sklse = []
+	var sklsr = []
 	var sklfr = []
 
 	skl['nation']	= ['nt' ,'КСт','Код страны']
@@ -144,35 +145,35 @@ $().ready(function(){
 	skl['mom']		= ['mom','им','']
 	skl['ratingav']	= ['rat','ртг','']						
 	// c = cup?
-	skl['cgames']	= ['cgm','','']
-	skl['cgoals']	= ['cgl','','']
-	skl['cpasses']	= ['cps','','']
-	skl['cmom']		= ['cmm','','']
-	skl['cratingav']= ['crt','','']
+	skl['cgames']	= ['cgm','.','']
+	skl['cgoals']	= ['cgl','.','']
+	skl['cpasses']	= ['cps','.','']
+	skl['cmom']		= ['cmm','.','']
+	skl['cratingav']= ['crt','.','']
 	//e = eurocup? (международные)
-	skl['egames']	= ['egm','','']
-	skl['egoals']	= ['egl','','']
-	skl['epasses']	= ['eps','','']
-	skl['emom']		= ['emm','','']
-	skl['eratingav']= ['ert','','']
+	skl['egames']	= ['egm','.','']
+	skl['egoals']	= ['egl','.','']
+	skl['epasses']	= ['eps','.','']
+	skl['emom']		= ['emm','.','']
+	skl['eratingav']= ['ert','.','']
 	//w =  (сборные)
-	skl['wgames']	= ['wgm','','']
-	skl['wgoals']	= ['wgl','','']
-	skl['wpasses']	= ['wps','','']
-	skl['wmom']		= ['wmm','','']
-	skl['wratingav']= ['wrt','','']
+	skl['wgames']	= ['wgm','.','']
+	skl['wgoals']	= ['wgl','.','']
+	skl['wpasses']	= ['wps','.','']
+	skl['wmom']		= ['wmm','.','']
+	skl['wratingav']= ['wrt','.','']
 	// f = friends
-	skl['fgames']	= ['fgm','','']
-	skl['fgoals']	= ['fgl','','']
-	skl['fpasses']	= ['fps','','']
-	skl['fmom']		= ['fmm','','']
-	skl['fratingav']= ['frt','','']
+	skl['fgames']	= ['fgm','.','']
+	skl['fgoals']	= ['fgl','.','']
+	skl['fpasses']	= ['fps','.','']
+	skl['fmom']		= ['fmm','.','']
+	skl['fratingav']= ['frt','.','']
 	// a = all (все)
-	skl['vratingav']= ['art','',''] // округленый
-	skl['agames']	= ['agm','','']
-	skl['agoals']	= ['agl','','']
-	skl['apasses']	= ['aps','','']
-	skl['amom']		= ['amm','','']
+	skl['vratingav']= ['art','.',''] // округленый
+	skl['agames']	= ['agm','.','']
+	skl['agoals']	= ['agl','.','']
+	skl['apasses']	= ['aps','.','']
+	skl['amom']		= ['amm','.','']
 
 	skl['training']	= ['trn','тре','Тренировка']
 	skl['inj']		= ['inj','трв','Травма']
@@ -193,7 +194,8 @@ $().ready(function(){
 
 
 	for (i in skl) {
-		sklf[skl[i][0]] = i
+//		sklse[skl[i][0]] = i
+		sklsr[skl[i][1]] = i
 		sklfr[skl[i][2]] = i
 	}
 
@@ -337,7 +339,7 @@ $().ready(function(){
 	pl0.form = +ms2[j2].split(': ',2)[1].split('%',1)[0]
 	pl0.morale = +ms2[j2].split(': ',3)[2].replace('%</i>','')
 
-
+	var mm = ''
 	// fill poss masive
 	for (var j in poss) {
 		posfilter[j] = [0]
@@ -347,20 +349,24 @@ $().ready(function(){
 		ideal = 0
 		sst = 0
 		var psj = poss[j]
-		var sksstr = psj[5].split(',') 					// !сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс,f=*0,Фам
+		var sksstr = psj[5].split(',') 			// !сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс,f=*0,Фам
 		var koff = 1
 
-		if ((pl0.['position'].indexOf(psj[2]) == -1) || (pl0.['position'].indexOf(psj[3]) == -1)) koff = 1000
+		if ((pl0.position.indexOf(psj[2]) == -1) || (pl0.position.indexOf(psj[3]) == -1)) koff = 1000
+
 
 		for (var s in sksstr) {
-			var sks = sksstr[s].replace('!','').split('=',2)
-			if (sk[sks[0]] ) {
-				posfilter[j][3] += sk[sks[0]]+','
-				ideal += eval(15+(sks[1]?sks[1]:''))
-				sst += eval((player[st[sks[0]]]?player[st[sks[0]]]:1)+(sks[1]?sks[1]:''))
+			var sks = sksstr[s].replace('!','').split('=',2)	// sks[0] = ре, sks[1] = *2
+			if ( sklsr[sks[0]]) {
+				var skillname = sklsr[sks[0]]	// reflex
+				var skilloperation = (sks[1] ? sks[1] : '*0')
+				var skillvalue = (isNaN(parseInt(pl0[skillname])) ? 1 : parseInt(pl0[skillname]))
+				posfilter[j][3] += skl[skillname][2] + ','
+				ideal += eval(15 + skilloperation)
+				sst += eval( skillvalue + skilloperation )
 			}
-			
 		}
+
 		posfilter[j][0] = sst/ideal*100
 		posfilter[j][2] = posfilter[j][0].toFixed(1)
 		posfilter[j][0] = posfilter[j][0]/koff
