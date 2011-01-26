@@ -125,7 +125,7 @@ function CodeForForum(){
 
 	x += $('td.back4 table table:first').html()
 		.replace(/<!-- [а-я] -->/g,'')
-		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
+		.replace(/<tbody>/g,'<table width=100%>')
 		.replace(/tbody/g,'table')
 		.replace(/\</g,'[')
 		.replace(/\>/g,']')
@@ -134,6 +134,18 @@ function CodeForForum(){
 		.replace(/.gif/g,'.gif[/img')
 		.replace(/"/g,'')
 		.replace(/\n/g,'')
+
+	if (UrlValue('t') == 'p' ||UrlValue('t') == 'pp'){
+		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
+		x += $('td.back4 table table:last').html()
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/"/g,'')
+			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
+	}
 	x += '[/td][/tr][/table]'
 	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
 //	x += '[/spoiler]'
@@ -442,10 +454,7 @@ $().ready(function(){
 //	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1))">'+('Запомнить').fontsize(1)+'</a>'
 //	text3 += '<br><a id="compare" href="javascript:void(CheckPlayer(0))">'+('Сравнить').fontsize(1)+'</a><br>'
 
-//	if (UrlValue('t') != 'yp' && UrlValue('t') != 'yp2') {
-		text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
-//	}
-
+	text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
 	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
 
