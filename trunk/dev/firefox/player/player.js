@@ -35,9 +35,7 @@ function sSkills(i, ii) { // Сортировка
 
 function ShowAll(){
 	$('td.back4 table:first table:first td').each(function(){
-//		$(this).css('color','black').css('background-color','#A3DE8F').find('img').show()
 		$(this).removeAttr('bgcolor').find('img').removeAttr('style')
-
 	})
 }
 
@@ -45,12 +43,8 @@ function ShowSkills(skl){
 	ShowAll()
 	$('td.back4 table:first table:first td:even').each(function(){
 		if (skl.indexOf($(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
-//			$(this).css('color','#888A85').css('background-color','#C9F8B7')
-//			.next().css('color','#888A85').css('background-color','#C9F8B7').find('img').hide();
-
 			$(this).attr('bgcolor','#C9F8B7')
 			.next().attr('bgcolor','#C9F8B7').find('img').hide();
-
 		}
 	})
 }
@@ -106,7 +100,7 @@ function CodeForForum(){
 		x+= '<br>'
 	}
 
-	ShowAll()
+	$('td.back4 table:first table:first img').removeAttr('style')
 	x += '<br><hr><b>Полный вариант</b>:<br>'
 	x +='<textarea rows="7" cols="90" readonly="readonly" id="CodeForForum">'
 
