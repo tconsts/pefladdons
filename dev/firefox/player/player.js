@@ -34,19 +34,29 @@ function sSkills(i, ii) { // Сортировка
 }
 
 function ShowAll(){
-	$('td.back4 table:first table:first td').each(function(){
+	$('td.back4 table:first table:not(#plheader):first td').each(function(){
 		$(this).removeAttr('bgcolor').find('img').removeAttr('style')
 	})
 }
 
 function ShowSkills(skl){
 	ShowAll()
-	$('td.back4 table:first table:first td:even').each(function(){
-		if (skl.indexOf($(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
-			$(this).attr('bgcolor','#C9F8B7')
-			.next().attr('bgcolor','#C9F8B7').find('img').hide();
-		}
-	})
+	if(compare == true) {
+		$('td.back4 table:first table:not(#plheader):first td').each(function(i,val){
+			if (i%3 == 0 && skl.indexOf($(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
+				$(val).attr('bgcolor','#C9F8B7')
+					.next().attr('bgcolor','#C9F8B7')
+					.next().attr('bgcolor','#C9F8B7').find('img').hide();
+			}
+		})
+	} else {
+		$('td.back4 table:first table:not(#plheader):first td:even').each(function(){
+			if (skl.indexOf($(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
+				$(this).attr('bgcolor','#C9F8B7')
+				.next().attr('bgcolor','#C9F8B7').find('img').hide();
+			}
+		})
+	}
 }
 
 function OpenAll(){
@@ -56,21 +66,60 @@ function OpenAll(){
 
 function CheckPlayer(x){
 	if (x == 0) {
-		// Access some stored data
-		var text = ''
-		for (i in pl0){
-			 text += i +'='+pl0[i]+', '
+		// Get data and compare players
+		ShowAll()
+		compare = true
+		var text0 = ''
+		var text1 = ''
+		players[1] = []
+		var pl1 = players[1]
+		if (navigator.userAgent.indexOf('Firefox') != -1){
+			text1 = String(globalStorage[location.hostname].peflplayer)
+		} else {
+			text1 = String(sessionStorage.peflplayer)
 		}
-		$('td.back4').prepend(text + '<br>')
-		$('td.back4').prepend(sessionStorage.peflplayer + '<br><br>')
+		var pl = text1.split(',');
+
+		for (var i in pl) {
+			key = pl[i].split('=')
+			pl1[key[0]] = [key[1]]
+		}
+
+		// Header:
+		var pl1header = '<center><b>'
+		pl1header += pl1.firstname + ' ' + pl1.secondname + '(<a href="'+pl1.teamurl+'">' + pl1.team + '</a>) <br>'
+		pl1header += pl1.age + ' лет, ' + pl1.natfull + '<br>'
+		pl1header += 'Контракт: ' + pl1.contract + ' г., ' + String(pl1.wage).replace(/\./g,',') + '$ в игровой день<br>'
+		pl1header += 'Номинал: ' + String((pl1.value/1000).toFixed(3)).replace(/\./g,',') + '$<br>'
+		pl1header += pl1.position + '<br>'
+		pl1header += '<br>'
+		pl1header += 'Умения</b>(сс=' + pl1.sumskills + ')<br></center>'
+
+		$('td.back4 table center:first').before('<table id="plheader" width=100%><tr><td id="pl0" width=50% valign=top></td><td id="pl1" valign=top></td></tr></table>')
+		$('td.back4 table center:first').appendTo( $('td#pl0') )
+		$('td#pl1').html(pl1header)
+
+		// Skills:
+		$('td.back4 table:first table:not(#plheader):first td:even').each(function(i, val){
+			var skillname = sklfr[$(val).text()]
+			var skillvalue0 = pl0[skillname]
+			var skillvalue1 = pl1[skillname]
+			$(val)
+				.next().attr('width','10%')
+				.after('<td width=10%>'+skillvalue1+'</td>')
+		})
+
 	} else {
-		// Save data to a the current session's store
+		// Save data
 		var text = ''
 		for (i in pl0){
-			 text += i+'='+pl0[i]+', '
+			 text += i+'='+pl0[i]+','
 		}
-		sessionStorage.peflplayer = text
-		alert('Store: ' + text)
+		if (navigator.userAgent.indexOf('Firefox') != -1){
+			globalStorage[location.hostname].peflplayer = text
+		} else {	
+			sessionStorage.peflplayer = text
+		}
 	}
 	return false
 }
@@ -100,24 +149,41 @@ function CodeForForum(){
 		x+= '<br>'
 	}
 
-	$('td.back4 table:first table:first img').removeAttr('style')
+	$('td.back4 table:first table:not(#plheader):first img').removeAttr('style')
 	x += '<br><hr><b>Полный вариант</b>:<br>'
 	x +='<textarea rows="7" cols="90" readonly="readonly" id="CodeForForum">'
 
 	x += '[table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
-	x += $('td.back4 table center:first').find('a:contains("интересуются")').removeAttr('href').end().html()
-		.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
-		.replace(/<!-- [а-я] -->/g,'')
-		.replace(/\</g,'[')
-		.replace(/\>/g,']')
-		.replace(/a href=\"/g,'url=')
-		.replace(/\/a/g,'/url')
-		.replace(/\&amp\;/g,'&')
-		.replace(/"/g,'')
-		.replace(/\[br\]/g,'\n')
-	x += '[/center]\n\n'
+	if (compare == true) {
+		x += $('table#plheader').find('a:contains("интересуются")').removeAttr('href').end().html()
+			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/a href=\"/g,'url=')
+			.replace(/\/a/g,'/url')
+			.replace(/\&amp\;/g,'&')
+			.replace(/"/g,'')
+			.replace(/\[br\]/g,'\n')
+		x += '\n\n'
 
-	x += $('td.back4 table table:first').html()
+	} else {
+		x += $('td.back4 table center:first').find('a:contains("интересуются")').removeAttr('href').end().html()
+			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/a href=\"/g,'url=')
+			.replace(/\/a/g,'/url')
+			.replace(/\&amp\;/g,'&')
+			.replace(/"/g,'')
+			.replace(/\[br\]/g,'\n')
+		x += '[/center]\n\n'
+	}
+
+	x += $('td.back4 table table:not(#plheader):first').html()
 		.replace(/<!-- [а-я] -->/g,'')
 		.replace(/<tbody>/g,'<table width=100%>')
 		.replace(/tbody/g,'table')
@@ -129,7 +195,7 @@ function CodeForForum(){
 		.replace(/"/g,'')
 		.replace(/\n/g,'')
 
-	if (UrlValue('t') == 'p' ||UrlValue('t') == 'pp'){
+	if (compare == false && (UrlValue('t') == 'p' || UrlValue('t') == 'pp')){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
 		x += $('td.back4 table table:last').html()
 			.replace(/<!-- [а-я] -->/g,'')
@@ -145,8 +211,6 @@ function CodeForForum(){
 //	x += '[/spoiler]'
 	x += '</textarea>'
 
-
-
 	$('td.back4').html(x)
 	$('td#crabglobalright').empty()
 
@@ -155,13 +219,13 @@ function CodeForForum(){
 
 var players = [[]]
 var pl0 = players[0]
+var skl = []
+var sklse = []
+var sklsr = []
+var sklfr = []
+var compare = false
 
 $().ready(function(){
-
-	var skl = []
-	var sklse = []
-	var sklsr = []
-	var sklfr = []
 
 	skl['nation']	= ['nt' ,'КСт','Код страны']
 	skl['natfull']	= ['ntf','стр','страна']
@@ -255,8 +319,8 @@ $().ready(function(){
 
 	for (i in skl) {
 //		sklse[skl[i][0]] = i
-		sklsr[skl[i][1]] = i
-		sklfr[skl[i][2]] = i
+		sklsr[skl[i][1]] = i	// sklsr['лд'] = leadership
+		sklfr[skl[i][2]] = i	// sklfr['Лидерство'] = leadership
 	}
 
 
@@ -377,8 +441,13 @@ $().ready(function(){
 		pl0.wage = +ms[j].split(' ',4)[3].replace(/,/g,'').replace('$','')
 		j++
 	} else {
-		pl0.contart = 0
-		pl0.wage = 0
+		if (UrlValue('t') == 'yp' || UrlValue('t') == 'yp2'){
+			pl0.contract = 21 - pl0.age
+			pl0.wage = 100
+		} else {
+			pl0.contract = 0
+			pl0.wage = 0
+		}
 	}
 	if (ms[j].indexOf('Номинал:') != -1) {
 		pl0.value = +ms[j].split(' ',2)[1].replace(/,/g,'').replace('$','')
@@ -445,8 +514,8 @@ $().ready(function(){
 	pl0.idealpos = posfilter[1][1]
 
 	var text3 = ''
-//	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1))">'+('Запомнить').fontsize(1)+'</a>'
-//	text3 += '<br><a id="compare" href="javascript:void(CheckPlayer(0))">'+('Сравнить').fontsize(1)+'</a><br>'
+	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1))">'+('Запомнить').fontsize(1)+'</a>'
+	text3 += '<br><a id="compare" href="javascript:void(CheckPlayer(0))">'+('Сравнить').fontsize(1)+'</a><br>'
 
 	text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
