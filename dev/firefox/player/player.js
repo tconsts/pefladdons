@@ -84,7 +84,7 @@ function UrlValue(key,url){
 }
 
 function CodeForForum(){
-	var x = ''
+	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
 	var pl = players[0]
 	var ptype = UrlValue('t')
 	// если не школьник, то короткий код для форума есть.
