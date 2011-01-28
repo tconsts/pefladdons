@@ -45,7 +45,7 @@ function ShowSkills(skl){
 		$('td.back4 table:first table:not(#plheader):first td').each(function(i,val){
 			if (i%3 == 0 && skl.indexOf($(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
 				$(val).attr('bgcolor','#C9F8B7')
-					.next().attr('bgcolor','#C9F8B7')
+					.next().attr('bgcolor','#C9F8B7').find('img').hide().end()
 					.next().attr('bgcolor','#C9F8B7').find('img').hide();
 			}
 		})
@@ -60,7 +60,8 @@ function ShowSkills(skl){
 }
 
 function OpenAll(){
-	if ($("#mydiv").attr('style') == 'display: none;') $("#mydiv").show()
+//	if ($("#mydiv").attr('style') == 'display: none;') $("#mydiv").show()
+	if ($("#mydiv").attr('style')) $("#mydiv").removeAttr('style')
 	else $("#mydiv").hide()
 }
 
