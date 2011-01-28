@@ -110,16 +110,28 @@ function CheckPlayer(x){
 			if (pl1.u21apps != 0){
 				pl1header += ' / U21 матчей '
 				pl1header += pl1.u21apps
-				pl1header += ', '
+				pl1header += ', голов '
 				pl1header += pl1.u21goals
 			}
 			pl1header += ')'
 		}
 		pl1header += '<br>'
 		if (pl1.contract != 0 && pl1.wage != 0) {
-			pl1header += 'Контракт: ' + pl1.contract + ' г., ' + String(pl1.wage).replace(/\./g,',') + '$ в игровой день<br>'
+			pl1header += 'Контракт: ' + pl1.contract + ' г., ' + String((pl1.wage/1000).toFixed(3)).replace(/\./g,',') + '$ в игровой день<br>'
 		}
-		pl1header += 'Номинал: ' + String((pl1.value/1000).toFixed(3)).replace(/\./g,',') + '$<br>'
+		pl1header += 'Номинал: ' 
+		var nom = ''
+		if (pl1.value == 0) { 
+			nom = '???,000'
+		} else { 
+			if (pl1.value < 1000000) {
+				nom = (pl1.value/1000).toFixed(3)
+			} else {
+				nom = (pl1.value/1000000).toFixed(3) + ',000'
+			}
+		}
+		pl1header += String(nom).replace(/\./g,',')
+		pl1header += '$<br>'
 		pl1header += pl1.position + '<br>'
 		pl1header += '<br>'
 		pl1header += 'Умения</b>(сс=' + pl1.sumskills + ')<br></center>'
@@ -132,7 +144,7 @@ function CheckPlayer(x){
 		$('td.back4 table:first table:not(#plheader):first td:even').each(function(i, val){
 			var skillname = sklfr[$(val).text()]
 			var skillvalue0 = pl0[skillname]
-			var skillvalue1 = (pl1[skillname] == 'undefined' ? '?' : pl1[skillname])
+			var skillvalue1 = (pl1[skillname] == undefined ? '??' : pl1[skillname])
 			$(val)
 				.next().attr('width','10%')
 				.after('<td width=10%>'+skillvalue1+'</td>')
