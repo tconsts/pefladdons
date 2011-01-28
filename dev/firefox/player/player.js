@@ -134,9 +134,15 @@ function CheckPlayer(x){
 			var skillname = sklfr[$(val).text()]
 			var skillvalue0 = pl0[skillname]
 			var skillvalue1 = (pl1[skillname] == undefined ? '??' : pl1[skillname])
+			var skilltext = '<td width=10%>'
+			skilltext += String(skillvalue1).split('.')[0]
+			if (String(skillvalue1).split('.')[1]){
+				skilltext += ' <img height="12" src="system/img/g/' + String(skillvalue1).split('.')[1] + '.gif">'
+   			}
+			skilltext += '</td>'
 			$(val)
 				.next().attr('width','10%')
-				.after('<td width=10%>'+skillvalue1+'</td>')
+				.after(skilltext)
 		})
 
 	} else {
@@ -184,7 +190,7 @@ function CodeForForum(){
 	x += '<br><hr><b>Полный вариант</b>:<br>'
 	x +='<textarea rows="7" cols="90" readonly="readonly" id="CodeForForum">'
 
-	x += '[table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
+	x += '[spoiler][table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
 	if (compare == true) {
 		x += $('table#plheader')
 			.find('a:contains("интересуются")').removeAttr('href').end()
@@ -241,7 +247,9 @@ function CodeForForum(){
 			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
 	}
 	x += '[/td][/tr][/table]'
-	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
+	x += '\n\n'
+	x +=(compare == false ? '\n' : '----------------------------------------------------------------------------------------------------------------------------')
+	x +='[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center][/spoiler]\n';
 //	x += '[/spoiler]'
 	x += '</textarea>'
 
@@ -403,16 +411,17 @@ $().ready(function(){
 	var posfilter = []
 	var ssp = 0
 
-	var skillname = ''
-	var skillvalue = 0
-	var skillsum = 0
-
 	// get player skills
+	var skillsum = 0
 	$('td.back4 table:first table:first td:even').each(function(){
-		skillname = $(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'');
-		skillvalue = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''));
+		var skillarrow = ''
+		var skillname = $(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'');
+		var skillvalue = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''));
+		if ($(this).next().find('img').attr('src') != undefined){
+			skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
+		}
 		skillsum += skillvalue;
-		pl0[sklfr[skillname]] = skillvalue;
+		pl0[sklfr[skillname]] = skillvalue + skillarrow;
 	})
 	pl0.sumskills = skillsum
 
@@ -602,8 +611,6 @@ $().ready(function(){
 		}
 		$('a#compare').attr('href','javascript:void(CheckPlayer(0))').html(('Сравнить&nbsp;(' + pl1.secondname +')').fontsize(1))
 	}
-
-
 
 	return false
 });
