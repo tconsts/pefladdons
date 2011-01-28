@@ -34,19 +34,29 @@ function sSkills(i, ii) { // Сортировка
 }
 
 function ShowAll(){
-	$('td.back4 table:first table:first td').each(function(){
+	$('td.back4 table:first table:not(#plheader):first td').each(function(){
 		$(this).removeAttr('bgcolor').find('img').removeAttr('style')
 	})
 }
 
 function ShowSkills(skl){
 	ShowAll()
-	$('td.back4 table:first table:first td:even').each(function(){
-		if (skl.indexOf($(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
-			$(this).attr('bgcolor','#C9F8B7')
-			.next().attr('bgcolor','#C9F8B7').find('img').hide();
-		}
-	})
+	if(compare == true) {
+		$('td.back4 table:first table:not(#plheader):first td').each(function(i,val){
+			if (i%3 == 0 && skl.indexOf($(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
+				$(val).attr('bgcolor','#C9F8B7')
+					.next().attr('bgcolor','#C9F8B7')
+					.next().attr('bgcolor','#C9F8B7').find('img').hide();
+			}
+		})
+	} else {
+		$('td.back4 table:first table:not(#plheader):first td:even').each(function(){
+			if (skl.indexOf($(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
+				$(this).attr('bgcolor','#C9F8B7')
+				.next().attr('bgcolor','#C9F8B7').find('img').hide();
+			}
+		})
+	}
 }
 
 function OpenAll(){
@@ -56,21 +66,97 @@ function OpenAll(){
 
 function CheckPlayer(x){
 	if (x == 0) {
-		// Access some stored data
-		var text = ''
-		for (i in pl0){
-			 text += i +'='+pl0[i]+', '
+		// Get data and compare players
+		ShowAll()
+		$('td.back4').prepend('<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>')
+		$('a#remember, a#compare').removeAttr('href')
+
+		compare = true
+
+		// Header:
+		var pl1header = '<center><b>'
+		pl1header += pl1.firstname + ' ' + pl1.secondname 
+		if (pl1.team != '') {
+			pl1header += ' (' 
+			pl1header += (pl1.teamurl != '' ? '<a href="'+pl1.teamurl+'">' : '')
+			pl1header += pl1.team
+			pl1header += (pl1.teamurl != '' ? '</a>' : '')
+			pl1header += ')'
 		}
-		$('td.back4').prepend(text + '<br>')
-		$('td.back4').prepend(sessionStorage.peflplayer + '<br><br>')
+		pl1header += '<br>'
+		pl1header += pl1.age + ' лет'
+		if (pl1.natfull != ' '){
+			pl1header += ', '
+			pl1header += pl1.natfull
+			pl1header += ' (матчей '
+			pl1header += pl1.internationalapps
+			pl1header += ', голов '
+			pl1header += pl1.internationalgoals
+			if (pl1.u21apps != 0){
+				pl1header += ' / U21 матчей '
+				pl1header += pl1.u21apps
+				pl1header += ', голов '
+				pl1header += pl1.u21goals
+			}
+			pl1header += ')'
+		}
+		pl1header += '<br>'
+		if (pl1.contract != 0 && pl1.wage != 0) {
+			pl1header += 'Контракт: ' + pl1.contract + ' г., ' 
+			if (pl1.wage > 999){
+				pl1header += String((pl1.wage/1000).toFixed(3)).replace(/\./g,',')
+			} else{
+				pl1header += pl1.wage
+			}
+			pl1header += '$ в игровой день<br>'
+		}
+		if (pl1.value != 0) { 
+			var nom = ''
+			pl1header += 'Номинал: ' 
+			if (pl1.value < 1000000) {
+				nom = (pl1.value/1000).toFixed(3)
+			} else {
+				nom = (pl1.value/1000000).toFixed(3) + ',000'
+			}
+			pl1header += String(nom).replace(/\./g,',')
+			pl1header += '$<br>'
+		}
+		pl1header += pl1.position + '<br>'
+		pl1header += '<br>'
+		pl1header += 'Умения</b>(сс=' + pl1.sumskills + ')<br></center>'
+
+		$('td.back4 table center:first').before('<table id="plheader" width=100%><tr><td id="pl0" width=50% valign=top></td><td id="pl1" valign=top></td></tr></table>')
+		$('td.back4 table center:first').appendTo( $('td#pl0') )
+		$('td#pl1').html(pl1header)
+
+		// Skills:
+		$('td.back4 table:first table:not(#plheader):first td:even').each(function(i, val){
+			var skillname = sklfr[$(val).text()]
+			var skillvalue0 = pl0[skillname]
+			var skillvalue1 = (pl1[skillname] == undefined ? '??' : pl1[skillname])
+			var skilltext = '<td width=10%>'
+			skilltext += String(skillvalue1).split('.')[0]
+			if (String(skillvalue1).split('.')[1]){
+				skilltext += ' <img height="12" src="system/img/g/' + String(skillvalue1).split('.')[1] + '.gif">'
+   			}
+			skilltext += '</td>'
+			$(val)
+				.next().attr('width','10%')
+				.after(skilltext)
+		})
+
 	} else {
-		// Save data to a the current session's store
+		// Save data
 		var text = ''
 		for (i in pl0){
-			 text += i+'='+pl0[i]+', '
+			 text += i+'='+pl0[i]+','
 		}
-		sessionStorage.peflplayer = text
-		alert('Store: ' + text)
+		if (navigator.userAgent.indexOf('Firefox') != -1){
+			globalStorage[location.hostname].peflplayer = text
+		} else {	
+			sessionStorage.peflplayer = text
+		}
+		$('a#compare').attr('href','javascript:void(CheckPlayer(0))').html(('Сравнить&nbsp;(' + pl0.secondname  + ')').fontsize(1))
 	}
 	return false
 }
@@ -88,7 +174,7 @@ function CodeForForum(){
 	var pl = players[0]
 	var ptype = UrlValue('t')
 	// если не школьник, то короткий код для форума есть.
-	if (ptype != 'yp' && ptype != 'yp2') {
+	if (compare == false && ptype != 'yp' && ptype != 'yp2') {
 		x += '<br><b>Упрощенный вариант</b>:<br><br>'
 		x += '[url=plug.php?' + location.search.substring(1) + ']' + pl.firstname + ' ' + pl.secondname + '[/url] (сс=' + pl.sumskills + ')'
 		if (ptype == 'p') x += ' | [player=' + pl.id + '][img]images/eye.png[/img][/player]'
@@ -100,24 +186,44 @@ function CodeForForum(){
 		x+= '<br>'
 	}
 
-	$('td.back4 table:first table:first img').removeAttr('style')
+	$('td.back4 table:first table:not(#plheader):first img').removeAttr('style')
 	x += '<br><hr><b>Полный вариант</b>:<br>'
 	x +='<textarea rows="7" cols="90" readonly="readonly" id="CodeForForum">'
 
-	x += '[table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
-	x += $('td.back4 table center:first').find('a:contains("интересуются")').removeAttr('href').end().html()
-		.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
-		.replace(/<!-- [а-я] -->/g,'')
-		.replace(/\</g,'[')
-		.replace(/\>/g,']')
-		.replace(/a href=\"/g,'url=')
-		.replace(/\/a/g,'/url')
-		.replace(/\&amp\;/g,'&')
-		.replace(/"/g,'')
-		.replace(/\[br\]/g,'\n')
-	x += '[/center]\n\n'
+	x += '[spoiler][table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
+	if (compare == true) {
+		x += $('table#plheader')
+			.find('a:contains("интересуются")').removeAttr('href').end()
+			.find('center, b, td').removeAttr('id').end()
+			.html()
+			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/a href=\"/g,'url=')
+			.replace(/\/a/g,'/url')
+			.replace(/\&amp\;/g,'&')
+			.replace(/"/g,'')
+			.replace(/\[br\]/g,'\n')
+		x += '\n\n'
 
-	x += $('td.back4 table table:first').html()
+	} else {
+		x += $('td.back4 table center:first').find('a:contains("интересуются")').removeAttr('href').end().html()
+			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/a href=\"/g,'url=')
+			.replace(/\/a/g,'/url')
+			.replace(/\&amp\;/g,'&')
+			.replace(/"/g,'')
+			.replace(/\[br\]/g,'\n')
+		x += '[/center]\n\n'
+	}
+
+	x += $('td.back4 table table:not(#plheader):first').html()
 		.replace(/<!-- [а-я] -->/g,'')
 		.replace(/<tbody>/g,'<table width=100%>')
 		.replace(/tbody/g,'table')
@@ -129,7 +235,7 @@ function CodeForForum(){
 		.replace(/"/g,'')
 		.replace(/\n/g,'')
 
-	if (UrlValue('t') == 'p' ||UrlValue('t') == 'pp'){
+	if (compare == false && (UrlValue('t') == 'p' || UrlValue('t') == 'pp')){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
 		x += $('td.back4 table table:last').html()
 			.replace(/<!-- [а-я] -->/g,'')
@@ -141,11 +247,11 @@ function CodeForForum(){
 			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
 	}
 	x += '[/td][/tr][/table]'
-	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
+	x += '\n\n'
+	x +=(compare == false ? '\n' : '----------------------------------------------------------------------------------------------------------------------------')
+	x +='[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center][/spoiler]\n';
 //	x += '[/spoiler]'
 	x += '</textarea>'
-
-
 
 	$('td.back4').html(x)
 	$('td#crabglobalright').empty()
@@ -155,13 +261,14 @@ function CodeForForum(){
 
 var players = [[]]
 var pl0 = players[0]
+var pl1 = players[1] = []
+var skl = []
+var sklse = []
+var sklsr = []
+var sklfr = []
+var compare = false
 
 $().ready(function(){
-
-	var skl = []
-	var sklse = []
-	var sklsr = []
-	var sklfr = []
 
 	skl['nation']	= ['nt' ,'КСт','Код страны']
 	skl['natfull']	= ['ntf','стр','страна']
@@ -255,8 +362,8 @@ $().ready(function(){
 
 	for (i in skl) {
 //		sklse[skl[i][0]] = i
-		sklsr[skl[i][1]] = i
-		sklfr[skl[i][2]] = i
+		sklsr[skl[i][1]] = i	// sklsr['лд'] = leadership
+		sklfr[skl[i][2]] = i	// sklfr['Лидерство'] = leadership
 	}
 
 
@@ -304,16 +411,17 @@ $().ready(function(){
 	var posfilter = []
 	var ssp = 0
 
-	var skillname = ''
-	var skillvalue = 0
-	var skillsum = 0
-
 	// get player skills
+	var skillsum = 0
 	$('td.back4 table:first table:first td:even').each(function(){
-		skillname = $(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'');
-		skillvalue = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''));
+		var skillarrow = ''
+		var skillname = $(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'');
+		var skillvalue = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''));
+		if ($(this).next().find('img').attr('src') != undefined){
+			skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
+		}
 		skillsum += skillvalue;
-		pl0[sklfr[skillname]] = skillvalue;
+		pl0[sklfr[skillname]] = skillvalue + skillarrow;
 	})
 	pl0.sumskills = skillsum
 
@@ -347,7 +455,7 @@ $().ready(function(){
 	pl0.id  = UrlValue('j')
 	pl0.hash  = UrlValue('z')
 	// школяр!
-	if (UrlValue('t') == 'yp') {
+	if (UrlValue('t') == 'yp' || UrlValue('t') == 'yp2') {
 		pl0.flag = 5
 	}
  	j++
@@ -377,8 +485,13 @@ $().ready(function(){
 		pl0.wage = +ms[j].split(' ',4)[3].replace(/,/g,'').replace('$','')
 		j++
 	} else {
-		pl0.contart = 0
-		pl0.wage = 0
+		if (UrlValue('t') == 'yp' || UrlValue('t') == 'yp2'){
+			pl0.contract = 21 - pl0.age
+			pl0.wage = 100
+		} else {
+			pl0.contract = 0
+			pl0.wage = 0
+		}
 	}
 	if (ms[j].indexOf('Номинал:') != -1) {
 		pl0.value = +ms[j].split(' ',2)[1].replace(/,/g,'').replace('$','')
@@ -444,9 +557,10 @@ $().ready(function(){
 	pl0.idealnum = posfilter[1][2]
 	pl0.idealpos = posfilter[1][1]
 
+
 	var text3 = ''
-//	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1))">'+('Запомнить').fontsize(1)+'</a>'
-//	text3 += '<br><a id="compare" href="javascript:void(CheckPlayer(0))">'+('Сравнить').fontsize(1)+'</a><br>'
+	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1))">'+('Запомнить').fontsize(1)+'</a>'
+	text3 += '<br><a id="compare">'+('Сравнить').fontsize(1)+'</a><br>'
 
 	text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
@@ -481,5 +595,22 @@ $().ready(function(){
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
+
+	// Get info fom Global or Session Storage
+	var text1 = ''
+	if (navigator.userAgent.indexOf('Firefox') != -1){
+		text1 = String(globalStorage[location.hostname].peflplayer)
+	} else {
+		text1 = String(sessionStorage.peflplayer)
+	}
+	if (text1 != 'undefined'){
+		var pl = text1.split(',');
+		for (var i in pl) {
+			key = pl[i].split('=')
+			pl1[key[0]] = [key[1]]
+		}
+		$('a#compare').attr('href','javascript:void(CheckPlayer(0))').html(('Сравнить&nbsp;(' + pl1.secondname +')').fontsize(1))
+	}
+
 	return false
 });
