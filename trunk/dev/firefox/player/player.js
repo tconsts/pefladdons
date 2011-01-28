@@ -68,6 +68,9 @@ function CheckPlayer(x){
 	if (x == 0) {
 		// Get data and compare players
 		ShowAll()
+		$('td.back4').prepend('<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>')
+		$('a#remember, a#compare').removeAttr('href')
+
 		compare = true
 		var text0 = ''
 		var text1 = ''
@@ -87,9 +90,35 @@ function CheckPlayer(x){
 
 		// Header:
 		var pl1header = '<center><b>'
-		pl1header += pl1.firstname + ' ' + pl1.secondname + '(<a href="'+pl1.teamurl+'">' + pl1.team + '</a>) <br>'
-		pl1header += pl1.age + ' лет, ' + pl1.natfull + '<br>'
-		pl1header += 'Контракт: ' + pl1.contract + ' г., ' + String(pl1.wage).replace(/\./g,',') + '$ в игровой день<br>'
+		pl1header += pl1.firstname + ' ' + pl1.secondname 
+		if (pl1.team != '') {
+			pl1header += '(' 
+			pl1header += (pl1.teamurl != '' ? '<a href="'+pl1.teamurl+'">' : '')
+			pl1header += pl1.team
+			pl1header += (pl1.teamurl != '' ? '</a>' : '')
+			pl1header += ')'
+		}
+		pl1header += '<br>'
+		pl1header += pl1.age + ' лет'
+		if (pl1.natfull != ''){
+			pl1header += ', '
+			pl1header += pl1.natfull
+			pl1header += ' (матчей '
+			pl1header += pl1.internationalapps
+			pl1header += ', голов '
+			pl1header += pl1.internationalgoals
+			if (pl1.u21apps != 0){
+				pl1header += ' / U21 матчей '
+				pl1header += pl1.u21apps
+				pl1header += ', '
+				pl1header += pl1.u21goals
+			}
+			pl1header += ')'
+		}
+		pl1header += '<br>'
+		if (pl1.contract != 0 && pl1.wage != 0) {
+			pl1header += 'Контракт: ' + pl1.contract + ' г., ' + String(pl1.wage).replace(/\./g,',') + '$ в игровой день<br>'
+		}
 		pl1header += 'Номинал: ' + String((pl1.value/1000).toFixed(3)).replace(/\./g,',') + '$<br>'
 		pl1header += pl1.position + '<br>'
 		pl1header += '<br>'
@@ -103,7 +132,7 @@ function CheckPlayer(x){
 		$('td.back4 table:first table:not(#plheader):first td:even').each(function(i, val){
 			var skillname = sklfr[$(val).text()]
 			var skillvalue0 = pl0[skillname]
-			var skillvalue1 = pl1[skillname]
+			var skillvalue1 = (pl1[skillname] == 'undefined' ? '?' : pl1[skillname])
 			$(val)
 				.next().attr('width','10%')
 				.after('<td width=10%>'+skillvalue1+'</td>')
@@ -137,7 +166,7 @@ function CodeForForum(){
 	var pl = players[0]
 	var ptype = UrlValue('t')
 	// если не школьник, то короткий код для форума есть.
-	if (ptype != 'yp' && ptype != 'yp2') {
+	if (compare false && ptype != 'yp' && ptype != 'yp2') {
 		x += '<br><b>Упрощенный вариант</b>:<br><br>'
 		x += '[url=plug.php?' + location.search.substring(1) + ']' + pl.firstname + ' ' + pl.secondname + '[/url] (сс=' + pl.sumskills + ')'
 		if (ptype == 'p') x += ' | [player=' + pl.id + '][img]images/eye.png[/img][/player]'
@@ -155,7 +184,10 @@ function CodeForForum(){
 
 	x += '[table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
 	if (compare == true) {
-		x += $('table#plheader').find('a:contains("интересуются")').removeAttr('href').end().html()
+		x += $('table#plheader')
+			.find('a:contains("интересуются")').removeAttr('href').end()
+			.find('center, b, td').removeAttr('id').end()
+			.html()
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/<tbody>/g,'<table width=100%>')
@@ -411,7 +443,7 @@ $().ready(function(){
 	pl0.id  = UrlValue('j')
 	pl0.hash  = UrlValue('z')
 	// школяр!
-	if (UrlValue('t') == 'yp') {
+	if (UrlValue('t') == 'yp' || UrlValue('t') == 'yp2') {
 		pl0.flag = 5
 	}
  	j++
