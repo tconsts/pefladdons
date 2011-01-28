@@ -253,6 +253,7 @@ function CodeForForum(){
 
 var players = [[]]
 var pl0 = players[0]
+var pl1 = players[1]
 var skl = []
 var sklse = []
 var sklsr = []
@@ -560,8 +561,6 @@ $().ready(function(){
 		text1 = String(sessionStorage.peflplayer)
 	}
 	if (text1 != null){
-		players[1] = []
-		var pl1 = players[1]
 		var pl = text1.split(',');
 		for (var i in pl) {
 			key = pl[i].split('=')
