@@ -156,7 +156,7 @@ function CheckPlayer(x){
 		} else {	
 			sessionStorage.peflplayer = text
 		}
-		$('a#compare').attr('href','javascript:void(CheckPlayer(0))').html(('Сравнить&nbsp;c&nbsp;' + pl0.secondname).fontsize(1))
+		$('a#compare').attr('href','javascript:void(CheckPlayer(0))').html(('Сравнить&nbsp;(' + pl0.secondname  + ')').fontsize(1))
 	}
 	return false
 }
