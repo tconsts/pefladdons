@@ -553,22 +553,6 @@ $().ready(function(){
 	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1))">'+('Запомнить').fontsize(1)+'</a>'
 	text3 += '<br><a id="compare">'+('Сравнить').fontsize(1)+'</a><br>'
 
-	// Get info fom GlobalStorage
-	var text1 = ''
-	if (navigator.userAgent.indexOf('Firefox') != -1){
-		text1 = String(globalStorage[location.hostname].peflplayer)
-	} else {
-		text1 = String(sessionStorage.peflplayer)
-	}
-	if (text1 != null){
-		var pl = text1.split(',');
-		for (var i in pl) {
-			key = pl[i].split('=')
-			pl1[key[0]] = [key[1]]
-		}
-		$('a#compare').attr('href','javascript:void(CheckPlayer(0))').html(('Сравнить&nbsp;c&nbsp;' + pl1.secondname).fontsize(1))
-	}
-
 	text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
 	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
@@ -602,5 +586,24 @@ $().ready(function(){
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
+
+	// Get info fom Global or Session Storage
+	var text1 = ''
+	if (navigator.userAgent.indexOf('Firefox') != -1){
+		text1 = String(globalStorage[location.hostname].peflplayer)
+	} else {
+		text1 = String(sessionStorage.peflplayer)
+	}
+	if (text1 != 'undefined'){
+		var pl = text1.split(',');
+		for (var i in pl) {
+			key = pl[i].split('=')
+			pl1[key[0]] = [key[1]]
+		}
+		$('a#compare').attr('href','javascript:void(CheckPlayer(0))').html(('Сравнить&nbsp;(' + pl1.secondname +')').fontsize(1))
+	}
+
+
+
 	return false
 });
