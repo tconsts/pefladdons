@@ -253,7 +253,7 @@ function CodeForForum(){
 
 var players = [[]]
 var pl0 = players[0]
-var pl1 = players[1]
+var pl1 = players[1] = []
 var skl = []
 var sklse = []
 var sklsr = []
