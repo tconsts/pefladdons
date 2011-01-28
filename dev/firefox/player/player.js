@@ -72,27 +72,12 @@ function CheckPlayer(x){
 		$('a#remember, a#compare').removeAttr('href')
 
 		compare = true
-		var text0 = ''
-		var text1 = ''
-		players[1] = []
-		var pl1 = players[1]
-		if (navigator.userAgent.indexOf('Firefox') != -1){
-			text1 = String(globalStorage[location.hostname].peflplayer)
-		} else {
-			text1 = String(sessionStorage.peflplayer)
-		}
-		var pl = text1.split(',');
-
-		for (var i in pl) {
-			key = pl[i].split('=')
-			pl1[key[0]] = [key[1]]
-		}
 
 		// Header:
 		var pl1header = '<center><b>'
 		pl1header += pl1.firstname + ' ' + pl1.secondname 
 		if (pl1.team != '') {
-			pl1header += '(' 
+			pl1header += ' (' 
 			pl1header += (pl1.teamurl != '' ? '<a href="'+pl1.teamurl+'">' : '')
 			pl1header += pl1.team
 			pl1header += (pl1.teamurl != '' ? '</a>' : '')
@@ -100,7 +85,7 @@ function CheckPlayer(x){
 		}
 		pl1header += '<br>'
 		pl1header += pl1.age + ' лет'
-		if (pl1.natfull != ''){
+		if (pl1.natfull != ' '){
 			pl1header += ', '
 			pl1header += pl1.natfull
 			pl1header += ' (матчей '
@@ -117,21 +102,25 @@ function CheckPlayer(x){
 		}
 		pl1header += '<br>'
 		if (pl1.contract != 0 && pl1.wage != 0) {
-			pl1header += 'Контракт: ' + pl1.contract + ' г., ' + String((pl1.wage/1000).toFixed(3)).replace(/\./g,',') + '$ в игровой день<br>'
+			pl1header += 'Контракт: ' + pl1.contract + ' г., ' 
+			if (pl1.wage > 999){
+				pl1header += String((pl1.wage/1000).toFixed(3)).replace(/\./g,',')
+			} else{
+				pl1header += pl1.wage
+			}
+			pl1header += '$ в игровой день<br>'
 		}
-		pl1header += 'Номинал: ' 
-		var nom = ''
-		if (pl1.value == 0) { 
-			nom = '???,000'
-		} else { 
+		if (pl1.value != 0) { 
+			var nom = ''
+			pl1header += 'Номинал: ' 
 			if (pl1.value < 1000000) {
 				nom = (pl1.value/1000).toFixed(3)
 			} else {
 				nom = (pl1.value/1000000).toFixed(3) + ',000'
 			}
+			pl1header += String(nom).replace(/\./g,',')
+			pl1header += '$<br>'
 		}
-		pl1header += String(nom).replace(/\./g,',')
-		pl1header += '$<br>'
 		pl1header += pl1.position + '<br>'
 		pl1header += '<br>'
 		pl1header += 'Умения</b>(сс=' + pl1.sumskills + ')<br></center>'
@@ -161,6 +150,7 @@ function CheckPlayer(x){
 		} else {	
 			sessionStorage.peflplayer = text
 		}
+		$('a#compare').attr('href','javascript:void(CheckPlayer(0))').html(('Сравнить&nbsp;c&nbsp;' + pl0.secondname).fontsize(1))
 	}
 	return false
 }
@@ -557,9 +547,28 @@ $().ready(function(){
 	pl0.idealnum = posfilter[1][2]
 	pl0.idealpos = posfilter[1][1]
 
+
 	var text3 = ''
 	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1))">'+('Запомнить').fontsize(1)+'</a>'
-	text3 += '<br><a id="compare" href="javascript:void(CheckPlayer(0))">'+('Сравнить').fontsize(1)+'</a><br>'
+	text3 += '<br><a id="compare">'+('Сравнить').fontsize(1)+'</a><br>'
+
+	// Get info fom GlobalStorage
+	var text1 = ''
+	if (navigator.userAgent.indexOf('Firefox') != -1){
+		text1 = String(globalStorage[location.hostname].peflplayer)
+	} else {
+		text1 = String(sessionStorage.peflplayer)
+	}
+	if (text1 != null){
+		players[1] = []
+		var pl1 = players[1]
+		var pl = text1.split(',');
+		for (var i in pl) {
+			key = pl[i].split('=')
+			pl1[key[0]] = [key[1]]
+		}
+		$('a#compare').attr('href','javascript:void(CheckPlayer(0))').html(('Сравнить&nbsp;c&nbsp;' + pl1.secondname).fontsize(1))
+	}
 
 	text3 += '<br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
