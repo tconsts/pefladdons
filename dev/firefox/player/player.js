@@ -166,7 +166,7 @@ function CodeForForum(){
 	var pl = players[0]
 	var ptype = UrlValue('t')
 	// если не школьник, то короткий код для форума есть.
-	if (compare false && ptype != 'yp' && ptype != 'yp2') {
+	if (compare == false && ptype != 'yp' && ptype != 'yp2') {
 		x += '<br><b>Упрощенный вариант</b>:<br><br>'
 		x += '[url=plug.php?' + location.search.substring(1) + ']' + pl.firstname + ' ' + pl.secondname + '[/url] (сс=' + pl.sumskills + ')'
 		if (ptype == 'p') x += ' | [player=' + pl.id + '][img]images/eye.png[/img][/player]'
