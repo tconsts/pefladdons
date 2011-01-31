@@ -11,9 +11,10 @@ $().ready(function() {
 	var cur = {}
 	var fin = {}
 
-	cur.bablo = parseInt($('td.back4 > table b').html().split('<br>')[3].split(':')[1].replace(/\,/g,'').replace('$',''))
-	if($('td.back4 > table b').html().split('<br>')[11].indexOf('Бонус') != -1){
-		cur.bonus = parseInt($('td.back4 > table b').html().split('<br>')[11].split('Бонус: ')[1].replace(/\,/g,'').replace('$',''))
+	cur.bablo = parseInt($('td.back4 > table b:first').html().split('<br>')[3].split(':')[1].replace(/\,/g,'').replace('$',''))
+
+	if($('td.back4 > table b:eq(1)').html().split('<br>')[6] != undefined){
+		cur.bonus = parseInt($('td.back4 > table b:eq(1)').html().split('<br>')[6].split('Бонус: ')[1].replace(/\,/g,'').replace('$',''))
 	} else {
 		cur.bonus = 0
 	}
