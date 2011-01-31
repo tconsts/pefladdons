@@ -31,7 +31,7 @@ $().ready(function() {
 	zp = finance[1]['Зарплаты']
 	school = finance[1]['Школа']
 
-	fin.fid = 81
+	fin.fid = 85
 
 	cur.sponsors = finance[2]['Спонсоры']
 	cur.stadion = finance[2]['Стадион']
