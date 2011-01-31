@@ -12,6 +12,11 @@ $().ready(function() {
 	var fin = {}
 
 	cur.bablo = parseInt($('td.back4 > table b').html().split('<br>')[3].split(':')[1].replace(/\,/g,'').replace('$',''))
+	if($('td.back4 > table b').html().split('<br>')[11].indexOf('Бонус') != -1){
+		cur.bonus = parseInt($('td.back4 > table b').html().split('<br>')[11].split('Бонус: ')[1].replace(/\,/g,'').replace('$',''))
+	} else {
+		cur.bonus = 0
+	}
 	
 	$('td.back4 > table table').each(function(i,val){
 		var curtable = finance[i] = {}
@@ -42,7 +47,7 @@ $().ready(function() {
 	cur.alldown = finance[3]['Всего']
 	cur.plusminus = cur.allup - cur.alldown
 
-	cur.fid = cur.sponsors/sponsors
+	cur.fid = (cur.sponsors - cur.bonus)/sponsors
 	
 	fin.sponsors = sponsors * fin.fid
 	fin.stadion = cur.stadion*fin.fid/cur.fid
