@@ -1,3 +1,13 @@
+// ==UserScript==
+// @name           peflteam
+// @namespace      pefl
+// @description    roster team page modification (PEFL.ru and .net)
+// @include        http://www.pefl.ru/plug.php?p=refl&t=k&j=*
+// @include        http://pefl.ru/plug.php?p=refl&t=k&j=*
+// @include        http://www.pefl.net/plug.php?p=refl&t=k&j=*
+// @include        http://pefl.net/plug.php?p=refl&t=k&j=*
+// ==/UserScript==
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) {
@@ -6,8 +16,7 @@ function UrlValue(key,url){
 	return false
 }
 
-
-$().ready(function() {
+document.addEventListener('DOMContentLoaded', function(){
 	var txt = 'Фин. положение: '
 	$('td.l4:contains('+txt+')').each(function(){
 			var fin = $(this).text().replace(txt,'').replace(/,/g,'').replace('$','')
@@ -50,4 +59,4 @@ $().ready(function() {
 		})
 	}
 
-});
+}, false);

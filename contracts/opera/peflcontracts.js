@@ -1,4 +1,14 @@
-$().ready(function() {
+// ==UserScript==
+// @name           peflcontracts
+// @namespace      pefl
+// @description    contracts page modification (PEFL.ru and .net)
+// @include        http://www.pefl.ru/plug.php?p=fin&t=ctr&*
+// @include        http://pefl.ru/plug.php?p=fin&t=ctr&*
+// @include        http://www.pefl.net/plug.php?p=fin&t=ctr&*
+// @include        http://pefl.net/plug.php?p=fin&t=ctr&*
+// ==/UserScript==
+
+document.addEventListener('DOMContentLoaded', function(){
 	var szp=0
 	$('td.back4 td').each(function(i,val){
 		if ($(val).html().indexOf('$') != -1 && !isNaN(+$(val).html().replace('$',''))){
@@ -14,4 +24,4 @@ $().ready(function() {
 			$(this).html(newbody);
 		}
 	});
-});
+}, false);

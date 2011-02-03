@@ -28,7 +28,7 @@ $().ready(function() {
 	var trn = [0]
 	trn[0] = [today]
 
-	var srch="Вы вошли как "
+	var srch="Р’С‹ РІРѕС€Р»Рё РєР°Рє "
 	var curManagerNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 	var trnManagerNick = ''
 
@@ -41,12 +41,12 @@ $().ready(function() {
 			if (cur.indexOf('trn') != -1) {
 				trn[0].push(curval)
 			}
-			// получить трени t
+			// РїРѕР»СѓС‡РёС‚СЊ С‚СЂРµРЅРё t
 			if (cur.search(/(^t)(\d)/) != -1) {
 				tt[+cur[1]][+cur[2]] = curval
 			}
 
-			// получить кол-во игроков в трени
+			// РїРѕР»СѓС‡РёС‚СЊ РєРѕР»-РІРѕ РёРіСЂРѕРєРѕРІ РІ С‚СЂРµРЅРё
 			if (cur.indexOf('pg') != -1) {
 				tt[+curval][0] += 1
 			}
@@ -81,7 +81,7 @@ $().ready(function() {
 		}
 		if (trnManagerNick == curManagerNick) setCookie('pefltraining',save)
 
-		var search = 'Искусственные оффсайды'
+		var search = 'РСЃРєСѓСЃСЃС‚РІРµРЅРЅС‹Рµ РѕС„С„СЃР°Р№РґС‹'
 		var key = -1
 		var keyt = -1
 		$('table').each(function(i,val) {
@@ -100,7 +100,7 @@ $().ready(function() {
 				var sum = 0
 				for (var x in tt) for (y in tt[x]) if (y != 0 && tt[x][y] == tn[tnnum]) sum += tt[x][0]
 				tnnum++
-				var nm = '<table width=100%><tr><td>'+($(val).html()).replace('артные', '.')+'</td>'
+				var nm = '<table width=100%><tr><td>'+($(val).html()).replace('Р°СЂС‚РЅС‹Рµ', '.')+'</td>'
 				if (sum != 0) nm += '<td width=1>'+ ((sum/nump*100).toFixed(0) +'%').fontsize(1)+'</td>'
 				nm += '</tr></table>'
 				$(val).html(nm)
@@ -145,8 +145,8 @@ $().ready(function() {
 					if (j!=0 && tt[i][j] == 15) sum15 += tt[i][0]
 					//if (j!=0 && tt[i][j] == 17) sum17 += tt[i][0]
 				}
-				trn0text  = (sum15==0 ? '' : '<tr><td><table width=100%><tr><td>Тактическое занятие</td><td width=1>'+((sum15/nump*100).toFixed(0) +'%').fontsize(1)+'</td></tr></table></td><td></td></tr>')
-				//trn0text += (sum17==0 ? '' : '<tr><td><table width=100%><tr><td>Тренировочный матч</td><td width=1>'+((sum17/nump*100).toFixed(0) +'%').fontsize(1)+'</td></tr></table></td><td></td></tr>')
+				trn0text  = (sum15==0 ? '' : '<tr><td><table width=100%><tr><td>РўР°РєС‚РёС‡РµСЃРєРѕРµ Р·Р°РЅСЏС‚РёРµ</td><td width=1>'+((sum15/nump*100).toFixed(0) +'%').fontsize(1)+'</td></tr></table></td><td></td></tr>')
+				//trn0text += (sum17==0 ? '' : '<tr><td><table width=100%><tr><td>РўСЂРµРЅРёСЂРѕРІРѕС‡РЅС‹Р№ РјР°С‚С‡</td><td width=1>'+((sum17/nump*100).toFixed(0) +'%').fontsize(1)+'</td></tr></table></td><td></td></tr>')
 				$(val).append(trn0text)
 			}
 		})
