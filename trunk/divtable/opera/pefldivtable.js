@@ -1,3 +1,14 @@
+// ==UserScript==
+// @name           pefldivtable
+// @namespace      pefl
+// @description    division table page modification (PEFL.ru and .net)
+// @include        http://www.pefl.ru/plug.php?p=refl&t=s&*
+// @include        http://pefl.ru/plug.php?p=refl&t=s&*
+// @include        http://www.pefl.net/plug.php?p=refl&t=s&*
+// @include        http://pefl.net/plug.php?p=refl&t=s&*
+// ==/UserScript==
+
+
 function setCookie(name, value) {
 	var exdate=new Date();
 	exdate.setDate(exdate.getDate() + 356); // +1 year
@@ -187,8 +198,8 @@ var diap = []
 var url = {}
 var def = '1-1!FCE94F,2-2!white,3-3!E9B96E'
 
-$().ready(function() {
 
+document.addEventListener('DOMContentLoaded', function(){
 
 	// add column with goals +/- (will be include to code for forum)
 	PlusMinus();
@@ -226,4 +237,4 @@ $().ready(function() {
 
 	if(tbid>=0) $('td.back1 span').parent().append(' <a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">#</a> ') //css("border", "1px solid black");
 
-});
+}, false);
