@@ -52,7 +52,7 @@ $().ready(function() {
 
 	cur.fid = (cur.sponsors - cur.bonus)/sponsors
 	
-	fin.sponsors = sponsors * fin.fid
+	fin.sponsors = sponsors * fin.fid + cur.bonus
 	fin.stadion = cur.stadion*fin.fid/cur.fid
 	fin.priz = cur.priz
 	fin.sale = cur.sale
