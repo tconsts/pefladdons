@@ -235,6 +235,7 @@ function CodeForForum(){
 		.replace(/.gif/g,'.gif[/img')
 		.replace(/"/g,'')
 		.replace(/\n/g,'')
+		if (navigator.userAgent.indexOf('Opera') != -1) x += '[/table]'
 
 	if (compare == false && (UrlValue('t') == 'p' || UrlValue('t') == 'pp')){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
@@ -554,6 +555,7 @@ $().ready(function(){
 		posfilter[j][1] = psj[0]
 	}
 
+	posfilter[0][0] = 0
 	posfilter.sort(sSkills)
 	pl0.idealnum = posfilter[1][2]
 	pl0.idealpos = posfilter[1][1]
