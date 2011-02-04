@@ -236,7 +236,7 @@ function CodeForForum(){
 			.replace(/\&amp\;/g,'&')
 			.replace(/"/g,'')
 			.replace(/\[br\]/g,'\n')
-		x += '[/center]\n\n'
+		x += '\n\n'
 	}
 
 	x += $('td.back4 table table:not(#plheader):first').html()
@@ -250,6 +250,7 @@ function CodeForForum(){
 		.replace(/.gif/g,'.gif[/img')
 		.replace(/"/g,'')
 		.replace(/\n/g,'')
+		if (navigator.userAgent.indexOf('Opera') != -1) x += '[/table]'
 
 	if (compare == false && (UrlValue('t') == 'p' || UrlValue('t') == 'pp')){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
@@ -570,8 +571,10 @@ document.addEventListener('DOMContentLoaded', function(){
 		posfilter[j][0] = posfilter[j][0]/koff
 		posfilter[j][1] = psj[0]
 	}
-
+	
+	posfilter[0][0] = 0
 	posfilter.sort(sSkills)
+
 	pl0.idealnum = posfilter[1][2]
 	pl0.idealpos = posfilter[1][1]
 
