@@ -20,16 +20,19 @@ $().ready(function() {
 	} else {
 		cur.bonus = 0
 	}
-	
+
+	var mm = '<br>DEBUG INFO:<br>'	
 	$('td.back4 table table').each(function(i,val){
 		var curtable = finance[i] = {}
-		$(val).attr('id', i)
 		curtable.name = $(val).prev().text()
+		mm += curtable.name + '<br>'
 		$(val).find('td:even').each(function(){
 			curtable[$(this).text()] = parseInt($(this).next().text().replace(/\,/g,'').replace('$',''))
 		})
+		$(val).attr('id', i)
 	})
-	var mm = '<br>DEBUG INFO:<br>'
+
+	mm += '<br>'
 	for (j in finance) mm += finance[j] + '<br>'
 	for (j in finance) for (k in finance[j])  mm += finance[j][k] + '<br>'
 	$('td.back4').append(mm)
