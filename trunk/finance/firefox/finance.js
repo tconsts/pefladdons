@@ -22,10 +22,10 @@ $().ready(function() {
 	}
 
 	var mm = '<br>DEBUG INFO:<br>'	
-	$('td.back4 table table').each(function(i,val){
+	$('td.back4 table:last table').each(function(i,val){
 		var curtable = finance[i] = {}
-		curtable.name = $(val).prev().text()
-		mm += curtable.name + '<br>'
+//		curtable.name = $(val).prev().text()
+//		mm += curtable.name + '<br>'
 		$(val).find('td:even').each(function(){
 			curtable[$(this).text()] = parseInt($(this).next().text().replace(/\,/g,'').replace('$',''))
 		})
