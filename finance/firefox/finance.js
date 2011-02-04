@@ -1,59 +1,59 @@
 function format(num) {
 	if (num < 1000000 && num > -1000000) {
-		return (num/1000).toFixed(0) + ',000jQuery'
+		return (num/1000).toFixed(0) + ',000$'
 	} else {
-		return (num/1000000).toFixed(3).replace(/\./g,',') + ',000jQuery'	
+		return (num/1000000).toFixed(3).replace(/\./g,',') + ',000$'	
 	}
 }
 
-jQuery().ready(function() {
+$().ready(function() {
 	var finance = []
 	var cur = {}
 	var fin = {}
 
-	cur.bablo = parseInt(jQuery('td.back4 > table b:first').html().split('<br>')[3].split(':')[1].replace(/\,/g,'').replace('jQuery',''))
+	cur.bablo = parseInt($('td.back4 > table b:first').html().split('<br>')[3].split(':')[1].replace(/\,/g,'').replace('$',''))
 
-	if(jQuery('td.back4 > table b:eq(1)').html().split('<br>')[6] != undefined){
-		cur.bonus = parseInt(jQuery('td.back4 > table b:eq(1)').html().split('<br>')[6].split('Бонус: ')[1].replace(/\,/g,'').replace('jQuery',''))
-	} else if(jQuery('td.back4 > table b:first').html().indexOf('Бонус:') != -1){
-		cur.bonus = parseInt(jQuery('td.back4 > table b:first').html().split('<br>')[11].split('Бонус: ')[1].replace(/\,/g,'').replace('jQuery',''))
+	if($('td.back4 > table b:eq(1)').html().split('<br>')[6] != undefined){
+		cur.bonus = parseInt($('td.back4 > table b:eq(1)').html().split('<br>')[6].split('Р‘РѕРЅСѓСЃ: ')[1].replace(/\,/g,'').replace('$',''))
+	} else if($('td.back4 > table b:first').html().indexOf('Р‘РѕРЅСѓСЃ:') != -1){
+		cur.bonus = parseInt($('td.back4 > table b:first').html().split('<br>')[11].split('Р‘РѕРЅСѓСЃ: ')[1].replace(/\,/g,'').replace('$',''))
 	} else {
 		cur.bonus = 0
 	}
 
-	jQuery('td.back4 > table table').each(function(i,val){
+	$('td.back4 > table table').each(function(i,val){
 		var curtable = finance[i] = {}
-		jQuery(val).find('td:even').each(function(){
-			curtable[jQuery(this).text()] = parseInt(jQuery(this).next().text().replace(/\,/g,'').replace('jQuery',''))
+		$(val).find('td:even').each(function(){
+			curtable[$(this).text()] = parseInt($(this).next().text().replace(/\,/g,'').replace('$',''))
 		})
-		jQuery(val).attr('id', i)
+		$(val).attr('id', i)
 	})
 /**
 	var mm = '<br>DEBUG INFO:<br>'	
 	mm += '<br>'
 	for (j in finance) mm += finance[j] + '<br>'
 	for (j in finance) for (k in finance[j])  mm += finance[j][k] + '<br>'
-	jQuery('td.back4').append(mm)
+	$('td.back4').append(mm)
 /**/
 
-	sponsors = finance[0]['Спонсоры']
-	zp = finance[1]['Зарплаты']
-	school = finance[1]['Школа']
+	sponsors = finance[0]['РЎРїРѕРЅСЃРѕСЂС‹']
+	zp = finance[1]['Р—Р°СЂРїР»Р°С‚С‹']
+	school = finance[1]['РЁРєРѕР»Р°']
 
 	fin.fid = 85
 
-	cur.sponsors = finance[2]['Спонсоры']
-	cur.stadion = finance[2]['Стадион']
-	cur.priz = finance[2]['Призовые']
-	cur.sale = finance[2]['Продажа игроков']
-	cur.allup = finance[2]['Всего']
+	cur.sponsors = finance[2]['РЎРїРѕРЅСЃРѕСЂС‹']
+	cur.stadion = finance[2]['РЎС‚Р°РґРёРѕРЅ']
+	cur.priz = finance[2]['РџСЂРёР·РѕРІС‹Рµ']
+	cur.sale = finance[2]['РџСЂРѕРґР°Р¶Р° РёРіСЂРѕРєРѕРІ']
+	cur.allup = finance[2]['Р’СЃРµРіРѕ']
 
-	cur.zp = finance[3]['Зарплаты игрокам']
+	cur.zp = finance[3]['Р—Р°СЂРїР»Р°С‚С‹ РёРіСЂРѕРєР°Рј']
 	cur.zpperc = (cur.zp/cur.sponsors*100).toFixed(1)+'%'
-	cur.buy = finance[3]['Покупка игроков']
-	cur.school = finance[3]['Школа']
+	cur.buy = finance[3]['РџРѕРєСѓРїРєР° РёРіСЂРѕРєРѕРІ']
+	cur.school = finance[3]['РЁРєРѕР»Р°']
 	cur.schoolperc = (cur.school/cur.sponsors*100).toFixed(1)+'%'
-	cur.alldown = finance[3]['Всего']
+	cur.alldown = finance[3]['Р’СЃРµРіРѕ']
 	cur.plusminus = cur.allup - cur.alldown
 
 	cur.fid = (cur.sponsors - cur.bonus)/sponsors
@@ -74,37 +74,37 @@ jQuery().ready(function() {
 	fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
 
 
-	jQuery('table#2 td:odd, table#3 td:odd').attr('width','30%').attr('id','cur').after('<td width=30% id=fin></td>')
+	$('table#2 td:odd, table#3 td:odd').attr('width','30%').attr('id','cur').after('<td width=30% id=fin></td>')
 
-	var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F>Текущий '+cur.fid+' ФИД</th><th width=30% bgcolor=#A3DE8F>Прогноз на '+fin.fid+' ФИД</th></tr>'
-	jQuery('table#2, table#3').prepend(preparedhtml)
+	var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F>РўРµРєСѓС‰РёР№ '+cur.fid+' Р¤РР”</th><th width=30% bgcolor=#A3DE8F>РџСЂРѕРіРЅРѕР· РЅР° '+fin.fid+' Р¤РР”</th></tr>'
+	$('table#2, table#3').prepend(preparedhtml)
 
-	jQuery('td#cur').each(function(i, val){
-		if(i==7) jQuery(val).html(jQuery(val).html()+' ('+cur.schoolperc+')')
+	$('td#cur').each(function(i, val){
+		if(i==7) $(val).html($(val).html()+' ('+cur.schoolperc+')')
 	})
 
-	jQuery('td#fin').each(function(i, val){
-		if(i==0) jQuery(val).html((format(fin.sponsors)).bold())
-		if(i==1) jQuery(val).html('~'+format(fin.stadion))
-		if(i==2) jQuery(val).html(format(fin.priz).bold())
-		if(i==3) jQuery(val).html(format(fin.sale).bold())
-		if(i==4) jQuery(val).html('~'+format(fin.allup))
+	$('td#fin').each(function(i, val){
+		if(i==0) $(val).html((format(fin.sponsors)).bold())
+		if(i==1) $(val).html('~'+format(fin.stadion))
+		if(i==2) $(val).html(format(fin.priz).bold())
+		if(i==3) $(val).html(format(fin.sale).bold())
+		if(i==4) $(val).html('~'+format(fin.allup))
 
-		if(i==5) jQuery(val).html(format(fin.zp).bold())
-		if(i==6) jQuery(val).html(format(fin.buy).bold())
-		if(i==7) jQuery(val).html(format(fin.school).bold()+' ('+fin.schoolperc+')')
-		if(i==8) jQuery(val).html(format(fin.alldown).bold())
+		if(i==5) $(val).html(format(fin.zp).bold())
+		if(i==6) $(val).html(format(fin.buy).bold())
+		if(i==7) $(val).html(format(fin.school).bold()+' ('+fin.schoolperc+')')
+		if(i==8) $(val).html(format(fin.alldown).bold())
 	})
 
 	preparedhtml  = '<hr><table id="4" width=100% border=0>'
-	preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
+	preparedhtml += '<tr><td width=40%><b>РџР»СЋСЃ\\РњРёРЅСѓСЃ</b></td>'
 	preparedhtml += '<td width=30%>' + (format(cur.plusminus)).bold() + '</td>'
 	preparedhtml += '<td width=30%>' + (format(fin.plusminus)).bold() + '</td></tr>'
-	preparedhtml += '<tr><td width=40%><b>На счету</b></td>'
+	preparedhtml += '<tr><td width=40%><b>РќР° СЃС‡РµС‚Сѓ</b></td>'
 	preparedhtml += '<td width=30%>' + (format(cur.bablo)).bold() + '</td>'
 	preparedhtml += '<td width=30%>' + (format(fin.bablo)).bold() + '</td></tr>'
 	preparedhtml += '</table>'
-	jQuery('td.back4 table#3').after(preparedhtml)
+	$('td.back4 table#3').after(preparedhtml)
 
 	return false
 })
