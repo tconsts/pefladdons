@@ -22,7 +22,7 @@ $().ready(function() {
 	}
 
 	var mm = '<br>DEBUG INFO:<br>'	
-	$('td.back4 table:not(":contains(.back1)")').each(function(i,val){
+	$('td.back4 table:not(":contains("td.back1")")').each(function(i,val){
 		var curtable = finance[i] = {}
 //		curtable.name = $(val).prev().text()
 //		mm += curtable.name + '<br>'
