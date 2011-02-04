@@ -29,7 +29,9 @@ $().ready(function() {
 			curtable[$(this).text()] = parseInt($(this).next().text().replace(/\,/g,'').replace('$',''))
 		})
 	})
-	$('td.back4').append(finance)
+	var mm = '<br>DEBUG INFO:<br>'
+	for (j in finance) mm += finance[j] + '<br>'
+	$('td.back4').append(mm)
 
 	sponsors = finance[0]['Спонсоры']
 	zp = finance[1]['Зарплаты']
