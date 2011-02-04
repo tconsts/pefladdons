@@ -21,7 +21,7 @@ $().ready(function() {
 		cur.bonus = 0
 	}
 	
-	$('td.back4 > table table').each(function(i,val){
+	$('td.back4 table table').each(function(i,val){
 		var curtable = finance[i] = {}
 		$(val).attr('id', i)
 		curtable.name = $(val).prev().text()
