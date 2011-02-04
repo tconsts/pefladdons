@@ -31,6 +31,7 @@ $().ready(function() {
 	})
 	var mm = '<br>DEBUG INFO:<br>'
 	for (j in finance) mm += finance[j] + '<br>'
+	for (j in finance) for (k in finance[j])  mm += finance[j][k] + '<br>'
 	$('td.back4').append(mm)
 
 	sponsors = finance[0]['Спонсоры']
