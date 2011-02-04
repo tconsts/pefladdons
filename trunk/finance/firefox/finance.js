@@ -1,39 +1,39 @@
 function format(num) {
 	if (num < 1000000 && num > -1000000) {
-		return (num/1000).toFixed(0) + ',000$'
+		return (num/1000).toFixed(0) + ',000jQuery'
 	} else {
-		return (num/1000000).toFixed(3).replace(/\./g,',') + ',000$'	
+		return (num/1000000).toFixed(3).replace(/\./g,',') + ',000jQuery'	
 	}
 }
 
-$().ready(function() {
+jQuery().ready(function() {
 	var finance = []
 	var cur = {}
 	var fin = {}
 
-	cur.bablo = parseInt($('td.back4 > table b:first').html().split('<br>')[3].split(':')[1].replace(/\,/g,'').replace('$',''))
+	cur.bablo = parseInt(jQuery('td.back4 > table b:first').html().split('<br>')[3].split(':')[1].replace(/\,/g,'').replace('jQuery',''))
 
-	if($('td.back4 > table b:eq(1)').html().split('<br>')[6] != undefined){
-		cur.bonus = parseInt($('td.back4 > table b:eq(1)').html().split('<br>')[6].split('Бонус: ')[1].replace(/\,/g,'').replace('$',''))
-	} else if($('td.back4 > table b:first').html().indexOf('Бонус:') != -1){
-		cur.bonus = parseInt($('td.back4 > table b:first').html().split('<br>')[11].split('Бонус: ')[1].replace(/\,/g,'').replace('$',''))
+	if(jQuery('td.back4 > table b:eq(1)').html().split('<br>')[6] != undefined){
+		cur.bonus = parseInt(jQuery('td.back4 > table b:eq(1)').html().split('<br>')[6].split('Бонус: ')[1].replace(/\,/g,'').replace('jQuery',''))
+	} else if(jQuery('td.back4 > table b:first').html().indexOf('Бонус:') != -1){
+		cur.bonus = parseInt(jQuery('td.back4 > table b:first').html().split('<br>')[11].split('Бонус: ')[1].replace(/\,/g,'').replace('jQuery',''))
 	} else {
 		cur.bonus = 0
 	}
 
-	$('td.back4 > table table').each(function(i,val){
+	jQuery('td.back4 > table table').each(function(i,val){
 		var curtable = finance[i] = {}
-		$(val).find('td:even').each(function(){
-			curtable[$(this).text()] = parseInt($(this).next().text().replace(/\,/g,'').replace('$',''))
+		jQuery(val).find('td:even').each(function(){
+			curtable[jQuery(this).text()] = parseInt(jQuery(this).next().text().replace(/\,/g,'').replace('jQuery',''))
 		})
-		$(val).attr('id', i)
+		jQuery(val).attr('id', i)
 	})
 /**
 	var mm = '<br>DEBUG INFO:<br>'	
 	mm += '<br>'
 	for (j in finance) mm += finance[j] + '<br>'
 	for (j in finance) for (k in finance[j])  mm += finance[j][k] + '<br>'
-	$('td.back4').append(mm)
+	jQuery('td.back4').append(mm)
 /**/
 
 	sponsors = finance[0]['Спонсоры']
@@ -74,26 +74,26 @@ $().ready(function() {
 	fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
 
 
-	$('table#2 td:odd, table#3 td:odd').attr('width','30%').attr('id','cur').after('<td width=30% id=fin></td>')
+	jQuery('table#2 td:odd, table#3 td:odd').attr('width','30%').attr('id','cur').after('<td width=30% id=fin></td>')
 
 	var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F>Текущий '+cur.fid+' ФИД</th><th width=30% bgcolor=#A3DE8F>Прогноз на '+fin.fid+' ФИД</th></tr>'
-	$('table#2, table#3').prepend(preparedhtml)
+	jQuery('table#2, table#3').prepend(preparedhtml)
 
-	$('td#cur').each(function(i, val){
-		if(i==7) $(val).html($(val).html()+' ('+cur.schoolperc+')')
+	jQuery('td#cur').each(function(i, val){
+		if(i==7) jQuery(val).html(jQuery(val).html()+' ('+cur.schoolperc+')')
 	})
 
-	$('td#fin').each(function(i, val){
-		if(i==0) $(val).html((format(fin.sponsors)).bold())
-		if(i==1) $(val).html('~'+format(fin.stadion))
-		if(i==2) $(val).html(format(fin.priz).bold())
-		if(i==3) $(val).html(format(fin.sale).bold())
-		if(i==4) $(val).html('~'+format(fin.allup))
+	jQuery('td#fin').each(function(i, val){
+		if(i==0) jQuery(val).html((format(fin.sponsors)).bold())
+		if(i==1) jQuery(val).html('~'+format(fin.stadion))
+		if(i==2) jQuery(val).html(format(fin.priz).bold())
+		if(i==3) jQuery(val).html(format(fin.sale).bold())
+		if(i==4) jQuery(val).html('~'+format(fin.allup))
 
-		if(i==5) $(val).html(format(fin.zp).bold())
-		if(i==6) $(val).html(format(fin.buy).bold())
-		if(i==7) $(val).html(format(fin.school).bold()+' ('+fin.schoolperc+')')
-		if(i==8) $(val).html(format(fin.alldown).bold())
+		if(i==5) jQuery(val).html(format(fin.zp).bold())
+		if(i==6) jQuery(val).html(format(fin.buy).bold())
+		if(i==7) jQuery(val).html(format(fin.school).bold()+' ('+fin.schoolperc+')')
+		if(i==8) jQuery(val).html(format(fin.alldown).bold())
 	})
 
 	preparedhtml  = '<hr><table id="4" width=100% border=0>'
@@ -104,7 +104,7 @@ $().ready(function() {
 	preparedhtml += '<td width=30%>' + (format(cur.bablo)).bold() + '</td>'
 	preparedhtml += '<td width=30%>' + (format(fin.bablo)).bold() + '</td></tr>'
 	preparedhtml += '</table>'
-	$('td.back4 table#3').after(preparedhtml)
+	jQuery('td.back4 table#3').after(preparedhtml)
 
 	return false
 })
