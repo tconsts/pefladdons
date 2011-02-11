@@ -40,9 +40,11 @@ document.addEventListener('DOMContentLoaded', function(){
 		})
 	})
 
+	var chbonus = Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
+
 	sponsors = finance[0]['Спонсоры']
 	zp = finance[1]['Зарплаты']
-	school = finance[1]['Школа']
+	school = finance[1]['Школа'] - chbonus
 
 	fin.fid = 85
 
