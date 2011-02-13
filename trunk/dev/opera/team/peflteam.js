@@ -101,6 +101,7 @@ alert(String.fromCharCode(uni));  //выводит ї
 //alert($('table#tblRoster').html())
 
 var players = []
+var players2 = []
 var remember = 0
 	if (UrlValue('j')==99999){
 
@@ -111,35 +112,70 @@ var remember = 0
 		} else {
 			text1 = String(sessionStorage.team)
 		}
-		alert(text1)
+
 		if (text1 != 'undefined'){
+//			$('td.back4').prepend('text1:' + text1 + '<br>')
+			var pltext = text1.split(':',2)[1].split('.')
+			for (i in pltext) {
+				var plsk = pltext[i].split(',')
+				var plx = []
+				plx.id = parseInt(plsk[0])
+				plx.num = parseInt(plsk[1])
+				plx.morale = parseInt(plsk[2]) + 2
+				plx.form = parseInt(plsk[3]) - 1
+				players2[plx.id] = []
+				players2[plx.id] = plx
+			}
+/**/
 		var x = ''
-		for(i in players) {
+		for(i in players2) {
 			x += '<br>'
-			for( j in players[i]) x += players[i][j] + ' '
+			for( j in players2[i]) x += players2[i][j] + ' '
 		}
-		$('td.back4').prepend(x)
-
+//		$('td.back4').prepend(x)
+/**/
 		}
 
-		var text = ''
+		var text = '99999:'
 		$('table#tblRoster tr:not(#tblRosterRentTitle)').each(function(j,valj){
 			if(j >0){
 				var pl = [];
+				var pl2 = [];
 					$(valj).find('td').each(function(i,val){
-						if (i==0) pl.num = $(val).text()
+						if (i==0) {
+							pl.num = $(val).text()
+						}
 						if (i==1) {
 							pl.id = UrlValue('j', $(val).find('a').attr('href'))
 							pl.name = $(val).text()
 						}
-						if (i==4) pl.morale = $(val).text()
-						if (i==5) pl.form = $(val).text()
-					})
-					players[pl.id] = pl
-					}
-		});
+//						pl2 = players2[pl.id]
+						if (i==4) {
+							pl.morale = parseInt($(val).text())
+//							$('td.back4').prepend(  + '<br>')
+							if(players2[pl.id] && players2[pl.id]['morale'] != pl2.morale) {
+								var morale = pl.morale - players2[pl.id]['morale']
+								if(morale >0 ) $(val).append('(+' + morale + ')')
+								else $(val).append('(' + morale + ')')
+							}
+						}
+						if (i==5) {
+							pl.form = parseInt($(val).text())
+							if(players2[pl.id]['form'] && pl.form != players2[pl.id]['form']) {
+								var form = pl.form - players2[pl.id]['form']
+								if(form >0 ) $(val).append('(+' + form + ')')
+								else $(val).append('(' + form + ')')
+							}
 
-		text = players
+						}
+					})
+					text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + '.'
+					players[pl.id] = pl
+			}
+		});
+//		$('td.back4').prepend('text :' + text + '<br>')
+
+//		text = players
 		remember = 1
 		if (remember == 1){ // запомним!
 			if (navigator.userAgent.indexOf('Firefox') != -1){
