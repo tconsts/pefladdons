@@ -127,11 +127,11 @@ var remember = 0
 				players2[plx.id] = plx
 			}
 /**/
-		var x = ''
-		for(i in players2) {
-			x += '<br>'
-			for( j in players2[i]) x += players2[i][j] + ' '
-		}
+			var x = ''
+			for(i in players2) {
+				x += '<br>'
+				for( j in players2[i]) x += players2[i][j] + ' '
+			}
 //		$('td.back4').prepend(x)
 /**/
 		}
@@ -141,41 +141,44 @@ var remember = 0
 			if(j >0){
 				var pl = [];
 				var pl2 = [];
-					$(valj).find('td').each(function(i,val){
-						if (i==0) {
-							pl.num = $(val).text()
-						}
-						if (i==1) {
-							pl.id = UrlValue('j', $(val).find('a').attr('href'))
-							pl.name = $(val).text()
-						}
-//						pl2 = players2[pl.id]
+				pl.mchange = 0
+				pl.fchange = 0
+
+				$(valj).find('td').each(function(i,val){
+					if (i==0) {
+						pl.num = $(val).text()
+					}
+					if (i==1) {
+						pl.id = UrlValue('j', $(val).find('a').attr('href'))
+						pl.name = $(val).text()
+					}
+					if (players2[pl.id]){ 
+						pl2 = players2[pl.id]
 						if (i==4) {
 							pl.morale = parseInt($(val).text())
-//							$('td.back4').prepend(  + '<br>')
-							if(players2[pl.id] && players2[pl.id]['morale'] != pl2.morale) {
-								var morale = pl.morale - players2[pl.id]['morale']
-								if(morale >0 ) $(val).append('(+' + morale + ')')
-								else $(val).append('(' + morale + ')')
+
+							if(pl.morale != pl2.morale) {
+								pl.mchange = pl.morale - pl2.morale
+								if(pl.mchange >0 ) $(val).append('(+' + pl.mchange + ')')
+								else $(val).append('(' + pl.mchange + ')')
 							}
 						}
 						if (i==5) {
 							pl.form = parseInt($(val).text())
-							if(players2[pl.id]['form'] && pl.form != players2[pl.id]['form']) {
-								var form = pl.form - players2[pl.id]['form']
-								if(form >0 ) $(val).append('(+' + form + ')')
-								else $(val).append('(' + form + ')')
+							if(pl.form != pl2.form) {
+								pl.fchange = pl.form - pl2.form
+								if(pl.fchange >0 ) $(val).append('(+' + pl.fchange + ')')
+								else $(val).append('(' + pl.fchange + ')')
 							}
 
 						}
-					})
-					text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + '.'
+					}
+				})
+					text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'
 					players[pl.id] = pl
 			}
 		});
 //		$('td.back4').prepend('text :' + text + '<br>')
-
-//		text = players
 		remember = 1
 		if (remember == 1){ // запомним!
 			if (navigator.userAgent.indexOf('Firefox') != -1){
