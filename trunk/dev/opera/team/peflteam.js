@@ -8,7 +8,6 @@
 // @include        http://pefl.net/plug.php?p=refl&t=k&j=*
 // ==/UserScript==
 
-
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) {
@@ -16,14 +15,13 @@ function UrlValue(key,url){
 	}
 	return false
 }
+
 function ShowChange(value){
 	if(value > 0) 		return '(+' + value + ')'
 	else if(value < 0)	return '(' + value + ')'
 	else 		  		return ''
 }
 
-var tnoms = 0
-var tnom = []
 document.addEventListener('DOMContentLoaded', function(){
 	var txt = 'Фин. положение: '
 	$('td.l4:contains('+txt+')').each(function(){
@@ -55,23 +53,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
 	});
 
-/**/
 	if (UrlValue('j')==99999){
-		//header('Content-type: text/html; charset=utf-8')
 		$.get('team.php', {}, function(data){
-			var dataarray = data.split('_');
-
-/**
-var str=dataarray[0] //"ї";
-var uni = str.charCodeAt();
-alert(uni);   //выводит 1111
-alert(String.fromCharCode(uni));  //выводит ї
-
-/**/
-			var teamname = dataarray[0]
-//			$('td.back4').prepend(teamname)
-
 			var teamnominals = 0
+			var dataarray = data.split('_');
 			for (i in dataarray) {
 				if( i%28 == 26 )  teamnominals += parseInt(dataarray[i])
 			}
@@ -79,33 +64,9 @@ alert(String.fromCharCode(uni));  //выводит ї
 			if (teamnominals != 0) $('table.layer1 td.l2:last').append(('Номиналы: ' + nomtext).fontsize(1))
 		})
 	}
-/**/
-/**
-	var rr = 0
-	$('td.back4 table:last tr').each(function(i,val){
-		if(i>0) {
-			$(val).find('td:last a').parent().attr('bgcolor','red')
-			var purl = $(val).find('td:last a').attr('href')
-			$.get(purl, function(data){
-				var name = data.split('<b>',2)[1].split(' (',1)[0]
-				var xx = parseInt(data.split('Номинал:',2)[1].split('$',1)[0].replace(/,/g,''))
-				tnoms += xx;
-				$('td.back4').prepend(i + ': '+ xx + ' : ' + name + '<br>')
-//				return true
-			})
-		}
-//		return true
-	})
 
-//	for (var i in tnom) tnoms += tnom[i]
 
-	$('table.layer1 td.l2:last').append(('Номиналы: ' + tnoms).fontsize(1))	
-
-/**/
-
-	// собрать форму\мораль
-//	alert($('table#tblRoster').html())
-//	sessionStorage.team = '99999:40078,1,99,100,0,0.'
+	// Show form and morale change
 	var players = []
 	var players2 = []
 	var remember = 0
@@ -149,21 +110,19 @@ alert(String.fromCharCode(uni));  //выводит ї
 				plx.fchange = parseInt(plsk[5])
 				players2[plx.id] = []
 				players2[plx.id] = plx
-//				$('td.back4').prepend(plx.id + ',' + plx.num + ',' + plx.morale + ',' + plx.form + ',' + plx.mchange + ',' + plx.fchange + '.'+'<br>')
 			}
-//			$('td.back4').prepend('get:<br>')
 
 			// Check for update
 			for(i in players) {
 				var pl = players[i]
 				if(players2[pl.id]){
 					var pl2 = players2[pl.id]
-					if (pl.morale != pl2.morale || pl.form != pl2.form){
+					if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
 						remember = 1
 					}
 				}
 			}
-
+			// Calculate
 			for(i in players) {
 				var pl = players[i]
 				if(players2[pl.id]){
@@ -184,31 +143,25 @@ alert(String.fromCharCode(uni));  //выводит ї
 				$('table#tblRoster tr#tblRosterTr' + i + ' td:eq(5)').append(ShowChange(players[i]['fchange']))
 				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(4)').append(ShowChange(players[i]['mchange']))
 				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(5)').append(ShowChange(players[i]['fchange']))
-
 			}
 		} else {
 			remember = 1
 		}
 
+		// Remember data
 		if (remember == 1 && team21 != 1){
-			// Data for remember
 	   		var text = teamid + ':'	
 			for(i in players) {
 				var pl = players[i]
 				text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'
-//				$('td.back4').prepend(pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'+'<br>')
 			}
-//			$('td.back4').prepend('<br>set:<br>')
 
 			if (navigator.userAgent.indexOf('Firefox') != -1){
 				globalStorage[location.hostname].team = text
 			} else {	
 				sessionStorage.team = text
 			}
-
 		}
-
 	}
-
 
 }, false);

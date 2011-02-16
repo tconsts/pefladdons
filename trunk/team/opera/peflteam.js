@@ -16,6 +16,12 @@ function UrlValue(key,url){
 	return false
 }
 
+function ShowChange(value){
+	if(value > 0) 		return '(+' + value + ')'
+	else if(value < 0)	return '(' + value + ')'
+	else 		  		return ''
+}
+
 document.addEventListener('DOMContentLoaded', function(){
 	var txt = 'Фин. положение: '
 	$('td.l4:contains('+txt+')').each(function(){
@@ -57,6 +63,105 @@ document.addEventListener('DOMContentLoaded', function(){
 			var nomtext = ((teamnominals/1000000).toFixed(3)+'м$').replace(/\./g,',')
 			if (teamnominals != 0) $('table.layer1 td.l2:last').append(('Номиналы: ' + nomtext).fontsize(1))
 		})
+	}
+
+
+	// Show form and morale change
+	var players = []
+	var players2 = []
+	var remember = 0
+	var teamid = UrlValue('j')
+	var team21 = UrlValue('h')
+	if (teamid == 99999){
+		// Get data from page
+		$('table#tblRoster tr:not(#tblRosterRentTitle)').each(function(j,valj){
+			if(j > 0){
+				var pl = [];
+				pl.mchange = 0
+				pl.fchange = 0
+				$(valj).find('td').each(function(i,val){
+					if (i==0) pl.num = $(val).text()
+					if (i==1) pl.id = UrlValue('j', $(val).find('a').attr('href'))
+					if (i==4) pl.morale = parseInt($(val).text())
+					if (i==5) pl.form = parseInt($(val).text())
+				})
+				players[pl.num] = pl
+			}
+		});
+
+		// Get info fom Global or Session Storage
+		var text1 = ''
+		if (navigator.userAgent.indexOf('Firefox') != -1){
+			text1 = String(globalStorage[location.hostname].team)
+		} else {
+			text1 = String(sessionStorage.team)
+		}
+
+		if (text1 != 'undefined'){
+			var pltext = text1.split(':',2)[1].split('.')
+			for (i in pltext) {
+				var plsk = pltext[i].split(',')
+				var plx = []
+				plx.id = parseInt(plsk[0])
+				plx.num = parseInt(plsk[1])
+				plx.morale = parseInt(plsk[2])
+				plx.form = parseInt(plsk[3])
+				plx.mchange = parseInt(plsk[4])
+				plx.fchange = parseInt(plsk[5])
+				players2[plx.id] = []
+				players2[plx.id] = plx
+			}
+
+			// Check for update
+			for(i in players) {
+				var pl = players[i]
+				if(players2[pl.id]){
+					var pl2 = players2[pl.id]
+					if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
+						remember = 1
+					}
+				}
+			}
+			// Calculate
+			for(i in players) {
+				var pl = players[i]
+				if(players2[pl.id]){
+					var pl2 = players2[pl.id]
+					if (remember == 1){
+						players[i]['mchange'] = pl.morale - pl2.morale
+						players[i]['fchange'] = pl.form - pl2.form
+					} else {
+						players[i]['mchange'] = pl2.mchange
+						players[i]['fchange'] = pl2.fchange
+					}
+				}
+			}
+
+			// Update page
+			for(i in players) {
+				$('table#tblRoster tr#tblRosterTr' + i + ' td:eq(4)').append(ShowChange(players[i]['mchange']))
+				$('table#tblRoster tr#tblRosterTr' + i + ' td:eq(5)').append(ShowChange(players[i]['fchange']))
+				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(4)').append(ShowChange(players[i]['mchange']))
+				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(5)').append(ShowChange(players[i]['fchange']))
+			}
+		} else {
+			remember = 1
+		}
+
+		// Remember data
+		if (remember == 1 && team21 != 1){
+	   		var text = teamid + ':'	
+			for(i in players) {
+				var pl = players[i]
+				text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'
+			}
+
+			if (navigator.userAgent.indexOf('Firefox') != -1){
+				globalStorage[location.hostname].team = text
+			} else {	
+				sessionStorage.team = text
+			}
+		}
 	}
 
 }, false);
