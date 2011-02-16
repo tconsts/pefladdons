@@ -13,6 +13,8 @@ function ShowChange(value){
 }
 
 $().ready(function() {
+
+	// Show finance
 	var txt = 'Фин. положение: '
 	$('td.l4:contains('+txt+')').each(function(){
 			var fin = $(this).text().replace(txt,'').replace(/,/g,'').replace('$','')
@@ -43,6 +45,7 @@ $().ready(function() {
 
 	});
 
+	// Show nominals
 	if (UrlValue('j')==99999){
 		$.get('team.php', {}, function(data){
 			var teamnominals = 0
@@ -55,7 +58,7 @@ $().ready(function() {
 		})
 	}
 
-	// собрать форму\мораль
+	// Show form and morale change
 	var players = []
 	var players2 = []
 	var remember = 0
@@ -99,21 +102,19 @@ $().ready(function() {
 				plx.fchange = parseInt(plsk[5])
 				players2[plx.id] = []
 				players2[plx.id] = plx
-//				$('td.back4').prepend(plx.id + ',' + plx.num + ',' + plx.morale + ',' + plx.form + ',' + plx.mchange + ',' + plx.fchange + '.'+'<br>')
 			}
-//			$('td.back4').prepend('get:<br>')
 
 			// Check for update
 			for(i in players) {
 				var pl = players[i]
 				if(players2[pl.id]){
 					var pl2 = players2[pl.id]
-					if (pl.morale != pl2.morale || pl.form != pl2.form){
+					if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
 						remember = 1
 					}
 				}
 			}
-
+			// Calculate
 			for(i in players) {
 				var pl = players[i]
 				if(players2[pl.id]){
@@ -139,23 +140,19 @@ $().ready(function() {
 			remember = 1
 		}
 
+		// Remember data
 		if (remember == 1 && team21 != 1){
-			// Data for remember
 	   		var text = teamid + ':'	
 			for(i in players) {
 				var pl = players[i]
 				text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'
-//				$('td.back4').prepend(pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'+'<br>')
 			}
-//			$('td.back4').prepend('<br>set:<br>')
 
 			if (navigator.userAgent.indexOf('Firefox') != -1){
 				globalStorage[location.hostname].team = text
 			} else {	
 				sessionStorage.team = text
 			}
-
 		}
-
 	}
 });
