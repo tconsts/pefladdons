@@ -105,7 +105,7 @@ alert(String.fromCharCode(uni));  //выводит ї
 
 	// собрать форму\мораль
 //	alert($('table#tblRoster').html())
-
+//	sessionStorage.team = '99999:40078,1,99,100,0,0.'
 	var players = []
 	var players2 = []
 	var remember = 0
@@ -145,9 +145,13 @@ alert(String.fromCharCode(uni));  //выводит ї
 				plx.num = parseInt(plsk[1])
 				plx.morale = parseInt(plsk[2])
 				plx.form = parseInt(plsk[3])
+				plx.mchange = parseInt(plsk[4])
+				plx.fchange = parseInt(plsk[5])
 				players2[plx.id] = []
 				players2[plx.id] = plx
+//				$('td.back4').prepend(plx.id + ',' + plx.num + ',' + plx.morale + ',' + plx.form + ',' + plx.mchange + ',' + plx.fchange + '.'+'<br>')
 			}
+//			$('td.back4').prepend('get:<br>')
 
 			// Check for update
 			for(i in players) {
@@ -156,40 +160,54 @@ alert(String.fromCharCode(uni));  //выводит ї
 					var pl2 = players2[pl.id]
 					if (pl.morale != pl2.morale || pl.form != pl2.form){
 						remember = 1
-						pl.mchange = pl.morale - pl2.morale
-						pl.fchange = pl.form - pl2.form
-					} else{
-						pl.mchange = pl2.mchange
-						pl.fchange = pl2.fchange
 					}
 				}
 			}
-			// Update page
+
 			for(i in players) {
 				var pl = players[i]
-				$('table#tblRoster tr#tblRosterTr' + i + ' td:eq(4)').append(ShowChange(pl.mchange))
-				$('table#tblRoster tr#tblRosterTr' + i + ' td:eq(5)').append(ShowChange(pl.fchange))
-				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(4)').append(ShowChange(pl.mchange))
-				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(5)').append(ShowChange(pl.fchange))
+				if(players2[pl.id]){
+					var pl2 = players2[pl.id]
+					if (remember == 1){
+						players[i]['mchange'] = pl.morale - pl2.morale
+						players[i]['fchange'] = pl.form - pl2.form
+					} else {
+						players[i]['mchange'] = pl2.mchange
+						players[i]['fchange'] = pl2.fchange
+					}
+				}
+			}
+
+			// Update page
+			for(i in players) {
+				$('table#tblRoster tr#tblRosterTr' + i + ' td:eq(4)').append(ShowChange(players[i]['mchange']))
+				$('table#tblRoster tr#tblRosterTr' + i + ' td:eq(5)').append(ShowChange(players[i]['fchange']))
+				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(4)').append(ShowChange(players[i]['mchange']))
+				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(5)').append(ShowChange(players[i]['fchange']))
 
 			}
 		} else {
 			remember = 1
 		}
 
-		if (remember == 1 && team21 !=1){
+		if (remember == 1 && team21 != 1){
 			// Data for remember
 	   		var text = teamid + ':'	
 			for(i in players) {
 				var pl = players[i]
 				text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'
+//				$('td.back4').prepend(pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'+'<br>')
 			}
+//			$('td.back4').prepend('<br>set:<br>')
+
 			if (navigator.userAgent.indexOf('Firefox') != -1){
 				globalStorage[location.hostname].team = text
 			} else {	
 				sessionStorage.team = text
 			}
+
 		}
+
 	}
 
 
