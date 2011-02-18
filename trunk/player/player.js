@@ -211,6 +211,7 @@ function CodeForForum(){
 		x += '\n\n'
 
 	} else {
+		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] '
 		x += $('td.back4 table center:first').find('a:contains("интересуются")').removeAttr('href').end().html()
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
