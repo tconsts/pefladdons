@@ -27,19 +27,48 @@ document.addEventListener('DOMContentLoaded', function(){
 //	$('td.back4 table:eq(6)').attr('border','5')	// оценки
 
 /**/
+
 	var x = $('td.back4 table:eq(2) td')
 		.find('script').remove().end()
 		.find('a').remove().end()
 		.find('img').remove().end()
 		.html().split('<br><br>')
 
+	var team1name = 'Анжи' //$('td.back4 table:eq(3) tr:first td:first').text()
+	var team2name = 'Динамо Брн' //$('td.back4 table:eq(3) tr:first td:last').text() //.replace('&nbsp;','')
+//	alert('"'+team1name+'"')
+//	alert('"'+team2name+'"')
 	
-	var p = '<table =width=100%>'
+	var p = '<table width=100%>'
+	var flag = 0
 	for (i in x) {
 		var y = x[i].replace(/\.\.\./g,'...<br>').split('<br>')
-		p += '<tr><td><table width=100% border=1>'
-		for (j in y) {		
-			p += '<tr><td width=30%></td><td>'+y[j]+'</td><td width=30%></td></tr>'
+		p += '<tr><td><table width=100% border=1><tr><td width=33%>'+team1name+'</td><td></td><td width=33%>'+team2name+'</td></tr>'
+		flag = 0
+		for (j in y) {
+			var t1 = y[j].indexOf(team1name)
+			var t2 = y[j].indexOf(team2name)
+			var p1 = ''
+			var p2 = ''
+			var p0 = ''
+			if ((t2 != -1 && t1 == -1) || (t2 != -1 && t1 != -1 && t2 < t1)) {
+				p2 = y[j]
+				flag = 2
+			} else if ((t1 != -1 && t2 == -1) || (t1 != -1 && t2 != -1 && t1 < t2)) {
+				p1 = y[j] 				
+				flag = 1
+			} else if (flag == 2){
+				p2 = y[j]
+				flag = 2
+			} else if (flag == 1){
+				p1 = y[j]
+				flag = 1
+			} else {
+				p0 = y[j]
+				flag = 0
+			}
+
+			p += '<tr><td>'+p1+'</td><td>'+p0+'</td><td>'+p2+'</td></tr>'
 		}
 		p += '</table><br></td></tr>'
 	}
