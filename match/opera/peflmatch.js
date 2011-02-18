@@ -34,16 +34,14 @@ document.addEventListener('DOMContentLoaded', function(){
 		.find('img').remove().end()
 		.html().split('<br><br>')
 
-	var team1name = 'Анжи' //$('td.back4 table:eq(3) tr:first td:first').text()
-	var team2name = 'Динамо Брн' //$('td.back4 table:eq(3) tr:first td:last').text() //.replace('&nbsp;','')
-//	alert('"'+team1name+'"')
-//	alert('"'+team2name+'"')
+	var team1name = $('td.back4 table:eq(3) tr:first td:first').text().slice(0, -1)
+	var team2name = $('td.back4 table:eq(3) tr:first td:last').text().slice(1)
 	
 	var p = '<table width=100%>'
 	var flag = 0
 	for (i in x) {
 		var y = x[i].replace(/\.\.\./g,'...<br>').split('<br>')
-		p += '<tr><td><table width=100% border=1><tr><td width=33%>'+team1name+'</td><td></td><td width=33%>'+team2name+'</td></tr>'
+		p += '<tr><td><table width=100% border=1 bgcolor=white><tr><td width=33%></td><td></td><td width=33%></td></tr>'
 		flag = 0
 		for (j in y) {
 			var t1 = y[j].indexOf(team1name)
@@ -57,13 +55,13 @@ document.addEventListener('DOMContentLoaded', function(){
 			} else if ((t1 != -1 && t2 == -1) || (t1 != -1 && t2 != -1 && t1 < t2)) {
 				p1 = y[j] 				
 				flag = 1
-			} else if (flag == 2){
+/**			} else if (flag == 2){
 				p2 = y[j]
 				flag = 2
 			} else if (flag == 1){
 				p1 = y[j]
 				flag = 1
-			} else {
+/**/		} else {
 				p0 = y[j]
 				flag = 0
 			}
