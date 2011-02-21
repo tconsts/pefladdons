@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name           peflsostavnamatchdev
+// @name           peflsostavnamatch
 // @namespace      pefl
 // @description    Get team code for forum
 // @include        http://www.pefl.ru/?team
 // @include        http://pefl.ru/?team
 // @include        http://www.pefl.net/?team
 // @include        http://pefl.net/?team
-// @require       http://www.pefl.ru/js/jquery-1.3.2.min.js
+// @require        http://www.pefl.ru/js/jquery-1.3.2.min.js
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
