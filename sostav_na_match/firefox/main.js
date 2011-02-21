@@ -126,7 +126,7 @@ function printCard2 (plid,type){
 function fillTextarea(pt) {
 
 		preparedhtml = '';
-		preparedhtml += ' [b]Стартовый состав:[/b]\n\n';
+		preparedhtml += ' [b]Стартовый состав:[/b]\n[spoiler]\n\n';
 		preparedhtml += '[table]';
 
 		// нападение
@@ -215,7 +215,7 @@ function fillTextarea(pt) {
 		
 		preparedhtml += '[/tr]';
 		preparedhtml += '[/table]';
-		preparedhtml += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
+		preparedhtml += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n[/spoiler]';
 		
 		$('#sostav_na_match').html(preparedhtml);
 		preparedhtml = preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>')
