@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name           peflreitschoolcountry
+// @name           pefldivtable
 // @namespace      pefl
-// @description    reit school for country (PEFL.ru and .net)
+// @description    division table page modification (PEFL.ru and .net)
 // @include        http://www.pefl.ru/plug.php?p=rating&t=s&n=2&*
-// @include        http://www.pefl.net/plug.php?p=rating&t=s&n=2*
+// @include        http://www.pefl.net/plug.php?p=rating&t=s&n=2&*
 // @include        http://pefl.ru/plug.php?p=rating&t=s&n=2&*
 // @include        http://pefl.net/plug.php?p=rating&t=s&n=2&*
 // ==/UserScript==
@@ -15,15 +15,16 @@ function UrlValue(key,url){
 	}
 	return false
 }
+
 function SaveData(){
 	if (navigator.userAgent.indexOf('Firefox') != -1){
-		globalStorage[location.hostname].peflcountryteams = teams
+		globalStorage[location.hostname].peflcountryteams = teamslist
 	} else {	
-		sessionStorage.peflcountryteams = teams
+		sessionStorage.peflcountryteams = teamslist
 	}
 	// on exit: 155:1:2,744,718,739,746,713,1432,729,738,723
 }
-
+/**
 function GetTeamsId(){
 	var teams = UrlValue('j')
 	$('td.back4 table table tr:gt(0)').each(function(){
@@ -35,33 +36,42 @@ function GetTeamsId(){
 	},false)
 
 }
+/**/
 
 function GetAllReitBud(){
-	$('td.back4 table table tr:gt(0)').each(function(){
+	$('td.back4 table table tr').each(function(){
+		var m = ''
 		$(this).find('td').each(function(i,val){
-			var m = ''
 			if (i==0){
 				m = $(val).text()
 			} else if(i==2) {
 				bud[UrlValue('j',$(val).find('a').attr('href'))] = m;
 			}
+			
 		})
+
 	},false)
+//	for (j in bud) teamslist+= ',' + j + ':' + bud[j]
 	SaveData();
 }
 function GetAllReitRep(){
-	$('td.back4 table table tr:gt(0)').each(function(){
+	$('td.back4 table table tr').each(function(){
+		var m = ''
 		$(this).find('td').each(function(i,val){
-			var m = ''
 			if (i==0){
 				m = $(val).text()
 			} else if(i==2) {
-				bud[UrlValue('j',$(val).find('a').attr('href'))] = m;
+				rep[UrlValue('j',$(val).find('a').attr('href'))] = m;
 			}
+			
 		})
+
 	},false)
+//	for (j in rep) teamslist+= ',' + j + ':' + bud[j]
+	SaveData();
 }
 
+var teamslist = ''
 var teams = []
 var bud = []
 var rep = []
@@ -100,22 +110,27 @@ document.addEventListener('DOMContentLoaded', function(){
 	// page contry reit
 	if (UrlValue('j')){
 		// print buttun remeber tems list
-		var htmltext = '<div align=right><a href="javascript:void(GetTeamsId())">запомнить список команд</a>&nbsp;</div>'
-		$('td.back4').prepend(htmltext)
+//		var htmltext = '<div align=right><a href="javascript:void(GetTeamsId())">запомнить список команд</a>&nbsp;</div>'
+//		$('td.back4').prepend(htmltext)
+		$('td.back4 table table tr').each(function(k,val2){
+			if(k==0) $(val2).prepend('<th width=15%>Место по ПЕФЛ</th>')
+			else{
+			var id = ''
+			$(val2).find('td').each(function(i,val){
+				if(i==2) {
+					id = UrlValue('j',$(val).find('a').attr('href'))
+				}
+			})
+			$(val2).prepend('<td>'+teams[id]['bud']+'</td>')
+			}
+		},false)
 
-		//
 
 	// page full reit		
 	} else if(UrlValue('n') == 2){
 		GetAllReitBud()
-		for (i in teams){
-			team[i]['bud'] = bud[i]
-		}
 	} else if(UrlValue('n') == 1){
 		GetAllReitRep()
-		for (i in teams){
-			team[i]['rep'] = rep[i]
-		}
 	}
 
 
