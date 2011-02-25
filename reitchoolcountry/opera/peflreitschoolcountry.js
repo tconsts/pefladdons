@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name           pefldivtable
+// @name           peflreitschoolcountry
 // @namespace      pefl
-// @description    division table page modification (PEFL.ru and .net)
+// @description    school reit page modification (PEFL.ru and .net)
 // @include        http://www.pefl.ru/plug.php?p=rating&t=s&n=*
 // @include        http://www.pefl.net/plug.php?p=rating&t=s&n=*
 // @include        http://pefl.ru/plug.php?p=rating&t=s&n=*
@@ -54,38 +54,71 @@ function GetRepName(value){
 	}
 }
 
+function GetRepLevel(value){
+	for( i in reputations){
+		var rep = reputations[i]
+		if(value >= rep.st && value <= rep.fn) return i
+	}
+}
+
 function GetRepForecast(val1,val2){
 	var x = reputations[val1]['up'].split(',')
 	var minr = ''
-	var maxr = ''
+	var maxr = 0
+	var res1 = ''
+	var res2 = ''
 	for (i in x) {
-		if(val2 < x[i]) minr = i
+		if(val2 < parseInt(x[i])) {
+			minr = parseInt(x[i])
+			mini = val1-4+parseInt(i)
+		} 
+		if(val2 > parseInt(x[i]) && maxr == 0) {
+			maxr = parseInt(x[i])
+			maxi = val1-4+parseInt(i)
+		}
 	}
+	var raz = minr - maxr
+	res1 = reputations[mini]['name'] + ' (' + ((minr - val2)/raz*100).toFixed(0) + '%)'
+	res2 = reputations[maxi]['name'] + ' (' + ((val2 - maxr)/raz*100).toFixed(0) + '%)'
+	
+	if(val1 == 9) $('td.back4').prepend(val1+': '+val2+': '+minr +': '+maxr+': ' +raz+': '+mini+': '+maxi+' <br>')
+	return res1 + '<br>' + res2
+}
+
+function Forecast(){
+	htmltext = '<th width=20%>Прогноз от КрабVIP (<a href="/page.php?id=4442">*</a>)</th>'
+	$('td.back4 table table tr:eq(0)').prepend(htmltext)
+	$('td.back4 table table tr:gt(0)').each(function(k,val2){
+		var id = UrlValue('j',$(val2).find('a:last').attr('href'))
+		htmltext = '<td>' + GetRepForecast(GetRepLevel(teams[id]['rep']),teams[id]['bud']) + '</td>'
+		$(val2).prepend(htmltext)
+	},false)
+//	$('#forecast').hide()
 }
 
 // 9 season
 var reputations = {
-	1	: {name: 'ОЛМ', st: 1, fn: 9},
-	2	: {name: 'Мир 1/2', st: 10, fn: 23},
-	3	: {name: 'Мир 2/2', st: 24, fn: 41},
-	4	: {name: 'Отл 1/2', st: 42, fn: 65},
-	5	: {name: 'Отл 2/2', st: 66, fn: 92},
-	6	: {name: 'Хор 1/4', st: 93, fn: 118},
-	7	: {name: 'Хор 2/4', st: 119, fn: 163},
-	8	: {name: 'Хор 3/4', st: 164, fn: 221},
-	9	: {name: 'Хор 4/4', st: 222, fn: 281, up: '789,554,428,293,171,81,0'},
-	10	: {name: 'Срд 1/3', st: 282, fn: 351},
-	11	: {name: 'Срд 2/3', st: 352, fn: 421},
-	12	: {name: 'Срд 3/3', st: 422, fn: 521},
-	13	: {name: 'Слб 1/3', st: 522, fn: 631},
-	14	: {name: 'Слб 2/3', st: 632, fn: 743},
-	15	: {name: 'Слб 3/3', st: 744, fn: 961},
-	16	: {name: 'ОчСл 1/5', st: 962, fn: 1184},
-	17	: {name: 'ОчСл 2/5', st: 1185, fn: 1403},
-	18	: {name: 'ОчСл 3/5', st: 1404, fn: 1680},
-	19	: {name: 'ОчСл 4/5', st: 1681, fn: 1991},
-	20	: {name: 'ОчСл 5/5', st: 1992, fn: 2284},
-	21	: {name: 'Unknown', st: 2285, fn: 5000},
+	1	: {name: 'ОЛМ',      st: 1,    fn: 9,		up:'789,554,428,293,171,81,0'},
+	2	: {name: 'Мир 1/2',  st: 10,   fn: 23,		up:'789,554,428,293,171,81,0'},
+	3	: {name: 'Мир 2/2',  st: 24,   fn: 41,		up:'789,554,428,293,171,81,0'},
+	4	: {name: 'Отл 1/2',  st: 42,   fn: 65,		up:'789,554,428,293,171,81,0'},
+	5	: {name: 'Отл 2/2',  st: 66,   fn: 92,		up:'789,554,428,293,171,81,0'},
+	6	: {name: 'Хор 1/4',  st: 93,   fn: 118,		up:'789,554,428,293,171,81,0'},
+	7	: {name: 'Хор 2/4',  st: 119,  fn: 163,		up:'789,554,428,293,171,81,0'},
+	8	: {name: 'Хор 3/4',  st: 164,  fn: 221,		up:'789,554,428,293,171,81,0'},
+	9	: {name: 'Хор 4/4',  st: 222,  fn: 281,		up:'789,554,428,293,171,81,0'},
+	10	: {name: 'Срд 1/3',  st: 282,  fn: 351,		up:'789,554,428,293,171,81,0'},
+	11	: {name: 'Срд 2/3',  st: 352,  fn: 421,		up:'789,554,428,293,171,81,0'},
+	12	: {name: 'Срд 3/3',  st: 422,  fn: 521,		up:'789,554,428,293,171,81,0'},
+	13	: {name: 'Слб 1/3',  st: 522,  fn: 631,		up:'789,554,428,293,171,81,0'},
+	14	: {name: 'Слб 2/3',  st: 632,  fn: 743,		up:'789,554,428,293,171,81,0'},
+	15	: {name: 'Слб 3/3',  st: 744,  fn: 961,		up:'789,554,428,293,171,81,0'},
+	16	: {name: 'ОчСл 1/5', st: 962,  fn: 1184,	up:'789,554,428,293,171,81,0'},
+	17	: {name: 'ОчСл 2/5', st: 1185, fn: 1403,	up:'789,554,428,293,171,81,0'},
+	18	: {name: 'ОчСл 3/5', st: 1404, fn: 1680,	up:'789,554,428,293,171,81,0'},
+	19	: {name: 'ОчСл 4/5', st: 1681, fn: 1991,	up:'789,554,428,293,171,81,0'},
+	20	: {name: 'ОчСл 5/5', st: 1992, fn: 2284,	up:'789,554,428,293,171,81,0'},
+	21	: {name: 'Unknown',  st: 2285, fn: 5000,	up:'789,554,428,293,171,81,0'},
 }
 
 var teams = []
@@ -100,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		text1 = String(sessionStorage.peflcountryteams)
 	}
 	if (text1 != 'undefined'){
+//		alert('a')
 		var data = text1.split(',');
 		for (i in data){
 			var data2 = data[i].split(':')
@@ -114,29 +148,34 @@ document.addEventListener('DOMContentLoaded', function(){
 
 	// page contry reit
 	if (teams[0] && UrlValue('j') && UrlValue('j') > 0 && UrlValue('n') == 2){
+		var htmltext = ''
+//		alert('country')
+		if(teams[0]['bud'] != ' '){
+			htmltext = '(PEFL:'+teams[0]['bud']+')'
+			$('td.back4 table table tr:eq(0) th:first').append(htmltext)
+			$('td.back4 table table tr:gt(0)').each(function(k,val2){
+				var id = UrlValue('j',$(val2).find('td:eq(2)').find('a').attr('href'))
+				htmltext = ' ('+teams[id]['bud']+')'
+				$(val2).find('td:first').append(htmltext)
+    		},false)
+    	}
+		if(teams[0]['rep'] != ' '){
+			htmltext = '<th width=15%>Репутация ('+teams[0]['rep']+')</th>'
+			$('td.back4 table table tr:eq(0)').prepend(htmltext)
+			$('td.back4 table table tr:gt(0)').each(function(k,val2){
+				var id = UrlValue('j',$(val2).find('td:eq(2)').find('a').attr('href'))
+				htmltext = '<td>'+GetRepName(teams[id]['rep'])+'</td>'
+				$(val2).prepend(htmltext)
+    		},false)
+			$('td.back4').prepend('<div align=right><a id="forecast" href="javascript:void(Forecast())">Показать прогноз</a>&nbsp;</div><br>')
+		}
 
-		var htmltext = '(PEFL:'+teams[0]['bud']+')'
-		$('td.back4 table table tr:eq(0) th:first').append(htmltext)
-
-		htmltext = '<th width=20%>Прогноз от КрабВИП (<a href="/page.php?id=4442">*</a>)</th><th width=15%>Репутация ('+teams[0]['rep']+')</th>'
-		$('td.back4 table table tr:eq(0)').prepend(htmltext)
-
-
-		$('td.back4 table table tr:gt(0)').each(function(k,val2){
-			var id = UrlValue('j',$(val2).find('td:eq(2)').find('a').attr('href'))
-
-			htmltext = ' ('+teams[id]['bud']+')'
-			$(val2).find('td:first').append(htmltext)
-
-			htmltext = '<td>'+'ОчСл 3/5 (80%)<br>ОчСл 4/5 (20%)'+'</td><td>'+GetRepName(teams[id]['rep'])+'</td>'
-			$(val2).prepend(htmltext)
-
-		},false)
-
-	} else if(teams[0] && !UrlValue('j') && UrlValue('n') == 2){
+	} else if(!UrlValue('j') && UrlValue('n') == 2){
+//		alert('bud')
 		GetAllReit('bud');
 
-	} else if(teams[0] && !UrlValue('j') && UrlValue('n') == 1){
+	} else if(!UrlValue('j') && UrlValue('n') == 1){
+//		alert('rep')
 		GetAllReit('rep');
 	}
 }, false);
