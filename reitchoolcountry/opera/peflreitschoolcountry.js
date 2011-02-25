@@ -2,10 +2,10 @@
 // @name           pefldivtable
 // @namespace      pefl
 // @description    division table page modification (PEFL.ru and .net)
-// @include        http://www.pefl.ru/plug.php?p=rating&t=s&n=2&*
-// @include        http://www.pefl.net/plug.php?p=rating&t=s&n=2&*
-// @include        http://pefl.ru/plug.php?p=rating&t=s&n=2&*
-// @include        http://pefl.net/plug.php?p=rating&t=s&n=2&*
+// @include        http://www.pefl.ru/plug.php?p=rating&t=s&n=*
+// @include        http://www.pefl.net/plug.php?p=rating&t=s&n=*
+// @include        http://pefl.ru/plug.php?p=rating&t=s&n=*
+// @include        http://pefl.net/plug.php?p=rating&t=s&n=*
 // ==/UserScript==
 
 function UrlValue(key,url){
@@ -17,64 +17,78 @@ function UrlValue(key,url){
 }
 
 function SaveData(){
+	var teamslist = ''
+	for(i in teams){
+		var bud = (teams[i]['bud'] ? teams[i]['bud'] : ' ')
+		var rep = (teams[i]['rep'] ? teams[i]['rep'] : ' ')
+		teamslist += i + ':'+ bud + ':' + rep + ','
+	}
 	if (navigator.userAgent.indexOf('Firefox') != -1){
 		globalStorage[location.hostname].peflcountryteams = teamslist
 	} else {	
 		sessionStorage.peflcountryteams = teamslist
 	}
-	// on exit: 155:1:2,744,718,739,746,713,1432,729,738,723
 }
-/**
-function GetTeamsId(){
-	var teams = UrlValue('j')
+
+function check(d) {return (d<10 ? "0"+d : d)}
+
+function GetAllReit(value){
+	var today = new Date()
+	today = check(today.getDate()) + '.' + check(today.getMonth()+1)
+	if(!teams[0]) teams[0] = {}
+	teams[0][value] = today;
+
 	$('td.back4 table table tr:gt(0)').each(function(){
-		$(this).find('td').each(function(i,val){
-			if(i==2) {
-				teams += ',' + UrlValue('j',$(val).find('a').attr('href'))
-			}
-		})
+		var m = $(this).find('td:first').text()
+		var id = UrlValue('j',$(this).find('td:eq(2)').find('a').attr('href'));
+		if(!teams[id]) teams[id] = {}
+		teams[id][value] = m;
 	},false)
-
-}
-/**/
-
-function GetAllReitBud(){
-	$('td.back4 table table tr').each(function(){
-		var m = ''
-		$(this).find('td').each(function(i,val){
-			if (i==0){
-				m = $(val).text()
-			} else if(i==2) {
-				bud[UrlValue('j',$(val).find('a').attr('href'))] = m;
-			}
-			
-		})
-
-	},false)
-//	for (j in bud) teamslist+= ',' + j + ':' + bud[j]
-	SaveData();
-}
-function GetAllReitRep(){
-	$('td.back4 table table tr').each(function(){
-		var m = ''
-		$(this).find('td').each(function(i,val){
-			if (i==0){
-				m = $(val).text()
-			} else if(i==2) {
-				rep[UrlValue('j',$(val).find('a').attr('href'))] = m;
-			}
-			
-		})
-
-	},false)
-//	for (j in rep) teamslist+= ',' + j + ':' + bud[j]
 	SaveData();
 }
 
-var teamslist = ''
+function GetRepName(value){
+	for( i in reputations){
+		var rep = reputations[i]
+		if(value >= rep.st && value <= rep.fn) return rep.name
+	}
+}
+
+function GetRepForecast(val1,val2){
+	var x = reputations[val1]['up'].split(',')
+	var minr = ''
+	var maxr = ''
+	for (i in x) {
+		if(val2 < x[i]) minr = i
+	}
+}
+
+// 9 season
+var reputations = {
+	1	: {name: 'ОЛМ', st: 1, fn: 9},
+	2	: {name: 'Мир 1/2', st: 10, fn: 23},
+	3	: {name: 'Мир 2/2', st: 24, fn: 41},
+	4	: {name: 'Отл 1/2', st: 42, fn: 65},
+	5	: {name: 'Отл 2/2', st: 66, fn: 92},
+	6	: {name: 'Хор 1/4', st: 93, fn: 118},
+	7	: {name: 'Хор 2/4', st: 119, fn: 163},
+	8	: {name: 'Хор 3/4', st: 164, fn: 221},
+	9	: {name: 'Хор 4/4', st: 222, fn: 281, up: '789,554,428,293,171,81,0'},
+	10	: {name: 'Срд 1/3', st: 282, fn: 351},
+	11	: {name: 'Срд 2/3', st: 352, fn: 421},
+	12	: {name: 'Срд 3/3', st: 422, fn: 521},
+	13	: {name: 'Слб 1/3', st: 522, fn: 631},
+	14	: {name: 'Слб 2/3', st: 632, fn: 743},
+	15	: {name: 'Слб 3/3', st: 744, fn: 961},
+	16	: {name: 'ОчСл 1/5', st: 962, fn: 1184},
+	17	: {name: 'ОчСл 2/5', st: 1185, fn: 1403},
+	18	: {name: 'ОчСл 3/5', st: 1404, fn: 1680},
+	19	: {name: 'ОчСл 4/5', st: 1681, fn: 1991},
+	20	: {name: 'ОчСл 5/5', st: 1992, fn: 2284},
+	21	: {name: 'Unknown', st: 2285, fn: 5000},
+}
+
 var teams = []
-var bud = []
-var rep = []
 
 document.addEventListener('DOMContentLoaded', function(){
 
@@ -88,50 +102,41 @@ document.addEventListener('DOMContentLoaded', function(){
 	if (text1 != 'undefined'){
 		var data = text1.split(',');
 		for (i in data){
-			if (i > 0){
-				var data2 = data[i].split(':')
-				var id = data2[0]
-				var team = []
-				team.id = id
-				if(data2[1]) team.bud = data2[1]
-				if(data2[2]) team.rep = data2[2]
-				teams[id] = team
-			}
+			var data2 = data[i].split(':')
+			var id = data2[0]
+			var team = []
+			team.id = id
+			team.bud = (data2[1] ? data2[1] : ' ')
+			team.rep = (data2[2] ? data2[2] : ' ')
+			teams[id] = team
 		}
-
-//		if(reitbud) $('td.back4').prepend('reitbud:'+ reitbud[0] + ',' + reitbud[1] + '...')
-//		if(reitrep) $('td.back4').prepend('reitrep:'+ reitrep[0] + ',' + reitrep[1] + '...')
 	}
-
-//	$('td.back4').prepend(id + ':')
-//	for(j in data2) $('td.back4').prepend(data2[j] + ',')
-//	$('td.back4').prepend('<br>')
 
 	// page contry reit
-	if (UrlValue('j')){
-		// print buttun remeber tems list
-//		var htmltext = '<div align=right><a href="javascript:void(GetTeamsId())">запомнить список команд</a>&nbsp;</div>'
-//		$('td.back4').prepend(htmltext)
-		$('td.back4 table table tr').each(function(k,val2){
-			if(k==0) $(val2).prepend('<th width=15%>Место по ПЕФЛ</th>')
-			else{
-			var id = ''
-			$(val2).find('td').each(function(i,val){
-				if(i==2) {
-					id = UrlValue('j',$(val).find('a').attr('href'))
-				}
-			})
-			$(val2).prepend('<td>'+teams[id]['bud']+'</td>')
-			}
+	if (teams[0] && UrlValue('j') && UrlValue('j') > 0 && UrlValue('n') == 2){
+
+		var htmltext = '(PEFL:'+teams[0]['bud']+')'
+		$('td.back4 table table tr:eq(0) th:first').append(htmltext)
+
+		htmltext = '<th width=20%>Прогноз от КрабВИП (<a href="/page.php?id=4442">*</a>)</th><th width=15%>Репутация ('+teams[0]['rep']+')</th>'
+		$('td.back4 table table tr:eq(0)').prepend(htmltext)
+
+
+		$('td.back4 table table tr:gt(0)').each(function(k,val2){
+			var id = UrlValue('j',$(val2).find('td:eq(2)').find('a').attr('href'))
+
+			htmltext = ' ('+teams[id]['bud']+')'
+			$(val2).find('td:first').append(htmltext)
+
+			htmltext = '<td>'+'ОчСл 3/5 (80%)<br>ОчСл 4/5 (20%)'+'</td><td>'+GetRepName(teams[id]['rep'])+'</td>'
+			$(val2).prepend(htmltext)
+
 		},false)
 
+	} else if(teams[0] && !UrlValue('j') && UrlValue('n') == 2){
+		GetAllReit('bud');
 
-	// page full reit		
-	} else if(UrlValue('n') == 2){
-		GetAllReitBud()
-	} else if(UrlValue('n') == 1){
-		GetAllReitRep()
+	} else if(teams[0] && !UrlValue('j') && UrlValue('n') == 1){
+		GetAllReit('rep');
 	}
-
-
 }, false);
