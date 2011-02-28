@@ -62,6 +62,8 @@ function GetRepLevel(value){
 }
 
 function GetRepForecast(val1,val2){
+//	$('td.back4 td.back1').append('<br>val1='+val1+' val2='+val2)
+
 	var x = reputations[val1]['up'].split(',')
 	var minr = ''
 	var maxr = 0
@@ -70,19 +72,23 @@ function GetRepForecast(val1,val2){
 	for (i in x) {
 		if(val2 < parseInt(x[i])) {
 			minr = parseInt(x[i])
-			mini = val1-4+parseInt(i)
+			mini = parseInt(val1) - parseInt(lv[parseInt(i)])
 		} 
 		if(val2 > parseInt(x[i]) && maxr == 0) {
 			maxr = parseInt(x[i])
-			maxi = val1-4+parseInt(i)
+			maxi = parseInt(val1) - parseInt(lv[parseInt(i)])
 		}
 	}
+//	$('td.back4 td.back1').append(' minr='+ minr + ' mini=' + mini)
+//	$('td.back4 td.back1').append(' maxr='+ maxr + ' maxi=' + maxi)
 	var raz = minr - maxr
-	res1 = reputations[mini]['name'] + ' (' + ((minr - val2)/raz*100).toFixed(0) + '%)'
-	res2 = reputations[maxi]['name'] + ' (' + ((val2 - maxr)/raz*100).toFixed(0) + '%)'
+//	$('td.back4 td.back1').append(' raz='+ raz)
+
+	res1 = (mini!=maxi ? reputations[mini]['name'] + ' (' + (100 - (minr - val2)/raz*100).toFixed(0) + '%)' : '')
+	res2 = reputations[maxi]['name'] + ' (' + (100 - (val2 - maxr)/raz*100).toFixed(0) + '%)'
 	
-	if(val1 == 9) $('td.back4').prepend(val1+': '+val2+': '+minr +': '+maxr+': ' +raz+': '+mini+': '+maxi+' <br>')
-	return res1 + '<br>' + res2
+//	if(val1 == 9 || val1 == 5) $('td.back4').prepend(val1+': '+val2+': '+minr +': '+maxr+': ' +raz+': '+mini+': '+maxi+' <br>')
+	return res2 + '<br>' + res1
 }
 
 function Forecast(){
@@ -95,6 +101,8 @@ function Forecast(){
 	},false)
 //	$('#forecast').hide()
 }
+
+var lv = {0:-3,1:-2,2:-1,3:0,4:1,5:2,6:3}
 
 // 9 season
 var reputations = {
