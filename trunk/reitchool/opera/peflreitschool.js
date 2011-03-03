@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name           peflreitschoolcountry
+// @name           peflreitschool
 // @namespace      pefl
 // @description    school reit page modification (PEFL.ru and .net)
 // @include        http://www.pefl.ru/plug.php?p=rating&t=s&n=*
