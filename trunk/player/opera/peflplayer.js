@@ -152,7 +152,7 @@ function CheckPlayer(x){
 			var skillvalue1 = (pl1[skillname] == undefined ? '??' : pl1[skillname])
 			var raz = parseInt(skillvalue1)-parseInt(skillvalue0)
 			var razcolor = 'red'
-			if(raz == 0 ) raz = '&nbsp;&nbsp;&nbsp;'
+			if(raz == 0 || isNaN(raz)) raz = '&nbsp;&nbsp;&nbsp;&nbsp;'
 			else if (raz>0) {
 					raz = '+' + raz
 					razcolor = 'green'
@@ -234,6 +234,7 @@ function CodeForForum(){
 		x += '\n\n'
 
 	} else {
+		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] '
 		x += $('td.back4 table center:first').find('a:contains("интересуются")').removeAttr('href').end().html()
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
