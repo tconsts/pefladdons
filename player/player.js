@@ -135,8 +135,16 @@ function CheckPlayer(x){
 			var skillname = sklfr[$(val).text()]
 			var skillvalue0 = pl0[skillname]
 			var skillvalue1 = (pl1[skillname] == undefined ? '??' : pl1[skillname])
+			var raz = parseInt(skillvalue1)-parseInt(skillvalue0)
+			var razcolor = 'red'
+			if(raz == 0 || isNaN(raz)) raz = '&nbsp;&nbsp;&nbsp;&nbsp;'
+			else if (raz>0) {
+					raz = '+' + raz
+					razcolor = 'green'
+			}
 			var skilltext = '<td width=10%>'
 			skilltext += String(skillvalue1).split('.')[0]
+			skilltext += '<sup><font color="' + razcolor + '">'+raz+'</font></sup>'
 			if (String(skillvalue1).split('.')[1]){
 				skilltext += ' <img height="12" src="system/img/g/' + String(skillvalue1).split('.')[1] + '.gif">'
    			}
@@ -225,7 +233,9 @@ function CodeForForum(){
 		x += '[/center]\n\n'
 	}
 
-	x += $('td.back4 table table:not(#plheader):first').html()
+	x += $('td.back4 table table:not(#plheader):first')
+		.find('sup').remove().end()
+		.html()
 		.replace(/<!-- [а-я] -->/g,'')
 		.replace(/<tbody>/g,'<table width=100%>')
 		.replace(/tbody/g,'table')
