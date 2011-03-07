@@ -17,8 +17,8 @@ function UrlValue(key,url){
 }
 
 function ShowChange(value){
-	if(value > 0) 		return '(+' + value + ')'
-	else if(value < 0)	return '(' + value + ')'
+	if(value > 0) 		return '<sup><font color="green">+' + value + '</font></sup>'
+	else if(value < 0)	return '<sup><font color="red">' + value + '</font></sup>'
 	else 		  		return ''
 }
 
