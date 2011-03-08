@@ -38,6 +38,24 @@ function ColorTable(tableid){
 
 function SelectTeam(teamid){
 	$("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().css("font-weight", "bold")
+	var maxturs = (parseInt($('td.back4 table table tr:last td:first').text())-1)*2
+	var curgames = parseInt($('td.back4 table table tr:last td:eq(2)').text())
+	var teamo = parseInt($("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().parent().find('td:last').text())
+	var maxo = (maxturs - curgames)*3
+	var bg = ''
+	$('td.back4 table table tr').each(function(i,val){
+		if(i > 0){
+		var curteamo = parseInt($(val).find('td:last').text())
+		if( curteamo < teamo + 3.1 && curteamo > teamo - 3.1) {
+			bg = 'bgcolor=green'
+		} else if( (curteamo  < teamo + maxo + 0.1) && (curteamo + maxo + 0.1 > teamo)) {
+			bg = 'bgcolor=A3DE8F'
+		} else {
+			bg = 'bgcolor=C9F8B7'
+		}
+		}
+		$(val).prepend('<td ' + bg + '></td>')
+	})
 }
 
 function getValue(tableid,curVal){
@@ -152,7 +170,7 @@ function TableCodeForForum(){
 	var x = '[b]'
 	x += $('td.back4 td.back1').text()
 	x += '[/b][spoiler]'
-	x += $('td.back4 td.back1').parent().next().find('table').html()
+	x += $('td.back4 table:eq(1)').html()
 		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
 		.replace(/tbody/g,'table')
 		.replace(/<th/g,'[td')
