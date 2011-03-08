@@ -21,16 +21,11 @@ document.addEventListener('DOMContentLoaded', function(){
 	var cur = {}
 	var fin = {}
 
-	cur.bablo = parseInt($('td.back4 > table b:first').html().split('<br>')[3].split(':')[1].replace(/\,/g,'').replace('$',''))
+	var ffn = $('td.back4 > table td:eq(1)').html()
+	var zp = parseInt(ffn.split('Сумма зарплат:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
+	cur.bablo = parseInt(ffn.split('Финансы:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
+	cur.bonus = (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
 
-	if($('td.back4 > table b:eq(1)').html().split('<br>')[6] != undefined){
-		cur.bonus = parseInt($('td.back4 > table b:eq(1)').html().split('<br>')[6].split('Бонус: ')[1].replace(/\,/g,'').replace('$',''))
-	} else if($('td.back4 > table b:first').html().indexOf('Бонус:') != -1){
-		cur.bonus = parseInt($('td.back4 > table b:first').html().split('<br>')[11].split('Бонус: ')[1].replace(/\,/g,'').replace('$',''))
-	} else {
-		cur.bonus = 0
-	}
-	
 	$('td.back4 > table table').each(function(i,val){
 		var curtable = finance[i] = {}
 		$(val).attr('id', i)
@@ -42,9 +37,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
 	var chbonus = Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
 
-	sponsors = finance[0]['Спонсоры']
-	zp = finance[1]['Зарплаты']
-	school = finance[1]['Школа'] - chbonus
+	var sponsors = finance[0]['Спонсоры']
+//	zp = finance[1]['Зарплаты']
+	var school = finance[1]['Школа'] - chbonus
 
 	fin.fid = 85
 
