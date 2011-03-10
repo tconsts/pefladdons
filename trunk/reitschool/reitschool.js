@@ -52,11 +52,11 @@ function GetRepLevel(value){
 }
 
 function GetRepForecast(val1,val2){
-//	$('td.back4 td.back1').append('<br>val1='+val1+' val2='+val2)
-
 	var x = reputations[val1]['up'].split(',')
 	var minr = ''
 	var maxr = 0
+	var mini = ''
+	var maxi = ''
 	var res1 = ''
 	var res2 = ''
 	for (i in x) {
@@ -69,15 +69,20 @@ function GetRepForecast(val1,val2){
 			maxi = parseInt(val1) - parseInt(lv[parseInt(i)])
 		}
 	}
-//	$('td.back4 td.back1').append(' minr='+ minr + ' mini=' + mini)
-//	$('td.back4 td.back1').append(' maxr='+ maxr + ' maxi=' + maxi)
 	var raz = minr - maxr
-//	$('td.back4 td.back1').append(' raz='+ raz)
 
-	res1 = (mini!=maxi ? reputations[mini]['name'] + ' (' + (100 - (minr - val2)/raz*100).toFixed(0) + '%)' : '')
-	res2 = reputations[maxi]['name'] + ' (' + (100 - (val2 - maxr)/raz*100).toFixed(0) + '%)'
-	
-//	if(val1 == 9 || val1 == 5) $('td.back4').prepend(val1+': '+val2+': '+minr +': '+maxr+': ' +raz+': '+mini+': '+maxi+' <br>')
+	if (maxr==-1) {
+		res2 = reputations[mini]['name'] + ' (99%)'
+	} else if (mini == maxi) { 
+		res2 = reputations[maxi]['name'] + ' (99%)'
+	} else if (val2 > minr) {                  
+		res2 = reputations[maxi]['name'] + ' (99%)'
+	} else if (maxr == 0) {
+		res2 = reputations[mini]['name'] + ' (99%)'
+	} else {
+		res1 = reputations[mini]['name'] + ' (' + (100 - (minr - val2)/raz*100).toFixed(0) + '%)'
+		res2 = reputations[maxi]['name'] + ' (' + (100 - (val2 - maxr)/raz*100).toFixed(0) + '%)'
+	}
 	return res2 + '<br>' + res1
 }
 
@@ -96,15 +101,16 @@ var lv = {0:-3,1:-2,2:-1,3:0,4:1,5:2,6:3}
 
 // 9 season
 var reputations = {
-	1	: {name: 'ОЛМ',      st: 1,    fn: 9,		up:'0,0,100,20,0,0,0'},
-	2	: {name: 'Мир 1/2',  st: 10,   fn: 23,		up:'365,175,51,31,8,0,0'},
-	3	: {name: 'Мир 2/2',  st: 24,   fn: 41,		up:'283,138,76,37,14,0,0'},
-	4	: {name: 'Отл 1/2',  st: 42,   fn: 65,		up:'268,179,128,69,28,0,0'},
-	5	: {name: 'Отл 2/2',  st: 66,   fn: 92,		up:'583,220,170,107,55,7,0'},
-	6	: {name: 'Хор 1/4',  st: 93,   fn: 118,		up:'484,327,181,124,70,20,0'},
-	7	: {name: 'Хор 2/4',  st: 119,  fn: 163,		up:'589,396,289,162,100,52,0'},
+	0	: {name: 'Unknown',  st: 0,    fn: 0,		up:'0,0,0,0,0,0,0'},
+	1	: {name: 'ОЛМ',      st: 1,    fn: 9,		up:'0,0,100,20,-1,-1,-1'},
+	2	: {name: 'Мир 1/2',  st: 10,   fn: 23,		up:'365,175,51,31,8,-1,-1'},
+	3	: {name: 'Мир 2/2',  st: 24,   fn: 41,		up:'283,138,76,37,14,1,-1'},
+	4	: {name: 'Отл 1/2',  st: 42,   fn: 65,		up:'268,179,128,69,28,1,-1'},
+	5	: {name: 'Отл 2/2',  st: 66,   fn: 92,		up:'583,220,170,107,55,7,1'},
+	6	: {name: 'Хор 1/4',  st: 93,   fn: 118,		up:'484,327,181,124,70,20,1'},
+	7	: {name: 'Хор 2/4',  st: 119,  fn: 163,		up:'589,396,289,162,100,52,1'},
 	8	: {name: 'Хор 3/4',  st: 164,  fn: 221,		up:'646,462,358,232,115,56,23'},
-	9	: {name: 'Хор 4/4',  st: 222,  fn: 281,		up:'789,554,428,293,171,81,0'},
+	9	: {name: 'Хор 4/4',  st: 222,  fn: 281,		up:'789,554,428,293,171,81,1'},
 	10	: {name: 'Срд 1/3',  st: 282,  fn: 351,		up:'1177,711,507,352,232,114,34'},
 	11	: {name: 'Срд 2/3',  st: 352,  fn: 421,		up:'1139,880,653,444,284,168,103'},
 	12	: {name: 'Срд 3/3',  st: 422,  fn: 521,		up:'1294,960,772,552,341,192,115'},
