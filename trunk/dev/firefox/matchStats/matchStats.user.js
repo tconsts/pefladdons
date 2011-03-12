@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name           peflplayer
+// @name           matchStats
 // @namespace      pefl
-// @description    modification player page (PEFL.ru)
+// @description    player Stats (PEFL.ru)
 // @include        http://www.pefl.ru/plug.php?p=refl&t=if*
 // @include        http://pefl.ru/plug.php?p=refl&t=if*
 // @include        http://www.pefl.net/plug.php?p=refl&t=if*
