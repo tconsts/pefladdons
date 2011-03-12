@@ -16,5 +16,5 @@ newScript1.src = 'js/jquery-1.3.2.min.js';
 headID.appendChild(newScript1);
 var newScript2 = document.createElement('script');
 newScript2.type = 'text/javascript';
-newScript2.src = 'http://pefladdons.googlecode.com/svn/trunk/dev/firefox/matchStats/matchStats.user.js';
+newScript2.src = 'http://pefladdons.googlecode.com/svn/trunk/dev/firefox/matchStats/matchStats.js';
 headID.appendChild(newScript2);
