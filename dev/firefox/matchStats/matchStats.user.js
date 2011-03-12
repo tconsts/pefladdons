@@ -2,14 +2,10 @@
 // @name           peflplayer
 // @namespace      pefl
 // @description    modification player page (PEFL.ru)
-// @include        http://www.pefl.ru/plug.php?p=refl&t=p*
-// @include        http://www.pefl.ru/plug.php?p=refl&t=yp2*
-// @include        http://pefl.ru/plug.php?p=refl&t=p*
-// @include        http://pefl.ru/plug.php?p=refl&t=yp2*
-// @include        http://www.pefl.net/plug.php?p=refl&t=p*
-// @include        http://www.pefl.net/plug.php?p=refl&t=yp2*
-// @include        http://pefl.net/plug.php?p=refl&t=p*
-// @include        http://pefl.net/plug.php?p=refl&t=yp2*
+// @include        http://www.pefl.ru/plug.php?p=refl&t=if*
+// @include        http://pefl.ru/plug.php?p=refl&t=if*
+// @include        http://www.pefl.net/plug.php?p=refl&t=if*
+// @include        http://pefl.net/plug.php?p=refl&t=if*
 
 // ==/UserScript==
 
@@ -20,5 +16,5 @@ newScript1.src = 'js/jquery-1.3.2.min.js';
 headID.appendChild(newScript1);
 var newScript2 = document.createElement('script');
 newScript2.type = 'text/javascript';
-newScript2.src = 'http://pefladdons.googlecode.com/svn/trunk/dev/firefox/player/matchStats.js';
+newScript2.src = 'http://pefladdons.googlecode.com/svn/trunk/dev/firefox/matchStats/matchStats.user.js';
 headID.appendChild(newScript2);
