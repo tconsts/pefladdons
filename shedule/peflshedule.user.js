@@ -6,6 +6,7 @@
 // @include        http://pefl.ru/plug.php?p=refl&t=last&j=*
 // @include        http://www.pefl.net/plug.php?p=refl&t=last&j=*
 // @include        http://pefl.net/plug.php?p=refl&t=last&j=*
+// @version			1.2
 
 // ==/UserScript==
 

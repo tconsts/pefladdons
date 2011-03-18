@@ -6,6 +6,7 @@
 // @include        http://pefl.ru/plug.php?p=refl&t=last&j=*
 // @include        http://www.pefl.net/plug.php?p=refl&t=last&j=*
 // @include        http://pefl.net/plug.php?p=refl&t=last&j=*
+// @version			1.2
 // ==/UserScript==
 
 function filter(criteria){
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				var p = (prevdt - curdt)/1000/60/60/24
 				var i=1
 				while ( i < p ){
-					var dd = new Date(prevdt - i*60*60*24*1000)
+					var dd = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
 					var d = day[dd.getDay()]
 					if (d=='пнд' || d=='срд' || d=='птн') {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
@@ -82,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			var p = (prevdt - today)/1000/60/60/24
 			var i=1
 			while ( i < p ){
-				var dd = new Date(prevdt - i*60*60*24*1000)
+				var dd = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
 				var d = day[dd.getDay()]
 				if (d=='пнд' || d=='срд' || d=='птн') {
 					var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'

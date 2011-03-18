@@ -1,3 +1,5 @@
+// version			1.2
+
 function filter(criteria){
 		$('.back4 tr').each(function(index,value){
 			if ($(this).html().indexOf('Матч')<0 && $(this).html().indexOf('now')<0){
@@ -48,7 +50,7 @@ $().ready(function() {
 				var p = (prevdt - curdt)/1000/60/60/24
 				var i=1
 				while ( i < p ){
-					var dd = new Date(prevdt - i*60*60*24*1000)
+					var dd = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
 					var d = day[dd.getDay()]
 					if (d=='пнд' || d=='срд' || d=='птн') {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
@@ -73,7 +75,7 @@ $().ready(function() {
 			var p = (prevdt - today)/1000/60/60/24
 			var i=1
 			while ( i < p ){
-				var dd = new Date(prevdt - i*60*60*24*1000)
+				var dd = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
 				var d = day[dd.getDay()]
 				if (d=='пнд' || d=='срд' || d=='птн') {
 					var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
