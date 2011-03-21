@@ -1,3 +1,5 @@
+(function(){
+
 function getPairValue(str,def,delim) {
 	def	= (def ? def : '')
 	delim	= (delim ? delim : '=')
@@ -281,7 +283,6 @@ var sklsr = []
 var sklfr = []
 var compare = false
 
-(function(){
 	skl['nation']	= ['nt' ,'КСт','Код страны']
 	skl['natfull']	= ['ntf','стр','страна']
 	skl['secondname']= ['snm','Фам','Фамилия']
