@@ -10,7 +10,7 @@
 // @include        http://www.pefl.net/plug.php?p=refl&t=yp*
 // @include        http://pefl.net/plug.php?p=refl&t=p*
 // @include        http://pefl.net/plug.php?p=refl&t=yp*
-
+// @version			1.7
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
