@@ -206,6 +206,7 @@ function CodeForForum(){
 		x += $('table#plheader')
 			.find('a:contains("интересуются")').removeAttr('href').end()
 			.find('center, b, td').removeAttr('id').end()
+			.find('img').remove().end()
 			.html()
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
@@ -222,7 +223,10 @@ function CodeForForum(){
 
 	} else {
 		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] '
-		x += $('td.back4 table center:first').find('a:contains("интересуются")').removeAttr('href').end().html()
+		x += $('td.back4 table center:first')
+			.find('a:contains("интересуются")').removeAttr('href').end()
+			.find('img').remove().end()
+			.html()
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/\</g,'[')
@@ -441,8 +445,8 @@ var compare = false
 	//add sum of skills to page
 	$('td.back4 table center:first').append('(сс='+String(skillsum)+')')
 
-	//get player header info
-	var ms = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
+	//get player header info (<BR> for IE, not <br>)
+	var ms = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<BR>',6)
 	var j = 0
 
 	var name = ms[j].split(' (',1)[0]
