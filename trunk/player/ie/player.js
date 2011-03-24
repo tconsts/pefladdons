@@ -252,7 +252,7 @@ function CodeForForum(){
 		.replace(/.gif/g,'.gif[/img')
 		.replace(/"/g,'')
 		.replace(/\n/g,'')
-		if (navigator.userAgent.indexOf('Opera') != -1) x += '[/table]'
+		if (navigator.userAgent.indexOf('Opera') != -1 && ptype != 'yp2') x += '[/table]'
 
 	if (compare == false && (UrlValue('t') == 'p' || UrlValue('t') == 'pp')){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
