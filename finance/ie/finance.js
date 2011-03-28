@@ -67,9 +67,9 @@ function format(num) {
 	var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F>Текущий '+cur.fid+' ФИД</th><th width=30% bgcolor=#A3DE8F>Прогноз на '+fin.fid+' ФИД</th></tr>'
 	$('table#2, table#3').prepend(preparedhtml)
 
-	$('td[id=cur]:eq(7)').html($('td[id=cur]:eq(7)').html()+' (123)')
+	$('td[id=cur]:eq(7)').append(' ('+cur.schoolperc+')')
 
-	$('td[id=fin]:eq(0)').html((format(fin.sponsors)).bold()
+	$('td[id=fin]:eq(0)').html((format(fin.sponsors)).bold())
 	$('td[id=fin]:eq(1)').html('~'+format(fin.stadion))
 	$('td[id=fin]:eq(2)').html(format(fin.priz).bold())
 	$('td[id=fin]:eq(3)').html(format(fin.sale).bold())
