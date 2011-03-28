@@ -79,25 +79,7 @@ $().ready(function() {
 	$('td[id=fin]:eq(6)').html(format(fin.buy).bold())
 	$('td[id=fin]:eq(7)').html(format(fin.school).bold()+' ('+fin.schoolperc+')')
 	$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
-/**
 
-	$('td#cur').each(function(i, val){
-		if(i==7) $(val).html($(val).html()+' ('+cur.schoolperc+')')
-	})
-
-	$('td#fin').each(function(i, val){
-		if(i==0) $(val).html((format(fin.sponsors)).bold())
-		if(i==1) $(val).html('~'+format(fin.stadion))
-		if(i==2) $(val).html(format(fin.priz).bold())
-		if(i==3) $(val).html(format(fin.sale).bold())
-		if(i==4) $(val).html('~'+format(fin.allup))
-
-		if(i==5) $(val).html(format(fin.zp).bold())
-		if(i==6) $(val).html(format(fin.buy).bold())
-		if(i==7) $(val).html(format(fin.school).bold()+' ('+fin.schoolperc+')')
-		if(i==8) $(val).html(format(fin.alldown).bold())
-	})
-/**/
 	preparedhtml  = '<hr><table id="4" width=100% border=0>'
 	preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
 	preparedhtml += '<td width=30%>' + (format(cur.plusminus)).bold() + '</td>'
