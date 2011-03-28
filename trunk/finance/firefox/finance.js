@@ -67,6 +67,20 @@ $().ready(function() {
 	var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F>Текущий '+cur.fid+' ФИД</th><th width=30% bgcolor=#A3DE8F>Прогноз на '+fin.fid+' ФИД</th></tr>'
 	$('table#2, table#3').prepend(preparedhtml)
 
+	$('td[id=cur]:eq(7)').append(' ('+cur.schoolperc+')')
+
+	$('td[id=fin]:eq(0)').html((format(fin.sponsors)).bold())
+	$('td[id=fin]:eq(1)').html('~'+format(fin.stadion))
+	$('td[id=fin]:eq(2)').html(format(fin.priz).bold())
+	$('td[id=fin]:eq(3)').html(format(fin.sale).bold())
+	$('td[id=fin]:eq(4)').html('~'+format(fin.allup))
+
+	$('td[id=fin]:eq(5)').html(format(fin.zp).bold())
+	$('td[id=fin]:eq(6)').html(format(fin.buy).bold())
+	$('td[id=fin]:eq(7)').html(format(fin.school).bold()+' ('+fin.schoolperc+')')
+	$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
+/**
+
 	$('td#cur').each(function(i, val){
 		if(i==7) $(val).html($(val).html()+' ('+cur.schoolperc+')')
 	})
@@ -83,7 +97,7 @@ $().ready(function() {
 		if(i==7) $(val).html(format(fin.school).bold()+' ('+fin.schoolperc+')')
 		if(i==8) $(val).html(format(fin.alldown).bold())
 	})
-
+/**/
 	preparedhtml  = '<hr><table id="4" width=100% border=0>'
 	preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
 	preparedhtml += '<td width=30%>' + (format(cur.plusminus)).bold() + '</td>'
