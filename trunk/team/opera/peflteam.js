@@ -23,36 +23,69 @@ function ShowChange(value){
 }
 
 document.addEventListener('DOMContentLoaded', function(){
+
+	// Edit finance
+	var fulltxt = $('table.layer1 td.l4:eq(1)').text()
 	var txt = 'Фин. положение: '
-	$('td.l4:contains('+txt+')').each(function(){
-			var fin = $(this).text().replace(txt,'').replace(/,/g,'').replace('$','')
-			var newtxt = '';
-			switch (fin){
-				case 'банкрот': newtxt = ' (меньше 0)';break;
-				case 'жалкое': newtxt = ' (1т-200т)';break;
-				case 'бедное': newtxt =  ' (200т-500т)';break;
-				case 'среднее': newtxt =  ' (500т-1м)';break;
-				case 'нормальное': newtxt = ' (1м-3м)';break;
-				case 'благополучное': newtxt = ' (3м-6м)';break;
-				case 'отличное': newtxt =  ' (6м-15м)';break;
-				case 'богатое': newtxt =  ' (15м-40м)';break;
-				case 'некуда деньги девать :-)': newtxt =  ' (>40м)';break;
-				default:
-					if (fin >= 40000000) newtxt = ' (некуда девать)'
-					else if (fin >= 15000000) newtxt = ' (богатое)'
-					else if (fin >= 6000000) newtxt = ' (отличное)'
-					else if (fin >= 3000000) newtxt = ' (благополучное)'
-					else if (fin >= 1000000) newtxt = ' (нормальное)'
-					else if (fin >= 500000) newtxt = ' (среднее)'
-					else if (fin >= 200000) newtxt = ' (бедное)'
-					else if (fin >=0) newtxt = ' (жалкое)'
-					else if (fin < 0) newtxt = ' (банкрот)'
-			}
-			var preparedhtml = 'Фин: '+$(this).text().replace(txt,'').replace(' :-)','')+newtxt.fontsize(1)
-			$(this).html(preparedhtml);
+	var fin = fulltxt.replace(txt,'').replace(/,/g,'').replace('$','')
+	var newtxt = '';
+	switch (fin){
+		case 'банкрот': newtxt = ' (меньше 0)';break;
+		case 'жалкое': newtxt = ' (1т-200т)';break;
+		case 'бедное': newtxt =  ' (200т-500т)';break;
+		case 'среднее': newtxt =  ' (500т-1м)';break;
+		case 'нормальное': newtxt = ' (1м-3м)';break;
+		case 'благополучное': newtxt = ' (3м-6м)';break;
+		case 'отличное': newtxt =  ' (6м-15м)';break;
+		case 'богатое': newtxt =  ' (15м-40м)';break;
+		case 'некуда деньги девать :-)': newtxt =  ' (>40м)';break;
+		default:
+			if (fin >= 40000000) newtxt = ' (некуда девать)'
+			else if (fin >= 15000000) newtxt = ' (богатое)'
+			else if (fin >= 6000000) newtxt = ' (отличное)'
+			else if (fin >= 3000000) newtxt = ' (благополучное)'
+			else if (fin >= 1000000) newtxt = ' (нормальное)'
+			else if (fin >= 500000) newtxt = ' (среднее)'
+			else if (fin >= 200000) newtxt = ' (бедное)'
+			else if (fin >=0) newtxt = ' (жалкое)'
+			else if (fin < 0) newtxt = ' (банкрот)'
+	}
+	var preparedhtml = 'Фин: ' + fulltxt.replace(txt,'').replace(' :-)','')+newtxt.fontsize(1)
+	$('table.layer1 td.l4:eq(1)').html(preparedhtml);
 
-	});
 
+	// task for club
+	var task = []
+
+	// Get info fom Global or Session Storage
+	var text1 = ''
+	if (navigator.userAgent.indexOf('Firefox') != -1){
+		text1 = String(globalStorage[location.hostname].tasks)
+	} else {
+		text1 = String(sessionStorage.tasks)
+	}
+	if (text1 != 'undefined'){
+		var t1 = text1.split(',')
+		for (i in t1) {
+			var t2 = t1[i].split(':')
+			task[t2[0]] = t2[1]
+		}
+	}
+
+	var zad = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
+	var cid = parseInt($('td.back4 table table td:first').text())
+	task[cid] = zad
+
+	var text = ''
+	for (i in task) if(task[i]!=undefined) text += i+':'+task[i]+','
+
+	if (navigator.userAgent.indexOf('Firefox') != -1){
+		globalStorage[location.hostname].tasks = text
+	} else {	
+		sessionStorage.tasks = text
+	}
+
+	// show nominals
 	if (UrlValue('j')==99999){
 		$.get('team.php', {}, function(data){
 			var teamnominals = 0
