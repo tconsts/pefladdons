@@ -10,6 +10,7 @@ $().ready(function() {
 	var finance = []
 	var cur = {}
 	var fin = {}
+	fin.fid = 82
 
 	var ffn = $('td.back4 > table td:eq(1)').html()
 	var zp = parseInt(ffn.split('Сумма зарплат:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
@@ -27,8 +28,6 @@ $().ready(function() {
 	var chbonus = Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
 	var sponsors = finance[0]['Спонсоры']
 	var school = finance[1]['Школа'] - chbonus
-
-	fin.fid = 85
 
 	cur.sponsors = finance[2]['Спонсоры']
 	cur.stadion = finance[2]['Стадион']
@@ -60,7 +59,6 @@ $().ready(function() {
 	fin.alldown = fin.zp + fin.buy + fin.school
 	fin.plusminus = fin.allup - fin.alldown
 	fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
-
 
 	$('table#2 td:odd, table#3 td:odd').attr('width','30%').attr('id','cur').after('<td width=30% id=fin></td>')
 
