@@ -44,6 +44,7 @@ function ShowChange(value){
 
 	});
 
+/**
 	// Show nominals
 	if (UrlValue('j')==99999){
 		$.get('team.php', {}, function(data){
@@ -56,7 +57,7 @@ function ShowChange(value){
 			$('table.layer1 td.l2:last').append(('Номиналы: ' + nomtext).fontsize(1))
 		})
 	}
-
+/**/
 	// Show form and morale change
 	var players = []
 	var players2 = []
