@@ -13,7 +13,8 @@ function filter(criteria){
 }
 
 $().ready(function() {
-	
+
+	var excl = '02.05.11!04.05.11!'	
 	var competitions=[];
 	var i=0;
 	$('td.back4 td:contains("Предстоящие игры") table tr:not(:contains("Матч")) td:last-child').contents().each(function(index,value){
@@ -55,8 +56,11 @@ $().ready(function() {
 					if (d=='пнд' || d=='срд' || d=='птн') {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
-						str += (dd.getFullYear()-2000) + '&nbsp;' + d
-						$(val).parent().before('<tr class="freeId"><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
+						str += (dd.getFullYear()-2000)
+						if (excl.indexOf(str) == -1){
+							str += '&nbsp;' + d
+							$(val).parent().before('<tr class="freeId"><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
+						}
 					}
 					i++
 				}
