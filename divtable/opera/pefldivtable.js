@@ -17,11 +17,10 @@ function setCookie(name, value) {
 	return true
 }
 function getCookie(name) {
-	    var pattern = "(?:; )?" + name + "=([^;]*);?"
-	    var regexp  = new RegExp(pattern)
-	     
-	    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
-	    return false
+    var pattern = "(?:; )?" + name + "=([^;]*);?"
+    var regexp  = new RegExp(pattern)
+    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
+    return false
 }
 
 function SetTasks(){
@@ -42,11 +41,14 @@ function SetTasks(){
 			task[t2[0]] = t2[1]
 		}
 	}
-	$('th:eq(1)').parent().prepend('\t<th width="15%">Задача\n')
-	$("td.back4 table table tr td a[href*='plug.php?p=refl&t=k']").each(function(){
-		var tid = UrlValue('j',$(this).attr('href'))
-		if (task[tid]) $(this).parent().parent().prepend('<td>'+task[tid]+'</td>')
-		else $(this).parent().parent().prepend('<td> </td>')
+	$('td.back4 table table th[width=13%]').attr('width','26%')
+	$("td.back4 table table tr td a[href*='plug.php?p=refl&t=s_graph']").each(function(){
+		var tid = UrlValue('n',$(this).attr('href'))
+		$(this).parent().find('img').remove() //.html().replace(/(\d*)/g,'')
+		var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
+
+		if (task[tid]) td_data += ' <small>'+task[tid]+'</small>'
+		$(this).parent().html(td_data)
 	})
 	$('div#tasks').html('Показать задачи')
 }
@@ -61,9 +63,34 @@ function PlusMinus(){
 	})
 }
 
+function ColorIt(){
+	if ( UrlValue('j') ) tbid = UrlValue('j');
+
+	if (tbid == 0){
+		var divname = 
+		$("td.back4 a").each(function(){
+			if ($(this).text() == $('td.back1 span').text().split(', ',2)[1]) {
+				tbid = UrlValue('j',$(this).attr('href'))
+			}
+		})
+	}
+
+	if (getCookie('pefltables') && tbid >= 0) {
+		var dp = getCookie('pefltables').split('.')
+		for (var p in dp) {
+			var name = dp[p].split('*',1)[0] 
+			var key = dp[p].split('*')
+			key.shift()
+			diap[name] = key
+		}
+		ColorTable(tbid);
+	}
+}
+
 function ColorTable(tableid){
 	if (diap[tableid]){
-		$('th:contains(№)').parent().parent().find('tr').each(function(i,val){
+//		$('th:contains(№)').parent().parent().find('tr').each(function(i,val){
+		$('td.back4 table table tr').each(function(i,val){
 			for (var j in diap[tableid]) {
 				var d = diap[tableid][j]
 				if (i>= +d.split('!')[0].split('-')[0] && i <= +d.split('!')[0].split('-')[1]) {
@@ -75,7 +102,6 @@ function ColorTable(tableid){
 }
 
 function SelectTeam(teamid){
-	$("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().css("font-weight", "bold")
 	var maxturs = (parseInt($('td.back4 table table tr:last td:first').text())-1)*2
 	var curgames = parseInt($('td.back4 table table tr:last td:eq(2)').text())
 	var teamo = parseInt($("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().parent().find('td:last').text())
@@ -97,6 +123,8 @@ function SelectTeam(teamid){
 		}
 
 	})
+	var td_data = $("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().html()
+	$("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().html('<b>' + td_data + '</b>')
 }
 
 function getValue(tableid,curVal){
@@ -205,6 +233,10 @@ function TableCodeForForum(){
 		$(this).remove()
 	})
 
+	// resize columns for forum print
+	$('td.back4 table table th[width=26%]').attr('width','37%')
+	$('td.back4 table table th[width=13%]').attr('width','15%')
+
 	// generate code for forum
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
 	x += '<br>Код для форума<br><br><textarea rows="20" cols="80" readonly="readonly" id="CodeTableForForum">'
@@ -212,14 +244,15 @@ function TableCodeForForum(){
 	x += $('td.back4 td.back1').text()
 	x += '[/b][spoiler]'
 	x += $('td.back4 table:eq(1)')
-//		.find('font').remove().end()
 		.find('img').removeAttr('height').end()
 		.html()
 		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
-		.replace(/tbody/g,'table')
+		.replace(/<\/tbody>/g,'')
+		.replace(/<small>/g,'')
+		.replace(/<\/small>/g,'')
 		.replace(/\t<th(.*)>(.*)\n/g,'<td$1><b>$2</b></td>')
 		.replace(/\th/g,'td')
-		.replace(/\/td><tr/g,'/td></tr><tr')	// for Opera
+		.replace(/\/td><tr/g,'/td></tr><tr') // for Opera
 		.replace(/\</g,'[')
 		.replace(/\>/g,']')
 		.replace(/a href=\"/g,'url=')
@@ -231,7 +264,7 @@ function TableCodeForForum(){
 		.replace(/.png/g,'.png[/img')
 		.replace(/"/g,'')
 		.replace(/ width=25/g,'')
-
+	x += '[/table]'
 
 	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
 	x += '[/spoiler]'
@@ -241,8 +274,6 @@ function TableCodeForForum(){
 	$('td#crabglobalright').empty()
 
 	return true
-
-//	return x;
 }
 
 function UrlValue(key,url){
@@ -253,31 +284,6 @@ function UrlValue(key,url){
 	return false
 }
 
-function ColorIt(){
-	if ( UrlValue('j') ) tbid = UrlValue('j');
-
-	if (tbid == 0){
-		var divname = 
-		$("td.back4 a").each(function(){
-			if ($(this).text() == $('td.back1 span').text().split(', ',2)[1]) {
-				tbid = UrlValue('j',$(this).attr('href'))
-			}
-		})
-	}
-
-	if (getCookie('pefltables') && tbid >= 0) {
-		var dp = getCookie('pefltables').split('.')
-		for (var p in dp) {
-			var name = dp[p].split('*',1)[0] 
-			var key = dp[p].split('*')
-			key.shift()
-			diap[name] = key
-		}
-		ColorTable(tbid);
-	}
-
-}
-
 var diap = []
 var url = {}
 var def = '1-1!FCE94F,2-2!white,3-3!E9B96E'
@@ -285,12 +291,17 @@ var tbid = -1;
 
 document.addEventListener('DOMContentLoaded', function(){
 
-	$('th[width=44%]').removeAttr('width')
-	$('th').append('</th>')
-	var text = ''
+	// add column with goals +/- (will be include to code for forum)
+	PlusMinus();
 
+	// Colorize table if need
 	ColorIt()
 
+	// Select as bold self team in my table with id=0
+	if( UrlValue('k') && UrlValue('k')!=0) SelectTeam(UrlValue('k'))
+
+	// Draw CrabVIP panel
+	var text = ''
 	text += '<div id="color"><a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">Расскрасить</a></div>'
 	text += '<div id="tasks"><a href="javascript:void(SetTasks())">Показать задачи</a>&nbsp;</div>'
 	text += '<div id="CodeTableForForum"><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</div>'
@@ -304,13 +315,5 @@ document.addEventListener('DOMContentLoaded', function(){
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text)
-
-	// add column with goals +/- (will be include to code for forum)
-	PlusMinus();
-
-	// select as bold self team in my table with id=0
-	if( UrlValue('k') && UrlValue('k')!=0) {
-		SelectTeam(UrlValue('k'))
-	}
 
 }, false);
