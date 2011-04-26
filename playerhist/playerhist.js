@@ -1,4 +1,3 @@
-
 function replaceOneChar(s,c,n){
 var re = new RegExp('^(.{'+ --n +'}).(.*)$','');
 return s.replace(re,'$1'+c+'$2');
@@ -15,8 +14,8 @@ var i;
 for (i=1; i<tbody.rows.length; i++) 
 { 
 	var cols =  tbody.rows[i].cells;
- 	if (cols[1].innerHTML.indexOf('—·ÓÌ‡ˇ') >= 0 ||
-        cols[1].innerHTML.indexOf(' ÎÛ·') >= 0) 	
+ 	if (cols[1].innerHTML.indexOf('–°–±–æ—Ä–Ω–∞—è') >= 0 ||
+        cols[1].innerHTML.indexOf('–ö–ª—É–±') >= 0) 	
 	{
  		if (sum < 0) 
             sum = 0; 		
@@ -50,7 +49,7 @@ for( i = 0; i < tbody.rows[0].cells.length; i++)
     newCell.bgColor = "#88C274";
 }
 
-resRow.cells[0].innerHTML = "<b>»ÚÓ„Ó</b>";
+resRow.cells[0].innerHTML = "<b>–ò—Ç–æ–≥–æ</b>";
 resRow.cells[2].innerHTML = "<b>"+sum+"</b>";
 resRow.cells[3].innerHTML = "<b>"+goals+"</b>";
 resRow.cells[4].innerHTML = "<b>"+passes+"</b>";
