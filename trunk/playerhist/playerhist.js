@@ -46,7 +46,8 @@ for( i = 0; i < tbody.rows[0].cells.length; i++)
 {
 	var newCell = resRow.insertCell(-1);	
 	newCell.innerHTML = "<b></b>";
-	newCell.className = "back5";
+	//newCell.className = "back3";
+    newCell.bgColor = "#88C274";
 }
 
 resRow.cells[0].innerHTML = "<b>Итого</b>";
