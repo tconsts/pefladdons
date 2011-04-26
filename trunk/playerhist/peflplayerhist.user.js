@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name           pefl_playerhist
+// @name           peflplayerhist
 // @namespace      pefl
 // @include        http://pefl.ru/hist.php?id=*&t=p
 // @include        http://www.pefl.ru/hist.php?id=*&t=p
