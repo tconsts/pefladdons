@@ -8,6 +8,7 @@
 // @include        http://www.pefl.net/hist.php?id=*&t=*
 // @include        http://pefl.org/hist.php?id=*&t=*
 // @include        http://www.pefl.org/hist.php?id=*&t=*
+// @version			1.0
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
