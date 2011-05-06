@@ -1,0 +1,202 @@
+{
+	1:{
+		"positionname":	"GK",
+		"cockiename":	"skillsgk",
+		"filter1":		"",
+		"filter2":		"GK",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс=*0.5,f=*0,Фам"
+	}
+	2:{
+		"positionname":	"SW(либеро)",
+		"cockiename":	"skillssw",  
+		"filter1":		"C",
+		"filter2":		"SW",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,от=*2,вп=*2,гл=*1.6,ск=*1.5,мщ=*1.4,f=*0,Фам"
+	3:{
+		"positionname":	"L DF",
+		"cockiename":	"skillsldf",
+		"filter1":		"L",
+		"filter2":		"DF",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб,f=*0,Фам"
+	}
+	4:{
+		"positionname":	"C DF(защитник)",
+		"cockiename":	"skillslcdf",
+		"filter1":		"C",
+		"filter2":		"DF",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,от=*3,мщ=*1.7,вп=*1.5,ск=*1.3,f=*0,Фам"
+	}
+	5:{
+		"positionname":	"C DF(персональщик)",
+		"cockiename":	"skillsccdf",
+		"filter1":		"C",
+		"filter2":		"DF",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,по=*3,от=*3,мщ=*1.7,вп=*1.5,ск=*1.3,f=*0,Фам"
+	}
+	6:{
+		"positionname":	"C DF(головастик)",
+		"cockiename":	"skillsrcdf",
+		"filter1":		"C",
+		"filter2":		"DF",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,гл=*3,вп=*2.1,от=*2,мщ=*1.9,ск=*1.3,ви,f=*0,Фам"
+	}
+	7:{
+		"positionname":	"R DF",
+		"cockiename":	"skillsrdf",
+		"filter1":		"R",
+		"filter2":		"DF",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб,f=*0,Фам"
+	}
+	8:{
+		"positionname":	"L DM",
+		"cockiename":	"skillsldm",
+		"filter1":		"L",
+		"filter2":		"DM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп,ск,ви,f=*0,Фам"
+	}
+	9:{
+		"positionname":	"C DM(стоппер)",
+		"cockiename":"skillslcdm",
+		"filter1":		"C",
+		"filter2":		"DM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви,тх,f=*0,Фам"
+	}
+	10:{
+		"positionname":	"C DM(персональщик)",
+		"cockiename":	"skillsccmd",
+		"filter1":		"C",
+		"filter2":		"DM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,по=*3,от=*2.5,вп=*1.5,мщ=*1.5,ск,f=*0,Фам"
+	}
+	11:{
+		"positionname":	"C DM(стоппер)",
+		"cockiename":	"skillsrcdm",
+		"filter1":		"C",
+		"filter2":		"DM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви,тх,f=*0,Фам"
+	}
+	12:{
+		"positionname":	"R DM",
+		"cockiename":	"skillsrdm",	
+		"filter1":		"R",
+		"filter2":		"DM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп,ск,ви,f=*0,Фам"
+	}
+	13:{
+		"positionname":	"L MF",
+		"cockiename":	"skillslmf",
+		"filter1":		"L",
+		"filter2":		"M",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам"
+	}
+	14:{
+		"positionname":	"C MF(дальнобойщик)",
+		"cockiename":	"skillslcmf",
+		"filter1":		"C",
+		"filter2":		"M",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,ду=*3,пс=*2,тх=*2,уд=*2,ви=*1.5,др=*1.5,f=*0,Фам"
+	}
+	15:{
+		"positionname":	"C MF(диспетчер)",
+		"cockiename":	"skillsccmf",
+		"filter1":		"C",
+		"filter2":		"M",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,ви=*3,пс=*2,тх=*2,ду=*1.5,др=*1.5,f=*0,Фам"
+	}
+	16:{
+		"positionname":	"C MF(стоппер)",
+		"cockiename":	"skillsrcmf",
+		"filter1":		"C",
+		"filter2":		"M",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,от=*2.5,вп=*2,пс=*2,тх=*2,ви=*1.5,f=*0,Фам"
+	}
+	17:{
+		"positionname":	"R MF",
+		"cockiename":	"skillsrmf",
+		"filter1":		"R",
+		"filter2":		"M",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам"
+	}
+	18:{
+		"positionname":	"L AM",
+		"cockiename":	"skillslam",
+		"filter1":		"L",
+		"filter2":		"AM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=*2,ви=*1.5,пс=*1.5,f=*0,Фам"
+	}
+	19:{
+		"positionname":	"C AM(дальнобойщик)",
+		"cockiename":	"skillslcam",
+		"filter1":		"C",
+		"filter2":		"AM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,ду=*3,пс=*2,тх=*2,уд=*2,ви=*1.5,др=*1.5,f=*0,Фам"
+	}
+	20:{
+		"positionname":	"C AM(диспетчер)",
+		"cockiename":	"skillsccam",
+		"filter1":		"C",
+		"filter2":		"AM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,ви=*3,пс=*2,тх=*2,др=*2,ду,f=*0,Фам"
+	}
+	21:{
+		"positionname":	"C AM(оттянутый FW)",
+		"cockiename":	"skillsrcam",
+		"filter1":		"C",
+		"filter2":		"AM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,тх=*2.5,др=*2.5,уд=*2,ду=*2,ви,пс,f=*0,Фам"
+	}
+	22:{
+		"positionname":	"R AM",
+		"cockiename":	"skillsram",
+		"filter1":		"R",
+		"filter2":		"AM",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=*2,ви=*1.5,пс=*1.5,f=*0,Фам"
+	}
+	23:{
+		"positionname":	"C FW(офсайды)",
+		"cockiename":	"skillslcfw",
+		"filter1":		"C",
+		"filter2":		"FW",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,вп=*3,уд=*2,ск=*2,тх=*1.5,др,f=*0,Фам"
+	}
+	24:{
+		"positionname":	"C FW(дриблер)",
+		"cockiename":	"skillsccfw",
+		"filter1":		"C",
+		"filter2":		"FW",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,др=*3,уд=*2,тх=*2,ск,f=*0,Фам"
+	}
+	25:{
+		"positionname":	"C FW(головастик)",
+		"cockiename":	"skillsrcfw",
+		"filter1":		"C",
+		"filter2":		"FW",
+		"xxx":			0,
+		"value":		"!сст,!s=*0,гл=*3,уд=*2,мщ=*2,вп=*2,ск,f=*0,Фам"
+	}
+}
+
