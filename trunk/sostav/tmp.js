@@ -116,8 +116,8 @@ $().ready(function() {
 			var playerid = data_assoc["id" + i];
 			players[playerid] = tmpplayer;
 		}
-		var xtr = '<hr><b>Тренировка основы:</b><table width=80% bgcolor=A3DE8F>'
-		xtr += '<tr bgcolor=white><th colspan=3 width=20%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=20%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=20%>гр3</th><th bgcolor=A3DE8F></th><th>тренировка</th></tr>'
+		var xtr = '<hr><b>Тренировка основы:</b><table width=90% bgcolor=A3DE8F>'
+		xtr += '<tr bgcolor=white><th colspan=3 width=15%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр3</th><th bgcolor=A3DE8F></th><th>тренировка</th></tr>'
 		for (p in trains){ 
 			var sumtrn = trains[p]['count11']+trains[p]['count12']+trains[p]['count13']+trains[p]['count21']+trains[p]['count22']+trains[p]['count23']+trains[p]['count31']+trains[p]['count32']+trains[p]['count33']
 			if(sumtrn>0) {
