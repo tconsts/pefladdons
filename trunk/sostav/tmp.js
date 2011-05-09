@@ -16,14 +16,27 @@ function getCookie(name) {
 
 function check(d) {return (d<10 ? "0"+d : d)}
 
+
 function Rename(old_name){
 	return old_name.replace('андартные','.')
+}
+
+function ShowEnd(){
+	$('td.back4 table table:eq(1) th:eq(4)').after('<th>-20%</th>')
+	$('td.back4 table table:eq(1) th:eq(8)').remove()
+	$('td.back4 table table:eq(1) tr').find('td:eq(4)').each(function(i,val){
+		var newtrn = (trn[0][i+1]-1)*0.8+1
+		var newraz = (newtrn-trn[0][i+1]).toFixed(4)
+		$(val).after('<td>'+(newtrn).toFixed(4).fontsize(1)+('<sup>'+newraz+'</sup>').fontcolor('red')+'</td>')
+		$(val).parent().find('td:eq(8)').remove()
+	})
 }
 
 var data_assoc = [];
 var players = [];
 var groups = [[]];
 var trains = [];
+var trn = [0]
 trains[0] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'пусто'};
 trains[1] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'5x5 на большом поле (сред)'};
 trains[2] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Защита в меньшестве (сред)'};
@@ -45,14 +58,13 @@ trains[17] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count3
 trains[18] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Отдых'};
 
 /**/
-
 $().ready(function() {
 
 	var text = ''
 	var today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 
-	var trn = [0]
+
 	trn[0] = [today]
 
 	var srch="Вы вошли как "
@@ -160,9 +172,10 @@ $().ready(function() {
 		var tn = [0,8,9,10,2,11,13,14]
 
 		$('td.back4 table table:eq(1)')
+			.before('<div align=right><a href="javascript:void(ShowEnd())">Показать -20%</a></div>')
 			.attr('width',"100%")
 			.attr("bgcolor","A3DE8F")
-			.prepend('<tr bgcolor=white><th>Тренировки на '+ num_players +' игроков</th><th>' + ($('img[src="system/img/g/ball1.gif"]').length-1) + ' мч</th></tr>')
+			.prepend('<tr bgcolor=white><th>На '+ num_players +' игроков</th><th>' + ($('img[src="system/img/g/ball1.gif"]').length-1) + ' мч</th></tr>')
 
 		var ctnsum1 = 0
 		var ctnsum2 = 0
@@ -217,5 +230,7 @@ $().ready(function() {
 
 			$(val).prepend('<th></th>')
 		})
+
+	//ShowEnd()
 	})
 }, false)
