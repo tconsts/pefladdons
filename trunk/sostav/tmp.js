@@ -32,34 +32,65 @@ function ShowEnd(){
 	})
 }
 
+function UrlValue(key,url){
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
+	for (n in pf) {
+		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
+	}
+	return false
+}
+
 var data_assoc = [];
 var players = [];
 var groups = [[]];
 var trains = [];
 var trn = [0]
-trains[0] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'пусто'};
-trains[1] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'5x5 на большом поле (сред)'};
-trains[2] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Защита в меньшестве (сред)'};
-trains[3] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Изучение соперника (нет)'};
-trains[4] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Индивидуальные'};
-trains[5] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Квадраты (сред)'};
-trains[6] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Кросс (выс)'};
-trains[7] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Минифутбол (сред)'};
-trains[8] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Оффсайдные ловушки (низ)'};
-trains[9] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Переход от обороны к атаке (выс)'};
-trains[10] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Позиционная атака (сред)'};
-trains[11] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Прессинг (выс)'};
-trains[12] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Спринт (сред)'};
-trains[13] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Станд.положения (атака, низ)'};
-trains[14] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Станд.положения (защита, низ)'};
-trains[15] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Тактическое занятие (нет)'};
-trains[16] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Тренажеры (оч.выс)'};
-trains[17] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Тренировочный матч (оч.выс)'};
-trains[18] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,name:'Отдых'};
+trains[0] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:0,name:'пусто'};
+trains[1] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:2,name:'5x5 на большом поле (сред)'};
+trains[2] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:2,name:'Защита в меньшестве (сред)'};
+trains[3] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:0,name:'Изучение соперника (нет)'};
+trains[4] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:0,name:'Индивидуальные'};
+trains[5] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:2,name:'Квадраты (сред)'};
+trains[6] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:3,name:'Кросс (выс)'};
+trains[7] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:2,name:'Минифутбол (сред)'};
+trains[8] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:1,name:'Оффсайдные ловушки (низ)'};
+trains[9] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:3,name:'Переход от обороны к атаке (выс)'};
+trains[10] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:2,name:'Позиционная атака (сред)'};
+trains[11] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:3,name:'Прессинг (выс)'};
+trains[12] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:2,name:'Спринт (сред)'};
+trains[13] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:1,name:'Станд.положения (атака, низ)'};
+trains[14] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:1,name:'Станд.положения (защита, низ)'};
+trains[15] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:0,name:'Тактическое занятие (нет)'};
+trains[16] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:4,name:'Тренажеры (оч.выс)'};
+trains[17] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:4,name:'Тренировочный матч (оч.выс)'};
+trains[18] = {count11:0,count12:0,count13:0,count21:0,count22:0,count23:0,count31:0,count32:0,count33:0,level:-1,name:'Отдых'};
 
-/**/
+var itrains = []
+itrains[0] = {count1:0,count2:0,count3:0, level: 2,name: 'Общая'}
+itrains[1] = {count1:0,count2:0,count3:0, level: 0, name: 'Востановление Формы'}
+itrains[2] = {count1:0,count2:0,count3:0, level: 1, name: 'Игра на 2 этаже'}
+itrains[3] = {count1:0,count2:0,count3:0, level: 3, name: 'Кросс'}
+itrains[4] = {count1:0,count2:0,count3:0, level: 1, name: 'Навесы'}
+itrains[5] = {count1:0,count2:0,count3:0, level: 1, name: 'Отбор Мяча'}
+itrains[6] = {count1:0,count2:0,count3:0, level: 1, name: 'Отражение Ударов'}
+itrains[7] = {count1:0,count2:0,count3:0, level: 1, name: 'Пенальти'}
+itrains[8] = {count1:0,count2:0,count3:0, level: 2, name: 'Спринт'}
+itrains[9] = {count1:0,count2:0,count3:0, level: 1, name: 'Техника'}
+itrains[10] = {count1:0,count2:0,count3:0, level: 4, name: 'Тренажеры'}
+itrains[11] = {count1:0,count2:0,count3:0, level: 1, name: 'Угловые'}
+itrains[12] = {count1:0,count2:0,count3:0, level: 1, name: 'Удары по Воротам'}
+itrains[13] = {count1:0,count2:0,count3:0, level: 1, name: 'Штрафные'}
+itrains[14] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция SW'}
+itrains[15] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция DF'}
+itrains[16] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция DM'}
+itrains[17] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция AM'}
+itrains[18] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция FW'}
+itrains[29] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция L'}
+itrains[20] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция C'}
+itrains[21] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция R'}
+
+
 $().ready(function() {
-
 	var text = ''
 	var today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
@@ -71,6 +102,7 @@ $().ready(function() {
 	var curManagerNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 	var trnManagerNick = ''
 
+	if(UrlValue('p') == 'training') {
 	$.get('training.php', {}, function(data){
 		var dataarray = data.split('&');
 		var i = 0;
@@ -112,6 +144,10 @@ $().ready(function() {
 			tmpplayer["tr2"] = groups[pg][2]
 			tmpplayer["tr3"] = groups[pg][3]
 
+			if (tmpplayer["tr1"] ==4 || tmpplayer["tr2"] == 4 || tmpplayer["tr3"] == 4){
+				itrains[tmpplayer["training"]]['count'+pg] += 1
+			}
+
 			if (tmpplayer["inj"] == 0 &&
 				tmpplayer["rest"] == 0 &&
 				tmpplayer["notrain"] == 0 &&
@@ -128,8 +164,9 @@ $().ready(function() {
 			var playerid = data_assoc["id" + i];
 			players[playerid] = tmpplayer;
 		}
+
 		var xtr = '<hr><b>Тренировка основы:</b><table width=90% bgcolor=A3DE8F>'
-		xtr += '<tr bgcolor=white><th colspan=3 width=15%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр3</th><th bgcolor=A3DE8F></th><th>тренировка</th></tr>'
+		xtr += '<tr bgcolor=white><th colspan=3 width=15%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр3</th><th bgcolor=A3DE8F></th><th>наг</th><th>тренировка</th></tr>'
 		for (p in trains){ 
 			var sumtrn = trains[p]['count11']+trains[p]['count12']+trains[p]['count13']+trains[p]['count21']+trains[p]['count22']+trains[p]['count23']+trains[p]['count31']+trains[p]['count32']+trains[p]['count33']
 			if(sumtrn>0) {
@@ -143,13 +180,33 @@ $().ready(function() {
 					}
 					xtr += '<td bgcolor=A3DE8F></td>'
 				}
-				xtr += '<td align=left>' + Rename(trains[p]['name']) + '</td>'
+				xtr += '<td>' + (p==4 ? "&nbsp;" : trains[p]['level']) + '</td>'
+				xtr += '<td align=left>' + trains[p]['name'] + '</td>'
 				xtr += '</tr>'
 			}
 		}
 		xtr += '</table>'
 		$('td.back4').append(xtr)
-		
+
+		xtr = '<br><b>Индивидуальные:</b><table width=90% bgcolor=A3DE8F>'
+		xtr += '<tr bgcolor=white><th width=15%>гр1</th><th bgcolor=A3DE8F></th><th width=15%>гр2</th><th bgcolor=A3DE8F></th><th width=15%>гр3</th><th bgcolor=A3DE8F></th><th width=1%>наг</th></th><th>тренировка</th></tr>'
+		for (p in itrains){ 
+			if(itrains[p]['count1']+itrains[p]['count2']+itrains[p]['count3']!=0) {
+				xtr += '<tr bgcolor=C9F8B7 align=center>'
+				for(j=1;j<=3;j++) {
+					xtr += '<td>' 
+					xtr += (itrains[p]['count'+j]!=0 ? itrains[p]['count'+j] : "&nbsp;")
+					xtr += '</td>'
+					xtr += '<td bgcolor=A3DE8F></td>'
+				}
+				xtr += '<td>' + itrains[p]['level'] + '</td>'
+				xtr += '<td align=left>' + itrains[p]['name'] + '</td>'
+				xtr += '</tr>'
+			}
+		}
+		xtr += '</table>'
+		$('td.back4').append(xtr)		
+
 		var trnnum = 1
 		if (getCookie('pefltraining') && trnManagerNick == curManagerNick){
 			var x = getCookie('pefltraining').split(';')
@@ -177,9 +234,6 @@ $().ready(function() {
 			.attr("bgcolor","A3DE8F")
 			.prepend('<tr bgcolor=white><th>На '+ num_players +' игроков</th><th>' + ($('img[src="system/img/g/ball1.gif"]').length-1) + ' мч</th></tr>')
 
-		var ctnsum1 = 0
-		var ctnsum2 = 0
-		var ctnsum3 = 0
 		$('td.back4 table table:eq(1) tr').each(function(i,val){
 			if (i>0) {
 				$(val).attr('bgcolor','C9F8B7')
@@ -202,11 +256,8 @@ $().ready(function() {
 
 				}
 				$(val).prepend('<td align=center>'+(ctn3!=0? String(ctn3).fontsize(1) :"")+'</td>')
-				ctnsum3 += ctn3
 				$(val).prepend('<td align=center>'+(ctn2!=0? String(ctn2).fontsize(1) :"")+'</td>')
-				ctnsum2 += ctn2
 				$(val).prepend('<td align=center>'+(ctn1!=0? String(ctn1).fontsize(1) :"")+'</td>')
-				ctnsum1 += ctn1
 			}
 			var ht = ''
 			var trnt = ''
@@ -221,16 +272,12 @@ $().ready(function() {
 			$(val).append(ht)
 		})
 		$('td.back4 table table:eq(1) tr:first').each(function(i,val){
-			
 			$(val).prepend('<th>'+('*<sup>2</sup>').fontsize(1)+'</th>')
 			$('td.back4 table table:eq(1)').after('<div align=left><b>*<sup>2</sup></b> - влияют только на 25%</div>')
-
 			$(val).prepend('<th>'+('*<sup>1</sup>').fontsize(1)+'</th>')
 			$('td.back4 table table:eq(1)').after('<br><div align=left><b>*<sup>1</sup></b> - влияют только на 50%<br></div>')
-
 			$(val).prepend('<th></th>')
 		})
-
-	//ShowEnd()
 	})
+	}
 }, false)
