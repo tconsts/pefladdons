@@ -260,13 +260,20 @@ $().ready(function() {
 				$(val).prepend('<td align=center>'+(ctn1!=0? String(ctn1).fontsize(1) :"")+'</td>')
 			}
 			var ht = ''
-			var trnt = ''
+			var trnt = 0
 			for (j=trn.length-1;j>=0;j--) {
-				raz = (trn[j][i]-trnt).toFixed(4)
-				if (raz>0) raz = ('+'+raz).fontcolor('green')
-				else if (raz<0) raz = raz.fontcolor('red')
-				if(i==0 && j!=trn.length-1) ht = '<th>'+trn[j][i]+'</th>' + ht
-				else if(j!=trn.length-1) ht = '<td>'+(trn[j][i]+'<sup>'+raz+'</sup>').fontsize(1)+'</td>' + ht
+				var raz = ''
+				if(trnt!=0){
+					var colr = 'green'
+					var pref = '+'
+					raz = (trn[j][i]-trnt).toFixed(4)
+					if (raz<0) {colr = 'red';pref=''}
+					raz = '<sup>'+(pref+raz).fontcolor(colr)+'</sup>'
+				}
+				if (j<3){
+					if(i==0) ht = '<th>'+trn[j][i]+'</th>' + ht
+					else	 ht = '<td>'+(trn[j][i] + raz).fontsize(1)+'</td>' + ht
+				}
 				trnt = trn[j][i]
 			}
 			$(val).append(ht)
