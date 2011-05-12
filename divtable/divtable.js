@@ -240,6 +240,7 @@ function TableCodeForForum(){
 		.replace(/<\/tbody>/g,'')
 		.replace(/<small>/g,'')
 		.replace(/<\/small>/g,'')
+		.replace(/<\/th>/g,'')
 		.replace(/\t<th(.*)>(.*)\n/g,'<td$1><b>$2</b></td>')
 		.replace(/\th/g,'td')
 		.replace(/\/td><tr/g,'/td></tr><tr') // for Opera
