@@ -173,7 +173,7 @@ function CheckPlayer(x,nn){
 		} else {	
 			sessionStorage.peflplayer = text
 		}
-		$('td#crabright a#remember').after('<br><a href="javascript:void(CheckPlayer(0,'+0+'))">'+('Сравнить&nbsp;(' + players[0].secondname +')').fontsize(1)+'</a>')
+		$('td#crabright a#remember').after('<br>'+('<a href="javascript:void(CheckPlayer(0,'+0+'))">[<]</a><a>[x]</a><a href="plug.php?p=refl&t=p&j='+players[0].id+'&z='+players[0].hash+'">'+players[0].secondname +'</a> ' +players[0].position).fontsize(1)+'')
 	}
 	return false
 }
@@ -651,7 +651,7 @@ $().ready(function() {
 			players[pn][key[0].split('_')[0]] = [key[1]]
 		}
 		for (i in players){
-			if(i>0 && players[i].secondname != undefined) $('td#crabright a#remember').after('<br><a href="javascript:void(CheckPlayer(0,'+i+'))">'+('Сравнить&nbsp;(' + players[i].secondname +')').fontsize(1)+'</a>')
+			if(i>0 && players[i].secondname != undefined) $('td#crabright a#remember').after('<br>'+('<a href="javascript:void(CheckPlayer(0,'+i+'))">[<]</a><a>[x]</a><a href="plug.php?p=refl&t=p&j='+players[i].id+'&z='+players[i].hash+'">' + players[i].secondname + '</a> '+players[i].position).fontsize(1)+'')
 		}
 	}
 
