@@ -22,14 +22,18 @@ function Rename(old_name){
 }
 
 function ShowEnd(){
-	$('td.back4 table table:eq(1) th:eq(4)').after('<th>-20%</th>')
-	$('td.back4 table table:eq(1) th:eq(8)').remove()
+	var sumraz = 0
+	$('td.back4 table table:eq(1) th:eq(4)').after('<td id="end"><b>-20%</b></td>')
+	$('td.back4 table table:eq(1) tr:first td:eq(3)').remove()
 	$('td.back4 table table:eq(1) tr').find('td:eq(4)').each(function(i,val){
 		var newtrn = (trn[0][i+1]-1)*0.8+1
 		var newraz = (newtrn-trn[0][i+1]).toFixed(4)
+		sumraz += parseFloat(newraz)
 		$(val).after('<td>'+(newtrn).toFixed(4).fontsize(1)+('<sup>'+newraz+'</sup>').fontcolor('red')+'</td>')
 		$(val).parent().find('td:eq(8)').remove()
 	})
+	$('td#end').append('<sup>'+sumraz.toFixed(4)+'</sup>')
+	$('a#end ').remove()
 }
 
 function UrlValue(key,url){
@@ -91,6 +95,7 @@ itrains[21] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая пози�
 
 
 $().ready(function() {
+//document.addEventListener('DOMContentLoaded', function(){
 	var text = ''
 	var today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
@@ -229,7 +234,7 @@ $().ready(function() {
 		var tn = [0,8,9,10,2,11,13,14]
 
 		$('td.back4 table table:eq(1)')
-			.before('<div align=right><a href="javascript:void(ShowEnd())">Показать -20%</a></div>')
+			.before('<div align=right><a id="end" href="javascript:void(ShowEnd())">Показать -20%</a>&nbsp;</div>')
 			.attr('width',"100%")
 			.attr("bgcolor","A3DE8F")
 			.prepend('<tr bgcolor=white><th>На '+ num_players +' игроков</th><th>' + ($('img[src="system/img/g/ball1.gif"]').length-1) + ' мч</th></tr>')
@@ -271,13 +276,23 @@ $().ready(function() {
 					raz = '<sup>'+(pref+raz).fontcolor(colr)+'</sup>'
 				}
 				if (j<3){
-					if(i==0) ht = '<th>'+trn[j][i]+'</th>' + ht
+					if(i==0) ht = '<td id="sum'+j+'"><b>'+trn[j][i]+'</b></td>' + ht
 					else	 ht = '<td>'+(trn[j][i] + raz).fontsize(1)+'</td>' + ht
 				}
 				trnt = trn[j][i]
 			}
 			$(val).append(ht)
 		})
+		var rzp = 0
+		for(i=trn.length-1;i>=0;i--){
+			var rz = 0
+			for(j in trn[i]){
+				if(j>0) rz += parseFloat(trn[i][j])
+			}
+			if(i!=trn.length-1) $('td#sum'+i).append('<sup>'+(rz>rzp?'+':'')+(rz-rzp).toFixed(4)+'</sup>')
+			rzp = rz
+		}
+
 		$('td.back4 table table:eq(1) tr:first').each(function(i,val){
 			$(val).prepend('<th>'+('*<sup>2</sup>').fontsize(1)+'</th>')
 			$('td.back4 table table:eq(1)').after('<div align=left><b>*<sup>2</sup></b> - влияют только на 25%</div>')
