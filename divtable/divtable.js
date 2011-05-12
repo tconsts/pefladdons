@@ -224,7 +224,7 @@ function TableCodeForForum(){
 	})
 
 	// resize columns for forum print
-	$('td.back4 table table th[width=26%]').attr('width','37%')
+	$('td.back4 table table th[width=26%]').attr('width','39%')
 	$('td.back4 table table th[width=13%]').attr('width','15%')
 
 	// generate code for forum
