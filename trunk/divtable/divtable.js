@@ -226,6 +226,8 @@ function TableCodeForForum(){
 	// resize columns for forum print
 	$('td.back4 table table th[width=26%]').attr('width','39%')
 	$('td.back4 table table th[width=13%]').attr('width','15%')
+	$('td.back4 table table th[width=7%]').removeAttr('width')
+	$('td.back4 table table th[width=6%]').removeAttr('width')
 
 	// generate code for forum
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
