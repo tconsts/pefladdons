@@ -20,5 +20,5 @@
 var headID = document.getElementsByTagName("head")[0];         
 var newScript2 = document.createElement('script');
 newScript2.type = 'text/javascript';
-newScript2.src = 'http://pefladdons.googlecode.com/svn/trunk/player/ie/player.js';
+newScript2.src = 'http://pefladdons.googlecode.com/svn/trunk/player/player_ie.js';
 headID.appendChild(newScript2);
