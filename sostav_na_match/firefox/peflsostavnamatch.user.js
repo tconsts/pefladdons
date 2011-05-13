@@ -6,7 +6,9 @@
 // @include        http://pefl.ru/?team
 // @include        http://www.pefl.net/?team
 // @include        http://pefl.net/?team
-// @require        http://www.pefl.ru/js/jquery-1.3.2.min.js
+// @include        http://www.pefl.org/?team
+// @include        http://pefl.org/?team
+// @version			1.1
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
