@@ -1,5 +1,4 @@
 (function(){
-
 function getPairValue(str,def,delim) {
 	def	= (def ? def : '')
 	delim	= (delim ? delim : '=')
@@ -274,7 +273,6 @@ function CodeForForum(){
 		.replace(/\n/g,'')
 		if (navigator.userAgent.indexOf('Opera') != -1 && ptype != 'yp' && ptype != 'yp2') x += '[/table]'
 
-//	if (compare == false && (ptype == 'p' || ptype == 'pp')){
 	if (ptype == 'p' || ptype == 'pp'){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
 		x += $('td.back4 table table:last').html()
@@ -283,6 +281,8 @@ function CodeForForum(){
 			.replace(/tbody/g,'table')
 			.replace(/\</g,'[')
 			.replace(/\>/g,']')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
 			.replace(/"/g,'')
 			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
 	}
@@ -598,7 +598,7 @@ var compare = false
 		players[0].kk4 = ' '
 
 		$('td.back4 table:first table:eq(1) tr:first td:gt(0)').attr('width','10%')
-		$('td.back4 table:first table:eq(1) tr:first').append('<td width=10%>ЖК</td><td width=10%>КК</td>')
+		$('td.back4 table:first table:eq(1) tr:first').append('<td width=10%>ЖК <img src="system/img/gm/y.gif"></img></td><td width=10%>КК <img src="system/img/gm/r.gif"></img></td>')
 		$('td.back4 table:first table:eq(1) tr:gt(0)').each(function(i,val){
 			if(i==0)		$(val).append('<td rowspan=2>'+players[0].zk0+'</td><td rowspan=2>'+players[0].kk0+'</td>')
 			else if(i==2)	$(val).append('<td>'+players[0].zk2+'</td><td>'+players[0].kk2+'</td>')
