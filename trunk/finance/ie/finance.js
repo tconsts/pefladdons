@@ -10,7 +10,7 @@ function format(num) {
 	var finance = []
 	var cur = {}
 	var fin = {}
-	fin.fid = 82
+	fin.fid = 81
 
 	var ffn = $('td.back4 > table td:eq(1)').html()
 	var zp = parseInt(ffn.split('Сумма зарплат:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
