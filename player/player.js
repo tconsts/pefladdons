@@ -1,4 +1,3 @@
-/**/
 function getPairValue(str,def,delim) {
 	def	= (def ? def : '')
 	delim	= (delim ? delim : '=')
@@ -80,9 +79,9 @@ function CheckPlayer(x,nn){
 		pl1header += players[nn].firstname + ' ' + players[nn].secondname 
 		if (players[nn].team != '') {
 			pl1header += ' (' 
-			pl1header += (players[nn].teamurl != '' ? '<a href="'+players[nn].teamurl+'">' : '')
+			pl1header += (players[nn].teamid != undefined ? '<a href="plug.php?p=refl&t=k&j='+players[nn].teamid+'&z='+players[nn].teamhash+'">' : '')
 			pl1header += players[nn].team
-			pl1header += (players[nn].teamurl != '' ? '</a>' : '')
+			pl1header += (players[nn].teamid != undefined ? '</a>' : '')
 			pl1header += ')'
 		}
 		pl1header += '<br>'
@@ -154,6 +153,19 @@ function CheckPlayer(x,nn){
 				.next().attr('width','10%')
 				.after(skilltext)
 		})
+//		$('td.back4 table:first table:not(#plheader):eq(1)').attr('border','1')
+		$('td.back4 table:first table:not(#plheader):eq(1) tr:first td:gt(0)').attr('colspan','3').attr('align','center')
+       	$('td.back4 table:first table:not(#plheader):eq(1) tr:gt(0)').each(function(i,val){
+			if(i!=1) $(val).find('td:eq(7)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['kk'+i]!=undefined ? players[nn]['kk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
+			if(i!=1) $(val).find('td:eq(6)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['zk'+i]!=undefined ? players[nn]['zk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
+			$(val).find('td:eq(5)').after('<td>'+(parseFloat(players[nn]['sr'+i])==0 || players[nn]['sr'+i]==undefined ? ' ':(parseFloat(players[nn]['sr'+i])).toFixed(2))+'</td><td bgcolor=C9F8B7 width=1%> </td>')
+			$(val).find('td:eq(4)').after('<td>'+(players[nn]['im'+i]!=undefined ? players[nn]['im'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
+			$(val).find('td:eq(3)').after('<td>'+(players[nn]['ps'+i]!=undefined ? players[nn]['ps'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
+			$(val).find('td:eq(2)').after('<td>'+(players[nn]['gl'+i]!=undefined ? players[nn]['gl'+i] : '?') +'</td><td bgcolor=C9F8B7 width=1%> </td>')
+			$(val).find('td:eq(1)').after('<td>'+(players[nn]['ig'+i]!=undefined ? players[nn]['ig'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>').before('<td bgcolor=C9F8B7 width=1%> </td>')
+
+//			if(i==0&&players[nn].mkk!=undefined) $(val).find('td:last').append(' / '+players[nn].mkk)
+		})
 
 	} else {
 		// Save data
@@ -173,7 +185,7 @@ function CheckPlayer(x,nn){
 		} else {	
 			sessionStorage.peflplayer = text
 		}
-		$('td#crabright a#remember').after('<br>'+('<a href="javascript:void(CheckPlayer(0,'+0+'))">[<]</a><a>[x]</a><a href="plug.php?p=refl&t=p&j='+players[0].id+'&z='+players[0].hash+'">'+players[0].secondname +'</a> ' +players[0].position).fontsize(1)+'')
+		$('td#crabright a#remember').after('<br>'+('<a id="compare" href="javascript:void(CheckPlayer(0,'+0+'))">[<]</a><a>[x]</a><a href="plug.php?p=refl&t='+players[0].t+'&j='+players[0].id+'&z='+players[0].hash+'">'+players[0].secondname +'</a> ' +players[0].position).fontsize(1)+'')
 	}
 	return false
 }
@@ -205,7 +217,7 @@ function CodeForForum(){
 
 	$('td.back4 table:first table:not(#plheader):first img').removeAttr('style')
 	x += '<br><hr><b>Полный вариант</b>:<br>'
-	x +='<textarea rows="7" cols="90" readonly="readonly" id="CodeForForum">'
+	x +='<textarea rows="20" cols="80" readonly="readonly" id="CodeForForum">'
 
 	x += '[spoiler][table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
 	if (compare == true) {
@@ -260,7 +272,8 @@ function CodeForForum(){
 		.replace(/\n/g,'')
 		if (navigator.userAgent.indexOf('Opera') != -1 && ptype != 'yp' && ptype != 'yp2') x += '[/table]'
 
-	if (compare == false && (ptype == 'p' || ptype == 'pp')){
+//	if (compare == false && (ptype == 'p' || ptype == 'pp')){
+	if (ptype == 'p' || ptype == 'pp'){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
 		x += $('td.back4 table table:last').html()
 			.replace(/<!-- [а-я] -->/g,'')
@@ -480,20 +493,23 @@ $().ready(function() {
 	}	
 
 	players[0].team = ''
-	players[0].teamurl = ''
 	players[0].sale = 0
 
-	if (UrlValue('t') =='p') {
-		players[0].teamurl = $('td.back4 a:first').attr('href')
+	players[0].t = UrlValue('t')
+
+	if (players[0].t =='p') {
+		players[0].teamid = UrlValue('j',$('td.back4 a:first').attr('href'))
+		players[0].teamhash = UrlValue('z',$('td.back4 a:first').attr('href'))
+
 		players[0].team = $('td.back4 a:first').text()
-	} else if (UrlValue('t') =='p2'){
+	} else if (players[0].t =='p2'){
 		players[0].team = 'свободный'
 	}
 
 	players[0].id  = UrlValue('j')
 	players[0].hash  = UrlValue('z')
 	// школяр!
-	if (UrlValue('t') == 'yp' || UrlValue('t') == 'yp2') {
+	if (players[0].t == 'yp' || players[0].t == 'yp2') {
 		players[0].flag = 5
 	}
  	j++
@@ -543,7 +559,14 @@ $().ready(function() {
 	}
 	players[0].position = ms[j]
 
-
+	$('td.back4 table:first table:eq(1) tr:gt(0)').each(function(i, val){
+		players[0]['ig'+i] = parseInt($(val).find('td:eq(1)').text())
+		players[0]['gl'+i] = parseInt($(val).find('td:eq(2)').text())
+		players[0]['ps'+i] = parseInt($(val).find('td:eq(3)').text())
+		players[0]['im'+i] = parseInt($(val).find('td:eq(4)').text())
+		players[0]['sr'+i] = parseFloat(($(val).find('td:eq(5)').text() == '' ? 0 : $(val).find('td:eq(5)').text()))
+	})
+	
 	// get post-info
 	var ms2 = $('td.back4 > center:first').html()
 	if (ms2 != null){
@@ -551,10 +574,48 @@ $().ready(function() {
 		ms2 = ms2.replace(/<!-- [а-я] -->/g,'').split('<br>')
 		players[0].form = +ms2[j2].split(': ',2)[1].split('%',1)[0]
 		players[0].morale = +ms2[j2].split(': ',3)[2].replace('%</i>','')
+		j2++;j2++;j2++;j2++
+		// Национальные турниры:
+		if(ms2[j2].split(': ',2)[0]=='Дисквалифицирован') j2++
+		players[0].zk0 = +ms2[j2].split(': ',2)[1]
+		j2++
+		players[0].kk0 = +ms2[j2].split(': ',2)[1]
+		j2++;j2++;j2++
+		// Международные турниры:
+		if(ms2[j2].split(': ',2)[0]=='Дисквалифицирован') j2++
+		players[0].zk2 = +ms2[j2].split(': ',2)[1]
+		j2++
+		players[0].kk2 = +ms2[j2].split(': ',2)[1]
+		j2++;j2++;j2++
+		// Сборная:
+		if(ms2[j2].split(': ',2)[0]=='Дисквалифицирован') j2++
+		players[0].zk3 = +ms2[j2].split(': ',2)[1]
+		j2++
+		players[0].kk3 = +ms2[j2].split(': ',2)[1]
+		players[0].zk4 = ' '
+		players[0].kk4 = ' '
+
+		$('td.back4 table:first table:eq(1) tr:first td:gt(0)').attr('width','10%')
+		$('td.back4 table:first table:eq(1) tr:first').append('<td width=10%>ЖК</td><td width=10%>КК</td>')
+		$('td.back4 table:first table:eq(1) tr:gt(0)').each(function(i,val){
+			if(i==0)		$(val).append('<td rowspan=2>'+players[0].zk0+'</td><td rowspan=2>'+players[0].kk0+'</td>')
+			else if(i==2)	$(val).append('<td>'+players[0].zk2+'</td><td>'+players[0].kk2+'</td>')
+			else if(i==3)	$(val).append('<td>'+players[0].zk3+'</td><td>'+players[0].kk3+'</td>')
+			else if(i==4)	$(val).append('<td></td><td></td>')
+		})
 	} else {
-		//
 		players[0].form = 0
 		players[0].morale = 0
+		for(i=0;i<=4;i++){
+			players[0]['ig'+i] = 0
+			players[0]['gl'+i] = 0
+			players[0]['ps'+i] = 0
+			players[0]['im'+i] = 0
+			players[0]['sr'+i] = 0
+			players[0]['zk'+i] = 0
+			players[0]['kk'+i] = 0
+		}
+
 	}
 
 	var mm = ''
@@ -599,7 +660,6 @@ $().ready(function() {
 
 	var text3 = ''
 	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1))">'+('Запомнить').fontsize(1)+'</a>'
-//	text3 += '<br><a id="compare">'+('Сравнить').fontsize(1)+'</a><br>'
 
 	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
@@ -651,7 +711,7 @@ $().ready(function() {
 			players[pn][key[0].split('_')[0]] = [key[1]]
 		}
 		for (i=players.length-1;i>=0;i--){
-			if(i>0 && players[i].secondname != undefined) $('td#crabright a#remember').after('<br>'+('<a href="javascript:void(CheckPlayer(0,'+i+'))">[<]</a><a>[x]</a><a href="plug.php?p=refl&t=p&j='+players[i].id+'&z='+players[i].hash+'">' + players[i].secondname + '</a> '+players[i].position).fontsize(1)+'')
+			if(i>0 && players[i].secondname != undefined) $('td#crabright a#remember').after('<br>'+('<a id="compare" href="javascript:void(CheckPlayer(0,'+i+'))">[<]</a><a>[x]</a><a'+(players[i].t==undefined?'':' href="plug.php?p=refl&t='+players[i].t+'&j='+players[i].id+'&z='+players[i].hash+'"')+'>' + players[i].secondname + '</a> '+players[i].position).fontsize(1)+'')
 		}
 	}
 
