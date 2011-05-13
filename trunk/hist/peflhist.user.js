@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           peflhist
 // @namespace      pefl
-// @description    history page modification (PEFL)
+// @description    history page modification
 // @include        http://pefl.ru/hist.php?id=*&t=*
 // @include        http://www.pefl.ru/hist.php?id=*&t=*
 // @include        http://pefl.net/hist.php?id=*&t=*

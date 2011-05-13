@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name           peflreitschool
 // @namespace      pefl
-// @description    school reit page modification (PEFL.ru and .net)
+// @description    school reit page modification
 // @include        http://www.pefl.ru/plug.php?p=rating&t=s&n=*
 // @include        http://www.pefl.net/plug.php?p=rating&t=s&n=*
+// @include        http://www.pefl.org/plug.php?p=rating&t=s&n=*
 // @include        http://pefl.ru/plug.php?p=rating&t=s&n=*
 // @include        http://pefl.net/plug.php?p=rating&t=s&n=*
-// @require        http://www.pefl.ru/js/jquery-1.3.2.min.js
+// @include        http://pefl.org/plug.php?p=rating&t=s&n=*
+// @version			1.1
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         

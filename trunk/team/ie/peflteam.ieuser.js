@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name           peflteam
 // @namespace      pefl
-// @description    roster team page modification (PEFL.ru and .net)
+// @description    roster team page modification
 // @include        http://www.pefl.ru/plug.php?p=refl&t=k&j=*
 // @include        http://pefl.ru/plug.php?p=refl&t=k&j=*
 // @include        http://www.pefl.net/plug.php?p=refl&t=k&j=*
 // @include        http://pefl.net/plug.php?p=refl&t=k&j=*
-// @version			1.2
+// @include        http://www.pefl.org/plug.php?p=refl&t=k&j=*
+// @include        http://pefl.org/plug.php?p=refl&t=k&j=*
+// @version			1.1
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
