@@ -650,7 +650,7 @@ $().ready(function() {
 //			$('td.back4').prepend(pn+':' + key[0].split('_')[0] + ' ' + key[1] +'<br>')
 			players[pn][key[0].split('_')[0]] = [key[1]]
 		}
-		for (i in players){
+		for (i=players.length-1;i>=0;i--){
 			if(i>0 && players[i].secondname != undefined) $('td#crabright a#remember').after('<br>'+('<a href="javascript:void(CheckPlayer(0,'+i+'))">[<]</a><a>[x]</a><a href="plug.php?p=refl&t=p&j='+players[i].id+'&z='+players[i].hash+'">' + players[i].secondname + '</a> '+players[i].position).fontsize(1)+'')
 		}
 	}
