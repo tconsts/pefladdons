@@ -27,12 +27,12 @@
 	var mdov2 = $('td.back4 table tr:eq(1) td').text().split('.')[1].split('команда ')
     var text = ''
 
-	text += '<hr><table align=center width=99%><tr><td><table bgcolor=A3DE8F width=100%>'
+	text += '<hr><table align=center width=100%><tr><td><table bgcolor=A3DE8F width=100%>'
 	text += '<tr><th>Оценка управления клубом</th></tr>'
 	for (i in dov1)	text += '<tr bgcolor=C9F8B7><td ' + (mdov1==dov1[i] ? ' bgcolor=white': '') + '>' + dov1[i] + '.</td></tr>'
 	text += '</table></td>'
 
-	text += '<td valign=top><table bgcolor=A3DE8F>'
+	text += '<td valign=top><table bgcolor=A3DE8F width=100%>'
 	text += '<tr><th>' + mdov2[0] + ' команда</th></tr>'
 	for (i in dov2)	text += '<tr bgcolor=C9F8B7><td align=center ' + (mdov2[1] == dov2[i] ? ' bgcolor=white': '') + '>' + dov2[i] + '</td></tr>'
 	text += '</table></tr></td>'
