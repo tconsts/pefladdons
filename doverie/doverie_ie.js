@@ -24,7 +24,7 @@
 		'очень плохо',
 	]
 	var mdov1 = $('td.back4 table tr:eq(1) td').text().split('.')[0]
-	var mdov2 = $('td.back4 table tr:eq(1) td').text().split('.')[1].split(' ')
+	var mdov2 = $('td.back4 table tr:eq(1) td').text().split('.')[1].split('команда ')
     var text = ''
 
 	text += '<hr><table width=70% align=center bgcolor=A3DE8F>'
@@ -34,7 +34,7 @@
 
 	text += '<br><br><table width=70% align=center bgcolor=A3DE8F>'
 	text += '<tr><th>Оценка текущей ситуации</th></tr>'
-	for (i in dov2)	text += '<tr bgcolor=C9F8B7><td ' + (mdov2[3]+(mdov2[4]!=undefined ? ' '+mdov2[4] : '') == dov2[i] ? ' bgcolor=white': '') + '>' + mdov2[1] + ' команда ' + dov2[i] + '.</td></tr>'
+	for (i in dov2)	text += '<tr bgcolor=C9F8B7><td ' + (mdov2[1] == dov2[i] ? ' bgcolor=white': '') + '>' + mdov2[0] + ' команда ' + dov2[i] + '.</td></tr>'
 	text += '</table>'
 
 	$('td.back4').append(text)
