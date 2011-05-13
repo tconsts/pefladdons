@@ -39,4 +39,5 @@
 
 	$('td.back4').append(text)
 
-}, false);
+//}, false);
+})();
