@@ -318,8 +318,8 @@ var sklfr = []
 var compare = false
 
 /**/
-document.addEventListener('DOMContentLoaded', function(){
-//$().ready(function() {
+//document.addEventListener('DOMContentLoaded', function(){
+$().ready(function() {
 
 /**/
 	skl['nation']	= ['nt' ,'КСт','Код страны']
