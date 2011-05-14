@@ -504,7 +504,7 @@ var compare = false
 	var j = 0
 
 	players[0].secondname = ''
-	var name = ms[j].split(' (',1)[0]
+	var name = ms[j].split(' (',1)[0].split(' <',1)[0]
 	if (name.indexOf(' ')!=-1){
 		players[0].firstname = name.split(' ',1)[0]
 		players[0].secondname += name.replace(players[0].firstname+' ' ,'')
