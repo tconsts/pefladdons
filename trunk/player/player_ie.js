@@ -1,4 +1,9 @@
-(function(){
+
+(function(){ // for ie
+
+function hist(rcode,rtype)
+	{ window.open('hist.php?id='+rcode+'&t='+rtype,'История','toolbar=0,location=0,directories=0,menuBar=0,resizable=0,scrollbars=yes,width=480,height=512,left=16,top=16'); }
+
 function getPairValue(str,def,delim) {
 	def	= (def ? def : '')
 	delim	= (delim ? delim : '=')
@@ -61,133 +66,146 @@ function ShowSkills(skl){
 }
 
 function OpenAll(){
-//	if ($("#mydiv").attr('style') == 'display: none;') $("#mydiv").show()
 	if ($("#mydiv").attr('style')) $("#mydiv").removeAttr('style')
 	else $("#mydiv").hide()
 }
 
-function CheckPlayer(x,nn){
-	if (x == 0) {
-		// Get data and compare players
-		ShowAll()
-		$('td.back4').prepend('<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>')
-		$('a#remember, a#compare').removeAttr('href')
+function RemovePl(rem){
+	if(rem!=0) players.splice(rem,1);
+	RememberPl(1); // !=1: save w\o player0
+	PrintPlayers();
+}
 
-		compare = true
-
-		// Header:
-		var pl1header = '<center><b>'
-		pl1header += players[nn].firstname + ' ' + players[nn].secondname 
-		if (players[nn].team != '') {
-			pl1header += ' (' 
-			pl1header += (players[nn].teamid != undefined ? '<a href="plug.php?p=refl&t=k&j='+players[nn].teamid+'&z='+players[nn].teamhash+'">' : '')
-			pl1header += players[nn].team
-			pl1header += (players[nn].teamid != undefined ? '</a>' : '')
-			pl1header += ')'
+function PrintPlayers(cur){
+	$('div#compare').empty()
+	for (i=0;i<players.length;i++){
+		if((i>0 || cur==0) && players[i].secondname != undefined){
+			var secname = String(players[i].secondname).split(' ')
+			var fname = String(players[i].firstname)
+			var plhref = (players[i].t==undefined ? '' : ' href="plug.php?p=refl&t='+players[i].t+'&j='+players[i].id+'&z='+players[i].hash+'"')
+			var htmltext = '<a id="compare'+i+'" href="javascript:void(CheckPlayer('+i+'))"><</a>|'
+			htmltext += '<a href="javascript:void(RemovePl('+i+'))">x</a>|'
+			htmltext += '<a href="javascript:hist(\''+players[i].id+'\',\'n\')">и</a>|'
+			htmltext += players[i].id+'|'
+			htmltext += '<a'+plhref+'>' + secname[secname.length-1] + '</a>'
+			$('div#compare').append(htmltext.fontsize(1)+'<br>')
 		}
-		pl1header += '<br>'
-		pl1header += players[nn].age + ' лет'
-		if (players[nn].natfull != ' '){
-			pl1header += ', '
-			pl1header += players[nn].natfull
-			pl1header += ' (матчей '
-			pl1header += players[nn].internationalapps
-			pl1header += ', голов '
-			pl1header += players[nn].internationalgoals
-			if (players[nn].u21apps != 0){
-				pl1header += ' / U21 матчей '
-				pl1header += players[nn].u21apps
-				pl1header += ', голов '
-				pl1header += players[nn].u21goals
-			}
-			pl1header += ')'
-		}
-		pl1header += '<br>'
-		if (players[nn].contract != 0 && players[nn].wage != 0) {
-			pl1header += 'Контракт: ' + players[nn].contract + ' г., ' 
-			if (players[nn].wage > 999){
-				pl1header += String((players[nn].wage/1000).toFixed(3)).replace(/\./g,',')
-			} else{
-				pl1header += players[nn].wage
-			}
-			pl1header += '$ в игровой день<br>'
-		}
-		if (players[nn].value != 0) { 
-			var nom = ''
-			pl1header += 'Номинал: ' 
-			if (players[nn].value < 1000000) {
-				nom = (players[nn].value/1000).toFixed(3)
-			} else {
-				nom = (players[nn].value/1000000).toFixed(3) + ',000'
-			}
-			pl1header += String(nom).replace(/\./g,',')
-			pl1header += '$<br>'
-		}
-		pl1header += players[nn].position + '<br>'
-		pl1header += '<br>'
-		pl1header += 'Умения</b>(сс=' + players[nn].sumskills + ')<br></center>'
-
-		$('td.back4 table center:first').before('<table id="plheader" width=100%><tr><td id="pl0" width=50% valign=top></td><td id="pl1" valign=top></td></tr></table>')
-		$('td.back4 table center:first').appendTo( $('td#pl0') )
-		$('td#pl1').html(pl1header)
-
-		// Skills:
-		$('td.back4 table:first table:not(#plheader):first td:even').each(function(i, val){
-			var skillname = sklfr[$(val).text()]
-			var skillvalue0 = players[0][skillname]
-			var skillvalue1 = (players[nn][skillname] == undefined ? '??' : players[nn][skillname])
-			var raz = parseInt(skillvalue1)-parseInt(skillvalue0)
-			var razcolor = 'red'
-			if(raz == 0 || isNaN(raz)) raz = '&nbsp;&nbsp;&nbsp;&nbsp;'
-			else if (raz>0) {
-					raz = '+' + raz
-					razcolor = 'green'
-			}
-			var skilltext = '<td width=10%>'
-			skilltext += String(skillvalue1).split('.')[0]
-			skilltext += '<sup><font color="' + razcolor + '">'+raz+'</font></sup>'
-			if (String(skillvalue1).split('.')[1]){
-				skilltext += ' <img height="12" src="system/img/g/' + String(skillvalue1).split('.')[1] + '.gif">'
-   			}
-			skilltext += '</td>'
-			$(val)
-				.next().attr('width','10%')
-				.after(skilltext)
-		})
-//		$('td.back4 table:first table:not(#plheader):eq(1)').attr('border','1')
-		$('td.back4 table:first table:not(#plheader):eq(1) tr:first td:gt(0)').attr('colspan','3').attr('align','center')
-       	$('td.back4 table:first table:not(#plheader):eq(1) tr:gt(0)').each(function(i,val){
-			if(i!=1) $(val).find('td:eq(7)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['kk'+i]!=undefined ? players[nn]['kk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
-			if(i!=1) $(val).find('td:eq(6)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['zk'+i]!=undefined ? players[nn]['zk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
-			$(val).find('td:eq(5)').after('<td>'+(parseFloat(players[nn]['sr'+i])==0 || players[nn]['sr'+i]==undefined ? ' ':(parseFloat(players[nn]['sr'+i])).toFixed(2))+'</td><td bgcolor=C9F8B7 width=1%> </td>')
-			$(val).find('td:eq(4)').after('<td>'+(players[nn]['im'+i]!=undefined ? players[nn]['im'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
-			$(val).find('td:eq(3)').after('<td>'+(players[nn]['ps'+i]!=undefined ? players[nn]['ps'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
-			$(val).find('td:eq(2)').after('<td>'+(players[nn]['gl'+i]!=undefined ? players[nn]['gl'+i] : '?') +'</td><td bgcolor=C9F8B7 width=1%> </td>')
-			$(val).find('td:eq(1)').after('<td>'+(players[nn]['ig'+i]!=undefined ? players[nn]['ig'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>').before('<td bgcolor=C9F8B7 width=1%> </td>')
-
-//			if(i==0&&players[nn].mkk!=undefined) $(val).find('td:last').append(' / '+players[nn].mkk)
-		})
-
-	} else {
-		// Save data
-		var text = ''
-		var mark = 1
-		for (k in players){
-			if (k<10){
-				for (i in players[k]){
-					mark = parseInt(k)+1
-//					$('td.back4').prepend(k+':'+i+'_'+mark+' '+players[k][i] + '<br>')
-					text += i+'_'+mark+'='+players[k][i]+','
-				}
-			}
-		}
-		if (navigator.userAgent.indexOf('Firefox') != -1){
-			globalStorage[location.hostname].peflplayer = text
-		} else {	
-			sessionStorage.peflplayer = text
-		}
-		$('td#crabright a#remember').after('<br>'+('<a id="compare" href="javascript:void(CheckPlayer(0,'+0+'))">[<]</a><a>[x]</a><a href="plug.php?p=refl&t='+players[0].t+'&j='+players[0].id+'&z='+players[0].hash+'">'+players[0].secondname +'</a> ' +players[0].position).fontsize(1)+'')
 	}
+}
+function RememberPl(x){
+	// Save data
+	var mark = 1
+	var text = ''
+	for (k in players){
+		if (players[k].id!=undefined && ((k>0 && mark<=10) || (k==0 && x==0))){
+			for (i in players[k]) text += i+'_'+mark+'='+players[k][i]+','
+			mark++
+		}
+	}
+	if (navigator.userAgent.indexOf('Firefox') != -1) globalStorage[location.hostname].peflplayer = text
+	else sessionStorage.peflplayer = text
+	if (x==0)	PrintPlayers(0)
+	else 		PrintPlayers()
+}
+
+function CheckPlayer(nn){
+	// Get data and compare players
+	ShowAll()
+	$('td.back4').prepend('<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>')
+	$('a#remember, a[id^="compare"]').removeAttr('href')
+
+	compare = true
+
+	// Header:
+	var pl1header = '<center><b>'
+	pl1header += players[nn].firstname + ' ' + players[nn].secondname 
+	if (players[nn].team != '') {
+		pl1header += ' (' 
+		pl1header += (players[nn].teamid != undefined ? '<a href="plug.php?p=refl&t=k&j='+players[nn].teamid+'&z='+players[nn].teamhash+'">' : '')
+		pl1header += players[nn].team
+		pl1header += (players[nn].teamid != undefined ? '</a>' : '')
+		pl1header += ')'
+	}
+	pl1header += '<br>'
+	pl1header += players[nn].age + ' лет'
+	if (players[nn].natfull != ' '){
+		pl1header += ', '
+		pl1header += players[nn].natfull
+		pl1header += ' (матчей '
+		pl1header += players[nn].internationalapps
+		pl1header += ', голов '
+		pl1header += players[nn].internationalgoals
+		if (players[nn].u21apps != 0){
+			pl1header += ' / U21 матчей '
+			pl1header += players[nn].u21apps
+			pl1header += ', голов '
+			pl1header += players[nn].u21goals
+		}
+		pl1header += ')'
+	}
+	pl1header += '<br>'
+	if (players[nn].contract != 0 && players[nn].wage != 0) {
+		pl1header += 'Контракт: ' + players[nn].contract + ' г., ' 
+		if (players[nn].wage > 999){
+			pl1header += String((players[nn].wage/1000).toFixed(3)).replace(/\./g,',')
+		} else{
+			pl1header += players[nn].wage
+		}
+		pl1header += '$ в игровой день<br>'
+	}
+	if (players[nn].value != 0) { 
+		var nom = ''
+		pl1header += 'Номинал: ' 
+		if (players[nn].value < 1000000) {
+			nom = (players[nn].value/1000).toFixed(3)
+		} else {
+			nom = (players[nn].value/1000000).toFixed(3) + ',000'
+		}
+		pl1header += String(nom).replace(/\./g,',')
+		pl1header += '$<br>'
+	}
+	pl1header += players[nn].position + '<br>'
+	pl1header += '<br>'
+	pl1header += 'Умения</b>(сс=' + players[nn].sumskills + ')<br></center>'
+
+	$('td.back4 table center:first').before('<table id="plheader" width=100%><tr><td id="pl0" width=50% valign=top></td><td id="pl1" valign=top></td></tr></table>')
+	$('td.back4 table center:first').appendTo( $('td#pl0') )
+	$('td#pl1').html(pl1header)
+
+	// Skills:
+	$('td.back4 table:first table:not(#plheader):first td:even').each(function(i, val){
+		var skillname = sklfr[$(val).text()]
+		var skillvalue0 = players[0][skillname]
+		var skillvalue1 = (players[nn][skillname] == undefined ? '??' : players[nn][skillname])
+		var raz = parseInt(skillvalue1)-parseInt(skillvalue0)
+		var razcolor = 'red'
+		if(raz == 0 || isNaN(raz)) raz = '&nbsp;&nbsp;&nbsp;&nbsp;'
+		else if (raz>0) {
+				raz = '+' + raz
+				razcolor = 'green'
+		}
+		var skilltext = '<td width=10%>'
+		skilltext += String(skillvalue1).split('.')[0]
+		skilltext += '<sup><font color="' + razcolor + '">'+raz+'</font></sup>'
+		if (String(skillvalue1).split('.')[1]){
+			skilltext += ' <img height="12" src="system/img/g/' + String(skillvalue1).split('.')[1] + '.gif">'
+		}
+		skilltext += '</td>'
+		$(val)
+			.next().attr('width','10%')
+			.after(skilltext)
+	})
+	$('td.back4 table:first table:not(#plheader):eq(1) tr:first td:gt(0)').attr('colspan','3').attr('align','center')
+	$('td.back4 table:first table:not(#plheader):eq(1) tr:gt(0)').each(function(i,val){
+		if(i!=1) $(val).find('td:eq(7)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['kk'+i]!=undefined ? players[nn]['kk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
+		if(i!=1) $(val).find('td:eq(6)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['zk'+i]!=undefined ? players[nn]['zk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
+
+		$(val).find('td:eq(5)').after('<td>'+(parseFloat(players[nn]['sr'+i])==0 || players[nn]['sr'+i]==undefined ? ' ':(parseFloat(players[nn]['sr'+i])).toFixed(2))+'</td><td bgcolor=C9F8B7 width=1%> </td>')
+		$(val).find('td:eq(4)').after('<td>'+(players[nn]['im'+i]!=undefined ? players[nn]['im'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
+		$(val).find('td:eq(3)').after('<td>'+(players[nn]['ps'+i]!=undefined ? players[nn]['ps'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
+		$(val).find('td:eq(2)').after('<td>'+(players[nn]['gl'+i]!=undefined ? players[nn]['gl'+i] : '?') +'</td><td bgcolor=C9F8B7 width=1%> </td>')
+		$(val).find('td:eq(1)').after('<td>'+(players[nn]['ig'+i]!=undefined ? players[nn]['ig'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>').before('<td bgcolor=C9F8B7 width=1%> </td>')
+	})
 	return false
 }
 
@@ -485,10 +503,11 @@ var compare = false
 	var ms = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
 	var j = 0
 
+	players[0].secondname = ''
 	var name = ms[j].split(' (',1)[0]
 	if (name.indexOf(' ')!=-1){
 		players[0].firstname = name.split(' ',1)[0]
-		players[0].secondname = name.split(' ',2)[1]
+		players[0].secondname += name.replace(players[0].firstname+' ' ,'')
 	} else {
 		players[0].firstname = ''
 		players[0].secondname = name
@@ -661,8 +680,8 @@ var compare = false
 	players[0].idealpos = posfilter[1][1]
 
 	var text3 = ''
-	text3 += '<br><a id="remember" href="javascript:void(CheckPlayer(1))">'+('Запомнить').fontsize(1)+'</a>'
-
+	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить').fontsize(1)+'</a><br>'
+	text3 += '<div id="compare"></div>'
 	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
 	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
@@ -686,6 +705,7 @@ var compare = false
 	}
 	text3 += '</div>'
 
+	// Draw left panel and fill data
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
@@ -698,26 +718,16 @@ var compare = false
 	$("#mydiv").hide()
 
 	// Get info fom Global or Session Storage
-	var text1 = ''
-	if (navigator.userAgent.indexOf('Firefox') != -1){
-		text1 = String(globalStorage[location.hostname].peflplayer)
-	} else {
-		text1 = String(sessionStorage.peflplayer)
-	}
+	var text1 = String(navigator.userAgent.indexOf('Firefox') != -1 ? globalStorage[location.hostname].peflplayer : sessionStorage.peflplayer)
 	if (text1 != 'undefined'){
 		var pl = text1.split(',');
-		for (var i in pl) {
+		for (i in pl) {
 			key = pl[i].split('=')
 			var pn = (key[0].split('_')[1] == undefined ? 2 : key[0].split('_')[1])
-//			$('td.back4').prepend(pn+':' + key[0].split('_')[0] + ' ' + key[1] +'<br>')
 			players[pn][key[0].split('_')[0]] = [key[1]]
 		}
-		for (i=players.length-1;i>=0;i--){
-			if(i>0 && players[i].secondname != undefined) $('td#crabright a#remember').after('<br>'+('<a id="compare" href="javascript:void(CheckPlayer(0,'+i+'))">[<]</a><a>[x]</a><a'+(players[i].t==undefined?'':' href="plug.php?p=refl&t='+players[i].t+'&j='+players[i].id+'&z='+players[i].hash+'"')+'>' + players[i].secondname + '</a> '+players[i].position).fontsize(1)+'')
-		}
+		PrintPlayers()
 	}
 
-
-/**/
 //}, false)
-})();
+})();	// for ie
