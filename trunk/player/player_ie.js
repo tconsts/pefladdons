@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           peflplayer
 // @namespace      pefl
-// @description    modification player page and school boys (ver 1.6)
+// @description    modification player page and school boys
 // @include        http://www.pefl.ru/plug.php?p=refl&t=p*
 // @include        http://www.pefl.ru/plug.php?p=refl&t=yp*
 // @include        http://pefl.ru/plug.php?p=refl&t=p*
@@ -194,28 +194,40 @@ function CheckPlayer(nn){
 		var skillvalue1 = (players[nn][skillname] == undefined ? '??' : players[nn][skillname])
 		var skillup0 = parseInt(skillvalue0)*7 + parseInt(ups[String(skillvalue0).split('.')[1]])
 		var skillup1 = parseInt(skillvalue1)*7 + parseInt(ups[String(skillvalue1).split('.')[1]])
-		var raz = parseInt(skillvalue1)-parseInt(skillvalue0)
-		skillupsumm += skillup1 - skillup0
+		var raz = parseInt(skillvalue0)-parseInt(skillvalue1)
+		skillupsumm += skillup0 - skillup1
 		var razcolor = 'red'
 		if(raz == 0 || isNaN(raz)) raz = '&nbsp;&nbsp;&nbsp;&nbsp;'
 		else if (raz>0) {
 				raz = '+' + raz
 				razcolor = 'green'
 		}
+		var skilltext0 = String(skillvalue0).split('.')[0]
+		skilltext0 += '<sup><font color="' + razcolor + '">'+raz+'</font></sup>'
+		if (String(skillvalue0).split('.')[1]){
+			skilltext0 += ' <img height="12" src="system/img/g/' + String(skillvalue0).split('.')[1] + '.gif">'
+		}
 		var skilltext = '<td width=10%>'
 		skilltext += String(skillvalue1).split('.')[0]
-		skilltext += '<sup><font color="' + razcolor + '">'+raz+'</font></sup>'
 		if (String(skillvalue1).split('.')[1]){
 			skilltext += ' <img height="12" src="system/img/g/' + String(skillvalue1).split('.')[1] + '.gif">'
 		}
 		skilltext += '</td>'
 		$(val)
 			.next().attr('width','10%')
+			.html(skilltext0)
 			.after(skilltext)
 	})
-	if(players[0].id == players[nn].id && (players[0].t == 'yp' || players[0].t == 'yp2')){
-		$('td.back4 table:first table:not(#plheader):eq(0)').append('<tr><td colspan=6 align=right><b>Изменения:</b> '+skillupsumm+' апов </td></tr>')
-	}
+//	if(players[0].id == players[nn].id && (players[0].t == 'yp' || players[0].t == 'yp2')){
+		var skilltext =  '<tr><td colspan=6>&nbsp;</td></tr><tr><td colspan=6 align=center><b>Изменения</b>(апы): '
+		if (skillupsumm > 0){
+			skilltext +=  '<font color="green">+' + skillupsumm + '</font>'
+		} else if (skillupsumm < 0){
+			skilltext +=  '<font color="red">' + skillupsumm + '</font>'
+		} else skilltext += ' нет'
+		skilltext += '</td></tr><tr><td colspan=6>&nbsp;</td></tr>'
+		$('td.back4 table:first table:not(#plheader):eq(0)').append(skilltext)
+//	}
 
 	$('td.back4 table:first table:not(#plheader):eq(1) tr:first td:gt(0)').attr('colspan','3').attr('align','center')
 	$('td.back4 table:first table:not(#plheader):eq(1) tr:gt(0)').each(function(i,val){
@@ -298,12 +310,15 @@ function CodeForForum(){
 		x += '\n\n'
 	}
 
+	// skills
 	x += $('td.back4 table table:not(#plheader):first')
 		.find('sup').remove().end()
 		.html()
 		.replace(/<!-- [а-я] -->/g,'')
 		.replace(/<tbody>/g,'<table width=100%>')
 		.replace(/tbody/g,'table')
+		.replace(/<font /g,'[')
+		.replace(/\/font/g,'/color')
 		.replace(/\</g,'[')
 		.replace(/\>/g,']')
 		.replace(/ height=\"12\"/g,'')
@@ -313,6 +328,7 @@ function CodeForForum(){
 		.replace(/\n/g,'')
 		if (navigator.userAgent.indexOf('Opera') != -1 && ptype != 'yp' && ptype != 'yp2') x += '[/table]'
 
+	// stat
 	if (ptype == 'p' || ptype == 'pp'){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
 		x += $('td.back4 table table:last').html()
