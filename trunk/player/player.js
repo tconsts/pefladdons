@@ -1,3 +1,17 @@
+// ==UserScript==
+// @name           peflplayer
+// @namespace      pefl
+// @description    modification player page and school boys (ver 1.6)
+// @include        http://www.pefl.ru/plug.php?p=refl&t=p*
+// @include        http://www.pefl.ru/plug.php?p=refl&t=yp*
+// @include        http://pefl.ru/plug.php?p=refl&t=p*
+// @include        http://pefl.ru/plug.php?p=refl&t=yp*
+// @include        http://www.pefl.net/plug.php?p=refl&t=p*
+// @include        http://www.pefl.net/plug.php?p=refl&t=yp*
+// @include        http://pefl.net/plug.php?p=refl&t=p*
+// @include        http://pefl.net/plug.php?p=refl&t=yp*
+// ==/UserScript==
+/**/
 
 //(function(){ // for ie
 
@@ -172,12 +186,16 @@ function CheckPlayer(nn){
 	$('td.back4 table center:first').appendTo( $('td#pl0') )
 	$('td#pl1').html(pl1header)
 
+	var skillupsumm = 0
 	// Skills:
 	$('td.back4 table:first table:not(#plheader):first td:even').each(function(i, val){
 		var skillname = sklfr[$(val).text()]
 		var skillvalue0 = players[0][skillname]
 		var skillvalue1 = (players[nn][skillname] == undefined ? '??' : players[nn][skillname])
+		var skillup0 = parseInt(skillvalue0)*7 + parseInt(ups[String(skillvalue0).split('.')[1]])
+		var skillup1 = parseInt(skillvalue1)*7 + parseInt(ups[String(skillvalue1).split('.')[1]])
 		var raz = parseInt(skillvalue1)-parseInt(skillvalue0)
+		skillupsumm += skillup1 - skillup0
 		var razcolor = 'red'
 		if(raz == 0 || isNaN(raz)) raz = '&nbsp;&nbsp;&nbsp;&nbsp;'
 		else if (raz>0) {
@@ -195,6 +213,10 @@ function CheckPlayer(nn){
 			.next().attr('width','10%')
 			.after(skilltext)
 	})
+	if(players[0].id == players[nn].id && (players[0].t == 'yp' || players[0].t == 'yp2')){
+		$('td.back4 table:first table:not(#plheader):eq(0)').append('<tr><td colspan=6 align=right><b>Изменения:</b> '+skillupsumm+' апов </td></tr>')
+	}
+
 	$('td.back4 table:first table:not(#plheader):eq(1) tr:first td:gt(0)').attr('colspan','3').attr('align','center')
 	$('td.back4 table:first table:not(#plheader):eq(1) tr:gt(0)').each(function(i,val){
 		if(i!=1) $(val).find('td:eq(7)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['kk'+i]!=undefined ? players[nn]['kk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
@@ -336,8 +358,18 @@ var sklsr = []
 var sklfr = []
 var compare = false
 
-/**/
-//document.addEventListener('DOMContentLoaded', function(){		// for Opera Local
+var ups = {	"a0e":"-2",
+			"a1e":"-1",
+			"a2e":"1",
+			"a3e":"2",
+			"a5e":"3",
+			"a6e":"-3",
+			"next":"-3",
+			"last":"3",
+			"undefined":"0"	
+		}
+
+//document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
 
 /**/
@@ -503,11 +535,10 @@ $().ready(function() {
 	var ms = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
 	var j = 0
 
-	players[0].secondname = ''
 	var name = ms[j].split(' (',1)[0].split(' <',1)[0]
 	if (name.indexOf(' ')!=-1){
 		players[0].firstname = name.split(' ',1)[0]
-		players[0].secondname += name.replace(players[0].firstname+' ' ,'')
+		players[0].secondname = name.replace(players[0].firstname+' ' ,'')
 	} else {
 		players[0].firstname = ''
 		players[0].secondname = name
