@@ -27,9 +27,9 @@ function format(num) {
 	var fin = {}
 
 	var ffn = $('td.back4 > table td:eq(1)').html()
-	var zp = parseInt(ffn.split('Сумма зарплат:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
-	cur.bablo = parseInt(ffn.split('Финансы:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
-	cur.bonus = (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
+	var zp = parseInt(ffn.split('РЎСѓРјРјР° Р·Р°СЂРїР»Р°С‚:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
+	cur.bablo = parseInt(ffn.split('Р¤РёРЅР°РЅСЃС‹:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
+	cur.bonus = (ffn.indexOf('Р‘РѕРЅСѓСЃ:') != -1 ? parseInt(ffn.split('Р‘РѕРЅСѓСЃ:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
 
 	$('td.back4 > table table').each(function(i,val){
 		var curtable = finance[i] = {}
@@ -40,26 +40,26 @@ function format(num) {
 		})
 	})
 
-	var chbonus = Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
+	var chbonus = Math.floor(((finance[0]['РџСЂРѕРґР°Р¶Р° РёРіСЂРѕРєРѕРІ'] + finance[1]['РџРѕРєСѓРїРєР° РёРіСЂРѕРєРѕРІ'])*0.05)/1000)*1000
 
-	var sponsors = finance[0]['Спонсоры']
-//	zp = finance[1]['Зарплаты']
-	var school = finance[1]['Школа'] - chbonus
+	var sponsors = finance[0]['РЎРїРѕРЅСЃРѕСЂС‹']
+//	zp = finance[1]['Р—Р°СЂРїР»Р°С‚С‹']
+	var school = finance[1]['РЁРєРѕР»Р°'] - chbonus
 
 	fin.fid = 81
 
-	cur.sponsors = finance[2]['Спонсоры']
-	cur.stadion = finance[2]['Стадион']
-	cur.priz = finance[2]['Призовые']
-	cur.sale = finance[2]['Продажа игроков']
-	cur.allup = finance[2]['Всего']
+	cur.sponsors = finance[2]['РЎРїРѕРЅСЃРѕСЂС‹']
+	cur.stadion = finance[2]['РЎС‚Р°РґРёРѕРЅ']
+	cur.priz = finance[2]['РџСЂРёР·РѕРІС‹Рµ']
+	cur.sale = finance[2]['РџСЂРѕРґР°Р¶Р° РёРіСЂРѕРєРѕРІ']
+	cur.allup = finance[2]['Р’СЃРµРіРѕ']
 
-	cur.zp = finance[3]['Зарплаты игрокам']
+	cur.zp = finance[3]['Р—Р°СЂРїР»Р°С‚С‹ РёРіСЂРѕРєР°Рј']
 	cur.zpperc = (cur.zp/cur.sponsors*100).toFixed(1)+'%'
-	cur.buy = finance[3]['Покупка игроков']
-	cur.school = finance[3]['Школа']
+	cur.buy = finance[3]['РџРѕРєСѓРїРєР° РёРіСЂРѕРєРѕРІ']
+	cur.school = finance[3]['РЁРєРѕР»Р°']
 	cur.schoolperc = (cur.school/cur.sponsors*100).toFixed(1)+'%'
-	cur.alldown = finance[3]['Всего']
+	cur.alldown = finance[3]['Р’СЃРµРіРѕ']
 	cur.plusminus = cur.allup - cur.alldown
 
 	cur.fid = (cur.sponsors - cur.bonus)/sponsors
@@ -84,8 +84,8 @@ function format(num) {
 
 	$('table#2 td:odd, table#3 td:odd').attr('width','30%').attr('id','cur').after('<td width=30% id=fin></td>')
 
-	var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F>Текущий '+cur.fid+' ФИД</th>'
-	if(fin.fid != cur.fid) preparedhtml += '<th width=30% bgcolor=#A3DE8F>Прогноз на '+fin.fid+' ФИД</th>'
+	var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F>РўРµРєСѓС‰РёР№ '+cur.fid+' Р¤РР”</th>'
+	if(fin.fid != cur.fid) preparedhtml += '<th width=30% bgcolor=#A3DE8F>РџСЂРѕРіРЅРѕР· РЅР° '+fin.fid+' Р¤РР”</th>'
 	preparedhtml += '</tr>'
 	$('table#2, table#3').prepend(preparedhtml)
 
@@ -103,12 +103,12 @@ function format(num) {
 		$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
 	}
 	preparedhtml  = '<hr><table width=100% id="4">'
-	preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
+	preparedhtml += '<tr><td width=40%><b>РџР»СЋСЃ\\РњРёРЅСѓСЃ</b></td>'
 	preparedhtml += '<td width=30%>' + (format(cur.plusminus)).bold() + '</td>'
 	if(fin.fid != cur.fid) preparedhtml += '<td width=30%>' + (format(fin.plusminus)).bold() + '</td>'
 	else preparedhtml += '<td width=30%></td>'
 	preparedhtml += '</tr>'
-	preparedhtml += '<tr><td><b>На счету</b></td>'
+	preparedhtml += '<tr><td><b>РќР° СЃС‡РµС‚Сѓ</b></td>'
 	preparedhtml += '<td>' + (format(cur.bablo)).bold() + '</td>'
 	if(fin.fid != cur.fid) preparedhtml += '<td>' + (format(fin.bablo)).bold() + '</td>'
 	preparedhtml += '</tr>'
