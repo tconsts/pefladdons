@@ -218,7 +218,7 @@ function CheckPlayer(nn){
 			.html(skilltext0)
 			.after(skilltext)
 	})
-//	if(players[0].id == players[nn].id && (players[0].t == 'yp' || players[0].t == 'yp2')){
+	if(players[0].id == players[nn].id && (players[0].t == 'yp' || players[0].t == 'yp2')){
 		var skilltext =  '<tr><td colspan=6>&nbsp;</td></tr><tr><td colspan=6 align=center><b>Изменения</b>(апы): '
 		if (skillupsumm > 0){
 			skilltext +=  '<font color="green">+' + skillupsumm + '</font>'
@@ -227,7 +227,7 @@ function CheckPlayer(nn){
 		} else skilltext += ' нет'
 		skilltext += '</td></tr><tr><td colspan=6>&nbsp;</td></tr>'
 		$('td.back4 table:first table:not(#plheader):eq(0)').append(skilltext)
-//	}
+	}
 
 	$('td.back4 table:first table:not(#plheader):eq(1) tr:first td:gt(0)').attr('colspan','3').attr('align','center')
 	$('td.back4 table:first table:not(#plheader):eq(1) tr:gt(0)').each(function(i,val){
