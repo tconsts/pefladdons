@@ -1,3 +1,14 @@
+// ==UserScript==
+// @name           pefldivtable
+// @namespace      pefl
+// @description    division table page modification (PEFL.ru and .net)
+// @include        http://www.pefl.ru/plug.php?p=refl&t=s&*
+// @include        http://pefl.ru/plug.php?p=refl&t=s&*
+// @include        http://www.pefl.net/plug.php?p=refl&t=s&*
+// @include        http://pefl.net/plug.php?p=refl&t=s&*
+// @include        http://www.pefl.org/plug.php?p=refl&t=s&*
+// @include        http://pefl.org/plug.php?p=refl&t=s&*
+// ==/UserScript==
 
 function setCookie(name, value) {
 	var exdate=new Date();
@@ -13,34 +24,59 @@ function getCookie(name) {
     return false
 }
 
-function SetTasks(){
+function SetTasks(x){
 	// task for club
-	var task = []
+	var team = []
 
 	// Get info fom Global or Session Storage
 	var text1 = ''
-	if (navigator.userAgent.indexOf('Firefox') != -1){
-		text1 = String(globalStorage[location.hostname].tasks)
-	} else {
-		text1 = String(sessionStorage.tasks)
-	}
+	if (navigator.userAgent.indexOf('Firefox') != -1)	text1 = String(globalStorage[location.hostname].tasks)
+	else 												text1 = String(sessionStorage.tasks)
+
+//	$('td.back4').prepend('<br>'+text1+'<br>')
 	if (text1 != 'undefined'){
 		var t1 = text1.split(',')
 		for (i in t1) {
 			var t2 = t1[i].split(':')
-			task[t2[0]] = t2[1]
+			team[t2[0]] = {}
+			if(t2[1] != undefined) team[t2[0]].ttask = t2[1]
+			if(t2[2] != undefined) team[t2[0]].ttown = t2[2]
+			if(t2[3] != undefined) team[t2[0]].sname = t2[3]
+			if(t2[4] != undefined) team[t2[0]].ssize = t2[4]
 		}
 	}
-	$('td.back4 table table th[width=13%]').attr('width','26%')
-	$("td.back4 table table tr td a[href*='plug.php?p=refl&t=s_graph']").each(function(){
-		var tid = UrlValue('n',$(this).attr('href'))
-		$(this).parent().find('img').remove() //.html().replace(/(\d*)/g,'')
-		var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
+	if (x==1){
+		$('td.back1 span.text2b').append(' (задачи)')
+		$('td.back4 table table th[width=13%]').attr('width','26%')
+		$("td.back4 table table tr td a[href*='plug.php?p=refl&t=s_graph']").each(function(){
+			var tid = UrlValue('n',$(this).attr('href'))
+			$(this).parent().find('img').remove() 
+			var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
 
-		if (task[tid]) td_data += ' <small>'+task[tid]+'</small>'
-		$(this).parent().html(td_data)
-	})
-	$('div#tasks').html('Показать задачи')
+			if (team[tid] != undefined && team[tid].ttask != undefined) td_data += ' <small>'+team[tid].ttask+'</small>'
+			$(this).parent().html(td_data)
+		})
+		$('div#tasks').html('<b>Показать задачи</b>')
+		$('div#stadio').html('Показать стадионы')
+	} else if (x==2) {
+		$('td.back1 span.text2b').append(' (стадионы)')
+		$('td.back4 table table th[width=13%]').attr('width','5%').before('<th width=30% colspan=2>Стадионы\n\t')
+		$('td.back4 table table th[width=7%]').attr('width','5%')
+		$('td.back4 table table th[width=6%]').attr('width','5%')
+		$("td.back4 table table tr td a[href*='plug.php?p=refl&t=s_graph']").each(function(){
+			var tid = UrlValue('n',$(this).attr('href'))
+			$(this).parent().find('img').remove() 
+			var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
+			var td_data1 = '<td> </td><td></td>'
+
+			if (team[tid] != undefined && team[tid].sname != undefined) td_data1 = '<td><small>'+team[tid].sname+ '</small></td><td><small>' +team[tid].ssize+'</small></td>'
+
+			$(this).parent().before(td_data1).html(td_data)
+//			$(this).parent().before(td_data1)
+		})
+		$('div#tasks').html('Показать задачи')
+		$('div#stadio').html('<b>Показать стадионы</b>')
+	}
 }
 
 function PlusMinus(){
@@ -228,11 +264,12 @@ function TableCodeForForum(){
 	$('td.back4 table table th[width=13%]').attr('width','15%')
 	$('td.back4 table table th[width=7%]').removeAttr('width')
 	$('td.back4 table table th[width=6%]').removeAttr('width')
+	$('td.back4 table table th[width=5%]').removeAttr('width')
 
 	// generate code for forum
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
 	x += '<br>Код для форума<br><br><textarea rows="20" cols="80" readonly="readonly" id="CodeTableForForum">'
-	x += '[b]'
+	x += '[b][url=plug.php?' + location.search.substring(1) + ']#[/url] '
 	x += $('td.back4 td.back1').text()
 	x += '[/b][spoiler]'
 	x += $('td.back4 table:eq(1)')
@@ -297,7 +334,8 @@ $().ready(function() {
 	// Draw CrabVIP panel
 	var text = ''
 	text += '<div id="color"><a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">Расскрасить</a></div>'
-	text += '<div id="tasks"><a href="javascript:void(SetTasks())">Показать задачи</a>&nbsp;</div>'
+	text += '<div id="tasks"><a href="javascript:void(SetTasks(1))">Показать задачи</a>&nbsp;</div>'
+	text += '<div id="stadio"><a href="javascript:void(SetTasks(2))">Показать стадионы</a>&nbsp;</div>'
 	text += '<div id="CodeTableForForum"><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</div>'
 
 	var preparedhtml = ''

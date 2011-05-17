@@ -1,3 +1,15 @@
+// ==UserScript==
+// @name           peflteam
+// @namespace      pefl
+// @description    roster team page modification
+// @include        http://www.pefl.ru/plug.php?p=refl&t=k&j=*
+// @include        http://pefl.ru/plug.php?p=refl&t=k&j=*
+// @include        http://www.pefl.net/plug.php?p=refl&t=k&j=*
+// @include        http://pefl.net/plug.php?p=refl&t=k&j=*
+// @include        http://www.pefl.org/plug.php?p=refl&t=k&j=*
+// @include        http://pefl.org/plug.php?p=refl&t=k&j=*
+// @version			1.1
+// ==/UserScript==
 
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
@@ -15,6 +27,7 @@ function ShowChange(value){
 
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
+
 	// Edit finance
 	var fulltxt = $('table.layer1 td.l4:eq(1)').text()
 	var txt = 'Фин. положение: '
@@ -44,39 +57,57 @@ $().ready(function() {
 	var preparedhtml = 'Фин: ' + fulltxt.replace(txt,'').replace(' :-)','')+newtxt.fontsize(1)
 	$('table.layer1 td.l4:eq(1)').html(preparedhtml);
 
+	// Task and stadio for club
+	var team = []
 
-	// task for club
-	var task = []
-
-	// Get info fom Global or Session Storage
+	// Get info fom Global or Session Storage (info for clubs)
+	// format: <id_team0>:<task_team0>:<town0>:<stadio_name0>:<stadio_size0>,
 	var text1 = ''
-	if (navigator.userAgent.indexOf('Firefox') != -1){
-		text1 = String(globalStorage[location.hostname].tasks)
-	} else {
-		text1 = String(sessionStorage.tasks)
-	}
+	if (navigator.userAgent.indexOf('Firefox') != -1)	text1 = String(globalStorage[location.hostname].tasks)
+	else 												text1 = String(sessionStorage.tasks)
+//	$('td.back4').prepend('<br>'+text1+'<br>')
 	if (text1 != 'undefined'){
 		var t1 = text1.split(',')
 		for (i in t1) {
 			var t2 = t1[i].split(':')
-			task[t2[0]] = t2[1]
+			team[t2[0]] = {}
+			if(t2[1] != undefined) team[t2[0]].ttask = t2[1]
+			if(t2[2] != undefined) team[t2[0]].ttown = t2[2]
+			if(t2[3] != undefined) team[t2[0]].sname = t2[3]
+			if(t2[4] != undefined) team[t2[0]].ssize = t2[4]
 		}
 	}
-
+	// Get current club data
+	var cid = parseInt($('td.back4 table:first table td:first').text())
 	var zad = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
-	var cid = parseInt($('td.back4 table table td:first').text())
-	task[cid] = zad
 
+	// Delete all task if we have new task - it's new season!
+	if (team[cid] != undefined && team[cid].ttask != undefined && team[cid].ttask != zad) for (i in team) team[i].ttask = null
+	if (team[cid] == undefined) team[cid] = {}
+	team[cid].ttask = zad
+	team[cid].ttown = $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
+	team[cid].sname = $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
+	team[cid].ssize = $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
+
+	// Prepare data for remember
 	var text = ''
-	for (i in task) if(task[i]!=undefined) text += i+':'+task[i]+','
-
-	if (navigator.userAgent.indexOf('Firefox') != -1){
-		globalStorage[location.hostname].tasks = text
-	} else {	
-		sessionStorage.tasks = text
+	for (i in team) {
+		if(team[i] != undefined) {
+			text += i+':'
+			text += (team[i].ttask != undefined ? team[i].ttask : '') +':'
+			text += (team[i].ttown != undefined ? team[i].ttown : '') +':'
+			text += (team[i].sname != undefined ? team[i].sname : '') +':'
+			text += (team[i].ssize != undefined ? team[i].ssize : '') +','
+		}
 	}
+//	$('td.back4').prepend(text+'<br>')
 
-	// show nominals
+	// Save data for clubs
+	if (navigator.userAgent.indexOf('Firefox') != -1)	globalStorage[location.hostname].tasks = text
+	else 												sessionStorage.tasks = text
+
+
+	// Show nominals
 	if (UrlValue('j')==99999){
 		$.get('team.php', {}, function(data){
 			var teamnominals = 0
@@ -113,14 +144,11 @@ $().ready(function() {
 			}
 		});
 
-		// Get info fom Global or Session Storage
+		// Get info fom Global or Session Storage (info of team players)
 		var text1 = ''
-		if (navigator.userAgent.indexOf('Firefox') != -1){
-			text1 = String(globalStorage[location.hostname].team)
-		} else {
-			text1 = String(sessionStorage.team)
-		}
-
+		if (navigator.userAgent.indexOf('Firefox') != -1)	text1 = String(globalStorage[location.hostname].team)
+		else 												text1 = String(sessionStorage.team)
+		
 		if (text1 != 'undefined'){
 			var pltext = text1.split(':',2)[1].split('.')
 			for (i in pltext) {
@@ -179,12 +207,8 @@ $().ready(function() {
 				var pl = players[i]
 				text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'
 			}
-
-			if (navigator.userAgent.indexOf('Firefox') != -1){
-				globalStorage[location.hostname].team = text
-			} else {	
-				sessionStorage.team = text
-			}
+			if (navigator.userAgent.indexOf('Firefox') != -1)	globalStorage[location.hostname].team = text
+			else 												sessionStorage.team = text			
 		}
 	}
 
