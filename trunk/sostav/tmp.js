@@ -11,7 +11,6 @@
 // @version			1.0
 // ==/UserScript==
 
-
 function setCookie(name, value) {
 	var exdate=new Date();
 	exdate.setDate(exdate.getDate() + 30); 
@@ -30,14 +29,18 @@ function getCookie(name) {
 function check(d) {return (d<10 ? "0"+d : d)}
 
 function ShowEnd(){
-	$('td.back4 table table:eq(1) th:eq(4)').after('<th>-20%</th>')
-	$('td.back4 table table:eq(1) th:eq(8)').remove()
+	var sumraz = 0
+	$('td.back4 table table:eq(1) th:eq(4)').after('<td id="end"><b>-20%</b></td>')
+	$('td.back4 table table:eq(1) tr:first td:eq(3)').remove()
 	$('td.back4 table table:eq(1) tr').find('td:eq(4)').each(function(i,val){
 		var newtrn = (trn[0][i+1]-1)*0.8+1
 		var newraz = (newtrn-trn[0][i+1]).toFixed(4)
+		sumraz += parseFloat(newraz)
 		$(val).after('<td>'+(newtrn).toFixed(4).fontsize(1)+('<sup>'+newraz+'</sup>').fontcolor('red')+'</td>')
 		$(val).parent().find('td:eq(8)').remove()
 	})
+	$('td#end').append('<sup>'+sumraz.toFixed(4)+'</sup>')
+	$('a#end ').remove()
 }
 
 function UrlValue(key,url){
@@ -98,9 +101,8 @@ itrains[20] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая пози�
 itrains[21] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция R'}
 
 
-
-//document.addEventListener('DOMContentLoaded', function(){                   
 $().ready(function() {
+//document.addEventListener('DOMContentLoaded', function(){
 	var text = ''
 	var today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
@@ -154,11 +156,11 @@ $().ready(function() {
 			tmpplayer["tr2"] = groups[pg][2]
 			tmpplayer["tr3"] = groups[pg][3]
 
-			if (tmpplayer["tr1"] == 4 || tmpplayer["tr2"] == 4 || tmpplayer["tr3"] == 4 || tmpplayer["training"] == 1){
+			if (tmpplayer["tr1"] ==4 || tmpplayer["tr2"] == 4 || tmpplayer["tr3"] == 4 || tmpplayer["training"] == 1){
 				itrains[tmpplayer["training"]]['count'+pg] += 1
 			}
 
-			if(	tmpplayer["inj"] < 2 && tmpplayer["rest"] == 0 && tmpplayer["notrain"] == 0){
+			if (tmpplayer["inj"] < 2 && tmpplayer["rest"] == 0 && tmpplayer["notrain"] == 0){
 				for(j=1;j<=3;j++) trains[tmpplayer["tr"+j]]['count'+pg+j] +=  1
 			}
 
@@ -230,7 +232,7 @@ $().ready(function() {
 		var tn = [0,8,9,10,2,11,13,14]
 
 		$('td.back4 table table:eq(1)')
-			.before('<div align=right><a href="javascript:void(ShowEnd())">Показать -20%</a></div>')
+			.before('<div align=right><a id="end" href="javascript:void(ShowEnd())">Показать -20%</a>&nbsp;</div>')
 			.attr('width',"100%")
 			.attr("bgcolor","A3DE8F")
 			.prepend('<tr bgcolor=white><th>На '+ num_players +' игроков</th><th>' + ($('img[src="system/img/g/ball1.gif"]').length-1) + ' мч</th></tr>')
@@ -261,17 +263,34 @@ $().ready(function() {
 				$(val).prepend('<td align=center>'+(ctn1!=0? String(ctn1).fontsize(1) :"")+'</td>')
 			}
 			var ht = ''
-			var trnt = ''
+			var trnt = 0
 			for (j=trn.length-1;j>=0;j--) {
-				raz = (trn[j][i]-trnt).toFixed(4)
-				if (raz>0) raz = ('+'+raz).fontcolor('green')
-				else if (raz<0) raz = raz.fontcolor('red')
-				if(i==0 && j!=trn.length-1) ht = '<th>'+trn[j][i]+'</th>' + ht
-				else if(j!=trn.length-1) ht = '<td>'+(trn[j][i]+'<sup>'+raz+'</sup>').fontsize(1)+'</td>' + ht
+				var raz = ''
+				if(trnt!=0){
+					var colr = 'green'
+					var pref = '+'
+					raz = (trn[j][i]-trnt).toFixed(4)
+					if (raz<0) {colr = 'red';pref=''}
+					raz = '<sup>'+(pref+raz).fontcolor(colr)+'</sup>'
+				}
+				if (j<3){
+					if(i==0) ht = '<td id="sum'+j+'"><b>'+trn[j][i]+'</b></td>' + ht
+					else	 ht = '<td>'+(trn[j][i] + raz).fontsize(1)+'</td>' + ht
+				}
 				trnt = trn[j][i]
 			}
 			$(val).append(ht)
 		})
+		var rzp = 0
+		for(i=trn.length-1;i>=0;i--){
+			var rz = 0
+			for(j in trn[i]){
+				if(j>0) rz += parseFloat(trn[i][j])
+			}
+			if(i!=trn.length-1) $('td#sum'+i).append('<sup>'+(rz>rzp?'+':'')+(rz-rzp).toFixed(4)+'</sup>')
+			rzp = rz
+		}
+
 		$('td.back4 table table:eq(1) tr:first').each(function(i,val){
 			$(val).prepend('<th>'+('*<sup>2</sup>').fontsize(1)+'</th>')
 			$('td.back4 table table:eq(1)').after('<div align=left><b>*<sup>2</sup></b> - влияют только на 25%</div>')
