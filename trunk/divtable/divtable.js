@@ -67,7 +67,7 @@ function SetTasks(x){
 			var tid = UrlValue('n',$(this).attr('href'))
 			$(this).parent().find('img').remove() 
 			var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
-			var td_data1 = '<td> </td><td></td>'
+			var td_data1 = '<td> </td><td> </td>'
 
 			if (team[tid] != undefined && team[tid].sname != undefined) td_data1 = '<td><small>'+team[tid].sname+ '</small></td><td><small>' +team[tid].ssize+'</small></td>'
 
