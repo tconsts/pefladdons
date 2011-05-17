@@ -69,7 +69,7 @@ function SetTasks(x){
 			var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
 			var td_data1 = '<td> </td><td> </td>'
 
-			if (team[tid] != undefined && team[tid].sname != undefined) td_data1 = '<td><small>'+team[tid].sname+ '</small></td><td><small>' +team[tid].ssize+'</small></td>'
+			if (team[tid] != undefined && team[tid].sname != undefined) td_data1 = '<td><small>'+team[tid].sname+ '</small> </td><td><small>' +team[tid].ssize+'</small> </td>'
 
 			$(this).parent().before(td_data1).html(td_data)
 //			$(this).parent().before(td_data1)
