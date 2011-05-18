@@ -11,6 +11,44 @@
 // @version			1.1
 // ==/UserScript==
 
+//document.addEventListener('DOMContentLoaded', function(){
+
+$().ready(function() {
+	// Draw left panel and fill data
+	var preparedhtml = ''
+	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
+	preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
+	preparedhtml += '</td></tr></table>'
+	$('body table.border:last').before(preparedhtml)
+	$('td.back4 script').remove()
+	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
+	$('#crabrighttable').addClass('border') 
+	var text3 =	'<div id="finance"></div><br>'
+	text3 += 	'<div id="nominals"></div><br>'
+	text3 += 	'<div id="zp"></div><br>'
+	$("#crabright").html(text3)
+
+	EditFinance();
+	TeamHeaderInfoGet();
+	PlayersChange();
+	PlayersInfoGet();
+
+}, false);
+
+function PlayersInfoGet(){
+	var wage = 0
+	var nom  = 0
+	$('table#tblRoster tr[id^=tblRosterTr] td:has(a[trp="1"])').each(function(i,val){
+		var plurl = $(val).find('a').attr('href')
+		$.get(plurl, function(data){
+			wage += parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
+			nom  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))
+			$('#zp').html('<b>Зарплаты</b>: ' + ((wage/1000).toFixed(3)+'т$').fontsize(1)+'<br>')
+			$('#nominals').html('<b>Номиналы</b>: ' + ((nom/1000000).toFixed(3)+'м$').fontsize(1)+'<br>')
+		})
+	})
+}
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) {
@@ -25,41 +63,36 @@ function ShowChange(value){
 	else 		  		return ''
 }
 
-//document.addEventListener('DOMContentLoaded', function(){
-$().ready(function() {
-
-	// Edit finance
-	var fulltxt = $('table.layer1 td.l4:eq(1)').text()
-	var txt = 'Фин. положение: '
-	var fin = fulltxt.replace(txt,'').replace(/,/g,'').replace('$','')
-	var newtxt = '';
-	switch (fin){
-		case 'банкрот': newtxt = ' (меньше 0)';break;
-		case 'жалкое': newtxt = ' (1т-200т)';break;
-		case 'бедное': newtxt =  ' (200т-500т)';break;
-		case 'среднее': newtxt =  ' (500т-1м)';break;
-		case 'нормальное': newtxt = ' (1м-3м)';break;
-		case 'благополучное': newtxt = ' (3м-6м)';break;
-		case 'отличное': newtxt =  ' (6м-15м)';break;
-		case 'богатое': newtxt =  ' (15м-40м)';break;
-		case 'некуда деньги девать :-)': newtxt =  ' (>40м)';break;
+function EditFinance(){
+	var txt = $('table.layer1 td.l4:eq(1)').text().split(': ')[1]
+	switch (txt){
+		case 'банкрот': 				 txt += ' (меньше 0)'	;break;
+		case 'жалкое': 					 txt += ' (1т-200т)'	;break;
+		case 'бедное': 					 txt += ' (200т-500т)'	;break;
+		case 'среднее': 				 txt += ' (500т-1м)'	;break;
+		case 'нормальное': 				 txt += ' (1м-3м)'		;break;
+		case 'благополучное': 			 txt += ' (3м-6м)'		;break;
+		case 'отличное': 				 txt += ' (6м-15м)'		;break;
+		case 'богатое': 				 txt += ' (15м-40м)'	;break;
+		case 'некуда деньги девать :-)': txt += ' (>40м)'		;break;
 		default:
-			if (fin >= 40000000) newtxt = ' (некуда девать)'
-			else if (fin >= 15000000) newtxt = ' (богатое)'
-			else if (fin >= 6000000) newtxt = ' (отличное)'
-			else if (fin >= 3000000) newtxt = ' (благополучное)'
-			else if (fin >= 1000000) newtxt = ' (нормальное)'
-			else if (fin >= 500000) newtxt = ' (среднее)'
-			else if (fin >= 200000) newtxt = ' (бедное)'
-			else if (fin >=0) newtxt = ' (жалкое)'
-			else if (fin < 0) newtxt = ' (банкрот)'
+			var fin = parseInt(txt.replace(/,/g,'').replace('$',''))
+			if (fin >= 40000000) 		txt = 'некуда деньги девать (>40м)'
+			else if (fin >= 15000000)	txt = 'богатое (15м-40м)'
+			else if (fin >= 6000000) 	txt = 'отличное (6м-15м)'
+			else if (fin >= 3000000) 	txt = 'благополучное (3м-6м)'
+			else if (fin >= 1000000) 	txt = 'нормальное (1м-3м)'
+			else if (fin >= 500000) 	txt = 'среднее (500т-1м)'
+			else if (fin >= 200000) 	txt = 'бедное (200т-500т)'
+			else if (fin >=0) 			txt = 'жалкое (1т-200т)'
+			else if (fin < 0) 			txt = 'банкрот (меньше 0)'
 	}
-	var preparedhtml = 'Фин: ' + fulltxt.replace(txt,'').replace(' :-)','')+newtxt.fontsize(1)
-	$('table.layer1 td.l4:eq(1)').html(preparedhtml);
+	var preparedhtml = '<br><b>Финaнсовое&nbsp;положение</b>:<br>' + txt.fontsize(1) + '<br>'
+	$('#finance').html(preparedhtml)
+}
 
-	// Task and stadio for club
+function TeamHeaderInfoGet(){
 	var team = []
-
 	// Get info fom Global or Session Storage (info for clubs)
 	// format: <id_team0>:<task_team0>:<town0>:<stadio_name0>:<stadio_size0>,
 	var text1 = ''
@@ -105,23 +138,9 @@ $().ready(function() {
 	// Save data for clubs
 	if (navigator.userAgent.indexOf('Firefox') != -1)	globalStorage[location.hostname].tasks = text
 	else 												sessionStorage.tasks = text
+}
 
-
-	// Show nominals
-	if (UrlValue('j')==99999){
-		$.get('team.php', {}, function(data){
-			var teamnominals = 0
-			var dataarray = data.split('_');
-			for (i in dataarray) {
-				if( i%28 == 26 )  teamnominals += parseInt(dataarray[i])
-			}
-			var nomtext = ((teamnominals/1000000).toFixed(3)+'м$').replace(/\./g,',')
-			if (teamnominals != 0) $('table.layer1 td.l2:last').append(('Номиналы: ' + nomtext).fontsize(1))
-		})
-	}
-
-
-	// Show form and morale change
+function PlayersChange(){
 	var players = []
 	var players2 = []
 	var remember = 0
@@ -211,5 +230,4 @@ $().ready(function() {
 			else 												sessionStorage.team = text			
 		}
 	}
-
-}, false);
+}
