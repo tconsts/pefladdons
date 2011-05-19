@@ -12,7 +12,6 @@
 // ==/UserScript==
 
 //document.addEventListener('DOMContentLoaded', function(){
-
 $().ready(function() {
 	// Draw left panel and fill data
 	var preparedhtml = ''
@@ -23,9 +22,19 @@ $().ready(function() {
 	$('td.back4 script').remove()
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 	$('#crabrighttable').addClass('border') 
-	var text3 =	'<div id="finance"></div><br>'
-	text3 += 	'<div id="nominals"></div><br>'
-	text3 += 	'<div id="zp"></div><br>'
+	var text3 =	'<table width=100%><tr><th colspan=3>Финансовое положение</th></tr>'
+	text3 += 	'<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
+	text3 += 	'<tr><th colspan=2><br>Номиналы*</th><th width=30%></th></tr>'
+	text3 += 	'<tr><td>состав:</td><td id="nominals" align=right></td></tr>'
+	text3 += 	'<tr><td>арендовано:</td><td id="nominals2" align=right></td></tr>'
+	text3 += 	'<tr><td>в аренде:</td><td id="nominals3" align=right></td></tr>'
+//	text3 += 	'<tr><td>без аренд:</td><td id="nominals4"></td><td></td></tr>'
+	text3 += 	'<tr><th colspan=2><br>Зарплаты*</th></tr>'
+	text3 += 	'<tr><td>состав:</td><td id="zp" align=right></td></tr>'
+	text3 += 	'<tr><td>арендовано:</td><td id="zp2" align=right></td></tr>'
+	text3 += 	'<tr><td>в аренде:</td><td id="zp3" align=right></td></tr>'
+//	text3 += 	'<tr><td>без аренд:</td><td id="zp4"></td><td></td></tr>'
+	text3 += 	'</table><br>* - для ВИП пользователей'
 	$("#crabright").html(text3)
 
 	EditFinance();
@@ -37,14 +46,38 @@ $().ready(function() {
 
 function PlayersInfoGet(){
 	var wage = 0
+	var wage2 = 0
+	var wage3 = 0
 	var nom  = 0
+	var nom2 = 0
+	var nom3  = 0
 	$('table#tblRoster tr[id^=tblRosterTr] td:has(a[trp="1"])').each(function(i,val){
 		var plurl = $(val).find('a').attr('href')
 		$.get(plurl, function(data){
+			if(data.indexOf('в аренде из клуба') > -1){
+				wage2 += parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
+				var wage2pr = wage2
+				if(wage2>=1000) var wage2pr = (wage2/1000).toFixed(3)
+				$('#zp2').html((String(wage2pr).replace(/\./g,',')+'$').fontsize(1))
+
+				nom2  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))/1000
+				var nom2pr = nom2
+				if(nom2>=1000) nom2pr = (nom2/1000).toFixed(3)
+				$('#nominals2').html((String(nom2pr).replace(/\./g,',')+',000$').fontsize(1))
+			}
 			wage += parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
 			nom  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))
-			$('#zp').html('<b>Зарплаты</b>: ' + ((wage/1000).toFixed(3)+'т$').fontsize(1)+'<br>')
-			$('#nominals').html('<b>Номиналы</b>: ' + ((nom/1000000).toFixed(3)+'м$').fontsize(1)+'<br>')
+			$('#zp').html((((wage)/1000).toFixed(3).replace(/\./g,',')+'$').fontsize(1))
+			$('#nominals').html((((nom)/1000000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1))
+		})
+	})
+	$('table#tblRoster tr[id^=tblRosterRentTr] td:has(a[trp="1"])').each(function(i,val){
+		var plurl = $(val).find('a').attr('href')
+		$.get(plurl, function(data){
+			wage3 += parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
+			nom3  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))
+			$('#zp3').html(((wage3/1000).toFixed(3).replace(/\./g,',')+'$').fontsize(1))
+			$('#nominals3').html(((nom3/1000000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1))
 		})
 	})
 }
@@ -65,30 +98,31 @@ function ShowChange(value){
 
 function EditFinance(){
 	var txt = $('table.layer1 td.l4:eq(1)').text().split(': ')[1]
+	var txt2 = ''
 	switch (txt){
-		case 'банкрот': 				 txt += ' (меньше 0)'	;break;
-		case 'жалкое': 					 txt += ' (1т-200т)'	;break;
-		case 'бедное': 					 txt += ' (200т-500т)'	;break;
-		case 'среднее': 				 txt += ' (500т-1м)'	;break;
-		case 'нормальное': 				 txt += ' (1м-3м)'		;break;
-		case 'благополучное': 			 txt += ' (3м-6м)'		;break;
-		case 'отличное': 				 txt += ' (6м-15м)'		;break;
-		case 'богатое': 				 txt += ' (15м-40м)'	;break;
-		case 'некуда деньги девать :-)': txt += ' (>40м)'		;break;
+		case 'банкрот': 				 txt2 += ' (меньше 0)'	;break;
+		case 'жалкое': 					 txt2 += ' (1т-200т)'	;break;
+		case 'бедное': 					 txt2 += ' (200т-500т)'	;break;
+		case 'среднее': 				 txt2 += ' (500т-1м)'	;break;
+		case 'нормальное': 				 txt2 += ' (1м-3м)'		;break;
+		case 'благополучное': 			 txt2 += ' (3м-6м)'		;break;
+		case 'отличное': 				 txt2 += ' (6м-15м)'	;break;
+		case 'богатое': 				 txt2 += ' (15м-40м)'	;break;
+		case 'некуда деньги девать :-)': txt2 += ' (>40м)'		;break;
 		default:
 			var fin = parseInt(txt.replace(/,/g,'').replace('$',''))
-			if (fin >= 40000000) 		txt = 'некуда деньги девать (>40м)'
-			else if (fin >= 15000000)	txt = 'богатое (15м-40м)'
-			else if (fin >= 6000000) 	txt = 'отличное (6м-15м)'
-			else if (fin >= 3000000) 	txt = 'благополучное (3м-6м)'
-			else if (fin >= 1000000) 	txt = 'нормальное (1м-3м)'
-			else if (fin >= 500000) 	txt = 'среднее (500т-1м)'
-			else if (fin >= 200000) 	txt = 'бедное (200т-500т)'
-			else if (fin >=0) 			txt = 'жалкое (1т-200т)'
-			else if (fin < 0) 			txt = 'банкрот (меньше 0)'
+			if (fin >= 40000000) 		{txt = 'некуда деньги девать';	txt2 = 'больше 40м$'}
+			else if (fin >= 15000000)	{txt = 'богатое';				txt2 = '15м$ - 40м$'}
+			else if (fin >= 6000000) 	{txt = 'отличное';				txt2 = '6м$ - 15м$'}
+			else if (fin >= 3000000) 	{txt = 'благополучное';			txt2 = '3м$ - 6м$'}
+			else if (fin >= 1000000) 	{txt = 'нормальное';				txt2 = '1м$ - 3м$'}
+			else if (fin >= 500000) 	{txt = 'среднее';				txt2 = '500т$ - 1м$'}
+			else if (fin >= 200000) 	{txt = 'бедное';					txt2 = '200$ - 500т$'}
+			else if (fin >=0) 			{txt = 'жалкое';					txt2 = '1т$ - 200т$'}
+			else if (fin < 0) 			{txt = 'банкрот';				txt2 = 'меньше 0'}
 	}
-	var preparedhtml = '<br><b>Финaнсовое&nbsp;положение</b>:<br>' + txt.fontsize(1) + '<br>'
-	$('#finance').html(preparedhtml)
+	$('#finance1').html(txt)
+	$('#finance2').html(txt2)
 }
 
 function TeamHeaderInfoGet(){
