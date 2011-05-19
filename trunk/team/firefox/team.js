@@ -66,18 +66,24 @@ function PlayersInfoGet(){
 				$('#nominals2').html((String(nom2pr).replace(/\./g,',')+',000$').fontsize(1))
 			}
 			wage += parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
-			nom  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))
+			nom  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))/1000
 			$('#zp').html((((wage)/1000).toFixed(3).replace(/\./g,',')+'$').fontsize(1))
-			$('#nominals').html((((nom)/1000000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1))
+			$('#nominals').html((((nom)/1000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1))
 		})
 	})
 	$('table#tblRoster tr[id^=tblRosterRentTr] td:has(a[trp="1"])').each(function(i,val){
 		var plurl = $(val).find('a').attr('href')
 		$.get(plurl, function(data){
 			wage3 += parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
-			nom3  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))
-			$('#zp3').html(((wage3/1000).toFixed(3).replace(/\./g,',')+'$').fontsize(1))
-			$('#nominals3').html(((nom3/1000000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1))
+			var wage3pr = wage3
+			if(wage3>=1000) var wage3pr = (wage3/1000).toFixed(3)
+			$('#zp3').html((String(wage3pr).replace(/\./g,',')+'$').fontsize(1))
+
+			nom3  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))/1000
+			var nom3pr = nom3
+			if(nom3>=1000) nom3pr = (nom3/1000).toFixed(3)
+			$('#nominals3').html((String(nom3pr).replace(/\./g,',')+',000$').fontsize(1))
+
 		})
 	})
 }
