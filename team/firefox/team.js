@@ -100,15 +100,15 @@ function EditFinance(){
 	var txt = $('table.layer1 td.l4:eq(1)').text().split(': ')[1]
 	var txt2 = ''
 	switch (txt){
-		case 'банкрот': 				 txt2 += ' (меньше 0)'	;break;
-		case 'жалкое': 					 txt2 += ' (1т-200т)'	;break;
-		case 'бедное': 					 txt2 += ' (200т-500т)'	;break;
-		case 'среднее': 				 txt2 += ' (500т-1м)'	;break;
-		case 'нормальное': 				 txt2 += ' (1м-3м)'		;break;
-		case 'благополучное': 			 txt2 += ' (3м-6м)'		;break;
-		case 'отличное': 				 txt2 += ' (6м-15м)'	;break;
-		case 'богатое': 				 txt2 += ' (15м-40м)'	;break;
-		case 'некуда деньги девать :-)': txt2 += ' (>40м)'		;break;
+		case 'банкрот': 				 txt2 += 'меньше 0'		;break;
+		case 'жалкое': 					 txt2 += '1т$ - 200т$'	;break;
+		case 'бедное': 					 txt2 += '200т$ - 500т$';break;
+		case 'среднее': 				 txt2 += '500т$ - 1м$'	;break;
+		case 'нормальное': 				 txt2 += '1м$ - 3м$'	;break;
+		case 'благополучное': 			 txt2 += '3м$ - 6м$'	;break;
+		case 'отличное': 				 txt2 += '6м$ - 15м$'	;break;
+		case 'богатое': 				 txt2 += '15м$ - 40м$'	;break;
+		case 'некуда деньги девать :-)': txt2 += 'больше 40м$'	;break;
 		default:
 			var fin = parseInt(txt.replace(/,/g,'').replace('$',''))
 			if (fin >= 40000000) 		{txt = 'некуда деньги девать';	txt2 = 'больше 40м$'}
