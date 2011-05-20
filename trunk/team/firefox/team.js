@@ -12,7 +12,10 @@
 // ==/UserScript==
 
 //document.addEventListener('DOMContentLoaded', function(){
+
 $().ready(function() {
+
+/**/
 	// Draw left panel and fill data
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
@@ -30,13 +33,18 @@ $().ready(function() {
 	text3 += 	'<tr><td>в аренде:</td><td id="nominals3" align=right></td></tr>'
 //	text3 += 	'<tr><td>без аренд:</td><td id="nominals4"></td><td></td></tr>'
 	text3 += 	'<tr><th colspan=2><br>Зарплаты*</th></tr>'
-	text3 += 	'<tr><td>состав:</td><td id="zp" align=right></td></tr>'
+	text3 += 	'<tr><td id="szp">состав:</td><td id="zp" align=right></td></tr>'
 	text3 += 	'<tr><td>арендовано:</td><td id="zp2" align=right></td></tr>'
 	text3 += 	'<tr><td>в аренде:</td><td id="zp3" align=right></td></tr>'
 //	text3 += 	'<tr><td>без аренд:</td><td id="zp4"></td><td></td></tr>'
 	text3 += 	'</table><br>* - для ВИП пользователей'
 	$("#crabright").html(text3)
 
+	cid = parseInt($('td.back4 table:first table td:first').text())
+
+	countmax =  $('table#tblRoster tr[id^=tblRosterTr]').length-1
+
+	countfull = $('table#tblRoster tr[id^=tblRoster]').length-1
 	EditFinance();
 	TeamHeaderInfoGet();
 	PlayersChange();
@@ -44,46 +52,88 @@ $().ready(function() {
 
 }, false);
 
-function PlayersInfoGet(){
-	var wage = 0
-	var wage2 = 0
-	var wage3 = 0
-	var nom  = 0
-	var nom2 = 0
-	var nom3  = 0
-	$('table#tblRoster tr[id^=tblRosterTr] td:has(a[trp="1"])').each(function(i,val){
-		var plurl = $(val).find('a').attr('href')
-		$.get(plurl, function(data){
-			if(data.indexOf('в аренде из клуба') > -1){
-				wage2 += parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
-				var wage2pr = wage2
-				if(wage2>=1000) var wage2pr = (wage2/1000).toFixed(3)
-				$('#zp2').html((String(wage2pr).replace(/\./g,',')+'$').fontsize(1))
+var wage = 0
+var nom  = 0
+var wage2 = 0
+var nom2  = 0
+var wage3 = 0
+var nom3  = 0
+var count = 0
 
-				nom2  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))/1000
-				var nom2pr = nom2
-				if(nom2>=1000) nom2pr = (nom2/1000).toFixed(3)
-				$('#nominals2').html((String(nom2pr).replace(/\./g,',')+',000$').fontsize(1))
+function Up(x,y,z){
+	switch(x){
+		case '1':
+			wage += y;
+			nom += z;
+			break;
+		case '2':
+			wage2 += y;
+			nom2 += z;
+			break;
+		case '3':
+			wage3 += y;
+			nom3 += z;
+			break;
+	}
+}
+
+function onRequest(){
+	count++
+	if(count==countfull){
+		$('#zp').html((((wage)/1000).toFixed(3).replace(/\./g,',')+'$').fontsize(1))
+		var wage2pr = wage2
+		if(wage2>=1000) wage2pr = (wage2/1000).toFixed(3)
+		$('#zp2').html((String(wage2pr).replace(/\./g,',')+'$').fontsize(1))
+		var wage3pr = wage3
+		if(wage3>=1000) wage3pr = (wage3/1000).toFixed(3)
+		$('#zp3').html((String(wage3pr).replace(/\./g,',')+'$').fontsize(1))
+
+		$('#nominals').html((((nom)/1000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1))
+		var nom2pr = nom2
+		if(nom2>=1000) nom2pr = (nom2/1000).toFixed(3)
+		$('#nominals2').html((String(nom2pr).replace(/\./g,',')+',000$').fontsize(1))
+		var nom3pr = nom3
+		if(nom3>=1000) nom3pr = (nom3/1000).toFixed(3)
+		$('#nominals3').html((String(nom3pr).replace(/\./g,',')+',000$').fontsize(1))
+
+		var tfin = []
+		// Get
+		var text1 = sessionStorage.teamsfin
+		if (text1 != undefined){
+			var t1 = text1.split(',')
+			for(j in t1){
+				var t2 = t1[j].split(':')
+				var tf = {}
+				tf.zp = t2[1]
+				tf.nom = t2[2]
+				if(t2[0]) tfin[t2[0]] = tf
 			}
-			wage += parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
-			nom  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))/1000
-			$('#zp').html((((wage)/1000).toFixed(3).replace(/\./g,',')+'$').fontsize(1))
-			$('#nominals').html((((nom)/1000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1))
-		})
-	})
-	$('table#tblRoster tr[id^=tblRosterRentTr] td:has(a[trp="1"])').each(function(i,val){
-		var plurl = $(val).find('a').attr('href')
-		$.get(plurl, function(data){
-			wage3 += parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
-			var wage3pr = wage3
-			if(wage3>=1000) var wage3pr = (wage3/1000).toFixed(3)
-			$('#zp3').html((String(wage3pr).replace(/\./g,',')+'$').fontsize(1))
+		}
+		tfin[cid] = {}
+		tfin[cid].zp = wage
+		tfin[cid].nom = nom
 
-			nom3  += parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))/1000
-			var nom3pr = nom3
-			if(nom3>=1000) nom3pr = (nom3/1000).toFixed(3)
-			$('#nominals3').html((String(nom3pr).replace(/\./g,',')+',000$').fontsize(1))
+		var text = ''
+		//Save
+		for(j in tfin){
+			text += j + ':' + tfin[j].zp + ':' + tfin[j].nom + ','
+		}
+		sessionStorage.teamsfin = text
+	}
+}
 
+function PlayersInfoGet(){
+	$('table#tblRoster tr td:has(a[trp="1"])').each(function(i,val){
+		$.get($(val).find('a').attr('href'), function(data){
+			var cnt = parseInt(data.split('Контракт: ')[1].split('$')[0].split(', ')[1].replace(/,/g,''))
+			var nom = parseInt(data.split('Номинал: ')[1].split('$')[0].replace(/,/g,''))/1000
+			if(i>countmax){
+				Up("3", cnt, nom)
+			} else {
+				if(data.indexOf('в аренде из клуба') > -1) Up("2", cnt, nom)
+				Up("1", cnt, nom)
+			}
+			onRequest();
 		})
 	})
 }
@@ -151,7 +201,6 @@ function TeamHeaderInfoGet(){
 		}
 	}
 	// Get current club data
-	var cid = parseInt($('td.back4 table:first table td:first').text())
 	var zad = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
 
 	// Delete all task if we have new task - it's new season!
@@ -271,3 +320,4 @@ function PlayersChange(){
 		}
 	}
 }
+/**/
