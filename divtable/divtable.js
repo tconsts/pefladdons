@@ -23,6 +23,38 @@ function getCookie(name) {
     if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
     return false
 }
+function SetFin(){
+	var tfin = []
+	var text1 = sessionStorage.teamsfin
+	if (text1 != undefined){
+//		$('td.back4').prepend('l '+text1+'<br>')	
+		var t1 = text1.split(',')
+		for(j in t1){
+			var t2 = t1[j].split(':')
+			var tf = {}
+			tf.zp = ((t2[1])/1000).toFixed(3).replace(/\./g,',')+'$'
+			tf.nom = ((t2[2])/1000).toFixed(3).replace(/\./g,',')+',000$'
+			if(t2[0]) tfin[t2[0]] = tf
+		}
+	}
+	$('td.back1 span.text2b').append(' (финансы)')
+	$('td.back4 table table th[width=13%]').attr('width','5%').before('<th>Номиналы\n\t<th>Зарплаты\n\t')
+	$('td.back4 table table th[width=7%]').attr('width','5%')
+	$('td.back4 table table th[width=6%]').attr('width','5%')
+	$("td.back4 table table tr td a[href*='plug.php?p=refl&t=s_graph']").each(function(){
+		var tid = UrlValue('n',$(this).attr('href'))
+		$(this).parent().find('img').remove() 
+		var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
+		var td_data1 = '<td> </td><td> </td>'
+
+		if (tfin[tid] != undefined && tfin[tid].zp != undefined) td_data1 = '<td align=right><small>'+tfin[tid].nom+ '</small> </td><td align=right><small>' +tfin[tid].zp+'</small> </td>'
+
+		$(this).parent().before(td_data1).html(td_data)
+	})
+	$('div#tasks').html('Показать задачи')
+	$('div#stadio').html('Показать стадионы')
+	$('div#finance').html('<b>Показать финансы</b>')
+}
 
 function SetTasks(x){
 	// task for club
@@ -58,6 +90,7 @@ function SetTasks(x){
 		})
 		$('div#tasks').html('<b>Показать задачи</b>')
 		$('div#stadio').html('Показать стадионы')
+		$('div#finance').html('Показать финансы')
 	} else if (x==2) {
 		$('td.back1 span.text2b').append(' (стадионы)')
 		$('td.back4 table table th[width=13%]').attr('width','5%').before('<th width=30% colspan=2>Стадионы\n\t')
@@ -75,6 +108,7 @@ function SetTasks(x){
 //			$(this).parent().before(td_data1)
 		})
 		$('div#tasks').html('Показать задачи')
+		$('div#finance').html('Показать финансы')
 		$('div#stadio').html('<b>Показать стадионы</b>')
 	}
 }
@@ -334,9 +368,11 @@ $().ready(function() {
 	// Draw CrabVIP panel
 	var text = ''
 	text += '<div id="color"><a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">Расскрасить</a></div>'
+	text += '<div id="CodeTableForForum"><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</div>'
+	text += '<br>'
 	text += '<div id="tasks"><a href="javascript:void(SetTasks(1))">Показать задачи</a>&nbsp;</div>'
 	text += '<div id="stadio"><a href="javascript:void(SetTasks(2))">Показать стадионы</a>&nbsp;</div>'
-	text += '<div id="CodeTableForForum"><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</div>'
+	text += '<div id="finance"><a href="javascript:void(SetFin())">Показать финансы</a>&nbsp;</div>'
 
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
