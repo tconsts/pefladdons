@@ -10,6 +10,24 @@
 // @include        http://pefl.org/plug.php?p=refl&t=s&*
 // ==/UserScript==
 
+function CountryInfoGet(){
+		var tDiv = ''
+		var tPos = 0
+		var tdiv = getCookie('teamdiv');
+		var tdivarr = []
+		if(tdiv != false) {
+			tdivarr = tdiv.split('!')
+			var tplace = parseInt($('a[href*="&n='+tdivarr[0]+'&"]:has(u)').text())
+			if(tplace!= ''){
+				tdivarr[2] = $('td.back4 td.back1').text().split(', ')[1]
+				tdivarr[3] = tplace
+				var ck = ''
+				ck = tdivarr.join('!')
+				setCookie('teamdiv',ck);
+    		}
+		}
+}
+
 function setCookie(name, value) {
 	var exdate=new Date();
 	exdate.setDate(exdate.getDate() + 356); // +1 year
@@ -23,6 +41,7 @@ function getCookie(name) {
     if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
     return false
 }
+
 function SetFin(){
 	var tfin = []
 	var text1 = sessionStorage.teamsfin
@@ -383,5 +402,5 @@ $().ready(function() {
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text)
-
+	CountryInfoGet();
 }, false);

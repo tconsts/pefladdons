@@ -1,30 +1,86 @@
 // ==UserScript==
-// @name           peflfinance
-// @namespace      pefl
-// @description    finance page modification
-// @include        http://www.pefl.ru/plug.php?p=fin&z=*
-// @include        http://pefl.ru/plug.php?p=fin&z=*
-// @include        http://www.pefl.net/plug.php?p=fin&z=*
-// @include        http://pefl.net/plug.php?p=fin&z=*
-// @include        http://www.pefl.org/plug.php?p=fin&z=*
-// @include        http://pefl.org/plug.php?p=fin&z=*
+// @name			peflfinance
+// @namespace		pefl
+// @description		finance page modification
+// @include			http://www.pefl.ru/plug.php?p=fin&z=*
+// @include			http://www.pefl.ru/plug.php?p=rules&z=*
+// @include			http://pefl.ru/plug.php?p=fin&z=*
+// @include			http://pefl.ru/plug.php?p=rules&z=*
+// @include			http://www.pefl.net/plug.php?p=fin&z=*
+// @include			http://www.pefl.net/plug.php?p=rules&z=*
+// @include			http://pefl.net/plug.php?p=fin&z=*
+// @include			http://pefl.net/plug.php?p=rules&z=*
+// @include			http://www.pefl.org/plug.php?p=fin&z=*
+// @include			http://www.pefl.org/plug.php?p=rules&z=*
+// @include			http://pefl.org/plug.php?p=fin&z=*
+// @include			http://pefl.org/plug.php?p=rules&z=*
+
 // @version			1.1
 // ==/UserScript==
 
 function format(num) {
-	if (num < 1000000 && num > -1000000) {
-		return (num/1000).toFixed(0) + ',000$'
-	} else {
-		return (num/1000000).toFixed(3).replace(/\./g,',') + ',000$'	
-	}
+	if (num < 1000000 && num > -1000000)	return (num/1000).toFixed(0) + ',000$'
+	else 									return (num/1000000).toFixed(3).replace(/\./g,',') + ',000$'
+}
+
+function setCookie(name, value) {
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() + 356); // +1 year
+	if (!name || !value) return false;
+	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
+	return true
+}
+function getCookie(name) {
+    var pattern = "(?:; )?" + name + "=([^;]*);?"
+    var regexp  = new RegExp(pattern)
+    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
+    return false
+}
+function UrlValue(key,url){
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
+	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
+	return false
 }
 
 //document.addEventListener('DOMContentLoaded', function(){
 //(function(){ 		// for ie
 $().ready(function() {
+	var tdivarr = []
+	var tdiv = getCookie('teamdiv');
+	if(tdiv != false) tdivarr = tdiv.split('!')
+
+	// for page rules, go to table and get finance info - set cookie
+	if(UrlValue('p') == 'rules' && tdivarr[3]!=undefined){
+		var dline = -1
+		var divfinance = []
+		$('td.back4 table:eq(2) tr').each(function(i,val){
+			if($(val).find('td:first').text().split(' : ')[0] == tdivarr[1]){
+				var cline = $(val).find('td:first').text().split(' : ')[1].split(', ')
+				for(j in cline) if(cline[j] == tdivarr[2]) dline = parseInt(i)+parseInt(j)+1
+			}
+			if(i==dline) {
+				$(val).attr('bgcolor','white')
+				$(val).find('td').each(function(p,valp){
+					divfinance.push(parseInt($(valp).text()))
+				})
+			}
+		})
+		tdivarr[4] = divfinance.join('-')
+		var ck = ''
+		ck = tdivarr.join('!')
+		setCookie('teamdiv',ck);
+	}else{
 	var finance = []
 	var cur = {}
 	var fin = {}
+	var divpriz = 0
+	var divprizmark = ('*').fontcolor('red')
+	var divpriztext = ('<i>* - без учета бонуса по итогам чемпионата.</i>').fontcolor('red')
+	if(tdivarr[4]!=undefined){
+		divpriz = parseInt(tdivarr[4].split('-')[parseInt(tdivarr[3])-1])*1000
+		divprizmark = ('<b>*</b>').fontcolor('green')
+		divpriztext = ('<i>* - c учетом бонуса по итогам чемпионата, '+divpriz/1000+'т$ за '+tdivarr[3]+' место.</i>').fontcolor('green')
+	}
 
 	var ffn = $('td.back4 > table td:eq(1)').html()
 	var zp = parseInt(ffn.split('Сумма зарплат:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
@@ -68,7 +124,7 @@ $().ready(function() {
 
 	fin.sponsors = sponsors * fin.fid + cur.bonus
 	fin.stadion = cur.stadion*fin.fid/cur.fid
-	fin.priz = cur.priz
+	fin.priz = cur.priz + divpriz
 	fin.sale = cur.sale
 	fin.allup = fin.sponsors + fin.stadion + fin.priz + fin.sale
 
@@ -93,7 +149,7 @@ $().ready(function() {
 	if(fin.fid != cur.fid) {
 		$('td[id=fin]:eq(0)').html((format(fin.sponsors)).bold())
 		$('td[id=fin]:eq(1)').html('~'+format(fin.stadion))
-		$('td[id=fin]:eq(2)').html(format(fin.priz).bold())
+		$('td[id=fin]:eq(2)').html(format(fin.priz).bold()+divprizmark)
 		$('td[id=fin]:eq(3)').html(format(fin.sale).bold())
 		$('td[id=fin]:eq(4)').html('~'+format(fin.allup))
 
@@ -115,6 +171,9 @@ $().ready(function() {
 	preparedhtml += '</table>'
 	$('td.back4 table#3').after(preparedhtml)
 
+	$('table#2').after(divpriztext)
+
 	return false
+	}
 }, false)
 //})(); // for ie

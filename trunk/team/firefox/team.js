@@ -35,6 +35,7 @@ $().ready(function() {
 	TeamHeaderInfoGet();
 	PlayersChange();
 	PlayersInfoGet();
+	CountryInfoGet();
 
 }, false);
 
@@ -45,6 +46,43 @@ var nom2  = 0
 var wage3 = 0
 var nom3  = 0
 var count = 0
+
+function CountryInfoGet(){
+	teamManagerNick = $('td.back4 table:first table:eq(1) table td:first span').text()
+	var srch="Вы вошли как "
+	var curManagerNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
+	if(teamManagerNick == curManagerNick){
+		var country_id = UrlValue('j',$('td.back4 table:first table td:eq(1) a').attr('href'))
+		var country_name = $('td.back4 table:first table td:eq(3)').text().split(', ')[1].replace(')','')
+		var tdiv = getCookie('teamdiv');
+		var tdivarr = []
+		if(tdiv != false) {
+			tdivarr = tdiv.split('!')
+		}
+		tdivarr[0] = cid
+		tdivarr[1] = country_name
+		var ck = ''
+		ck = tdivarr.join('!')
+		setCookie('teamdiv',ck);
+//		$('td.back4').prepend(ck+'<br>')
+	} 
+	
+}
+
+function setCookie(name, value) {
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() + 356); // +1 year
+	if (!name || !value) return false;
+	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
+	return true
+}
+function getCookie(name) {
+	    var pattern = "(?:; )?" + name + "=([^;]*);?"
+	    var regexp  = new RegExp(pattern)
+	     
+	    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
+	    return false
+}
 
 function Up(x,y,z){
 	switch(x){
