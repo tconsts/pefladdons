@@ -157,6 +157,7 @@ $().ready(function() {
 		$('td[id=fin]:eq(6)').html(format(fin.buy).bold())
 		$('td[id=fin]:eq(7)').html(format(fin.school).bold()+' ('+fin.schoolperc+')')
 		$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
+		$('table#2').after(divpriztext)
 	}
 	preparedhtml  = '<hr><table width=100% id="4">'
 	preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
@@ -170,8 +171,6 @@ $().ready(function() {
 	preparedhtml += '</tr>'
 	preparedhtml += '</table>'
 	$('td.back4 table#3').after(preparedhtml)
-
-	$('table#2').after(divpriztext)
 
 	return false
 	}
