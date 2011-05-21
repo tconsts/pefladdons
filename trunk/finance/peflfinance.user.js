@@ -2,13 +2,19 @@
 // @name           peflfinance
 // @namespace      pefl
 // @description    finance page modification
-// @include        http://www.pefl.ru/plug.php?p=fin&z=*
-// @include        http://pefl.ru/plug.php?p=fin&z=*
-// @include        http://www.pefl.net/plug.php?p=fin&z=*
-// @include        http://pefl.net/plug.php?p=fin&z=*
-// @include        http://www.pefl.org/plug.php?p=fin&z=*
-// @include        http://pefl.org/plug.php?p=fin&z=*
-// @version			1.1
+// @include			http://www.pefl.ru/plug.php?p=fin&z=*
+// @include			http://www.pefl.ru/plug.php?p=rules&z=*
+// @include			http://pefl.ru/plug.php?p=fin&z=*
+// @include			http://pefl.ru/plug.php?p=rules&z=*
+// @include			http://www.pefl.net/plug.php?p=fin&z=*
+// @include			http://www.pefl.net/plug.php?p=rules&z=*
+// @include			http://pefl.net/plug.php?p=fin&z=*
+// @include			http://pefl.net/plug.php?p=rules&z=*
+// @include			http://www.pefl.org/plug.php?p=fin&z=*
+// @include			http://www.pefl.org/plug.php?p=rules&z=*
+// @include			http://pefl.org/plug.php?p=fin&z=*
+// @include			http://pefl.org/plug.php?p=rules&z=*
+// @version			1.2
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
