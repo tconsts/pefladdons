@@ -80,7 +80,7 @@ function onRequest(){
 				thtml += '</td></tr>'
 			}
 			if(nom3!=0){
-				thtml += '<tr><td>в аренде:</td><td align=right>'
+				thtml += '<tr><td>в&nbsp;аренде:</td><td align=right>'
 				var nom3pr = nom3
 				if(nom3>=1000) nom3pr = (nom3/1000).toFixed(3)
 				thtml += (String(nom3pr).replace(/\./g,',')+',000$').fontsize(1)
@@ -98,7 +98,7 @@ function onRequest(){
 				thtml += '</td></tr>'
 			} 
 			if(wage3!=0){
-				thtml += '<tr><td>в аренде:</td><td align=right>'
+				thtml += '<tr><td>в&nbsp;аренде:</td><td align=right>'
 				var wage3pr = wage3
 				if(wage3>=1000) wage3pr = (wage3/1000).toFixed(3)
 				thtml += (String(wage3pr).replace(/\./g,',')+'$').fontsize(1)
