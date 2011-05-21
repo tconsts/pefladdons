@@ -12,11 +12,8 @@
 // ==/UserScript==
 
 //document.addEventListener('DOMContentLoaded', function(){
-
 $().ready(function() {
-
-/**/
-	// Draw left panel and fill data
+	// Draw right panel and fill data
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
@@ -27,24 +24,13 @@ $().ready(function() {
 	$('#crabrighttable').addClass('border') 
 	var text3 =	'<table width=100%><tr><th colspan=3>Финансовое положение</th></tr>'
 	text3 += 	'<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
-	text3 += 	'<tr><th colspan=2><br>Номиналы*</th><th width=30%></th></tr>'
-	text3 += 	'<tr><td>состав:</td><td id="nominals" align=right></td></tr>'
-	text3 += 	'<tr><td>арендовано:</td><td id="nominals2" align=right></td></tr>'
-	text3 += 	'<tr><td>в аренде:</td><td id="nominals3" align=right></td></tr>'
-//	text3 += 	'<tr><td>без аренд:</td><td id="nominals4"></td><td></td></tr>'
-	text3 += 	'<tr><th colspan=2><br>Зарплаты*</th></tr>'
-	text3 += 	'<tr><td id="szp">состав:</td><td id="zp" align=right></td></tr>'
-	text3 += 	'<tr><td>арендовано:</td><td id="zp2" align=right></td></tr>'
-	text3 += 	'<tr><td>в аренде:</td><td id="zp3" align=right></td></tr>'
-//	text3 += 	'<tr><td>без аренд:</td><td id="zp4"></td><td></td></tr>'
-	text3 += 	'</table><br>* - для ВИП пользователей'
+	text3 += 	'</table><br>'
 	$("#crabright").html(text3)
 
 	cid = parseInt($('td.back4 table:first table td:first').text())
-
 	countmax =  $('table#tblRoster tr[id^=tblRosterTr]').length-1
+	countfull = parseInt($('table#tblRoster tr:last td:first').text())
 
-	countfull = $('table#tblRoster tr[id^=tblRoster]').length-1
 	EditFinance();
 	TeamHeaderInfoGet();
 	PlayersChange();
@@ -80,45 +66,68 @@ function Up(x,y,z){
 function onRequest(){
 	count++
 	if(count==countfull){
-		$('#zp').html((((wage)/1000).toFixed(3).replace(/\./g,',')+'$').fontsize(1))
-		var wage2pr = wage2
-		if(wage2>=1000) wage2pr = (wage2/1000).toFixed(3)
-		$('#zp2').html((String(wage2pr).replace(/\./g,',')+'$').fontsize(1))
-		var wage3pr = wage3
-		if(wage3>=1000) wage3pr = (wage3/1000).toFixed(3)
-		$('#zp3').html((String(wage3pr).replace(/\./g,',')+'$').fontsize(1))
-
-		$('#nominals').html((((nom)/1000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1))
-		var nom2pr = nom2
-		if(nom2>=1000) nom2pr = (nom2/1000).toFixed(3)
-		$('#nominals2').html((String(nom2pr).replace(/\./g,',')+',000$').fontsize(1))
-		var nom3pr = nom3
-		if(nom3>=1000) nom3pr = (nom3/1000).toFixed(3)
-		$('#nominals3').html((String(nom3pr).replace(/\./g,',')+',000$').fontsize(1))
-
-		var tfin = []
-		// Get
-		var text1 = sessionStorage.teamsfin
-		if (text1 != undefined){
-			var t1 = text1.split(',')
-			for(j in t1){
-				var t2 = t1[j].split(':')
-				var tf = {}
-				tf.zp = t2[1]
-				tf.nom = t2[2]
-				if(t2[0]) tfin[t2[0]] = tf
+		if(wage>0){ // if VIP
+			var thtml = ''
+			thtml += '<tr><th colspan=2><br>Номиналы</th><th width=30%></th></tr>'
+			thtml += '<tr><td>состав:</td><td align=right>'
+			thtml += (((nom)/1000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1)
+			thtml += '</td></tr>'
+			if(nom2!=0){
+				thtml += '<tr><td>арендовано:</td><td align=right>'
+				var nom2pr = nom2
+				if(nom2>=1000) nom2pr = (nom2/1000).toFixed(3)
+				thtml += (String(nom2pr).replace(/\./g,',')+',000$').fontsize(1)
+				thtml += '</td></tr>'
 			}
-		}
-		tfin[cid] = {}
-		tfin[cid].zp = wage
-		tfin[cid].nom = nom
+			if(nom3!=0){
+				thtml += '<tr><td>в аренде:</td><td align=right>'
+				var nom3pr = nom3
+				if(nom3>=1000) nom3pr = (nom3/1000).toFixed(3)
+				thtml += (String(nom3pr).replace(/\./g,',')+',000$').fontsize(1)
+				thtml += '</td></tr>'
+			}
+			thtml += '<tr><th colspan=2><br>Зарплаты</th><th width=30%></th></tr>'
+			thtml += '<tr><td>состав:</td><td align=right>'
+			thtml += (((wage)/1000).toFixed(3).replace(/\./g,',')+'$').fontsize(1)
+			thtml += '</td></tr>'
+			if (wage2 !=0) {
+				thtml += '<tr><td>арендовано:</td><td align=right>'
+				var wage2pr = wage2
+				if(wage2>=1000) wage2pr = (wage2/1000).toFixed(3)
+				thtml += (String(wage2pr).replace(/\./g,',')+'$').fontsize(1)
+				thtml += '</td></tr>'
+			} 
+			if(wage3!=0){
+				thtml += '<tr><td>в аренде:</td><td align=right>'
+				var wage3pr = wage3
+				if(wage3>=1000) wage3pr = (wage3/1000).toFixed(3)
+				thtml += (String(wage3pr).replace(/\./g,',')+'$').fontsize(1)
+				thtml += '</td></tr>'
+			}
+			$('#crabright table').append(thtml)
 
-		var text = ''
-		//Save
-		for(j in tfin){
-			text += j + ':' + tfin[j].zp + ':' + tfin[j].nom + ','
+			var tfin = []
+			// Get
+			var text1 = sessionStorage.teamsfin
+			if (text1 != undefined){
+				var t1 = text1.split(',')
+				for(j in t1){
+					var t2 = t1[j].split(':')
+					var tf = {}
+					tf.zp = t2[1]
+					tf.nom = t2[2]
+					if(t2[0]) tfin[t2[0]] = tf
+				}
+			}
+			// update current
+			tfin[cid] = {}
+			tfin[cid].zp = wage
+			tfin[cid].nom = nom
+			//Save
+			var text = ''
+			for(j in tfin) text += j + ':' + tfin[j].zp + ':' + tfin[j].nom + ','
+			sessionStorage.teamsfin = text
 		}
-		sessionStorage.teamsfin = text
 	}
 }
 
