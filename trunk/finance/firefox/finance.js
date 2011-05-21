@@ -75,11 +75,11 @@ $().ready(function() {
 	var fin = {}
 	var divpriz = 0
 	var divprizmark = ('*').fontcolor('red')
-	var divpriztext = ('<i>* - без учета бонуса по итогам чемпионата.</i>').fontcolor('red')
+	var divpriztext = ('<i>* - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
 	if(tdivarr[4]!=undefined){
 		divpriz = parseInt(tdivarr[4].split('-')[parseInt(tdivarr[3])-1])*1000
 		divprizmark = ('<b>*</b>').fontcolor('green')
-		divpriztext = ('<i>* - c учетом бонуса по итогам чемпионата, '+divpriz/1000+'т$ за '+tdivarr[3]+' место.</i>').fontcolor('green')
+		divpriztext = ('<i>* - учетен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
 	}
 
 	var ffn = $('td.back4 > table td:eq(1)').html()
