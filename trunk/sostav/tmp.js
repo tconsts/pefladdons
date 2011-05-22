@@ -99,7 +99,44 @@ itrains[18] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая пози�
 itrains[29] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция L'}
 itrains[20] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция C'}
 itrains[21] = {count1:0,count2:0,count3:0, level: 2, name: 'Новая позиция R'}
+/**
+&n=18
+&rmom=1
+&s0=const
+&sg0=2
 
+&s1=Максим Шишкин
+&btype1=21
+&bvalue1=12
+&sg1=1
+&sw1=500
+&sc1=5
+&sn1=Россия
+
+&s2=Сахид Сантана
+&btype2=27
+&bvalue2=7
+&sg2=2
+&sw2=500
+&sc2=4
+&sn2=Мексика
+
+&s3=Роберт Болин
+&btype3=9
+&bvalue3=9
+&sg3=3
+&sw3=500
+&sc3=5
+&sn3=Швеция
+
+&s4=Сергей Бакаев
+&btype4=0
+&bvalue4=0
+&sg4=3
+&sw4=100
+&sc4=3
+&sn4=Россия
+/**/
 
 $().ready(function() {
 //document.addEventListener('DOMContentLoaded', function(){
