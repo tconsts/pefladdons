@@ -74,12 +74,12 @@ $().ready(function() {
 	var cur = {}
 	var fin = {}
 	var divpriz = 0
-	var divprizmark =	('*').fontcolor('red')
+	var divprizmark =	(('<i>*1</i>').fontcolor('red')).fontsize(1)
 	var divpriztext =	('<i>* - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
 	if(tdivarr[4]!=undefined){
 		divpriz = 		parseInt(tdivarr[4].split('-')[parseInt(tdivarr[3])-1])*1000
-		divprizmark = 	('<b>*</b>').fontcolor('green')
-		divpriztext = 	('<i>* - учетен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
+		divprizmark = 	(('<i>*1</i>').fontcolor('green')).fontsize(1)
+		divpriztext = 	('<i>*1 - учетен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
 	}
 
 	var ffn = 	$('td.back4 > table td:eq(1)').html()
@@ -136,40 +136,47 @@ $().ready(function() {
 	fin.plusminus = fin.allup - fin.alldown
 	fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
 
-	$('table#2 td:odd, table#3 td:odd').attr('width','30%').attr('id','cur').after('<td width=30% id=fin></td>')
+	$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>')
+	$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>')
 
-	var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F>Текущий '+cur.fid+' ФИД</th>'
-	if(fin.fid != cur.fid) preparedhtml += '<th width=30% bgcolor=#A3DE8F>Прогноз на '+fin.fid+' ФИД</th>'
+	var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F colspan=2>Текущий '+cur.fid+' ФИД</th>'
+	preparedhtml += (fin.fid != cur.fid ? '<th width=30% bgcolor=#A3DE8F colspan=2>Прогноз на '+fin.fid+' ФИД</th>' : '')
 	preparedhtml += '</tr>'
 	$('table#2, table#3').prepend(preparedhtml)
 
-	$('td[id=cur]:eq(7)').append(' ('+cur.schoolperc+')')
-	if(fin.fid != cur.fid) {
-		$('td[id=fin]:eq(0)').html((format(fin.sponsors)).bold())
-		$('td[id=fin]:eq(1)').html('~'+format(fin.stadion))
-		$('td[id=fin]:eq(2)').html(format(fin.priz).bold()+divprizmark)
-		$('td[id=fin]:eq(3)').html(format(fin.sale).bold())
-		$('td[id=fin]:eq(4)').html('~'+format(fin.allup))
-
-		$('td[id=fin]:eq(5)').html(format(fin.zp).bold())
-		$('td[id=fin]:eq(6)').html(format(fin.buy).bold())
-		$('td[id=fin]:eq(7)').html(format(fin.school).bold()+' ('+fin.schoolperc+')')
-		$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
-		$('table#2').after(divpriztext)
-	}
 	preparedhtml  = '<hr><table width=100% id="4">'
 	preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
-	preparedhtml += '<td width=30%>' + (format(cur.plusminus)).bold() + '</td>'
-	if(fin.fid != cur.fid) preparedhtml += '<td width=30%>' + (format(fin.plusminus)).bold() + '</td>'
-	else preparedhtml += '<td width=30%></td>'
+	preparedhtml += '<td width=15% align=right>' + (format(cur.plusminus)).bold() + '</td><td></td>'
+	if(fin.fid != cur.fid) preparedhtml += '<td width=15% align=right>' + (format(fin.plusminus)).bold() + '</td><td></td>'
+	else preparedhtml += '<td width=15%></td><td></td>'
 	preparedhtml += '</tr>'
 	preparedhtml += '<tr><td><b>На счету</b></td>'
-	preparedhtml += '<td>' + (format(cur.bablo)).bold() + '</td>'
-	if(fin.fid != cur.fid) preparedhtml += '<td>' + (format(fin.bablo)).bold() + '</td>'
+	preparedhtml += '<td align=right>' + (format(cur.bablo)).bold() + '</td><td></td>'
+	if(fin.fid != cur.fid) preparedhtml += '<td align=right>'+(format(fin.bablo)).bold() + '</td><td></td>'
 	preparedhtml += '</tr>'
 	preparedhtml += '</table>'
 	$('td.back4 table#3').after(preparedhtml)
 
+	$('td[id=cur]:eq(7)').next().append(' ('+cur.schoolperc+')')
+	$('td[id=fin]:eq(7)').next().append(' ('+fin.schoolperc+')')
+	$('td[id=fin]:eq(2)').next().append(divprizmark)
+	$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1))
+	$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1))
+
+	if(fin.fid != cur.fid) {
+		$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
+		$('td[id=fin]:eq(1)').html('~'+format(fin.stadion).bold())
+		$('td[id=fin]:eq(2)').html(format(fin.priz).bold())
+		$('td[id=fin]:eq(3)').html(format(fin.sale).bold())
+		$('td[id=fin]:eq(4)').html(format(fin.allup).bold())
+
+		$('td[id=fin]:eq(5)').html(format(fin.zp).bold())
+		$('td[id=fin]:eq(6)').html(format(fin.buy).bold())
+		$('td[id=fin]:eq(7)').html(format(fin.school).bold())
+		$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
+		$('table#4').after(divpriztext+'<br>')
+	}
+	$('table#4').after('<hr>')
 	return false
 	}
 }, false)
