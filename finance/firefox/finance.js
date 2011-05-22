@@ -47,6 +47,7 @@ function UrlValue(key,url){
 $().ready(function() {
 	var tdivarr = []
 	var tdiv = getCookie('teamdiv');
+//	$('td.back4').prepend(tdiv)
 	if(tdiv != false) tdivarr = tdiv.split('!')
 
 	// for page rules, go to table and get finance info - set cookie
@@ -75,8 +76,8 @@ $().ready(function() {
 	var fin = {}
 	var divpriz = 0
 	var divprizmark =	(('<i>*1</i>').fontcolor('red')).fontsize(1)
-	var divpriztext =	('<i>* - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
-	if(tdivarr[4]!=undefined){
+	var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
+	if(tdivarr[4]!=undefined && tdivarr[4]!=''){
 		divpriz = 		parseInt(tdivarr[4].split('-')[parseInt(tdivarr[3])-1])*1000
 		divprizmark = 	(('<i>*1</i>').fontcolor('green')).fontsize(1)
 		divpriztext = 	('<i>*1 - учетен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)

@@ -14,6 +14,7 @@ function CountryInfoGet(){
 		var tDiv = ''
 		var tPos = 0
 		var tdiv = getCookie('teamdiv');
+//		$('td.back4').prepend(tdiv)
 		var tdivarr = []
 		if(tdiv != false) {
 			tdivarr = tdiv.split('!')
