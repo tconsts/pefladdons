@@ -96,10 +96,10 @@ function PrintPlayers(cur){
 		if((i>0 || cur==0) && players[i].secondname != undefined){
 			var secname = String(players[i].secondname).split(' ')
 			var fname = String(players[i].firstname)
-			var plhref = (players[i].t==undefined ? '' : ' href="plug.php?p=refl&t='+players[i].t+'&j='+players[i].id+'&z='+players[i].hash+'"')
+			var plhref = (players[i].t==undefined || players[i].t == 'yp' ? '' : ' href="plug.php?p=refl&t='+players[i].t+'&j='+players[i].id+'&z='+players[i].hash+'"')
 			var htmltext = '<a id="compare'+i+'" href="javascript:void(CheckPlayer('+i+'))"><</a>|'
 			htmltext += '<a href="javascript:void(RemovePl('+i+'))">x</a>|'
-			htmltext += '<a href="javascript:hist(\''+players[i].id+'\',\'n\')">и</a>|'
+			htmltext += '<a'+(players[i].t == 'yp' ? '' : ' href="javascript:hist(\''+players[i].id+'\',\'n\')"')+'>и</a>|'
 			htmltext += players[i].id+'|'
 			htmltext += '<a'+plhref+'>' + secname[secname.length-1] + '</a>'
 			$('div#compare').append(htmltext.fontsize(1)+'<br>')
