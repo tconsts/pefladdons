@@ -39,7 +39,7 @@ function ShowPriz(x){
 		var htm = 	'<td align=right>'
 		htm += 		(y[i] == undefined || y[i] == 0 ? 0 : y[i]+',000')
 		htm += 		'$</td>'
-		$(val).prepend(htm)
+		$(val).find('td:has(u)').before(htm)
 	})
 	$('div[id^="show"] a').removeAttr('href')
 }
