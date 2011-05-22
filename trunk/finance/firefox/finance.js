@@ -80,7 +80,7 @@ $().ready(function() {
 	if(tdivarr[4]!=undefined && tdivarr[4]!=''){
 		divpriz = 		parseInt(tdivarr[4].split('-')[parseInt(tdivarr[3])-1])*1000
 		divprizmark = 	(('<i>*1</i>').fontcolor('green')).fontsize(1)
-		divpriztext = 	('<i>*1 - учетен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
+		divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
 	}
 
 	var ffn = 	$('td.back4 > table td:eq(1)').html()
