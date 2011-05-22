@@ -272,13 +272,17 @@ function CodeForForum(){
 	x += '<br><hr><b>Полный вариант</b>:<br>'
 	x +='<textarea rows="20" cols="80" readonly="readonly" id="CodeForForum">'
 
-	x += '[spoiler][table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
+	x += '[table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
 	if (compare == true) {
 		x += $('table#plheader')
 			.find('a:contains("интересуются")').removeAttr('href').end()
 			.find('center, b, td').removeAttr('id').end()
-			.find('img').remove().end()
+			.find('img').removeAttr('width').end()
+//			.find('img').remove().end()
 			.html()
+			.replace('\/flags\/','/flags/mod/')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/<tbody>/g,'<table width=100%>')
@@ -296,8 +300,11 @@ function CodeForForum(){
 		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] '
 		x += $('td.back4 table center:first')
 			.find('a:contains("интересуются")').removeAttr('href').end()
-			.find('img').remove().end()
+			.find('img').removeAttr('width').end()
 			.html()
+			.replace('\/flags\/','/flags/mod/')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/\</g,'[')
@@ -344,8 +351,8 @@ function CodeForForum(){
 	}
 	x += '[/td][/tr][/table]'
 	x += '\n\n'
-	x +=(compare == false ? '\n' : '----------------------------------------------------------------------------------------------------------------------------')
-	x +='[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center][/spoiler]\n';
+	x +=(compare == false ? '\n' : '------------------------------------------------------------------------------------------------------------------------')
+	x +='[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
 //	x += '[/spoiler]'
 	x += '</textarea>'
 
