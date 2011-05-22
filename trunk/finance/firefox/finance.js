@@ -74,16 +74,16 @@ $().ready(function() {
 	var cur = {}
 	var fin = {}
 	var divpriz = 0
-	var divprizmark = ('*').fontcolor('red')
-	var divpriztext = ('<i>* - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
+	var divprizmark =	('*').fontcolor('red')
+	var divpriztext =	('<i>* - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
 	if(tdivarr[4]!=undefined){
-		divpriz = parseInt(tdivarr[4].split('-')[parseInt(tdivarr[3])-1])*1000
-		divprizmark = ('<b>*</b>').fontcolor('green')
-		divpriztext = ('<i>* - учетен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
+		divpriz = 		parseInt(tdivarr[4].split('-')[parseInt(tdivarr[3])-1])*1000
+		divprizmark = 	('<b>*</b>').fontcolor('green')
+		divpriztext = 	('<i>* - учетен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
 	}
 
-	var ffn = $('td.back4 > table td:eq(1)').html()
-	var zp = parseInt(ffn.split('Сумма зарплат:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
+	var ffn = 	$('td.back4 > table td:eq(1)').html()
+	var zp = 	parseInt(ffn.split('Сумма зарплат:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
 	cur.bablo = parseInt(ffn.split('Финансы:')[1].split('<br>')[0].replace(/\,/g,'').replace('$',''))
 	cur.bonus = (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
 
@@ -96,34 +96,33 @@ $().ready(function() {
 		})
 	})
 
-	var chbonus = Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
-
-	var sponsors = finance[0]['Спонсоры']
-//	zp = finance[1]['Зарплаты']
-	var school = finance[1]['Школа'] - chbonus
+	var chbonus =	Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
+	var sponsors =	finance[0]['Спонсоры']
+	var school =	finance[1]['Школа'] - chbonus
 
 	fin.fid = 81
 
-	cur.sponsors = finance[2]['Спонсоры']
-	cur.stadion = finance[2]['Стадион']
-	cur.priz = finance[2]['Призовые']
-	cur.sale = finance[2]['Продажа игроков']
-	cur.allup = finance[2]['Всего']
+	cur.sponsors =	finance[2]['Спонсоры']
+	cur.stadion =	finance[2]['Стадион']
+	cur.priz =		finance[2]['Призовые']
+	cur.sale =		finance[2]['Продажа игроков']
+	cur.allup =		finance[2]['Всего']
 
-	cur.zp = finance[3]['Зарплаты игрокам']
-	cur.zpperc = (cur.zp/cur.sponsors*100).toFixed(1)+'%'
-	cur.buy = finance[3]['Покупка игроков']
-	cur.school = finance[3]['Школа']
-	cur.schoolperc = (cur.school/cur.sponsors*100).toFixed(1)+'%'
-	cur.alldown = finance[3]['Всего']
-	cur.plusminus = cur.allup - cur.alldown
+	cur.zp =		finance[3]['Зарплаты игрокам']
+	cur.buy =		finance[3]['Покупка игроков']
+	cur.school =	finance[3]['Школа']
+	cur.alldown =	finance[3]['Всего']
+	cur.plusminus =	cur.allup - cur.alldown
+	cur.zpperc = 	 (cur.sponsors ==0 ? 0+'%' : (cur.zp/cur.sponsors*100).toFixed(1)+'%')
+	cur.schoolperc = (cur.sponsors ==0 ? 0+'%' : (cur.school/cur.sponsors*100).toFixed(1)+'%')
+
 
 	cur.fid = (cur.sponsors - cur.bonus)/sponsors
 
 	if(cur.fid>fin.fid) fin.fid = cur.fid
 
 	fin.sponsors = sponsors * fin.fid + cur.bonus
-	fin.stadion = cur.stadion*fin.fid/cur.fid
+	fin.stadion = (cur.fid == 0 ? 0 : cur.stadion*fin.fid/cur.fid)
 	fin.priz = cur.priz + divpriz
 	fin.sale = cur.sale
 	fin.allup = fin.sponsors + fin.stadion + fin.priz + fin.sale
@@ -136,7 +135,6 @@ $().ready(function() {
 	fin.alldown = fin.zp + fin.buy + fin.school
 	fin.plusminus = fin.allup - fin.alldown
 	fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
-
 
 	$('table#2 td:odd, table#3 td:odd').attr('width','30%').attr('id','cur').after('<td width=30% id=fin></td>')
 
