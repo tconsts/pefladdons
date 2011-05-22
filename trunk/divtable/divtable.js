@@ -333,7 +333,7 @@ function TableCodeForForum(){
 	x += '<br>Код для форума<br><br><textarea rows="20" cols="80" readonly="readonly" id="CodeTableForForum">'
 	x += '[b][url=plug.php?' + location.search.substring(1) + ']#[/url] '
 	x += $('td.back4 td.back1').text()
-	x += '[/b][spoiler]'
+	x += '[/b]\n'
 	x += $('td.back4 table:eq(1)')
 		.find('img').removeAttr('height').end()
 		.html()
@@ -344,13 +344,12 @@ function TableCodeForForum(){
 		.replace(/<\/th>/g,'')
 		.replace(/\t<th(.*)>(.*)\n/g,'<td$1><b>$2</b></td>')
 		.replace(/\th/g,'td')
-		.replace(/\/td><tr/g,'/td></tr><tr') // for Opera
+		.replace(/\/td><tr/g,'/td></tr><tr')
 		.replace(/\</g,'[')
 		.replace(/\>/g,']')
 		.replace(/a href=\"/g,'url=')
 		.replace(/\/a/g,'/url')
 		.replace(/\&amp\;/g,'&')
-//		.replace(/\[img src="(.*)"/g,'[img]$1[/img]')
 		.replace(/img src="/g,'img]')
 		.replace(/.gif/g,'.gif[/img')
 		.replace(/.png/g,'.png[/img')
@@ -359,12 +358,10 @@ function TableCodeForForum(){
 	x += '[/table]'
 
 	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
-	x += '[/spoiler]'
 	x += '</textarea>'
 
 	$('td.back4').html(x)
 	$('td#crabglobalright').empty()
-
 	return true
 }
 
