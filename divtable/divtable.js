@@ -11,22 +11,37 @@
 // ==/UserScript==
 
 function CountryInfoGet(){
-		var tDiv = ''
-		var tPos = 0
-		var tdiv = getCookie('teamdiv');
-//		$('td.back4').prepend(tdiv)
-		var tdivarr = []
-		if(tdiv != false) {
-			tdivarr = tdiv.split('!')
-			var tplace = parseInt($('a[href*="&n='+tdivarr[0]+'&"]:has(u)').text())
-			if(tplace!= ''){
-				tdivarr[2] = $('td.back4 td.back1').text().split(', ')[1]
-				tdivarr[3] = tplace
-				var ck = ''
-				ck = tdivarr.join('!')
-				setCookie('teamdiv',ck);
-    		}
-		}
+	var tDiv = ''
+	var tPos = 0
+	var tdiv = getCookie('teamdiv');
+//	$('td.back4').prepend(tdiv)
+	var tdivarr = []
+	if(tdiv != false) {
+		tdivarr = tdiv.split('!')
+		var tplace = parseInt($('a[href*="&n='+tdivarr[0]+'&"]:has(u)').text())
+		if(tplace!= '' && !isNaN(tplace)){
+			tdivarr[2] = $('td.back4 td.back1').text().split(', ')[1]
+			tdivarr[3] = tplace
+			var ck = ''
+			ck = tdivarr.join('!')
+			setCookie('teamdiv',ck);
+			if(tdivarr[4]!=undefined && tdivarr[4]!=''){
+				$("#crabright").append('<div id="showpriz"><a href="javascript:void(ShowPriz(\''+tdivarr[4]+'\'))">Показать призовые</a>&nbsp;</div>')
+			}
+    	}
+	}
+}
+function ShowPriz(x){
+	var y = x.split('-')
+	$('td.back1 span.text2b').append(' (призовые)')
+	$('td.back4 table table th[width=13%]').before('<th>Призовые\n\t')
+	$("td.back4 table table tr:gt(0)").each(function(i,val){
+		var htm = 	'<td align=right>'
+		htm += 		(y[i] == undefined || y[i] == 0 ? 0 : y[i]+',000')
+		htm += 		'$</td>'
+		$(val).prepend(htm)
+	})
+	$('div[id^="show"] a').removeAttr('href')
 }
 
 function setCookie(name, value) {
@@ -71,9 +86,7 @@ function SetFin(){
 
 		$(this).parent().before(td_data1).html(td_data)
 	})
-	$('div#tasks').html('Показать задачи')
-	$('div#stadio').html('Показать стадионы')
-	$('div#finance').html('<b>Показать финансы</b>')
+	$('div[id^="show"] a').removeAttr('href')
 }
 
 function SetTasks(x){
@@ -108,9 +121,6 @@ function SetTasks(x){
 			if (team[tid] != undefined && team[tid].ttask != undefined) td_data += ' <small>'+team[tid].ttask+'</small>'
 			$(this).parent().html(td_data)
 		})
-		$('div#tasks').html('<b>Показать задачи</b>')
-		$('div#stadio').html('Показать стадионы')
-		$('div#finance').html('Показать финансы')
 	} else if (x==2) {
 		$('td.back1 span.text2b').append(' (стадионы)')
 		$('td.back4 table table th[width=13%]').attr('width','5%').before('<th width=30% colspan=2>Стадионы\n\t')
@@ -127,10 +137,8 @@ function SetTasks(x){
 			$(this).parent().before(td_data1).html(td_data)
 //			$(this).parent().before(td_data1)
 		})
-		$('div#tasks').html('Показать задачи')
-		$('div#finance').html('Показать финансы')
-		$('div#stadio').html('<b>Показать стадионы</b>')
 	}
+	$('div[id^="show"] a').removeAttr('href')
 }
 
 function PlusMinus(){
@@ -390,9 +398,9 @@ $().ready(function() {
 	text += '<div id="color"><a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">Расскрасить</a></div>'
 	text += '<div id="CodeTableForForum"><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</div>'
 	text += '<br>'
-	text += '<div id="tasks"><a href="javascript:void(SetTasks(1))">Показать задачи</a>&nbsp;</div>'
-	text += '<div id="stadio"><a href="javascript:void(SetTasks(2))">Показать стадионы</a>&nbsp;</div>'
-	text += '<div id="finance"><a href="javascript:void(SetFin())">Показать финансы</a>&nbsp;</div>'
+	text += '<div id="showtasks"><a href="javascript:void(SetTasks(1))">Показать задачи</a>&nbsp;</div>'
+	text += '<div id="showstadio"><a href="javascript:void(SetTasks(2))">Показать стадионы</a>&nbsp;</div>'
+	text += '<div id="showfinance"><a href="javascript:void(SetFin())">Показать финансы</a>&nbsp;</div>'
 
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
