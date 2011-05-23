@@ -16,7 +16,8 @@
 //(function(){ // for ie
 
 function ShowTable(n){
-	if($('td.back4 table table:not(#plheader):eq('+n+')').attr('style') == "display: none"){
+	var style = $('td.back4 table table:not(#plheader):eq('+n+')').attr('style')
+	if(style == "display: none" || style == "display: none;"){
 		$('td.back4 table table:not(#plheader):eq('+n+')').show()
 		$('a#th'+n).html('-')
 	} else {
