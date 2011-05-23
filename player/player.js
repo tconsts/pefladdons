@@ -156,7 +156,7 @@ function CheckPlayer(nn){
 	header += (players[nn].teamid != undefined ? '</a>)' : ')')
 	header += '</td></tr>'
 	// возраст, гражданство
-	header += '<tr align=center><td>'
+	header += '<tr align=center><td valign=top>'
 	header += players[0].age +' лет' + (players[0].natfull != ' ' ? ', ' + players[0].natfull : '')
 	if(	parseInt(players[0].internationalapps) != 0
 		|| parseInt(players[nn].internationalapps) != 0
@@ -166,7 +166,7 @@ function CheckPlayer(nn){
 		header += ', ' + players[0].internationalapps +'('+players[0].u21apps+') матчей, '+players[0].internationalgoals+'('+players[0].u21goals+') голов'
 	}
 	header += '</td>'
-	header += '<td>'
+	header += '<td valign=top>'
 	header += players[nn].age +' лет'+ (players[nn].natfull != ' ' ? ', ' + players[nn].natfull : '')
 	if(	parseInt(players[0].internationalapps) != 0
 		|| parseInt(players[nn].internationalapps) != 0
