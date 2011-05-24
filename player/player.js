@@ -15,11 +15,75 @@
 
 //(function(){ // for ie
 
+function GetPlayerHistory(n,pid){
+	var stats = []
+	stats[0] = {}
+	stats[0].gm = 0
+	stats[0].gl = 0
+	stats[0].ps = 0
+	stats[0].im = 0
+	stats[0].sr = 0
+
+	$('a#th2').attr('href',"javascript:void(ShowTable(2))").html('&ndash;')
+
+	var head = '<tr><td width=25%> </td><td width=10%>Игры</td><td width=10%>Голы</td><td width=10%>Пасы</td><td width=10%>ИМ</td><td width=10%>СР</td><td width=10%> </td><td width=10%> </td></tr>'
+	$('#ph'+n).append(head)
+
+	var table = '<table id=debug style="display: none;"></table>'
+	$('#ph'+n).after(table)
+
+	$('#debug').load('hist.php?id='+pid+'&t=p table:eq(0) tr:gt(0)',function(){
+		$('#debug').find('tr').each(function(){
+			var d = []
+			if(isNaN(parseInt($(this).find('td:first').html()))) $(this).remove()
+
+			$(this).find('td').each(function(i, val){
+				d[i] = $(val).html()
+			})
+			sid = parseInt(d[0])
+			if(stats[sid]==undefined){
+				stats[sid] = {}
+				stats[sid].gm = 0
+				stats[sid].gl = 0
+				stats[sid].ps = 0
+				stats[sid].im = 0
+				stats[sid].sr = 0
+			}
+			if(d[6] == '') d[6] = 0
+			stats[sid].sr	= ((parseInt(d[2])*parseFloat(d[6]) + stats[sid].gm*stats[sid].sr)/(parseInt(d[2])+stats[sid].gm)).toFixed(2)
+			stats[sid].gm	+= parseInt(d[2])
+			stats[sid].gl	+= parseInt(d[3])
+			stats[sid].ps	+= parseInt(d[4])
+			stats[sid].im	+= parseInt(d[5])
+			if(!isNaN(sid)){
+				stats[0].sr		= ((parseInt(d[2])*parseFloat(d[6]) + stats[0].gm*stats[0].sr)/(parseInt(d[2])+stats[0].gm)).toFixed(2)
+				stats[0].gm		+= parseInt(d[2])
+				stats[0].gl		+= parseInt(d[3])
+				stats[0].ps		+= parseInt(d[4])
+				stats[0].im		+= parseInt(d[5])
+			}
+		})
+		var data = ''
+		for (ss=stats.length-1;ss>=0;ss--){
+//		for (ss in stats){
+			if(stats[ss] !=undefined && stats[ss].gm != ''){
+				if (ss==0)	data += '<tr bgcolor=#88C274><td>Итого</td>'
+				else 		data += '<tr bgcolor=A3DE8F><td>Сезон '+ss+'</td>'
+				for (p in stats[ss]) data += '<td>'+ stats[ss][p]+'</td>'
+				data += '<td bgcolor=#C9F8B7> </td><td bgcolor=#C9F8B7> </td></tr>'
+			}
+		}
+		$('#ph'+n).append(data)
+
+
+	})
+}
+
 function ShowTable(n){
 	var style = $('td.back4 table table:not(#plheader):eq('+n+')').attr('style')
 	if(style == "display: none" || style == "display: none;"){
 		$('td.back4 table table:not(#plheader):eq('+n+')').show()
-		$('a#th'+n).html('-')
+		$('a#th'+n).html('&ndash;')
 	} else {
 		$('td.back4 table table:not(#plheader):eq('+n+')').hide()
 		$('a#th'+n).html('+')
@@ -136,12 +200,14 @@ function RememberPl(x){
 function CheckPlayer(nn){
 	// Get data and compare players
 	ShowAll()
+//	$('a[id="th2"]').html('+')
+	$('div#kar, #th2, table#ph0, table#debug').remove()
+
 	$('td.back4').prepend('<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>')
 	$('a#remember, a[id^="compare"]').removeAttr('href')
-
 	compare = true
-	var header = '<table width=100% id="plheader">'
 
+	var header = '<table width=100% id="plheader">'
 	// имя, команда
 	header += '<tr align=center><td width=50% valign=top>'
 	header += '<b>' + players[0].firstname + ' ' + players[0].secondname + '</b>'
@@ -155,7 +221,7 @@ function CheckPlayer(nn){
 	header += players[nn].team
 	header += (players[nn].teamid != undefined ? '</a>)' : ')')
 	header += '</td></tr>'
-	// возраст, гражданство
+	// возраст, гражданство, игры за сборные
 	header += '<tr align=center><td valign=top>'
 	header += players[0].age +' лет' + (players[0].natfull != ' ' ? ', ' + players[0].natfull : '')
 	if(	parseInt(players[0].internationalapps) != 0
@@ -173,7 +239,7 @@ function CheckPlayer(nn){
 		|| parseInt(players[0].u21apps) != 0
 		|| parseInt(players[nn].u21apps) != 0)
 	{
-		header += ', ' + players[nn].internationalapps +'('+players[nn].u21apps +') матчей, '+players[0].internationalgoals+'('+players[nn].u21goals+') голов'
+		header += ', ' + players[nn].internationalapps +'('+players[nn].u21apps +') матчей, '+players[nn].internationalgoals+'('+players[nn].u21goals+') голов'
 	}
 	header += '</td></tr>'
 	//контракты
@@ -289,9 +355,9 @@ function CodeForForum(){
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
 	var pl = players[0]
 	var ptype = UrlValue('t')
-	var skillsshow = ($('a[id="th0"]').html() == '-' ? true : false)
-	var seasonstatshow = ($('a[id="th1"]').html() == '-' ? true : false)
-	var fullstatshow = ($('a[id="th3"]').html() == '-' ? true : false)
+	var skillsshow = ($('a[id="th0"]').html() == '+' ? false : true)
+	var seasonstatshow = ($('a[id="th1"]').html() == '+' ? false : true)
+	var fullstatshow = ($('a[id="th2"]').html() == '+' ? false : true)
 	// если не школьник, то короткий код для форума есть.
 	if (compare == false && ptype != 'yp' && ptype != 'yp2') {
 		x += '<br><b>Упрощенный вариант</b>:<br><br>'
@@ -336,8 +402,6 @@ function CodeForForum(){
 	} else {
 		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] [b]'
 		x += $('td.back4 table center:first b:first')
-//			.find('a:gt(0)').remove()
-//			.find('a:contains("интересуются")').removeAttr('href').end()
 			.find('a[id="th0"]').remove().end()
 			.find('img').removeAttr('width').end()
 			.html()
@@ -353,6 +417,7 @@ function CodeForForum(){
 			.replace(/\&amp\;/g,'&')
 			.replace(/"/g,'')
 			.replace(/\[br\]/g,'\n')
+		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+players[0].position+'[b]'
 		x += '\n\nУмения[/b](сс='+players[0].sumskills+')[/center]\n\n'
 	}
 
@@ -375,10 +440,10 @@ function CodeForForum(){
 			.replace(/\n/g,'')
 			if (navigator.userAgent.indexOf('Opera') != -1 && ptype != 'yp' && ptype != 'yp2') x += '[/table]'
 	}
-	// stat
+	// stat of season
 	if (seasonstatshow && (ptype == 'p' || ptype == 'pp')){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
-		x += $('td.back4 table table:last').html()
+		x += $('table#stat').html()
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/<tbody>/g,'<table width=100%>')
 			.replace(/tbody/g,'table')
@@ -389,6 +454,22 @@ function CodeForForum(){
 			.replace(/"/g,'')
 			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
 	}
+	// fullstat
+//	alert($('table#ph0').html()!=null)
+	if ($('table#ph0').html()!=null && fullstatshow && (ptype == 'p' || ptype == 'pp')){
+		x += '\n\n[center][b]Карьера[/b][/center]\n\n'
+		x += $('table#ph0').html()
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/"/g,'')
+			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
+	}
+
 	x += '[/td][/tr][/table]'
 	x += '\n\n'
 	x +='[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
@@ -810,8 +891,15 @@ $().ready(function() {
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
-	$('center:eq(1) ~ br:first').before('<div id="th0"><a id="th0" href="javascript:void(ShowTable(0))">-</a></div>').remove()
-	$('center:eq(2) ~ br').before('<div id="th1"><a id="th1" href="javascript:void(ShowTable(1))">-</a></div>').remove()
+	$('center:eq(1) ~ br:first').before('<div id="th0"><a id="th0" href="javascript:void(ShowTable(0))">&ndash;</a></div>').remove()
+	$('center:eq(2) ~ br').before('<div id="th1"><a id="th1" href="javascript:void(ShowTable(1))">&ndash;</a></div>').remove()
+
+	$('td.back4 table table:eq(1)').attr('id','stat')
+
+	var statseasons = '<br><div id="kar" align=center>Карьера</div>'
+	statseasons += '<div id="th2" align=left><a id="th2" href="javascript:void(GetPlayerHistory(0,'+players[0].id+'))">+</a></div>'
+	statseasons += '<table width=100% id=ph0></table>'
+	$('td.back4 table table:eq(1)').after(statseasons)
 
 	// Get info fom Global or Session Storage
 	var text1 = String(navigator.userAgent.indexOf('Firefox') != -1 ? globalStorage[location.hostname].peflplayer : sessionStorage.peflplayer)
@@ -824,7 +912,7 @@ $().ready(function() {
 		}
 		PrintPlayers()
 	}
-
+	//GetPlayerHistory(0,players[0].id)
 
 }, false)
 //})();	// for ie
