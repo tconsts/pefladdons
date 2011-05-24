@@ -159,12 +159,14 @@ $().ready(function() {
 	$('td.back4 table#3').after(preparedhtml)
 
 	$('td[id=cur]:eq(7)').next().append(' ('+cur.schoolperc+')')
-	$('td[id=fin]:eq(7)').next().append(' ('+fin.schoolperc+')')
-	$('td[id=fin]:eq(2)').next().append(divprizmark)
+
 	$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1))
 	$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1))
 
 	if(fin.fid != cur.fid) {
+		$('td[id=fin]:eq(7)').next().append(' ('+fin.schoolperc+')')
+		$('td[id=fin]:eq(2)').next().append(divprizmark)
+
 		$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
 		$('td[id=fin]:eq(1)').html('~'+format(fin.stadion).bold())
 		$('td[id=fin]:eq(2)').html(format(fin.priz).bold())

@@ -47,6 +47,7 @@ function UrlValue(key,url){
 //$().ready(function() {
 	var tdivarr = []
 	var tdiv = getCookie('teamdiv');
+//	$('td.back4').prepend(tdiv)
 	if(tdiv != false) tdivarr = tdiv.split('!')
 
 	// for page rules, go to table and get finance info - set cookie
@@ -75,11 +76,11 @@ function UrlValue(key,url){
 	var fin = {}
 	var divpriz = 0
 	var divprizmark =	(('<i>*1</i>').fontcolor('red')).fontsize(1)
-	var divpriztext =	('<i>* - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
-	if(tdivarr[4]!=undefined){
+	var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
+	if(tdivarr[4]!=undefined && tdivarr[4]!=''){
 		divpriz = 		parseInt(tdivarr[4].split('-')[parseInt(tdivarr[3])-1])*1000
 		divprizmark = 	(('<i>*1</i>').fontcolor('green')).fontsize(1)
-		divpriztext = 	('<i>*1 - учетен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
+		divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
 	}
 
 	var ffn = 	$('td.back4 > table td:eq(1)').html()
@@ -158,12 +159,14 @@ function UrlValue(key,url){
 	$('td.back4 table#3').after(preparedhtml)
 
 	$('td[id=cur]:eq(7)').next().append(' ('+cur.schoolperc+')')
-	$('td[id=fin]:eq(7)').next().append(' ('+fin.schoolperc+')')
-	$('td[id=fin]:eq(2)').next().append(divprizmark)
+
 	$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1))
 	$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1))
 
 	if(fin.fid != cur.fid) {
+		$('td[id=fin]:eq(7)').next().append(' ('+fin.schoolperc+')')
+		$('td[id=fin]:eq(2)').next().append(divprizmark)
+
 		$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
 		$('td[id=fin]:eq(1)').html('~'+format(fin.stadion).bold())
 		$('td[id=fin]:eq(2)').html(format(fin.priz).bold())
