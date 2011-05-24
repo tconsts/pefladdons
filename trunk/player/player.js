@@ -70,7 +70,7 @@ function GetPlayerHistory(n,pid){
 				if (ss==0)	data += '<tr bgcolor=#88C274><td>Итого</td>'
 				else 		data += '<tr bgcolor=A3DE8F><td>Сезон '+ss+'</td>'
 				for (p in stats[ss]) data += '<td>'+ stats[ss][p]+'</td>'
-				data += '<td bgcolor=#C9F8B7> </td><td bgcolor=#C9F8B7> </td></tr>'
+				data += '<td> </td><td> </td></tr>'
 			}
 		}
 		$('#ph'+n).append(data)
