@@ -81,7 +81,7 @@ function GetPlayerHistory(n,pid){
 
 function ShowTable(n){
 	var style = $('td.back4 table table:not(#plheader):eq('+n+')').attr('style')
-	if(style == "display: none" || style == "display: none;"){
+	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
 		$('td.back4 table table:not(#plheader):eq('+n+')').show()
 		$('a#th'+n).html('&ndash;')
 	} else {
