@@ -14,56 +14,55 @@
 var data_assoc = [];
 var players = [];
 var groups = [[]];
-var trman = []
+var trnman = []
 var trn = [0]
 
 var itrains = []
-itrains[0]	= {level:2,tr:1,	name: 'Общая'}
-itrains[1]	= {level:0,tr:2,	name: 'Востановление Формы'}
-itrains[2]	= {level:1,tr:3,	name: 'Игра на 2 этаже'}
-itrains[3]	= {level:3,tr:4,	name: 'Кросс'}
-itrains[4]	= {level:1,tr:5,	name: 'Навесы'}
-itrains[5]	= {level:1,tr:6,	name: 'Отбор Мяча'}
-itrains[6]	= {level:1,tr:7,	name: 'Отражение Ударов'}
-itrains[7]	= {level:1,tr:8,	name: 'Пенальти'}
-itrains[8]	= {level:2,tr:9,	name: 'Спринт'}
-itrains[9]	= {level:1,tr:10,	name: 'Техника'}
-itrains[10]	= {level:4,tr:11,	name: 'Тренажеры'}
-itrains[11] = {level:1,tr:12,	name: 'Угловые'}
-itrains[12] = {level:1,tr:13,	name: 'Удары по Воротам'}
-itrains[13] = {level:1,tr:14,	name: 'Штрафные'}
-itrains[14] = {level:2,tr:0,	name: 'Новая позиция SW'}
-itrains[15] = {level:2,tr:0,	name: 'Новая позиция DF'}
-itrains[16] = {level:2,tr:0,	name: 'Новая позиция DM'}
-itrains[17] = {level:2,tr:0,	name: 'Новая позиция AM'}
-itrains[18] = {level:2,tr:0,	name: 'Новая позиция FW'}
-itrains[29] = {level:2,tr:0,	name: 'Новая позиция L'}
-itrains[20] = {level:2,tr:0,	name: 'Новая позиция C'}
-itrains[21] = {level:2,tr:0,	name: 'Новая позиция R'}
+itrains[0]	= {level:2,	tr:1,	name: 'Общая'}
+itrains[1]	= {level:0,	tr:2,	name: 'Востановление Формы'}
+itrains[2]	= {level:1,	tr:3,	name: 'Игра на 2 этаже'}
+itrains[3]	= {level:3,	tr:4,	name: 'Кросс'}
+itrains[4]	= {level:1,	tr:5,	name: 'Навесы'}
+itrains[5]	= {level:1,	tr:6,	name: 'Отбор Мяча'}
+itrains[6]	= {level:1,	tr:7,	name: 'Отражение Ударов'}
+itrains[7]	= {level:1,	tr:8,	name: 'Пенальти'}
+itrains[8]	= {level:2,	tr:9,	name: 'Спринт'}
+itrains[9]	= {level:1,	tr:10,	name: 'Техника'}
+itrains[10]	= {level:4,	tr:11,	name: 'Тренажеры'}
+itrains[11] = {level:1,	tr:12,	name: 'Угловые'}
+itrains[12] = {level:1,	tr:13,	name: 'Удары по Воротам'}
+itrains[13] = {level:1,	tr:14,	name: 'Штрафные'}
+itrains[14] = {level:2,	tr:0,	name: 'Новая позиция SW'}
+itrains[15] = {level:2,	tr:0,	name: 'Новая позиция DF'}
+itrains[16] = {level:2,	tr:0,	name: 'Новая позиция DM'}
+itrains[17] = {level:2,	tr:0,	name: 'Новая позиция AM'}
+itrains[18] = {level:2,	tr:0,	name: 'Новая позиция FW'}
+itrains[29] = {level:2,	tr:0,	name: 'Новая позиция L'}
+itrains[20] = {level:2,	tr:0,	name: 'Новая позиция C'}
+itrains[21] = {level:2,	tr:0,	name: 'Новая позиция R'}
 
 var trains = [];
 //trains[0]	= {level:0,	tr:0,	name:'пусто'};
-trains[1]	= {level:2,	tr:15,	name:'5x5 на большом поле (сред)'};
-trains[2]	= {level:2,	tr:16,	name:'Защита в меньшестве (сред)'};
-trains[3]	= {level:0,	tr:17,	name:'Изучение соперника (нет)'};
-trains[4]	= {level:0,	tr:0,	name:'Индивидуальные'};
-trains[5]	= {level:2,	tr:18,	name:'Квадраты (сред)'};
-trains[6]	= {level:3,	tr:19,	name:'Кросс (выс)'};
-trains[7]	= {level:2,	tr:20,	name:'Минифутбол (сред)'};
-trains[8]	= {level:1,	tr:21,	name:'Оффсайдные ловушки (низ)'};
-trains[9]	= {level:3,	tr:22,	name:'Переход от обороны к атаке (выс)'};
-trains[10]	= {level:2,	tr:23,	name:'Позиционная атака (сред)'};
-trains[11]	= {level:3,	tr:24,	name:'Прессинг (выс)'};
-trains[12]	= {level:2,	tr:25,	name:'Спринт (сред)'};
-trains[13]	= {level:1,	tr:26,	name:'Станд.положения (атака, низ)'};
-trains[14]	= {level:1,	tr:27,	name:'Станд.положения (защита, низ)'};
-trains[15]	= {level:0,	tr:28,	name:'Тактическое занятие (нет)'};
-trains[16]	= {level:4,	tr:29,	name:'Тренажеры (оч.выс)'};
-trains[17]	= {level:4,	tr:30,	name:'Тренировочный матч (оч.выс)'};
-trains[18]	= {level:-1,tr:31,	name:'Отдых'};
+trains[1]	= {level:2,	tr:15,	ball:0,	name:'5x5 на большом поле (сред)'};
+trains[2]	= {level:2,	tr:16,	ball:1,	name:'Защита в меньшестве (сред)'};
+trains[3]	= {level:0,	tr:17,	ball:0,	name:'Изучение соперника (нет)'};
+trains[4]	= {level:0,	tr:0,	ball:0,	name:'Индивидуальные'};
+trains[5]	= {level:2,	tr:18,	ball:0,	name:'Квадраты (сред)'};
+trains[6]	= {level:3,	tr:19,	ball:0,	name:'Кросс (выс)'};
+trains[7]	= {level:2,	tr:20,	ball:0,	name:'Минифутбол (сред)'};
+trains[8]	= {level:1,	tr:21,	ball:1,	name:'Оффсайдные ловушки (низ)'};
+trains[9]	= {level:3,	tr:22,	ball:1,	name:'Переход от обороны к атаке (выс)'};
+trains[10]	= {level:2,	tr:23,	ball:1,	name:'Позиционная атака (сред)'};
+trains[11]	= {level:3,	tr:24,	ball:1,	name:'Прессинг (выс)'};
+trains[12]	= {level:2,	tr:25,	ball:0,	name:'Спринт (сред)'};
+trains[13]	= {level:1,	tr:26,	ball:1,	name:'Станд.положения (атака, низ)'};
+trains[14]	= {level:1,	tr:27,	ball:1,	name:'Станд.положения (защита, низ)'};
+trains[15]	= {level:0,	tr:28,	ball:1,	name:'Тактическое занятие (нет)'};
+trains[16]	= {level:4,	tr:29,	ball:0,	name:'Тренажеры (оч.выс)'};
+trains[17]	= {level:4,	tr:30,	ball:0,	name:'Тренировочный матч (оч.выс)'};
+trains[18]	= {level:-1,tr:31,	ball:0,	name:'Отдых'};
 
 $().ready(function() {
-//document.addEventListener('DOMContentLoaded', function(){
 	var text = ''
 	var today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
@@ -109,6 +108,22 @@ $().ready(function() {
 			}
 		}
 
+		// данные о тренерах
+	    trnman[0] = {}
+		trnman[0].name	= data_assoc["s0"]
+		trnman[0].group	= data_assoc["sg0"]
+		trnman[0].type	= 0
+		trnman[0].value	= 0
+		for(i=1;i<=5;i++){
+			trnman[i] = {}
+			if(data_assoc["s"+i]!=undefined){
+				trnman[i].name	= data_assoc["s"+i]
+				trnman[i].group	= data_assoc["sg"+i]
+				trnman[i].type	= data_assoc["btype"+i]
+				trnman[i].value	= data_assoc["bvalue"+i]
+			}
+		}
+
 		// теперь собираем данные об игроках
 		for(i=0;i<num_players;i++) {
 			var tmpplayer = [];
@@ -138,51 +153,86 @@ $().ready(function() {
 			players[playerid] = tmpplayer;
 		}
 
-		var xtr = '<hr><b>Тренировка основы:</b><table width=90% bgcolor=A3DE8F>'
-		xtr += '<tr bgcolor=white><th colspan=3 width=15%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр3</th><th bgcolor=A3DE8F></th><th>наг</th><th>тренировка</th></tr>'
+		var xtr = '<table id="trn" width=100% bgcolor=A3DE8F></td></tr>'
+		xtr += '<tr><td bgcolor=C9F8B7 colspan=15><b>Тренировка основы:</b>'
+		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр3</th><th bgcolor=A3DE8F></th><th width=5%>наг</th><th width=40%>тренировка</th><th width=30%>тренер(гр)</th></tr>'
+		xtr += '<tr id="ind1"><td bgcolor=C9F8B7 colspan=15><b>Индивидуальные:</b></td></tr>'
+		xtr += '<tr id="ind2" bgcolor=white><th colspan=3>гр1</th><th bgcolor=A3DE8F></th><th colspan=3>гр2</th><th bgcolor=A3DE8F></th><th colspan=3>гр3</th><th bgcolor=A3DE8F></th><th>наг</th><th>тренировка</th><th>трн(гр)</th></tr>'
+		xtr += '</table>'
+		$('td.back4').append(xtr)
 		for (p in trains){ 
 			var sumtrn = 0
 			for(i=1;i<=3;i++) for(j=1;j<=3;j++) sumtrn += trains[p]['count'+i+j]
 			if(sumtrn>0) {
-				xtr += '<tr bgcolor=C9F8B7 align=center>'
+				var tp = trains[p]
+				var tval = ''
+				var tcolor = ''
+				var gcolor = ['','','','']
+				var i1 = (tp.ball == 0 ? '<i>' : '')
+				var i2 = (tp.ball == 0 ? '</i>' : '')
+				for(t in trnman){
+					if(tp.tr == trnman[t].type && trnman[t].type!=0) {
+						tval += ' '+trnman[t].value+'%('+trnman[t].group+')'
+						tcolor = gcolor[trnman[t].group] = ' bgcolor=D3D7CF'
+					}
+				}
+				xtr = '<tr'+(p==4 ? ' id="ind1"' : '')+' bgcolor=C9F8B7 align=center>'
 				for(j=1;j<=3;j++) {
 					for(m=1;m<=3;m++) {
-						xtr += '<td>'
-						xtr += (trains[p]['count'+j+m]!=0 ? trains[p]['count'+j+m] : "&nbsp;")
+						xtr += '<td'+gcolor[j]+'>'
+						xtr += (tp['count'+j+m]!=0 ? tp['count'+j+m] : "&nbsp;")
 						xtr += '</td>'
 					}
 					xtr += '<td bgcolor=A3DE8F></td>'
 				}
-				xtr += '<td>' + (p==4 ? "&nbsp;" : trains[p]['level']) + '</td>'
-				xtr += '<td align=left>' + trains[p]['name'] + '</td>'
+				xtr += '<td>' + (p==4 ? "&nbsp;" : tp.level) + '</td>'
+				xtr += '<td align=left>'+i1 + tp.name + i2 +'</td>'
+				xtr += '<td'+tcolor+'>'
+				xtr += (tval == '' ? '&nbsp;' : tval)
+				xtr += '</td>'
 				xtr += '</tr>'
+				if(p==4) {
+					$('tr#ind1').before(xtr)
+				} else {
+					if(parseInt(trains[p]['ball'])==1) $('tr#ball:first').after(xtr)
+					else $('tr#ind1:first').before(xtr)
+				}
+
 			}
 		}
-		xtr += '</table>'
-		$('td.back4').append(xtr)
-
-		xtr = '<br><b>Индивидуальные:</b><table width=90% bgcolor=A3DE8F>'
-		xtr += '<tr bgcolor=white><th colspan=3 width=15%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=15%>гр3</th><th bgcolor=A3DE8F></th><th width=1%>наг</th></th><th>тренировка</th></tr>'
 		for (p in itrains){ 
 			var sumtrn = 0
+			var itp = itrains[p]
 			for(i=1;i<=3;i++) for(j=1;j<=3;j++) sumtrn += itrains[p]['count'+i+j]
 			if(sumtrn>0) {
-				xtr += '<tr bgcolor=C9F8B7 align=center>'
+				var tval = ''
+				var tcolor = ''
+				var gcolor = ['','','','']
+				for(t in trnman){
+					if(itp.tr == trnman[t].type && trnman[t].type!=0) {
+						tval += ' '+trnman[t].value+'%('+trnman[t].group+')'
+						tcolor = gcolor[trnman[t].group] = ' bgcolor=D3D7CF'
+					}
+				}
+				xtr = '<tr bgcolor=C9F8B7 align=center>'
 				for(j=1;j<=3;j++) {
 					for(m=1;m<=3;m++) {
-						xtr += '<td>' 
-						xtr += (itrains[p]['count'+j+m]!=0 ? itrains[p]['count'+j+m] : "&nbsp;")
+						xtr += '<td'+gcolor[j]+'>' 
+						xtr += (itp['count'+j+m]!=0 ? itp['count'+j+m] : "&nbsp;")
 						xtr += '</td>'
 					}
 					xtr += '<td bgcolor=A3DE8F></td>'
 				}
-				xtr += '<td>' + (p==1 ? "&nbsp;" : itrains[p]['level']) + '</td>'
-				xtr += '<td align=left>' + itrains[p]['name'] + '</td>'
+				xtr += '<td>' + (p==1 ? "&nbsp;" : itp.level) + '</td>'
+				xtr += '<td align=left><i>' + itp.name + '</i></td>'
+				xtr += '<td'+tcolor+'>'
+				xtr += (tval == '' ? '&nbsp;' : tval)
+				xtr += '</td>'
 				xtr += '</tr>'
+				$('tr#ind2:first').after(xtr)
 			}
 		}
-		xtr += '</table>'
-		$('td.back4').append(xtr)		
+
 
 		var trnnum = 1
 		if (getCookie('pefltraining') && trnManagerNick == curManagerNick){
