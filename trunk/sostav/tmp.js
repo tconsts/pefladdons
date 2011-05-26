@@ -325,8 +325,8 @@ $().ready(function() {
 			$(val).prepend('<th></th>')
 		})
 		// show травмированых и востанавливающихся
-		var prest = '<br><b>'+itrains[1]["name"]+':</b><br>'
-		var pinj  = '<br><b>Травмированы:</b><br>'
+		var prest = '<br><b>Не тренируются так как востанавливают форму:</b><br>'
+		var pinj  = '<br><b>Не могут тренироваться так как травмированы:</b><br>'
 		var pnot  = '<br><b>Не влияют на тренировки командных мячей:</b><br>'
 		var countrest = 0
 		var countinj  = 0
@@ -335,15 +335,15 @@ $().ready(function() {
 			var pli = players[i]
 			if(pli.rest==1) {
 				countrest++
-				prest += pli.form+'% '+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
+				prest += '&nbsp;'+pli.form+'% '+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
 			}
 			if(pli.inj >1) {
 				countinj++
-				pinj  += pli.inj+' дней '+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
+				pinj  += '&nbsp;'+pli.inj+' д. '+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
 			}         
 			if(pli.notrain==1) {
 				countnot++
-				pnot  += pli.firstname + '&nbsp;'+pli.secondname+'<br>'
+				pnot  += '&nbsp;'+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
 			}
 		}
 		if(countrest>0) $('td.back4').append(prest)
