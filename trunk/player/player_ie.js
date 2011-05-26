@@ -15,6 +15,81 @@
 
 (function(){ // for ie
 
+function GetPlayerHistory(n,pid){
+	var stats = []
+	stats[0] = {}
+	stats[0].gm = 0
+	stats[0].gl = 0
+	stats[0].ps = 0
+	stats[0].im = 0
+	stats[0].sr = 0
+
+	$('a#th2').attr('href',"javascript:void(ShowTable(2))").html('&ndash;')
+
+	var head = '<tr><td width=25%> </td><td width=10%>Игры</td><td width=10%>Голы</td><td width=10%>Пасы</td><td width=10%>ИМ</td><td width=10%>СР</td><td width=10%> </td><td width=10%> </td></tr>'
+	$('#ph'+n).append(head)
+
+	var table = '<table id=debug style="display: none;"></table>'
+	$('#ph'+n).after(table)
+
+	$('#debug').load('hist.php?id='+pid+'&t=p table:eq(0) tr:gt(0)',function(){
+		$('#debug').find('tr').each(function(){
+			var d = []
+			if(isNaN(parseInt($(this).find('td:first').html()))) $(this).remove()
+
+			$(this).find('td').each(function(i, val){
+				d[i] = $(val).html()
+			})
+			sid = parseInt(d[0])
+			if(stats[sid]==undefined){
+				stats[sid] = {}
+				stats[sid].gm = 0
+				stats[sid].gl = 0
+				stats[sid].ps = 0
+				stats[sid].im = 0
+				stats[sid].sr = 0
+			}
+			if(d[6] == '') d[6] = 0
+			stats[sid].sr	= ((parseInt(d[2])*parseFloat(d[6]) + stats[sid].gm*stats[sid].sr)/(parseInt(d[2])+stats[sid].gm)).toFixed(2)
+			stats[sid].gm	+= parseInt(d[2])
+			stats[sid].gl	+= parseInt(d[3])
+			stats[sid].ps	+= parseInt(d[4])
+			stats[sid].im	+= parseInt(d[5])
+			if(!isNaN(sid)){
+				stats[0].sr		= ((parseInt(d[2])*parseFloat(d[6]) + stats[0].gm*stats[0].sr)/(parseInt(d[2])+stats[0].gm)).toFixed(2)
+				stats[0].gm		+= parseInt(d[2])
+				stats[0].gl		+= parseInt(d[3])
+				stats[0].ps		+= parseInt(d[4])
+				stats[0].im		+= parseInt(d[5])
+			}
+		})
+		var data = ''
+		for (ss=stats.length-1;ss>=0;ss--){
+//		for (ss in stats){
+			if(stats[ss] !=undefined && stats[ss].gm != ''){
+				if (ss==0)	data += '<tr bgcolor=#88C274><td>Итого</td>'
+				else 		data += '<tr bgcolor=A3DE8F><td>Сезон '+ss+'</td>'
+				for (p in stats[ss]) data += '<td>'+ stats[ss][p]+'</td>'
+				data += '<td> </td><td> </td></tr>'
+			}
+		}
+		$('#ph'+n).append(data)
+
+
+	})
+}
+
+function ShowTable(n){
+	var style = $('td.back4 table table:not(#plheader):eq('+n+')').attr('style')
+	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
+		$('td.back4 table table:not(#plheader):eq('+n+')').show()
+		$('a#th'+n).html('&ndash;')
+	} else {
+		$('td.back4 table table:not(#plheader):eq('+n+')').hide()
+		$('a#th'+n).html('+')
+	}
+}
+
 function hist(rcode,rtype)
 	{ window.open('hist.php?id='+rcode+'&t='+rtype,'История','toolbar=0,location=0,directories=0,menuBar=0,resizable=0,scrollbars=yes,width=480,height=512,left=16,top=16'); }
 
@@ -96,10 +171,10 @@ function PrintPlayers(cur){
 		if((i>0 || cur==0) && players[i].secondname != undefined){
 			var secname = String(players[i].secondname).split(' ')
 			var fname = String(players[i].firstname)
-			var plhref = (players[i].t==undefined ? '' : ' href="plug.php?p=refl&t='+players[i].t+'&j='+players[i].id+'&z='+players[i].hash+'"')
+			var plhref = (players[i].t==undefined || players[i].t == 'yp' ? '' : ' href="plug.php?p=refl&t='+players[i].t+'&j='+players[i].id+'&z='+players[i].hash+'"')
 			var htmltext = '<a id="compare'+i+'" href="javascript:void(CheckPlayer('+i+'))"><</a>|'
 			htmltext += '<a href="javascript:void(RemovePl('+i+'))">x</a>|'
-			htmltext += '<a href="javascript:hist(\''+players[i].id+'\',\'n\')">и</a>|'
+			htmltext += '<a'+(players[i].t == 'yp' ? '' : ' href="javascript:hist(\''+players[i].id+'\',\'n\')"')+'>и</a>|'
 			htmltext += players[i].id+'|'
 			htmltext += '<a'+plhref+'>' + secname[secname.length-1] + '</a>'
 			$('div#compare').append(htmltext.fontsize(1)+'<br>')
@@ -125,66 +200,91 @@ function RememberPl(x){
 function CheckPlayer(nn){
 	// Get data and compare players
 	ShowAll()
+//	$('a[id="th2"]').html('+')
+	$('div#kar, #th2, table#ph0, table#debug').remove()
+
 	$('td.back4').prepend('<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>')
 	$('a#remember, a[id^="compare"]').removeAttr('href')
-
 	compare = true
 
-	// Header:
-	var pl1header = '<center><b>'
-	pl1header += players[nn].firstname + ' ' + players[nn].secondname 
-	if (players[nn].team != '') {
-		pl1header += ' (' 
-		pl1header += (players[nn].teamid != undefined ? '<a href="plug.php?p=refl&t=k&j='+players[nn].teamid+'&z='+players[nn].teamhash+'">' : '')
-		pl1header += players[nn].team
-		pl1header += (players[nn].teamid != undefined ? '</a>' : '')
-		pl1header += ')'
+	var header = '<table width=100% id="plheader">'
+	// имя, команда
+	header += '<tr align=center><td width=50% valign=top>'
+	header += '<b>' + players[0].firstname + ' ' + players[0].secondname + '</b>'
+	header += (players[0].teamid != undefined ? ' (<a href="plug.php?p=refl&t=k&j='+players[0].teamid+'&z='+players[0].teamhash+'">' : ' (')
+	header += players[0].team
+	header += (players[0].teamid != undefined ? '</a>)' : ')')
+	header += '</td>'
+	header += '<td width=50% valign=top>'
+	header += '<b>' + players[nn].firstname + ' ' + players[nn].secondname + '</b>'
+	header += (players[nn].teamid != undefined ? ' (<a href="plug.php?p=refl&t=k&j='+players[nn].teamid+'&z='+players[nn].teamhash+'">' : ' (')
+	header += players[nn].team
+	header += (players[nn].teamid != undefined ? '</a>)' : ')')
+	header += '</td></tr>'
+	// возраст, гражданство, игры за сборные
+	header += '<tr align=center><td valign=top>'
+	header += players[0].age +' лет' + (players[0].natfull != ' ' ? ', ' + players[0].natfull : '')
+	if(	parseInt(players[0].internationalapps) != 0
+		|| parseInt(players[nn].internationalapps) != 0
+		|| parseInt(players[0].u21apps) != 0
+		|| parseInt(players[nn].u21apps) != 0)
+	{
+		header += ', ' + players[0].internationalapps +'('+players[0].u21apps+') матчей, '+players[0].internationalgoals+'('+players[0].u21goals+') голов'
 	}
-	pl1header += '<br>'
-	pl1header += players[nn].age + ' лет'
-	if (players[nn].natfull != ' '){
-		pl1header += ', '
-		pl1header += players[nn].natfull
-		pl1header += ' (матчей '
-		pl1header += players[nn].internationalapps
-		pl1header += ', голов '
-		pl1header += players[nn].internationalgoals
-		if (players[nn].u21apps != 0){
-			pl1header += ' / U21 матчей '
-			pl1header += players[nn].u21apps
-			pl1header += ', голов '
-			pl1header += players[nn].u21goals
-		}
-		pl1header += ')'
+	header += '</td>'
+	header += '<td valign=top>'
+	header += players[nn].age +' лет'+ (players[nn].natfull != ' ' ? ', ' + players[nn].natfull : '')
+	if(	parseInt(players[0].internationalapps) != 0
+		|| parseInt(players[nn].internationalapps) != 0
+		|| parseInt(players[0].u21apps) != 0
+		|| parseInt(players[nn].u21apps) != 0)
+	{
+		header += ', ' + players[nn].internationalapps +'('+players[nn].u21apps +') матчей, '+players[nn].internationalgoals+'('+players[nn].u21goals+') голов'
 	}
-	pl1header += '<br>'
-	if (players[nn].contract != 0 && players[nn].wage != 0) {
-		pl1header += 'Контракт: ' + players[nn].contract + ' г., ' 
-		if (players[nn].wage > 999){
-			pl1header += String((players[nn].wage/1000).toFixed(3)).replace(/\./g,',')
-		} else{
-			pl1header += players[nn].wage
-		}
-		pl1header += '$ в игровой день<br>'
+	header += '</td></tr>'
+	//контракты
+	header += '<tr align=center><td>'
+	if(players[0].wage != 0){
+		header += players[0].contract +' г. по '
+		header += (players[0].wage > 999 ? String((players[0].wage/1000).toFixed(3)).replace(/\./g,',') : players[0].wage)
+		header += '$ в ИД'
 	}
-	if (players[nn].value != 0) { 
-		var nom = ''
-		pl1header += 'Номинал: ' 
-		if (players[nn].value < 1000000) {
-			nom = (players[nn].value/1000).toFixed(3)
-		} else {
-			nom = (players[nn].value/1000000).toFixed(3) + ',000'
-		}
-		pl1header += String(nom).replace(/\./g,',')
-		pl1header += '$<br>'
+	header += ' </td>'
+	header += '<td>'
+	if(players[nn].wage != 0){
+		header += players[nn].contract +' г. по '
+		header += (players[nn].wage > 999 ? String((players[nn].wage/1000).toFixed(3)).replace(/\./g,',') : players[nn].wage)
+		header += '$ в ИД'
 	}
-	pl1header += players[nn].position + '<br>'
-	pl1header += '<br>'
-	pl1header += 'Умения</b>(сс=' + players[nn].sumskills + ')<br></center>'
+	header += ' </td></tr>'
+	// Номиналы
+	if( players[0].value != 0 || players[nn].value != 0){
+		header += '<tr align=center><td>'
+		if (players[0].value != 0)	header += 'Номинал: '+String(players[0].value < 1000000 ? (players[0].value/1000).toFixed(3) : (players[0].value/1000000).toFixed(3) + ',000').replace(/\./g,',')+'$'
+		header += ' </td>'
+		header += '<td>'
+		if (players[nn].value != 0)	header += 'Номинал: '+String(players[nn].value < 1000000 ? (players[nn].value/1000).toFixed(3) : (players[nn].value/1000000).toFixed(3) + ',000').replace(/\./g,',')+'$'
+		header += ' </td></tr>'
+	}
+	// позиция
+	header += '<tr align=center><td><b>'
+	header += '<b>' + players[0].position + '</b>'
+	header += '</td>'
+	header += '<td>'
+	header += '<b>' + players[nn].position + '</b>'
+	header += '</td></tr>'
+	// умения
+	header += '<tr align=center><td>'
+	header += 'сс='+ players[0].sumskills
+	header += '</td>'
+	header += '<td>'
+	header += 'сс='+players[nn].sumskills
+	header += '</td></tr>'
 
-	$('td.back4 table center:first').before('<table id="plheader" width=100%><tr><td id="pl0" width=50% valign=top></td><td id="pl1" valign=top></td></tr></table>')
-	$('td.back4 table center:first').appendTo( $('td#pl0') )
-	$('td#pl1').html(pl1header)
+	header += '</table>'
+
+	$('td.back4 table:first center:first').remove()
+	$('div#th0').before(header)
 
 	var skillupsumm = 0
 	// Skills:
@@ -255,6 +355,9 @@ function CodeForForum(){
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
 	var pl = players[0]
 	var ptype = UrlValue('t')
+	var skillsshow = ($('a[id="th0"]').html() == '+' ? false : true)
+	var seasonstatshow = ($('a[id="th1"]').html() == '+' ? false : true)
+	var fullstatshow = ($('a[id="th2"]').html() == '+' ? false : true)
 	// если не школьник, то короткий код для форума есть.
 	if (compare == false && ptype != 'yp' && ptype != 'yp2') {
 		x += '<br><b>Упрощенный вариант</b>:<br><br>'
@@ -272,13 +375,17 @@ function CodeForForum(){
 	x += '<br><hr><b>Полный вариант</b>:<br>'
 	x +='<textarea rows="20" cols="80" readonly="readonly" id="CodeForForum">'
 
-	x += '[spoiler][table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
+	x += '[table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
 	if (compare == true) {
 		x += $('table#plheader')
 			.find('a:contains("интересуются")').removeAttr('href').end()
+			.find('a[id="th0"]').remove().end()
 			.find('center, b, td').removeAttr('id').end()
-			.find('img').remove().end()
+			.find('img').removeAttr('width').end()
 			.html()
+			.replace('\/flags\/','/flags/mod/')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/<tbody>/g,'<table width=100%>')
@@ -290,14 +397,17 @@ function CodeForForum(){
 			.replace(/\&amp\;/g,'&')
 			.replace(/"/g,'')
 			.replace(/\[br\]/g,'\n')
-		x += '\n\n'
+//		x += '\n'
 
 	} else {
-		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] '
-		x += $('td.back4 table center:first')
-			.find('a:contains("интересуются")').removeAttr('href').end()
-			.find('img').remove().end()
+		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] [b]'
+		x += $('td.back4 table center:first b:first')
+			.find('a[id="th0"]').remove().end()
+			.find('img').removeAttr('width').end()
 			.html()
+			.replace('\/flags\/','/flags/mod/')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/\</g,'[')
@@ -307,31 +417,33 @@ function CodeForForum(){
 			.replace(/\&amp\;/g,'&')
 			.replace(/"/g,'')
 			.replace(/\[br\]/g,'\n')
-		x += '\n\n'
+		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+players[0].position+'[b]'
+		x += '\n\nУмения[/b](сс='+players[0].sumskills+')[/center]\n\n'
 	}
 
 	// skills
-	x += $('td.back4 table table:not(#plheader):first')
-		.find('sup').remove().end()
-		.html()
-		.replace(/<!-- [а-я] -->/g,'')
-		.replace(/<tbody>/g,'<table width=100%>')
-		.replace(/tbody/g,'table')
-		.replace(/<font /g,'[')
-		.replace(/\/font/g,'/color')
-		.replace(/\</g,'[')
-		.replace(/\>/g,']')
-		.replace(/ height=\"12\"/g,'')
-		.replace(/img src="/g,'img]')
-		.replace(/.gif/g,'.gif[/img')
-		.replace(/"/g,'')
-		.replace(/\n/g,'')
-		if (navigator.userAgent.indexOf('Opera') != -1 && ptype != 'yp' && ptype != 'yp2') x += '[/table]'
-
-	// stat
-	if (ptype == 'p' || ptype == 'pp'){
+	if(skillsshow){
+		x += $('td.back4 table table:not(#plheader):first')
+			.find('sup').remove().end()
+			.html()
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/<font /g,'[')
+			.replace(/\/font/g,'/color')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/ height=\"12\"/g,'')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/"/g,'')
+			.replace(/\n/g,'')
+			if (navigator.userAgent.indexOf('Opera') != -1 && ptype != 'yp' && ptype != 'yp2') x += '[/table]'
+	}
+	// stat of season
+	if (seasonstatshow && (ptype == 'p' || ptype == 'pp')){
 		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
-		x += $('td.back4 table table:last').html()
+		x += $('table#stat').html()
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/<tbody>/g,'<table width=100%>')
 			.replace(/tbody/g,'table')
@@ -342,10 +454,25 @@ function CodeForForum(){
 			.replace(/"/g,'')
 			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
 	}
+	// fullstat
+//	alert($('table#ph0').html()!=null)
+	if ($('table#ph0').html()!=null && fullstatshow && (ptype == 'p' || ptype == 'pp')){
+		x += '\n\n[center][b]Карьера[/b][/center]\n\n'
+		x += $('table#ph0').html()
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/"/g,'')
+			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
+	}
+
 	x += '[/td][/tr][/table]'
 	x += '\n\n'
-	x +=(compare == false ? '\n' : '----------------------------------------------------------------------------------------------------------------------------')
-	x +='[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center][/spoiler]\n';
+	x +='[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
 //	x += '[/spoiler]'
 	x += '</textarea>'
 
@@ -487,31 +614,31 @@ var ups = {	"a0e":"-2",
 
 
 	var poss = [['','','','','',''],
-		['GK','skillsgk',  '', 'GK',0,'!сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс=*0.5,f=*0,Фам'],
-		['SW(либеро)','skillssw',  'C','SW',0,'!сст,!s=*0,от=*2,вп=*2,гл=*1.6,ск=*1.5,мщ=*1.4,f=*0,Фам'],
-		['L DF','skillsldf', 'L','DF',0,'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб,f=*0,Фам'],
-		['C DF(защитник)','skillslcdf','C','DF',0,'!сст,!s=*0,от=*3,мщ=*1.7,вп=*1.5,ск=*1.3,f=*0,Фам'],
+		['GK','skillsgk',  '', 'GK',0,				'!сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс=*0.5,f=*0,Фам'],
+		['SW(либеро)','skillssw',  'C','SW',0,		'!сст,!s=*0,от=*2,вп=*2,гл=*1.6,ск=*1.5,мщ=*1.4,f=*0,Фам'],
+		['L DF','skillsldf', 'L','DF',0,			'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб=*1,f=*0,Фам'],
+		['C DF(защитник)','skillslcdf','C','DF',0,	'!сст,!s=*0,от=*3,мщ=*1.7,вп=*1.5,ск=*1.3,f=*0,Фам'],
 		['C DF(персональщик)','skillsccdf','C','DF',0,'!сст,!s=*0,по=*3,от=*3,мщ=*1.7,вп=*1.5,ск=*1.3,f=*0,Фам'],
 		['C DF(головастик)','skillsrcdf','C','DF',0,'!сст,!s=*0,гл=*3,вп=*2.1,от=*2,мщ=*1.9,ск=*1.3,ви,f=*0,Фам'],
-		['R DF','skillsrdf', 'R','DF',0,'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб,f=*0,Фам'],
-		['L DM','skillsldm', 'L','DM',0,'!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп,ск,ви,f=*0,Фам'],
-		['C DM(стоппер)','skillslcdm','C','DM',0,'!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви,тх,f=*0,Фам'],
-		['C DM(персональщик)','skillsccmd','C','DM',0,'!сст,!s=*0,по=*3,от=*2.5,вп=*1.5,мщ=*1.5,ск,f=*0,Фам'],
-		['C DM(стоппер)','skillsrcdm','C','DM',0,'!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви,тх,f=*0,Фам'],
-		['R DM','skillsrdm', 'R','DM',0,'!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп,ск,ви,f=*0,Фам'],
-		['L MF','skillslmf', 'L','M',0,'!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам'],
+		['R DF','skillsrdf', 'R','DF',0,			'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб=*1,f=*0,Фам'],
+		['L DM','skillsldm', 'L','DM',0,			'!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп=*1,ск=*1,ви=*1,f=*0,Фам'],
+		['C DM(стоппер)','skillslcdm','C','DM',0,	'!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви=*1,тх=*1,f=*0,Фам'],
+		['C DM(персональщик)','skillsccmd','C','DM',0,'!сст,!s=*0,по=*3,от=*2.5,вп=*1.5,мщ=*1.5,ск=*1,f=*0,Фам'],
+		['C DM(стоппер)','skillsrcdm','C','DM',0,	'!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви=*1,тх=*1,f=*0,Фам'],
+		['R DM','skillsrdm', 'R','DM',0,			'!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп=*1,ск=*1,ви=*1,f=*0,Фам'],
+		['L MF','skillslmf', 'L','M',0,				'!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам'],
 		['C MF(дальнобойщик)','skillslcmf','C','M',0,'!сст,!s=*0,ду=*3,пс=*2,тх=*2,уд=*2,ви=*1.5,др=*1.5,f=*0,Фам'],
-		['C MF(диспечер)','skillsccmf','C','M',0,'!сст,!s=*0,ви=*3,пс=*2,тх=*2,ду=*1.5,др=*1.5,f=*0,Фам'],
-		['C MF(стоппер)','skillsrcmf','C','M',0,'!сст,!s=*0,от=*2.5,вп=*2,пс=*2,тх=*2,ви=*1.5,f=*0,Фам'],
-		['R MF','skillsrmf', 'R','M',0,'!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам'],
-		['L AM','skillslam', 'L','AM',0,'!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=*2,ви=*1.5,пс=*1.5,f=*0,Фам'],
+		['C MF(диспетчер)','skillsccmf','C','M',0,	'!сст,!s=*0,ви=*3,пс=*2,тх=*2,ду=*1.5,др=*1.5,f=*0,Фам'],
+		['C MF(стоппер)','skillsrcmf','C','M',0,	'!сст,!s=*0,от=*2.5,вп=*2,пс=*2,тх=*2,ви=*1.5,f=*0,Фам'],
+		['R MF','skillsrmf', 'R','M',0,				'!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам'],
+		['L AM','skillslam', 'L','AM',0,			'!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=*2,ви=*1.5,пс=*1.5,f=*0,Фам'],
 		['C AM(дальнобойщик)','skillslcam','C','AM',0,'!сст,!s=*0,ду=*3,пс=*2,тх=*2,уд=*2,ви=*1.5,др=*1.5,f=*0,Фам'],
-		['C AM(диспечер)','skillsccam','C','AM',0,'!сст,!s=*0,ви=*3,пс=*2,тх=*2,др=*2,ду,f=*0,Фам'],
-		['C AM(отянутый FW)','skillsrcam','C','AM',0,'!сст,!s=*0,тх=*2.5,др=*2.5,уд=*2,ду=*2,ви,пс,f=*0,Фам'],
-		['R AM','skillsram', 'R','AM',0,'!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=2,ви=*1.5,пс=*1.5,f=*0,Фам'],
-		['C FW(офсайды)','skillslcfw','C','FW',0,'!сст,!s=*0,вп=*3,уд=*2,ск=*2,тх=*1.5,др,f=*0,Фам'],
-		['C FW(дриблер)','skillsccfw','C','FW',0,'!сст,!s=*0,др=*3,уд=*2,тх=*2,ск,f=*0,Фам'],
-		['C FW(головастик)','skillsrcfw','C','FW',0,'!сст,!s=*0,гл=*3,уд=*2,мщ=*2,вп=*2,ск,f=*0,Фам']
+		['C AM(диспетчер)','skillsccam','C','AM',0,	'!сст,!s=*0,ви=*3,пс=*2,тх=*2,др=*2,ду=*1,f=*0,Фам'],
+		['C AM(оттянутый FW)','skillsrcam','C','AM',0,'!сст,!s=*0,тх=*2.5,др=*2.5,уд=*2,ду=*2,ви=*1,пс=*1,f=*0,Фам'],
+		['R AM','skillsram', 'R','AM',0,			'!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=*2,ви=*1.5,пс=*1.5,f=*0,Фам'],
+		['C FW(офсайды)','skillslcfw','C','FW',0,	'!сст,!s=*0,вп=*3,уд=*2,ск=*2,тх=*1.5,др=*1,f=*0,Фам'],
+		['C FW(дриблер)','skillsccfw','C','FW',0,	'!сст,!s=*0,др=*3,уд=*2,тх=*2,ск=*1,f=*0,Фам'],
+		['C FW(головастик)','skillsrcfw','C','FW',0,'!сст,!s=*0,гл=*3,уд=*2,мщ=*2,вп=*2,ск=*1,f=*0,Фам']
 	]
 	
 	for (var i in poss) {
@@ -583,11 +710,11 @@ var ups = {	"a0e":"-2",
  	j++
 	if (ms[j].indexOf('в аренде') !=-1) j++
 	players[0].age = +ms[j].split(' ',1)[0]
-	if (ms[j].indexOf('(матчей')!=-1){
+	if (ms[j].indexOf('(матчей')>-1){
 		players[0].natfull = ms[j].split(', ',2)[1].split(' (',1)[0]
 		players[0].internationalapps = +ms[j].split(', ',2)[1].split('матчей ',2)[1]
 		players[0].internationalgoals = +ms[j].split(', ',3)[2].split(' ',2)[1].replace(')','')
-		if (ms[j].indexOf('U21')!=-1){
+		if (ms[j].indexOf('U21')>-1){
 			players[0].u21apps = +ms[j].split('/ U21 матчей ',2)[1].split(',',1)[0]
 			players[0].u21goals = +ms[j].split('/ U21 матчей ',2)[1].split(', голов ',2)[1].replace(')','')
 		} else {
@@ -601,6 +728,7 @@ var ups = {	"a0e":"-2",
 		players[0].u21apps = 0
 		players[0].u21goals = 0
 	}
+//	$('td.back4').prepend('get '+players[0].internationalapps+players[0].u21apps +'<br>')
 	j++
 	if (ms[j].indexOf('Контракт:')!=-1) {
 		players[0].contract = +ms[j].split(' ',4)[1]
@@ -763,6 +891,15 @@ var ups = {	"a0e":"-2",
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text3)
 	$("#mydiv").hide()
+	$('center:eq(1) ~ br:first').before('<div id="th0"><a id="th0" href="javascript:void(ShowTable(0))">&ndash;</a></div>').remove()
+	$('center:eq(2) ~ br').before('<div id="th1"><a id="th1" href="javascript:void(ShowTable(1))">&ndash;</a></div>').remove()
+
+	$('td.back4 table table:eq(1)').attr('id','stat')
+
+	var statseasons = '<br><div id="kar" align=center>Карьера</div>'
+	statseasons += '<div id="th2" align=left><a id="th2" href="javascript:void(GetPlayerHistory(0,'+players[0].id+'))">+</a></div>'
+	statseasons += '<table width=100% id=ph0></table>'
+	$('td.back4 table table:eq(1)').after(statseasons)
 
 	// Get info fom Global or Session Storage
 	var text1 = String(navigator.userAgent.indexOf('Firefox') != -1 ? globalStorage[location.hostname].peflplayer : sessionStorage.peflplayer)
@@ -775,6 +912,7 @@ var ups = {	"a0e":"-2",
 		}
 		PrintPlayers()
 	}
+	//GetPlayerHistory(0,players[0].id)
 
 //}, false)
 })();	// for ie
