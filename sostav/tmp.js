@@ -131,6 +131,7 @@ $().ready(function() {
 			var sname 		= data_assoc["secondname"+i];
 			var pg 			= tmpplayer["pg"] 		= parseInt(data_assoc["pg"+i]);
 			var training 	= tmpplayer["training"] = parseInt(data_assoc["training"+i]);
+			tmpplayer["form"] 		= data_assoc["form"+i];
 			tmpplayer["firstname"] 	= data_assoc["firstname"+i];
 			tmpplayer["secondname"] = sname.replace('~','').replace('*','').replace('^','');
 			tmpplayer["rest"] 		= (training == 1 ? 1 : 0)
@@ -140,6 +141,7 @@ $().ready(function() {
 			tmpplayer["tr1"] 		= groups[pg][1]
 			tmpplayer["tr2"] 		= groups[pg][2]
 			tmpplayer["tr3"] 		= groups[pg][3]
+
 
 			// if индивидуалка
 			for(j=1;j<=3;j++){
@@ -322,6 +324,32 @@ $().ready(function() {
 			$('td.back4 table table:eq(1)').after('<br><div align=left><b>*<sup>1</sup></b> - влияют только на 50%<br></div>')
 			$(val).prepend('<th></th>')
 		})
+		// show травмированых и востанавливающихся
+		var prest = '<br><b>'+itrains[1]["name"]+':</b><br>'
+		var pinj  = '<br><b>Травмированы:</b><br>'
+		var pnot  = '<br><b>Не влияют на тренировки командных мячей:</b><br>'
+		var countrest = 0
+		var countinj  = 0
+		var countnot  = 0
+		for(i in players){
+			var pli = players[i]
+			if(pli.rest==1) {
+				countrest++
+				prest += pli.form+'% '+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
+			}
+			if(pli.inj >1) {
+				countinj++
+				pinj  += pli.inj+' дней '+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
+			}         
+			if(pli.notrain==1) {
+				countnot++
+				pnot  += pli.firstname + '&nbsp;'+pli.secondname+'<br>'
+			}
+		}
+		if(countrest>0) $('td.back4').append(prest)
+		if(countinj >0) $('td.back4').append(pinj)
+		if(countnot >0) $('td.back4').append(pnot)
+
 	})
 	}
 }, false)
