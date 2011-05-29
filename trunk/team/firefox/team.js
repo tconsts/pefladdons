@@ -60,7 +60,7 @@ var skills = {
 $().ready(function() {
 	if(UrlValue('l')=='y' || UrlValue('n')!=false){
 		//Page for show skills
-		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Скилы</a> | ')
+		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
 		$('table#tblRostSkills')
 			.attr('width','886')
 //			.find('tr[id^="tblRostSkillsTHTr"]:gt(0)').remove().end()
