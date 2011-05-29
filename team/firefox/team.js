@@ -59,7 +59,21 @@ var skills = {
 
 $().ready(function() {
 	if(UrlValue('l')=='y' || UrlValue('n')!=false){
-	//Page for show skills
+		//Page for show skills
+		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Скилы</a> | ')
+		$('table#tblRostSkills')
+			.attr('width','886')
+//			.find('tr[id^="tblRostSkillsTHTr"]:gt(0)').remove().end()
+		$('table#tblRostSkills img').attr('height','10')
+		$('table#tblRostSkills tr').each(function(){
+			$(this).find('td:eq(1)').each(function(i,val){
+				$(val).html($(val).html().replace('<br>','&nbsp;'))
+			})
+		})
+
+	}else if(UrlValue('n')!=false){
+		// Ростер с фильтром(не вся стата пока зывается)
+
 	}else{
 		// Draw right panel and fill data
 		var preparedhtml = ''
@@ -90,12 +104,12 @@ $().ready(function() {
 }, false);
 
 function ShowFilter(){
-	var style = $('table#tblRosterFilter').attr('style')
+	var style = $('table#tblRostSkillsFilter').attr('style')
 	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
-		$('table#tblRosterFilter').show()
+		$('table#tblRostSkillsFilter').show()
 		$('div#filter').show()
 	}else{
-		$('table#tblRosterFilter').hide()
+		$('table#tblRostSkillsFilter').hide()
 		$('div#filter').hide()
 		Filter(3,'')
 	}
@@ -120,8 +134,8 @@ function Filter(num,p){
 	var selectTDcolor = 'green'//'D3D7CF'
 	var selectFLcolor = 'white'
 
-    $('table#tblRosterFilter th').removeAttr('bgcolor')
-	$('table#tblRosterFilter td').each(function(){
+    $('table#tblRostSkillsFilter th').removeAttr('bgcolor')
+	$('table#tblRostSkillsFilter td').each(function(){
 		$(this).attr('bgcolor','a3de8f')
 		var position = $(this).attr('id')
 		var kmark = 0
@@ -136,7 +150,7 @@ function Filter(num,p){
 		}
 		if(kmark==1 && lmark==1 && sumpos != 0) $(this).attr('bgcolor',selectTDcolor)
 	})
-	$('table#tblRoster tr:gt(0)').each(function(j,val){
+	$('table#tblRostSkills tr:gt(0)').each(function(j,val){
 		$(val).hide()
 		var position = $(val).find('td:last').text()
 		var kmark = 0
@@ -151,7 +165,7 @@ countSk = [0]
 function CountSkills(tdid){
     if(countSk[tdid]!=undefined && countSk[tdid]==1) countSk[tdid] = 0
 	else countSk[tdid] = 1
-	$('table#tblRoster tr').each(function(j, valj){
+	$('table#tblRostSkills tr').each(function(j, valj){
 		var sumsel = 0
 		$(valj).find('td').each(function(i, val){
 			$(val).removeAttr('bgcolor')
@@ -163,6 +177,16 @@ function CountSkills(tdid){
 		if(j>0) $(valj).find('td:eq(2)').html('<b>'+(sumsel==0 ? players[j].sumskills : sumsel)+'</b>')
 	})
 }
+function ShowSkillsY() {
+	if( type == 'num') {
+		type = 'img'
+		$('table#tblRostSkills img').attr('height','10').show()
+	}else{
+		type = 'num'
+		$('table#tblRostSkills img').hide()
+	}
+	
+}
 
 function ShowSkills(first){
 	Filter(3,'')
@@ -172,10 +196,11 @@ function ShowSkills(first){
 	else type = 'img'
 
 	$('td#crabglobalright').html('')
-	$('table#tblRoster tr').remove()
 	$('table#tblRoster')
+		.attr('id','tblRostSkills')
 		.attr('width','886')
 		.attr('bgcolor','BFDEB3')
+	$('table#tblRostSkills tr').remove()
 
 	var filter = ''
 	filter += '<tr align=center><th width=10%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th></tr>'
@@ -189,6 +214,7 @@ function ShowSkills(first){
 
 	if(first == 1){
 		$('table#tblRosterFilter')
+			.attr('id','tblRostSkillsFilter')
 			.attr('width','50%')
 			.attr('align','center')
 			.attr('cellspacing','1')
@@ -205,8 +231,8 @@ function ShowSkills(first){
 	var header = '<tr align="left" style="font-weight:bold;" id="tblRostSkillsTHTr0">'
 	header += '<td><a class="sort">'+hd2.join('</a></td><td><a class="sort">')+'</a></td>'
 	header += '</tr>'
-	$('table#tblRoster').append(header)
-	$('table#tblRoster tr:first a').each(function(i,val){
+	$('table#tblRostSkills').append(header)
+	$('table#tblRostSkills tr:first a').each(function(i,val){
 		$(val).attr('href','javascript:void(CountSkills('+i+'))')
 	})
 
@@ -226,10 +252,10 @@ function ShowSkills(first){
 			else 							tr += '<td> </td>'
 		}
 		tr += '</tr>'
-		$('table#tblRoster').append(tr)
+		$('table#tblRostSkills').append(tr)
 	}
-	$('table#tblRoster tr:even').attr('bgcolor','a3de8f')
-	$('table#tblRoster tr:odd').attr('bgcolor','C9F8B7')
+	$('table#tblRostSkills tr:even').attr('bgcolor','a3de8f')
+	$('table#tblRostSkills tr:odd').attr('bgcolor','C9F8B7')
 
 	// Усредненый игрок
 /**
@@ -246,7 +272,7 @@ function ShowSkills(first){
 		else 								tr += '<td> </td>'
 	}
 	tr += '</tr>'
-	$('table#tblRoster').append(tr)
+	$('table#tblRostSkills').append(tr)
 /**/
 	$('span#tskills').html('Ростер команды')
 	$('a#tskills').attr('href','')
@@ -360,8 +386,9 @@ function Ready(){
 
 			// print link to skills page
 			if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
-				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скилы игроков</span></a>&nbsp;')
-			}
+				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скилы игроков</span></a>&nbsp;')}
+			//else {
+			//	$('td.back4 table table:eq(1) tr:last td:last').append('<a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">.</span></a>&nbsp;')}
 
 			// print to right menu
 			var thtml = ''
