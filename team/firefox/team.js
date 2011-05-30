@@ -11,27 +11,26 @@
 // @version			1.1
 // ==/UserScript==
 
-//document.addEventListener('DOMContentLoaded', function(){
-
 var countSostav = 0
+var type 	= ''
 var players = []
-var team = {}
-team.wage = 0
-team.wage2 = 0
-team.wage3 = 0
-team.value = 0
-team.value2 = 0
-team.value3 = 0
-var type = ''
-
+var countSk = [0]
+var team = {
+	'wage'	: 0,
+	'wage2'	: 0,
+	'wage3'	: 0,
+	'value'	: 0,
+	'value2': 0,
+	'value3': 0
+}
 var skills = {
-/**/
 	'N'	  : 'pn',
 	'Имя' : 'name',
 	'Поз' : 'position',
 	'Фор' : 'form',
 	'Мор' : 'morale',
-	'Сум' : 'sumskills',
+	'сс'  : 'sumskills',
+	'Сум' : 'sorting',
 	'угл' : 'Угловые',
 	'нав' : 'Навесы',
 	'дрб' : 'Дриблинг',
@@ -53,28 +52,26 @@ var skills = {
 	'вид' : 'Видение поля',
 	'рбт' : 'Работоспособность',
 	'тех' : 'Техника'
-/**/
 }
-
+var ff = ''
 
 $().ready(function() {
 	if(UrlValue('l')=='y' || UrlValue('n')!=false){
 		//Page for show skills
-		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
-		$('table#tblRostSkills')
-			.attr('width','886')
-//			.find('tr[id^="tblRostSkillsTHTr"]:gt(0)').remove().end()
-		$('table#tblRostSkills img').attr('height','10')
-		$('table#tblRostSkills tr').each(function(){
-			$(this).find('td:eq(1)').each(function(i,val){
-				$(val).html($(val).html().replace('<br>','&nbsp;'))
-			})
-		})
-
+//		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
+//		$('table#tblRostSkills')
+//			.attr('width','886')
+//		$('table#tblRostSkills img').attr('height','10')
+//		$('table#tblRostSkills tr').each(function(){
+//			$(this).find('td:eq(1)').html($(this).find('td:eq(1)').html().replace('<br>','&nbsp;'))
+//		})
 	}else if(UrlValue('n')!=false){
-		// Ростер с фильтром(не вся стата пока зывается)
+		// Ростер с фильтром(не вся стата показывается)
 
 	}else{
+		// browser FireFox or no?
+		ff = (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+
 		// Draw right panel and fill data
 		var preparedhtml = ''
 		preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
@@ -100,7 +97,6 @@ $().ready(function() {
 			CountryInfoGet();
 		}
 	}
-
 }, false);
 
 function ShowFilter(){
@@ -111,20 +107,20 @@ function ShowFilter(){
 	}else{
 		$('table#tblRostSkillsFilter').hide()
 		$('div#filter').hide()
-		Filter(3,'')
+//		Filter(3,'')
 	}
 }
 
 var pos1 = {'C' :0}
 var pos2 = {'GK':0}
 function Filter(num,p){
-	if(num==3){
-		for(i in pos1) pos1[i] = 0
-		for(i in pos2) pos2[i] = 0
-	} else if(num==1){
+	if(num==1){
 		pos1[p] = (pos1[p]==undefined || pos1[p]==0 ? 1 : 0)
-	} else {
+	} else if(num==2){
 		pos2[p] = (pos2[p]==undefined || pos2[p]==0 ? 1 : 0)
+	} else {
+//		for(i in pos1) pos1[i] = 0
+//		for(i in pos2) pos2[i] = 0
 	}
 	var sumpos1 = 0
 	var sumpos2 = 0
@@ -161,11 +157,10 @@ function Filter(num,p){
 	})
 }
 
-countSk = [0]
 function CountSkills(tdid){
     if(countSk[tdid]!=undefined && countSk[tdid]==1) countSk[tdid] = 0
 	else countSk[tdid] = 1
-	$('table#tblRostSkills tr').each(function(j, valj){
+	$('table#tblRostSkills tr:gt(0)').each(function(j, valj){
 		var sumsel = 0
 		$(valj).find('td').each(function(i, val){
 			$(val).removeAttr('bgcolor')
@@ -174,8 +169,13 @@ function CountSkills(tdid){
 				$(val).attr('bgcolor','white')
 			}
 		})
-		if(j>0) $(valj).find('td:eq(2)').html('<b>'+(sumsel==0 ? players[j].sumskills : sumsel)+'</b>')
+//		$(valj).find('td:eq(2)').html('<b>'+(sumsel==0 ? players[j].sumskills : sumsel)+'</b>')
+		if(players[j].sumskills == players[j].sorting) players[j].sorting = sumsel
+		else if(sumsel == 0) players[j].sorting = players[j].sumskills
+		else players[j].sorting = sumsel
+//		players[j].sorting = (players[j].sumskills == players[j].sorting ? sumsel)
 	})
+	ShowSkills()
 }
 function ShowSkillsY() {
 	if( type == 'num') {
@@ -185,34 +185,29 @@ function ShowSkillsY() {
 		type = 'num'
 		$('table#tblRostSkills img').hide()
 	}
-	
+	$('table#tblRostSkills tr').each(function(){
+		$(this).find('td:eq(1)').html($(this).find('td:eq(1)').html().replace('<br>','&nbsp;'))
+	})
 }
 
-function ShowSkills(first){
-	Filter(3,'')
-	for( i in countSk) countSk[i] = 0
+function ShowSkills(param){
 
-	if( type == 'img') type = 'num'
-	else type = 'img'
+	if(param == 1){
+		$('td#crabglobalright').html('')
+		$('table#tblRoster')
+			.attr('id','tblRostSkills')
+			.attr('width','886')
+			.attr('bgcolor','BFDEB3')
 
-	$('td#crabglobalright').html('')
-	$('table#tblRoster')
-		.attr('id','tblRostSkills')
-		.attr('width','886')
-		.attr('bgcolor','BFDEB3')
-	$('table#tblRostSkills tr').remove()
-
-	var filter = ''
-	filter += '<tr align=center><th width=10%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th></tr>'
-	filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td bgcolor=a3de8f id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
-	filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td bgcolor=a3de8f id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
-	filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td bgcolor=a3de8f id="L DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="R DF">&nbsp;</td></tr>'
-	filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td bgcolor=a3de8f id="L DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="R DM">&nbsp;</td></tr>'
-	filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td bgcolor=a3de8f id="L MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="R MF">&nbsp;</td></tr>'
-	filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td bgcolor=a3de8f id="L AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="R AM">&nbsp;</td></tr>'
-	filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<th></th></tr>'
-
-	if(first == 1){
+		var filter = ''
+		filter += '<tr align=center><th width=10%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th></tr>'
+		filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td bgcolor=a3de8f id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
+		filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td bgcolor=a3de8f id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
+		filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td bgcolor=a3de8f id="L DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="R DF">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td bgcolor=a3de8f id="L DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="R DM">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td bgcolor=a3de8f id="L MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="R MF">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td bgcolor=a3de8f id="L AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="R AM">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<th></th></tr>'
 		$('table#tblRosterFilter')
 			.attr('id','tblRostSkillsFilter')
 			.attr('width','50%')
@@ -220,10 +215,15 @@ function ShowSkills(first){
 			.attr('cellspacing','1')
 			.attr('cellpadding','1')
 			.after('<div id="filter">&nbsp;</div>')
-			.before('<a href="javascript:void(ShowSkills())">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a>')
+			.before('<a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a>')
 			.html(filter)
-	    ShowFilter()
+		$('span#tskills').html('Ростер команды')
+		$('a#tskills').attr('href','')
+		ShowFilter()
+		ShowSkills(2)
 	}
+	$('table#tblRostSkills tr').remove()
+	if(param == 2) type = (type=='img' ? 'num' : 'img')
 
 	var hd = 'N Имя Сум лид дрб удр пас вид глв<br>вых нав длу псо<br>реа ско штр впз угл<br>рук тех мощ отб рбт вын Мор Фор Поз'
 	var hd2= hd.split(' ')
@@ -236,77 +236,63 @@ function ShowSkills(first){
 		$(val).attr('href','javascript:void(CountSkills('+i+'))')
 	})
 
-	for(i=1;i<players.length;i++) {
-		var tr ='<tr id="'+players[i].position+'">'
-		for(j in hd2) {
-			var skn = hd2[j]
-			var key1 = players[i][skills[skn.split('<br>')[0]]]
-			var key2 = players[i][skills[skn.split('<br>')[1]]]
-			var sk = (key1!=undefined ? key1 : key2)
-			if(skn=='Имя') 					tr += '<td><a href="plug.php?p=refl&t=p&j='+players[i].id+'&z='+players[i].hash+'">'+sk+'</a></td>'
-			else if(skn=='Поз') 			tr += '<td>'+sk+'</td>'
-//			else if(skn=='Мор'||skn=='Фор')	tr += '<td align=center>'+sk+'</td>'
-			else if(skn=='Сум') 			tr += '<td><b>'+parseInt(sk)+'</b></td>'
-			else if(!isNaN(parseInt(sk)) && type=='num')	tr += '<td>'+parseInt(sk)+'</td>'
-			else if(!isNaN(parseInt(sk)) && type=='img')	tr += '<td>'+String(sk).split('.')[0]+(String(sk).split('.')[1]!=undefined ? '&nbsp;<img height="10" src="system/img/g/'+String(sk).split('.')[1]+'.gif"></img>' : '')+'</td>'
-			else 							tr += '<td> </td>'
+	var pf = players.sort(sSkills)
+	for(i=0;i<pf.length;i++) {
+		if(pf[i]!=undefined){
+			var tr ='<tr id="'+pf[i].position+'">'
+			for(j in hd2) {
+				var tdcolor = (countSk[j] ==1 ? ' bgcolor=white' : '')
+				var skn = hd2[j]
+				var key1 = pf[i][skills[skn.split('<br>')[0]]]
+				var key2 = pf[i][skills[skn.split('<br>')[1]]]
+					var sk = (key1!=undefined ? key1 : key2)
+				if(skn=='Имя') 					tr += '<td'+tdcolor+'><a href="plug.php?p=refl&t=p&j='+pf[i].id+'&z='+pf[i].hash+'">'+sk+'</a></td>'
+				else if(skn=='Поз') 			tr += '<td'+tdcolor+'>'+sk+'</td>'
+				else if(skn=='Сум') 			tr += '<td'+tdcolor+'><b>'+parseInt(sk)+'</b></td>'
+				else if(!isNaN(parseInt(sk)) && type=='num')	tr += '<td'+tdcolor+'>'+parseInt(sk)+'</td>'
+				else if(!isNaN(parseInt(sk)) && type=='img')	tr += '<td'+tdcolor+'>'+String(sk).split('.')[0]+(String(sk).split('.')[1]!=undefined ? '&nbsp;<img height="10" src="system/img/g/'+String(sk).split('.')[1]+'.gif"></img>' : '')+'</td>'
+				else 							tr += '<td'+tdcolor+'> </td>'
+			}
+			tr += '</tr>'
+			$('table#tblRostSkills').append(tr)
 		}
-		tr += '</tr>'
-		$('table#tblRostSkills').append(tr)
 	}
+
+	// Run filter
+	Filter(3,'')
 	$('table#tblRostSkills tr:even').attr('bgcolor','a3de8f')
 	$('table#tblRostSkills tr:odd').attr('bgcolor','C9F8B7')
 
-	// Усредненый игрок
-/**
-	tr = '<tr align=center id="LCR GK/SW/DF/DM/MF/AM/FW" bgcolor=#88C274>'
-	for(j in hd2) {
-		var skn = hd2[j]
-		var key1 = players[0][skills[hd2[j].split('<br>')[0]]]
-		var key2 = players[0][skills[hd2[j].split('<br>')[1]]]
-		var sk = (key1!=undefined ? key1 : key2)
-		if(skn=='N')						tr += '<td> </td>'
-		else if(skn=='Фор' || skn=='Мор')	tr += '<td>'+parseFloat(sk).toFixed(1)+'</td>'
-		else if(skn=='Имя') 				tr += '<td align=left>Усредненый игрок</td>'
-		else if(!isNaN(parseFloat(sk)))		tr += '<td>'+parseFloat(sk).toFixed(1)+'</td>'
-		else 								tr += '<td> </td>'
-	}
-	tr += '</tr>'
-	$('table#tblRostSkills').append(tr)
-/**/
-	$('span#tskills').html('Ростер команды')
-	$('a#tskills').attr('href','')
+}
+
+function sSkills(i, ii) { // По SumSkills (убыванию)
+    if 		(i.sorting < ii.sorting)	return  1
+    else if	(i.sorting > ii.sorting)	return -1
+    else								return  0
 }
 
 function PlayersInfoGet(){
-	players[0] = {}
-	players[0].sumskills = 0
-	players[0].morale = 0
-	players[0].form = 0
 	$('tr[id^=tblRosterTr]').each(function(i,val){
-		var purl = $(val).find('a[trp="1"]').attr('href')
+		var purl= $(val).find('a[trp="1"]').attr('href')
 		var pid = UrlValue('id',purl)
 		var pn	= parseInt($(val).find('td:first').text())
 		players[pn] = {}
-		players[pn].pn 			= pn
-		players[pn].id 			= pid
-		players[pn].hash		= UrlValue('z',$(val).find('td:eq(1) a:first').attr('href'))
-		players[pn].name		= $(val).find('td:eq(1) a').html()
-									.split('<img')[0]
-									.replace('(*)','')
-									.replace('<i>','')
-									.replace('</i>','')
-		players[pn].nid			= $(val).find('td:eq(2) img').attr('src')
-									.split('/')[4]
-									.split('.')[0]
-		players[pn].age			= parseInt($(val).find('td:eq(3)').html())
-		players[pn].morale		= parseInt($(val).find('td:eq(4)').html())
-		players[pn].form		= parseInt($(val).find('td:eq(5)').html())
-		players[pn].position	= $(val).find('td:eq(11)').html()
-									.replace(/\s/g,'&nbsp;')
-
-		players[0].morale 	+= players[pn].morale/countSostavMax
-		players[0].form 	+= players[pn].form/countSostavMax
+		players[pn].pn 		= pn
+		players[pn].id 		= pid
+		players[pn].hash	= UrlValue('z',$(val).find('td:eq(1) a:first').attr('href'))
+		players[pn].name	= $(val).find('td:eq(1) a').html()
+								.split('<img')[0]
+								.replace('(*)','')
+								.replace('<i>','')
+								.replace('</i>','')
+		players[pn].nid		= $(val).find('td:eq(2) img').attr('src')
+								.split('/')[4]
+								.split('.')[0]
+		players[pn].age		= parseInt($(val).find('td:eq(3)').html())
+		players[pn].morale	= parseInt($(val).find('td:eq(4)').html())
+		players[pn].form	= parseInt($(val).find('td:eq(5)').html())
+		players[pn].position= $(val).find('td:eq(11)').html()
+								.replace(/\s/g,'&nbsp;')
 
 		$('td.back4').append('<table id=pl'+pn+' style="display: none;"><tr><td id=pl'+pn+'></td></tr></table>')
 		$('td#pl'+pn).load(purl+' center:first', function(){GetPl(pn);})		
@@ -314,46 +300,35 @@ function PlayersInfoGet(){
 }
 
 function CountryInfoGet(){
-	teamManagerNick = $('td.back4 table:first table:eq(1) table td:first span').text()
 	var srch="Вы вошли как "
 	var curManagerNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
-	if(teamManagerNick == curManagerNick){
-		var country_id = UrlValue('j',$('td.back4 table:first table td:eq(1) a').attr('href'))
-		var country_name = $('td.back4 table:first table td:eq(3)').text().split(', ')[1].replace(')','')
-		var tdiv = getCookie('teamdiv');
+	if(curManagerNick == $('td.back4 table:first table:eq(1) table td:first span').text()){
 		var tdivarr = []
-		if(tdiv != false) {
-			tdivarr = tdiv.split('!')
-		}
+		var tdiv = getCookie('teamdiv');
+		if(tdiv != false) tdivarr = tdiv.split('!')
+		// format: club_id, country_name, div, <list of div prizes>
 		tdivarr[0] = cid
-		tdivarr[1] = country_name
-		var ck = ''
-		ck = tdivarr.join('!')
-		setCookie('teamdiv',ck);
-//		$('td.back4').prepend(ck+'<br>')
+		tdivarr[1] = $('td.back4 table:first table td:eq(3)').text().split(', ')[1].replace(')','')
+		setCookie('teamdiv',tdivarr.join('!'));
 	} 
-	
 }
 
 function GetPl(pn){
-	// get player skills
+	// get player skills with number pn
 	var skillsum = 0
 	$('td#pl'+pn+' table:first td:even').each(function(){
 		var skillarrow = ''
 		var skillname = $(this).html();
 		var skillvalue = parseInt($(this).next().html().replace('<b>',''));
-		if(players[0][skillname] == undefined) players[0][skillname] = 0
 
 		if ($(this).next().find('img').attr('src') != undefined){
 			skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
 		}
 		skillsum += skillvalue;
 		players[pn][skillname] = skillvalue + skillarrow;
-		players[0][skillname] += skillvalue/countSostavMax
-
 	})
 	players[pn].sumskills = skillsum
-	players[0].sumskills += skillsum/countSostavMax
+	players[pn].sorting	= skillsum
 
 	// get player header info
 	$('td#pl'+pn+' table').remove()
@@ -372,23 +347,10 @@ function GetPl(pn){
 function Ready(){
 	countSostav++
 	if(countSostav==countSostavMax){
-		// Print debug
-		var debug = ''
-		debug += '<br>'+team.value
-		debug += '<br>'+team.wage
-		for(j in players){
-			debug +='<br>'+j+': '
-			for(i in players[j]) debug += players[j][i]+','
-		}
-//		$('td.back4').prepend(debug)
-
-		if(team.wage>0){ // if VIP
-
+		if(team.wage > 0){ // if VIP
 			// print link to skills page
 			if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
-				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скилы игроков</span></a>&nbsp;')}
-			//else {
-			//	$('td.back4 table table:eq(1) tr:last td:last').append('<a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">.</span></a>&nbsp;')}
+				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')}
 
 			// print to right menu
 			var thtml = ''
@@ -445,7 +407,7 @@ function Ready(){
 			}
 			// update current
 			tfin[cid] = {}
-			tfin[cid].zp = team.wage
+			tfin[cid].zp  = team.wage
 			tfin[cid].nom = team.value
 			//Save
 			var text = ''
@@ -456,30 +418,9 @@ function Ready(){
 	}
 }
 
-function setCookie(name, value) {
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() + 356); // +1 year
-	if (!name || !value) return false;
-	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
-	return true
-}
-function getCookie(name) {
-	    var pattern = "(?:; )?" + name + "=([^;]*);?"
-	    var regexp  = new RegExp(pattern)
-	     
-	    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
-	    return false
-}
-
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	return false
-}
-
 function ShowChange(value){
 	if(value > 0) 		return '<sup><font color="green">+' + value + '</font></sup>'
-	else if(value < 0)	return '<sup><font color="red">' + value + '</font></sup>'
+	else if(value < 0)	return '<sup><font color="red">' 	+ value + '</font></sup>'
 	else 		  		return ''
 }
 
@@ -498,14 +439,14 @@ function EditFinance(){
 		case 'некуда деньги девать :-)': txt2 += 'больше 40м$'	;break;
 		default:
 			var fin = parseInt(txt.replace(/,/g,'').replace('$',''))
-			if (fin >= 40000000) 		{txt = 'некуда деньги девать';	txt2 = 'больше 40м$'}
+			if (fin > 40000000) 		{txt = 'некуда деньги девать';	txt2 = 'больше 40м$'}
 			else if (fin >= 15000000)	{txt = 'богатое';				txt2 = '15м$ - 40м$'}
 			else if (fin >= 6000000) 	{txt = 'отличное';				txt2 = '6м$ - 15м$'}
 			else if (fin >= 3000000) 	{txt = 'благополучное';			txt2 = '3м$ - 6м$'}
-			else if (fin >= 1000000) 	{txt = 'нормальное';				txt2 = '1м$ - 3м$'}
+			else if (fin >= 1000000) 	{txt = 'нормальное';			txt2 = '1м$ - 3м$'}
 			else if (fin >= 500000) 	{txt = 'среднее';				txt2 = '500т$ - 1м$'}
-			else if (fin >= 200000) 	{txt = 'бедное';					txt2 = '200$ - 500т$'}
-			else if (fin >=0) 			{txt = 'жалкое';					txt2 = '1т$ - 200т$'}
+			else if (fin >= 200000) 	{txt = 'бедное';				txt2 = '200$ - 500т$'}
+			else if (fin >=0) 			{txt = 'жалкое';				txt2 = '1т$ - 200т$'}
 			else if (fin < 0) 			{txt = 'банкрот';				txt2 = 'меньше 0'}
 	}
 	$('#finance1').html(txt)
@@ -513,127 +454,117 @@ function EditFinance(){
 }
 
 function TeamHeaderInfoGet(){
-	var team = []
+	var teams = []
 	// Get info fom Global or Session Storage (info for clubs)
 	// format: <id_team0>:<task_team0>:<town0>:<stadio_name0>:<stadio_size0>,
-	var text1 = ''
-	if (navigator.userAgent.indexOf('Firefox') != -1)	text1 = String(globalStorage[location.hostname].tasks)
-	else 												text1 = String(sessionStorage.tasks)
-//	$('td.back4').prepend('<br>'+text1+'<br>')
-	if (text1 != 'undefined'){
+	var text1 = GetStorageData('tasks')
+	if (text1 != undefined){
 		var t1 = text1.split(',')
 		for (i in t1) {
 			var t2 = t1[i].split(':')
-			team[t2[0]] = {}
-			if(t2[1] != undefined) team[t2[0]].ttask = t2[1]
-			if(t2[2] != undefined) team[t2[0]].ttown = t2[2]
-			if(t2[3] != undefined) team[t2[0]].sname = t2[3]
-			if(t2[4] != undefined) team[t2[0]].ssize = t2[4]
+			teams[t2[0]] = {}
+			if(t2[1] != undefined) teams[t2[0]].ttask = t2[1]
+			if(t2[2] != undefined) teams[t2[0]].ttown = t2[2]
+			if(t2[3] != undefined) teams[t2[0]].sname = t2[3]
+			if(t2[4] != undefined) teams[t2[0]].ssize = t2[4]
 		}
 	}
 	// Get current club data
 	var zad = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
 
 	// Delete all task if we have new task - it's new season!
-	if (team[cid] != undefined && team[cid].ttask != undefined && team[cid].ttask != zad) for (i in team) team[i].ttask = null
-	if (team[cid] == undefined) team[cid] = {}
-	team[cid].ttask = zad
-	team[cid].ttown = $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
-	team[cid].sname = $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
-	team[cid].ssize = $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
+	if (teams[cid] != undefined && teams[cid].ttask != undefined && teams[cid].ttask != zad) for (i in teams) teams[i].ttask = null
+	if (teams[cid] == undefined) teams[cid] = {}
+	teams[cid].ttask = zad
+	teams[cid].ttown = $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
+	teams[cid].sname = $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
+	teams[cid].ssize = $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
 
 	// Prepare data for remember
 	var text = ''
-	for (i in team) {
-		if(team[i] != undefined) {
+	for (i in teams) {
+		if(teams[i] != undefined) {
+			var tmi = teams[i]
 			text += i+':'
-			text += (team[i].ttask != undefined ? team[i].ttask : '') +':'
-			text += (team[i].ttown != undefined ? team[i].ttown : '') +':'
-			text += (team[i].sname != undefined ? team[i].sname : '') +':'
-			text += (team[i].ssize != undefined ? team[i].ssize : '') +','
+			text += (tmi.ttask != undefined ? tmi.ttask : '') +':'
+			text += (tmi.ttown != undefined ? tmi.ttown : '') +':'
+			text += (tmi.sname != undefined ? tmi.sname : '') +':'
+			text += (tmi.ssize != undefined ? tmi.ssize : '') 
+			text += ','
 		}
 	}
-//	$('td.back4').prepend(text+'<br>')
-
-	// Save data for clubs
-	if (navigator.userAgent.indexOf('Firefox') != -1)	globalStorage[location.hostname].tasks = text
-	else 												sessionStorage.tasks = text
+	SaveStorageData('tasks',text)
 }
 
 function PlayersChange(){
-	var players = []
-	var players2 = []
+	var plChange = []
+	var plChange2 = []
 	var remember = 0
 	var teamid = UrlValue('j')
 	var team21 = UrlValue('h')
 	if (teamid == 99999){
 		// Get data from page
-		$('table#tblRoster tr:not(#tblRosterRentTitle)').each(function(j,valj){
-			if(j > 0){
-				var pl = [];
-				pl.mchange = 0
-				pl.fchange = 0
-				$(valj).find('td').each(function(i,val){
-					if (i==0) pl.num = $(val).text()
-					if (i==1) pl.id = UrlValue('j', $(val).find('a').attr('href'))
-					if (i==4) pl.morale = parseInt($(val).text())
-					if (i==5) pl.form = parseInt($(val).text())
-				})
-				players[pl.num] = pl
-			}
+		$('table#tblRoster tr:not(#tblRosterRentTitle):gt(0)').each(function(j,valj){
+			var pl = [];
+			pl.mchange = 0
+			pl.fchange = 0
+			$(valj).find('td').each(function(i,val){
+				if (i==0) pl.num 	= $(val).text()
+				if (i==1) pl.id 	= UrlValue('j', $(val).find('a').attr('href'))
+				if (i==4) pl.morale = parseInt($(val).text())
+				if (i==5) pl.form 	= parseInt($(val).text())
+			})
+			plChange[pl.num] = pl
 		});
 
 		// Get info fom Global or Session Storage (info of team players)
-		var text1 = ''
-		if (navigator.userAgent.indexOf('Firefox') != -1)	text1 = String(globalStorage[location.hostname].team)
-		else 												text1 = String(sessionStorage.team)
-		
-		if (text1 != 'undefined'){
+		var text1 = GetStorageData('team')
+		if (text1 != undefined){
 			var pltext = text1.split(':',2)[1].split('.')
 			for (i in pltext) {
 				var plsk = pltext[i].split(',')
 				var plx = []
-				plx.id = parseInt(plsk[0])
-				plx.num = parseInt(plsk[1])
-				plx.morale = parseInt(plsk[2])
-				plx.form = parseInt(plsk[3])
+				plx.id 		= parseInt(plsk[0])
+				plx.num 	= parseInt(plsk[1])
+				plx.morale 	= parseInt(plsk[2])
+				plx.form 	= parseInt(plsk[3])
 				plx.mchange = parseInt(plsk[4])
 				plx.fchange = parseInt(plsk[5])
-				players2[plx.id] = []
-				players2[plx.id] = plx
+				plChange2[plx.id] = []
+				plChange2[plx.id] = plx
 			}
 
 			// Check for update
-			for(i in players) {
-				var pl = players[i]
-				if(players2[pl.id]){
-					var pl2 = players2[pl.id]
+			for(i in plChange) {
+				var pl = plChange[i]
+				if(plChange2[pl.id]){
+					var pl2 = plChange2[pl.id]
 					if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
 						remember = 1
 					}
 				}
 			}
 			// Calculate
-			for(i in players) {
-				var pl = players[i]
-				if(players2[pl.id]){
-					var pl2 = players2[pl.id]
+			for(i in plChange) {
+				var pl = plChange[i]
+				if(plChange2[pl.id]){
+					var pl2 = plChange2[pl.id]
 					if (remember == 1){
-						players[i]['mchange'] = pl.morale - pl2.morale
-						players[i]['fchange'] = pl.form - pl2.form
+						plChange[i]['mchange'] = pl.morale - pl2.morale
+						plChange[i]['fchange'] = pl.form - pl2.form
 					} else {
-						players[i]['mchange'] = pl2.mchange
-						players[i]['fchange'] = pl2.fchange
+						plChange[i]['mchange'] = pl2.mchange
+						plChange[i]['fchange'] = pl2.fchange
 					}
 				}
 			}
 
 			// Update page
-			for(i in players) {
-				$('table#tblRoster tr#tblRosterTr' + i + ' td:eq(4)').append(ShowChange(players[i]['mchange']))
-				$('table#tblRoster tr#tblRosterTr' + i + ' td:eq(5)').append(ShowChange(players[i]['fchange']))
-				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(4)').append(ShowChange(players[i]['mchange']))
-				$('table#tblRoster tr#tblRosterRentTr' + i + ' td:eq(5)').append(ShowChange(players[i]['fchange']))
+			for(i in plChange) {
+				$('table#tblRoster tr#tblRosterTr'		+ i + ' td:eq(4)').append(ShowChange(plChange[i]['mchange']))
+				$('table#tblRoster tr#tblRosterTr'		+ i + ' td:eq(5)').append(ShowChange(plChange[i]['fchange']))
+				$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(4)').append(ShowChange(plChange[i]['mchange']))
+				$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(5)').append(ShowChange(plChange[i]['fchange']))
 			}
 		} else {
 			remember = 1
@@ -642,13 +573,40 @@ function PlayersChange(){
 		// Remember data
 		if (remember == 1 && team21 != 1){
 	   		var text = teamid + ':'	
-			for(i in players) {
-				var pl = players[i]
+			for(i in plChange) {
+				var pl = plChange[i]
 				text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'
 			}
-			if (navigator.userAgent.indexOf('Firefox') != -1)	globalStorage[location.hostname].team = text
-			else 												sessionStorage.team = text			
+			SaveStorageData('team',text)
 		}
 	}
 }
-/**/
+
+function SaveStorageData(key,data){
+	if(ff)	globalStorage[location.hostname][key] = data
+	else	sessionStorage[key] = data
+}
+
+function GetStorageData(key){
+	if(ff)	return globalStorage[location.hostname][key]
+	else	return sessionStorage[key]
+}
+function setCookie(name, value) {
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() + 356); // +1 year
+	if (!name || !value) return false;
+	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
+	return true
+}
+function getCookie(name) {
+    var pattern = "(?:; )?" + name + "=([^;]*);?"
+    var regexp  = new RegExp(pattern)
+    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
+    return false
+}
+
+function UrlValue(key,url){
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
+	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
+	return false
+}
