@@ -239,7 +239,7 @@ function ShowSkills(param){
 	var pf = players.sort(sSkills)
 	for(i=0;i<pf.length;i++) {
 		if(pf[i]!=undefined){
-			var tr ='<tr id="'+pf[i].position+'">'
+			var tr ='<tr height=30 id="'+pf[i].position+'">'
 			for(j in hd2) {
 				var tdcolor = (countSk[j] ==1 ? ' bgcolor=white' : '')
 				var skn = hd2[j]
