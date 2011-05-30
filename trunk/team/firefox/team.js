@@ -459,7 +459,7 @@ function TeamHeaderInfoGet(){
 	// format: <id_team0>:<task_team0>:<town0>:<stadio_name0>:<stadio_size0>,
 	var text1 = GetStorageData('tasks')
 	if (text1 != undefined){
-		var t1 = text1.split(',')
+		var t1 = String(text1).split(',')
 		for (i in t1) {
 			var t2 = t1[i].split(':')
 			teams[t2[0]] = {}
@@ -520,7 +520,7 @@ function PlayersChange(){
 		// Get info fom Global or Session Storage (info of team players)
 		var text1 = GetStorageData('team')
 		if (text1 != undefined){
-			var pltext = text1.split(':',2)[1].split('.')
+			var pltext = String(text1).split(':',2)[1].split('.')
 			for (i in pltext) {
 				var plsk = pltext[i].split(',')
 				var plx = []
