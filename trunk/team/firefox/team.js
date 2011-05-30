@@ -193,6 +193,7 @@ function ShowSkillsY() {
 function ShowSkills(param){
 
 	if(param == 1){
+		$('table[background]:eq(1)').hide()
 		$('td#crabglobalright').html('')
 		$('table#tblRoster')
 			.attr('id','tblRostSkills')
