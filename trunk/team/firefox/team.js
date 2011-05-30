@@ -58,13 +58,13 @@ var ff = ''
 $().ready(function() {
 	if(UrlValue('l')=='y' || UrlValue('n')!=false){
 		//Page for show skills
-//		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
-//		$('table#tblRostSkills')
-//			.attr('width','886')
-//		$('table#tblRostSkills img').attr('height','10')
-//		$('table#tblRostSkills tr').each(function(){
-//			$(this).find('td:eq(1)').html($(this).find('td:eq(1)').html().replace('<br>','&nbsp;'))
-//		})
+		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
+		$('table#tblRostSkills')
+			.attr('width','886')
+		$('table#tblRostSkills img').attr('height','10')
+		$('table#tblRostSkills tr').each(function(){
+			$(this).attr('height','20').find('td:eq(1)').html($(this).find('td:eq(1)').html().replace('<br>','&nbsp;'))
+		})
 	}else if(UrlValue('n')!=false){
 		// Ростер с фильтром(не вся стата показывается)
 
