@@ -157,9 +157,13 @@ $().ready(function() {
 
 		var xtr = '<table id="trn" width=100% bgcolor=A3DE8F></td></tr>'
 		xtr += '<tr><td bgcolor=C9F8B7 colspan=15><b>Тренировка основы:</b>'
-		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр3</th><th bgcolor=A3DE8F></th><th width=5%>наг</th><th width=40%>тренировка</th><th width=30%>тренер(гр)</th></tr>'
+		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр3</th><th bgcolor=A3DE8F></th><th width=5%>наг</th><th width=70%>тренировка</th>'
+//		xtr += '<th width=30%>тренер(гр)</th>'
+		xtr += '</tr>'
 		xtr += '<tr id="ind1"><td bgcolor=C9F8B7 colspan=15><b>Индивидуальные:</b></td></tr>'
-		xtr += '<tr id="ind2" bgcolor=white><th colspan=3>гр1</th><th bgcolor=A3DE8F></th><th colspan=3>гр2</th><th bgcolor=A3DE8F></th><th colspan=3>гр3</th><th bgcolor=A3DE8F></th><th>наг</th><th>тренировка</th><th>трн(гр)</th></tr>'
+		xtr += '<tr id="ind2" bgcolor=white><th colspan=3>гр1</th><th bgcolor=A3DE8F></th><th colspan=3>гр2</th><th bgcolor=A3DE8F></th><th colspan=3>гр3</th><th bgcolor=A3DE8F></th><th>наг</th><th>тренировка</th>'
+//		xtr += '<th>тренер(гр)</th>'
+		xtr += '</tr>'
 		xtr += '</table>'
 		$('td.back4').append(xtr)
 		for (p in trains){ 
@@ -167,17 +171,17 @@ $().ready(function() {
 			for(i=1;i<=3;i++) for(j=1;j<=3;j++) sumtrn += trains[p]['count'+i+j]
 			if(sumtrn>0) {
 				var tp = trains[p]
-				var tval = ''
-				var tcolor = ''
+//				var tval = ''
+//				var tcolor = ''
 				var gcolor = ['','','','']
 				var i1 = (tp.ball == 0 ? '<i>' : '')
 				var i2 = (tp.ball == 0 ? '</i>' : '')
-				for(t in trnman){
-					if(tp.tr == trnman[t].type && trnman[t].type!=0) {
-						tval += ' '+trnman[t].value+'%('+trnman[t].group+')'
-						tcolor = gcolor[trnman[t].group] = ' bgcolor=D3D7CF'
-					}
-				}
+//				for(t in trnman){
+//					if(tp.tr == trnman[t].type && trnman[t].type!=0) {
+//						tval += ' '+trnman[t].value+'%('+trnman[t].group+')'
+//						tcolor = gcolor[trnman[t].group] = ' bgcolor=D3D7CF'
+//					}
+//				}
 				xtr = '<tr'+(p==4 ? ' id="ind1"' : '')+' bgcolor=C9F8B7 align=center>'
 				for(j=1;j<=3;j++) {
 					for(m=1;m<=3;m++) {
@@ -189,9 +193,9 @@ $().ready(function() {
 				}
 				xtr += '<td>' + (p==4 ? "&nbsp;" : tp.level) + '</td>'
 				xtr += '<td align=left>'+i1 + tp.name + i2 +'</td>'
-				xtr += '<td'+tcolor+'>'
-				xtr += (tval == '' ? '&nbsp;' : tval)
-				xtr += '</td>'
+//				xtr += '<td'+tcolor+'>'
+//				xtr += (tval == '' ? '&nbsp;' : tval)
+//				xtr += '</td>'
 				xtr += '</tr>'
 				if(p==4) {
 					$('tr#ind1').before(xtr)
@@ -207,15 +211,15 @@ $().ready(function() {
 			var itp = itrains[p]
 			for(i=1;i<=3;i++) for(j=1;j<=3;j++) sumtrn += itrains[p]['count'+i+j]
 			if(sumtrn>0) {
-				var tval = ''
-				var tcolor = ''
+//				var tval = ''
+//				var tcolor = ''
 				var gcolor = ['','','','']
-				for(t in trnman){
-					if(itp.tr == trnman[t].type && trnman[t].type!=0) {
-						tval += ' '+trnman[t].value+'%('+trnman[t].group+')'
-						tcolor = gcolor[trnman[t].group] = ' bgcolor=D3D7CF'
-					}
-				}
+//				for(t in trnman){
+//					if(itp.tr == trnman[t].type && trnman[t].type!=0) {
+//						tval += ' '+trnman[t].value+'%('+trnman[t].group+')'
+//						tcolor = gcolor[trnman[t].group] = ' bgcolor=D3D7CF'
+//					}
+//				}
 				xtr = '<tr bgcolor=C9F8B7 align=center>'
 				for(j=1;j<=3;j++) {
 					for(m=1;m<=3;m++) {
@@ -227,9 +231,9 @@ $().ready(function() {
 				}
 				xtr += '<td>' + (p==1 ? "&nbsp;" : itp.level) + '</td>'
 				xtr += '<td align=left><i>' + itp.name + '</i></td>'
-				xtr += '<td'+tcolor+'>'
-				xtr += (tval == '' ? '&nbsp;' : tval)
-				xtr += '</td>'
+//				xtr += '<td'+tcolor+'>'
+//				xtr += (tval == '' ? '&nbsp;' : tval)
+//				xtr += '</td>'
 				xtr += '</tr>'
 				$('tr#ind2:first').after(xtr)
 			}
