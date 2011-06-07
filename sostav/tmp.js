@@ -108,7 +108,7 @@ $().ready(function() {
 			}
 		}
 
-		// данные о тренерах
+/**		// данные о тренерах
 	    trnman[0] = {}
 		trnman[0].name	= data_assoc["s0"]
 		trnman[0].group	= data_assoc["sg0"]
@@ -123,14 +123,16 @@ $().ready(function() {
 				trnman[i].value	= data_assoc["bvalue"+i]
 			}
 		}
-
+/**/
 		// теперь собираем данные об игроках
 		for(i=0;i<num_players;i++) {
 			var tmpplayer = [];
 			var playerid 	= data_assoc["id"+i];
 			var sname 		= data_assoc["secondname"+i];
-			var pg 			= tmpplayer["pg"] 		= parseInt(data_assoc["pg"+i]);
-			var training 	= tmpplayer["training"] = parseInt(data_assoc["training"+i]);
+			var pg 			= parseInt(data_assoc["pg"+i]);
+			var training 	= parseInt(data_assoc["training"+i]);
+			tmpplayer["pg"] 		= pg;
+			tmpplayer["training"] 	= training;
 			tmpplayer["form"] 		= data_assoc["form"+i];
 			tmpplayer["firstname"] 	= data_assoc["firstname"+i];
 			tmpplayer["secondname"] = sname.replace('~','').replace('*','').replace('^','');
@@ -143,6 +145,12 @@ $().ready(function() {
 			tmpplayer["tr3"] 		= groups[pg][3]
 
 
+			if (itrains[training] == undefined) {
+				itrains[training] = {}
+				itrains[training]['count'+pg+'1'] = 0
+				itrains[training]['count'+pg+'2'] = 0
+				itrains[training]['count'+pg+'3'] = 0
+			}
 			// if индивидуалка
 			for(j=1;j<=3;j++){
 				if (tmpplayer["tr"+j]==4) itrains[training]['count'+pg+j] += 1
