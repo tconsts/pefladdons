@@ -666,7 +666,7 @@ $().ready(function() {
 		if ($(this).next().find('img').attr('src') != undefined){
 			skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
 		}
-		skillsum += skillvalue;
+		skillsum += (isNaN(skillvalue) ? 0 : skillvalue);
 		players[0][sklfr[skillname]] = skillvalue + skillarrow;
 	})
 	players[0].sumskills = skillsum
