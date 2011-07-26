@@ -99,7 +99,7 @@ function Forecast(){
 
 var lv = {0:-3,1:-2,2:-1,3:0,4:1,5:2,6:3}
 
-// 9 season
+// for 9 season
 var reputations = {
 	0	: {name: 'Unknown',  st: 0,    fn: 0,		up:'0,0,0,0,0,0,0'},
 	1	: {name: 'ОЛМ',      st: 1,    fn: 9,		up:'0,0,100,20,-1,-1,-1'},
@@ -129,6 +129,7 @@ var teams = []
 
 $().ready(function() {
 
+/**
 	// Get info fom Global or Session Storage
 	var text1 = ''
 	if (navigator.userAgent.indexOf('Firefox') != -1){
@@ -182,4 +183,5 @@ $().ready(function() {
 //		alert('rep')
 		GetAllReit('rep');
 	}
+/**/
 }, false);
