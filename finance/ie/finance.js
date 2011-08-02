@@ -113,6 +113,7 @@
 		fin.plusminus = fin.allup - fin.alldown
 		fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
 
+/**
 		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>')
 		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>')
 
@@ -156,6 +157,7 @@
 			$('table#4').after(divpriztext+'<br>')
 		}
 		$('table#4').after('<hr>')
+/**/
 		return false
 	}
 //}, false)
