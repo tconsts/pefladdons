@@ -49,6 +49,14 @@ $().ready(function() {
 		var finance = []
 		var cur = {}
 
+		var ffn 		= $('td.back4 > table td:eq(1)').html()
+		var zp 			= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
+		var sponsors 	= parseInt(ffn.split('Всего ')[1].split(',000$')[0].replace(/\,/g,''))*1000
+		cur.bablo 		= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''))
+		cur.bonus 		= (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
+
+		fin.fid = 81
+
 		// get info from tables
 		$('td.back4 > table table').each(function(i,val){
 			var curtable = finance[i] = {}
@@ -58,24 +66,6 @@ $().ready(function() {
 				curtable[$(this).text()] = parseInt($(this).next().text().replace(/\,/g,'').replace('$',''))
 			})
 		})
-
-		var ffn 		= $('td.back4 > table td:eq(1)').html()
-		var zp 			= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
-		var sponsors 	= parseInt(ffn.split('Всего ')[1].split(',000$')[0].replace(/\,/g,''))*1000
-		cur.bablo 		= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''))
-		cur.bonus 		= (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
-
-		// Draw new table for header
-		ffnarr = ffn.split('<hr>')//.replace(/\:/g,'::')
-		ffnarr[0] = '<table id="head0"><tr><td><b>'+ffnarr[0].replace(/\<br\>/g,'</b></td></tr><tr><td width=40%><b>').replace(/\:/g,': </b></td><td><b>')+'</b></td></tr></table></b><b>'
-		ffnarr[2] = '<table id="head2"><tr><td><b>'+ffnarr[2].replace(/\<br\>/g,'</b></td></tr><tr><td width=40%><b>').replace(/\:/g,': </b></td><td><b>')+'</b></td></tr></table></b><b>'
-		newffn = ffnarr.join('<hr>')
-		$('td.back4 > table td:eq(1)').html(newffn)
-
-//.attr('align','right')
-
-
-		fin.fid = 81
 
 		var chbonus =	Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
 		var school =	finance[1]['Школа'] - chbonus
@@ -122,6 +112,7 @@ $().ready(function() {
 		fin.alldown = fin.zp + fin.buy + fin.school
 		fin.plusminus = fin.allup - fin.alldown
 		fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
+
 /**
 		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>')
 		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>')
@@ -166,7 +157,7 @@ $().ready(function() {
 			$('table#4').after(divpriztext+'<br>')
 		}
 		$('table#4').after('<hr>')
-/**/
+/**/		
 		return false
 	}
 }, false)
