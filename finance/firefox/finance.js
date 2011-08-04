@@ -84,7 +84,9 @@ $().ready(function() {
 		cur.zpperc = 	 (cur.sponsors ==0 ? 0+'%' : (cur.zp/cur.sponsors*100).toFixed(1)+'%')
 		cur.schoolperc = (cur.sponsors ==0 ? 0+'%' : (cur.school/cur.sponsors*100).toFixed(1)+'%')
 
-		cur.fid = (cur.sponsors - cur.bonus)/sponsors
+		if(finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) cur.fid = fin.fid
+		else cur.fid = (cur.sponsors - cur.bonus)/sponsors
+
 		if(cur.fid>fin.fid) fin.fid = cur.fid
 
 		// set div prizes
@@ -113,24 +115,29 @@ $().ready(function() {
 		fin.plusminus = fin.allup - fin.alldown
 		fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
 
-/**
+/**/
 		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>')
 		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>')
 
 		var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F colspan=2>Текущий '+cur.fid+' ФИД</th>'
-		preparedhtml += (fin.fid != cur.fid ? '<th width=30% bgcolor=#A3DE8F colspan=2>Прогноз на '+fin.fid+' ФИД</th>' : '')
+		if(fin.fid != cur.fid) preparedhtml += '<th width=30% bgcolor=#A3DE8F colspan=2>Прогноз на '+fin.fid+' ФИД</th>'
+		else if(finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) preparedhtml += '<th width=30% bgcolor=#A3DE8F colspan=2>В следующем сезоне</th>'
 		preparedhtml += '</tr>'
 		$('table#2, table#3').prepend(preparedhtml)
 
 		preparedhtml  = '<hr><table width=100% id="4">'
 		preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
 		preparedhtml += '<td width=15% align=right>' + (format(cur.plusminus)).bold() + '</td><td></td>'
+
 		if(fin.fid != cur.fid) preparedhtml += '<td width=15% align=right>' + (format(fin.plusminus)).bold() + '</td><td></td>'
+//		else if(finance[0]['Спонсоры'] == 0 && cur.sponsors > fin.fid*4000) preparedhtml += '<td width=15% align=right>сссс</td><td></td>'
 		else preparedhtml += '<td width=15%></td><td></td>'
+
 		preparedhtml += '</tr>'
 		preparedhtml += '<tr><td><b>На счету</b></td>'
 		preparedhtml += '<td align=right>' + (format(cur.bablo)).bold() + '</td><td></td>'
 		if(fin.fid != cur.fid) preparedhtml += '<td align=right>'+(format(fin.bablo)).bold() + '</td><td></td>'
+//		else if(finance[0]['Спонсоры'] == 0 && cur.sponsors > fin.fid*4000) preparedhtml += '<td align=right>выаываыва</td><td></td>'
 		preparedhtml += '</tr>'
 		preparedhtml += '</table>'
 		$('td.back4 table#3').after(preparedhtml)
@@ -155,6 +162,10 @@ $().ready(function() {
 			$('td[id=fin]:eq(7)').html(format(fin.school).bold())
 			$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
 			$('table#4').after(divpriztext+'<br>')
+		}else if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10){
+			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
+
+			$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())			
 		}
 		$('table#4').after('<hr>')
 /**/		
