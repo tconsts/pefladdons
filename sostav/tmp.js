@@ -37,7 +37,7 @@ itrains[15] = {level:2,	tr:0,	name: 'Новая позиция DF'}
 itrains[16] = {level:2,	tr:0,	name: 'Новая позиция DM'}
 itrains[17] = {level:2,	tr:0,	name: 'Новая позиция AM'}
 itrains[18] = {level:2,	tr:0,	name: 'Новая позиция FW'}
-itrains[29] = {level:2,	tr:0,	name: 'Новая позиция L'}
+itrains[19] = {level:2,	tr:0,	name: 'Новая позиция L'}
 itrains[20] = {level:2,	tr:0,	name: 'Новая позиция C'}
 itrains[21] = {level:2,	tr:0,	name: 'Новая позиция R'}
 
