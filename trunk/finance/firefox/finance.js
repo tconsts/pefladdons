@@ -163,7 +163,7 @@ $().ready(function() {
 			$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
 			$('table#4').after(divpriztext+'<br>')
 		}else if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10){
-			var spraz = -(sponsors - cur.sponsors/fin.fid)/1000
+			var spraz = (sponsors - cur.sponsors/fin.fid)/1000
 			if (spraz>0) spraz = '+'+spraz
 			$('td[id=fin]:eq(0)').next().append(' ('+spraz+'т$ в ИД)')
 			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
