@@ -52,7 +52,7 @@ $().ready(function() {
 		var ffn 		= $('td.back4 > table td:eq(1)').html()
 		var zp 			= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
 		var sponsors 	= parseInt(ffn.split('Всего ')[1].split(',000$')[0].replace(/\,/g,''))*1000
-		var last_sp		= parseInt(ffn.split('000$ в ИД / 4 г.')[0].split('$ в ИД / 3 г.')[1].split('>')[1].replace(/\,/g,''))
+		var last_sp		= parseInt(ffn.split(',000$ в ИД / 4 г.')[0].split('$ в ИД / 3 г.')[1].split('>')[1].replace(/\,/g,''))
 		cur.bablo 		= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''))
 		cur.bonus 		= (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
 
@@ -164,7 +164,7 @@ $().ready(function() {
 			$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
 			$('table#4').after(divpriztext+'<br>')
 		}else if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10){
-			var spraz = (sponsors - cur.sponsors/fin.fid)/1000
+			var spraz = parseInt((sponsors - cur.sponsors/fin.fid)/1000)
 			var prev_sp = last_sp-spraz
 			if (spraz>0) spraz = '+'+spraz
 			$('td[id=fin]:eq(0)').next().append(' ('+spraz+'т$ в ИД)')
