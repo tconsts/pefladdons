@@ -167,14 +167,13 @@ $().ready(function() {
 			var spraz = parseInt((sponsors - cur.sponsors/fin.fid)/1000)
 			var prev_sp = last_sp-spraz
 			if (spraz>0) spraz = '+'+spraz
-			$('td[id=fin]:eq(0)').next().append(' ('+spraz+'т$ в ИД)')
-			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
-			$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())			
-
 			var nhtml = $('td.back4 > table td:eq(1)').html()
 			var sp_text = ('Спонсорские контракты:<br><font color="red">'+prev_sp+',000$ в ИД / ушедший</font>')
 			$('td.back4 > table td:eq(1)').html(nhtml.replace('Спонсорские контракты:', sp_text))
-//			alert(prev_sp)
+
+//			$('td[id=fin]:eq(0)').next().append(' ('+spraz+'т$ в ИД)')
+			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
+			$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())			
 		}
 		$('table#4').after('<hr>')
 /**/		
