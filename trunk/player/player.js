@@ -438,7 +438,12 @@ function CodeForForum(){
 			.replace(/.gif/g,'.gif[/img')
 			.replace(/"/g,'')
 			.replace(/\n/g,'')
-			if (navigator.userAgent.indexOf('Opera') != -1 && ptype != 'yp' && ptype != 'yp2') x += '[/table]'
+			if (navigator.userAgent.indexOf('Opera') != -1 
+					&& ptype != 'yp' 
+					&& ptype != 'yp2' 
+					&& isNaN(parseInt(UrlValue('v')))) {
+				x += '[/table]'
+			}
 	}
 	// stat of season
 	if (seasonstatshow && (ptype == 'p' || ptype == 'pp')){
