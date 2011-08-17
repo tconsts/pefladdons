@@ -16,6 +16,7 @@ var type 	= ''
 var players = []
 var pls = []
 var countSk = [0]
+var nom = 0
 var team = {
 	'wage'	: 0,
 	'wage2'	: 0,
@@ -436,7 +437,7 @@ function Ready(){
 							players[i].valuech = pls[players[i].id].valuech
 						}
 					}
-					//ShowValuesChange()
+					ShowValuesChangeMenu()
 				}
 
 				// Save
@@ -452,11 +453,20 @@ function Ready(){
 		}
 	}
 }
+
+function ShowValuesChangeMenu(){
+	$('td.back4 table table:eq(4) table td:last font').append(' <a id="nom" href="javascript:void(ShowValuesChange())">Номиналы</a>&nbsp;')
+}
+
 function ShowValuesChange(){
+	$('a#nom').remove()
+	$('table[id=tblRoster] tr:first').append('<td>Ном</td>')
 	$('tr[id^=tblRosterTr]').each(function(i,val){
 		var txt = players[i+1].value/1000+'т$'
-		txt += (players[i+1].valuech ==0 ? '' : ' ('+players[i+1].valuech/1000+'т$)')
-		$(val).append('<td align=right>'+txt+'</td>')
+		if (players[i+1].valuech !=0 ){
+			txt += ShowChange(players[i+1].valuech/1000)
+		}
+		$(val).append('<td width=14%>'+txt+'</td>')
 	})
 }
 
