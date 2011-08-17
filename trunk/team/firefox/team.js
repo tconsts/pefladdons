@@ -419,7 +419,9 @@ function Ready(){
 
 			if(UrlValue('j')==99999){
 				// Players value
-				var text2 = GetStorageData('playersvalue')
+				var text2 = '' //GetStorageData('playersvalue')
+				if(ff)	text2 = globalStorage[location.hostname]['playersvalue']
+				else	text2 = sessionStorage['playersvalue']
 
 				if (text2 != undefined){
 					var t1 = text2.split(',')
