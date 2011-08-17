@@ -423,6 +423,9 @@ function Ready(){
 				if(ff)	text2 = String(globalStorage[location.hostname]['playersvalue'])
 				else	text2 = sessionStorage['playersvalue']
 
+				$('td.back4').prepend('<span id=hiden></span>')
+				$('span#hiden').hide().append(text2)
+
 				if (text2 != undefined){
 					var t1 = text2.split(',')
 					for(j in t1){
@@ -450,7 +453,10 @@ function Ready(){
 					text += (players[j].valuech != undefined ? players[j].valuech/1000 : 0)
 					text += ','
 				}
-				SaveStorageData('playersvalue',text)
+				//SaveStorageData('playersvalue',text)
+				if(ff)	globalStorage[location.hostname]['playersvalue'] = text
+				else	sessionStorage['playersvalue'] = text
+
 			}
 		}
 	}
