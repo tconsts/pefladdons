@@ -14,6 +14,7 @@
 var countSostav = 0
 var type 	= ''
 var players = []
+var pls = []
 var countSk = [0]
 var team = {
 	'wage'	: 0,
@@ -414,9 +415,49 @@ function Ready(){
 			var text = ''
 			for(j in tfin) text += j + ':' + tfin[j].zp + ':' + tfin[j].nom + ','
 			sessionStorage.teamsfin = text
-		}
 
+			if(UrlValue('j')==99999){
+				// Players value
+				var text2 = GetStorageData('playersvalue')
+
+				if (text2 != undefined){
+					var t1 = text2.split(',')
+					for(j in t1){
+						var t2 = t1[j].split(':')
+						pls[t2[0]] = {}
+						pls[t2[0]].value = parseInt(t2[1])*1000
+						pls[t2[0]].valuech = parseInt(t2[2])*1000
+					}
+					// Update current
+					for (i in players) {
+						if(pls[players[i].id] != undefined && players[i].value != pls[players[i].id].value){
+							players[i].valuech = players[i].value - pls[players[i].id].value
+						}else{
+							players[i].valuech = pls[players[i].id].valuech
+						}
+					}
+					//ShowValuesChange()
+				}
+
+				// Save
+				text = ''
+				for(j in players) {
+					text += players[j].id + ':'
+					text += players[j].value/1000 + ':'
+					text += (players[j].valuech != undefined ? players[j].valuech/1000 : 0)
+					text += ','
+				}
+				SaveStorageData('playersvalue',text)
+			}
+		}
 	}
+}
+function ShowValuesChange(){
+	$('tr[id^=tblRosterTr]').each(function(i,val){
+		var txt = players[i+1].value/1000+'т$'
+		txt += (players[i+1].valuech ==0 ? '' : ' ('+players[i+1].valuech/1000+'т$)')
+		$(val).append('<td align=right>'+txt+'</td>')
+	})
 }
 
 function ShowChange(value){
