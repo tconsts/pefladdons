@@ -267,11 +267,13 @@ function CheckPlayer(nn){
 		header += ' </td></tr>'
 	}
 	// позиция
-	header += '<tr align=center><td><b>'
+	header += '<tr align=center><td>'
 	header += '<b>' + players[0].position + '</b>'
+	if(players[0].newpos != undefined) header += ' (' + players[0].newpos + ')'
 	header += '</td>'
 	header += '<td>'
 	header += '<b>' + players[nn].position + '</b>'
+	if(players[nn].newpos != undefined) header += ' (' + players[nn].newpos + ')'
 	header += '</td></tr>'
 	// умения
 	header += '<tr align=center><td>'
@@ -364,10 +366,12 @@ function CodeForForum(){
 		x += '[url=plug.php?' + location.search.substring(1) + ']' + pl.firstname + ' ' + pl.secondname + '[/url] (сс=' + pl.sumskills + ')'
 		if (ptype == 'p') x += ' | [player=' + pl.id + '][img]images/eye.png[/img][/player]'
 		if (pl.natfull != ' ') x+= ' | [b]' + pl.natfull + '[/b]'
-		x += ' | ' + pl.position + ' ' + pl.age
+		x += ' | ' + pl.position + ' ' 
+		if(pl.newpos != undefined) x += '(' +pl.newpos + ') '
+		x += pl.age
 		if (pl.sale == 1)	x += ' | [img]system/img/g/sale.png[/img]'
-		if (pl.teamurl == '') x += ' | ' + pl.team
-		else x += ' | [url=' + pl.teamurl + ']' + pl.team + '[/url]'
+		if (pl.teamid == undefined) x += ' | ' + pl.team
+		else x += ' | [url=plug.php?p=refl&t=k&j='+pl.teamid+'&z='+pl.teamhash+']' + pl.team + '[/url]'
 		x+= '<br>'
 	}
 
@@ -417,8 +421,9 @@ function CodeForForum(){
 			.replace(/\&amp\;/g,'&')
 			.replace(/"/g,'')
 			.replace(/\[br\]/g,'\n')
-		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+players[0].position+'[b]'
-		x += '\n\nУмения[/b](сс='+players[0].sumskills+')[/center]\n\n'
+		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+pl.position+'[b]'
+		if(pl.newpos != undefined) x += '[/b](' +pl.newpos + ')[b]'
+		x += '\n\nУмения[/b](сс='+pl.sumskills+')[/center]\n\n'
 	}
 
 	// skills
@@ -600,7 +605,8 @@ $().ready(function() {
 
 	skl['sumskills']= ['ss','сс','Сумма скилов']
 	skl['team']		= ['team','ком','Команда']
-	skl['teamurl']	= ['turl','turl','Урл команды']
+	skl['teamid']	= ['tid','tid','id команды']
+	skl['teamhash']	= ['thash','тхш','хеш команды']
 	skl['sale']		= ['sale','трн','На трансфере?']
 	skl['hash']		= ['hash','хэш','Хэш']
 	skl['flag']		= ['f','фс','флаг состояния']
@@ -771,6 +777,11 @@ $().ready(function() {
 	// get post-info
 	var ms2 = $('td.back4 > center:first').html()
 	if (ms2 != null){
+		if(ms2.indexOf('New pos:')!=-1) {
+			players[0].newpos = ms2.split('New pos: ')[1].split('*')[0] + '*'
+			$('td.back4 table center:first b:first').after(' ('+players[0].newpos + ')')
+		}
+
 		var j2 = 0
 		ms2 = ms2.replace(/<!-- [а-я] -->/g,'').split('<br>')
 		players[0].form = +ms2[j2].split(': ',2)[1].split('%',1)[0]
@@ -793,6 +804,7 @@ $().ready(function() {
 		players[0].zk3 = +ms2[j2].split(': ',2)[1]
 		j2++
 		players[0].kk3 = +ms2[j2].split(': ',2)[1]
+
 		players[0].zk4 = ' '
 		players[0].kk4 = ' '
 
