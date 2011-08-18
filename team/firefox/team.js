@@ -436,10 +436,13 @@ function Ready(){
 					}
 					// Update current
 					for (i in players) {
-						if(pls[players[i].id] != undefined && players[i].value != pls[players[i].id].value){
-							players[i].valuech = players[i].value - pls[players[i].id].value
-						}else{
-							players[i].valuech = pls[players[i].id].valuech
+						var pid = players[i].id
+						if(pls[pid] != undefined){
+							if(players[i].value != pls[pid].value){
+								players[i].valuech = players[i].value - pls[pid].value
+							}else{
+								players[i].valuech = pls[pid].valuech
+							}
 						}
 					}
 					ShowValuesChangeMenu()
