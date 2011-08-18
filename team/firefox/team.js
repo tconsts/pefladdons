@@ -482,7 +482,7 @@ function ShowValuesChange(){
 			nomtext += '<tr id="nom">'
 			nomtext += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
 			nomtext += '<td align=right>' + ShowValueFormat(pls[i].value).fontsize(1) + '</td>'
-			nomtext += '<td>&nbsp;'+ShowChange(pls[i].valuech)+'</td>'
+			nomtext += '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>'
 			nomtext += '</tr>'
 		}
 		$('#osnom').after(nomtext)
