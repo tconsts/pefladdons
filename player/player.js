@@ -422,7 +422,7 @@ function CodeForForum(){
 			.replace(/"/g,'')
 			.replace(/\[br\]/g,'\n')
 		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+pl.position+'[b]'
-		if(pl.newpos != undefined) x += '[/b](' +pl.newpos + ')[b]'
+		if(pl.newpos != undefined) x += '[/b] (' +pl.newpos + ')[b]'
 		x += '\n\nУмения[/b](сс='+pl.sumskills+')[/center]\n\n'
 	}
 
