@@ -273,6 +273,12 @@ function sSkills(i, ii) { // По SumSkills (убыванию)
     else if	(i.sorting > ii.sorting)	return -1
     else								return  0
 }
+function sValue(i, ii) { // По value (убыванию)
+    if 		(i.value < ii.value)	return  1
+    else if	(i.value > ii.value)	return -1
+    else							return  0
+}
+
 
 function PlayersInfoGet(){
 	$('tr[id^=tblRosterTr]').each(function(i,val){
@@ -357,42 +363,45 @@ function Ready(){
 
 			// print to right menu
 			var thtml = ''
-			thtml += '<tr><th colspan=2><br>Номиналы</th><th width=30%></th></tr>'
-			thtml += '<tr><td>состав:</td><td align=right>'
-			thtml += (((team.value)/1000).toFixed(3).replace(/\./g,',')+',000$').fontsize(1)
-			thtml += '</td></tr>'
+			thtml += '<tr><th colspan=2><br>Основной состав</th><th width=20%></th></tr>'
+			thtml += '<tr id="osnom"><th align=left><a href="javascript:void(ShowValuesChange())">номиналы</a>:</td><td align=right><b>'
+			thtml += ShowValueFormat(team.value*1000)
+			thtml += '</b></td></tr>'
+			thtml += '<tr id="oszp"><th>зарплаты:</td><td align=right><b>'
+			thtml += ((team.wage)/1000).toFixed(3).replace(/\./g,',')+'$'
+			thtml += '</b></td></tr>'
+/**
+			if(team.value2!=0 || team.wage2!=0) thtml += '<tr><th colspan=2><br>Арендовано</th><th width=30%></th></tr>'
 			if(team.value2!=0){
-				thtml += '<tr><td>арендовано:</td><td align=right>'
+				thtml += '<tr><td>номиналы</td><td align=right>'
 				var nom2pr = team.value2
 				if(nom2>=1000) nom2pr = (team.value2/1000).toFixed(3)
 				thtml += (String(nom2pr).replace(/\./g,',')+',000$').fontsize(1)
 				thtml += '</td></tr>'
 			}
-			if(team.value3!=0){
-				thtml += '<tr><td>в&nbsp;аренде:</td><td align=right>'
-				var nom3pr = team.value3
-				if(team.value3>=1000) nom3pr = (team.value3/1000).toFixed(3)
-				thtml += (String(nom3pr).replace(/\./g,',')+',000$').fontsize(1)
-				thtml += '</td></tr>'
-			}
-			thtml += '<tr><th colspan=2><br>Зарплаты</th><th width=30%></th></tr>'
-			thtml += '<tr><td>состав:</td><td align=right>'
-			thtml += (((team.wage)/1000).toFixed(3).replace(/\./g,',')+'$').fontsize(1)
-			thtml += '</td></tr>'
 			if (team.wage2 !=0) {
-				thtml += '<tr><td>арендовано:</td><td align=right>'
+				thtml += '<tr><td>зарплаты:</td><td align=right>'
 				var wage2pr = team.wage2
 				if(team.wage2>=1000) wage2pr = (team.wage2/1000).toFixed(3)
 				thtml += (String(wage2pr).replace(/\./g,',')+'$').fontsize(1)
 				thtml += '</td></tr>'
 			} 
+			if(team.value3!=0 || team.wage3!=0) thtml += '<tr><th colspan=2><br>В аренде</th><th width=30%></th></tr>'
+			if(team.value3!=0){
+				thtml += '<tr><td>номиналы:</td><td align=right>'
+				var nom3pr = team.value3
+				if(team.value3>=1000) nom3pr = (team.value3/1000).toFixed(3)
+				thtml += (String(nom3pr).replace(/\./g,',')+',000$').fontsize(1)
+				thtml += '</td></tr>'
+			}
 			if(team.wage3!=0){
-				thtml += '<tr><td>в&nbsp;аренде:</td><td align=right>'
+				thtml += '<tr><td>зарплаты:</td><td align=right>'
 				var wage3pr = team.wage3
 				if(team.wage3>=1000) wage3pr = (team.wage3/1000).toFixed(3)
 				thtml += (String(wage3pr).replace(/\./g,',')+'$').fontsize(1)
 				thtml += '</td></tr>'
 			}
+/**/
 			$('#crabright table').append(thtml)
 
 			var tfin = []
@@ -445,7 +454,6 @@ function Ready(){
 							}
 						}
 					}
-					ShowValuesChangeMenu()
 				}
 
 				// Save
@@ -465,20 +473,37 @@ function Ready(){
 	}
 }
 
-function ShowValuesChangeMenu(){
-	$('td.back4 table table:eq(4) table td:last font').append(' <a id="nom" href="javascript:void(ShowValuesChange())">Номиналы</a>&nbsp;')
-}
-
 function ShowValuesChange(){
-	$('a#nom').remove()
-	$('table[id=tblRoster] tr:first').append('<td>Ном</td>')
-	$('tr[id^=tblRosterTr]').each(function(i,val){
-		var txt = players[i+1].value/1000+'т$'
-		if (players[i+1].valuech !=0 ){
-			txt += ShowChange(players[i+1].valuech/1000)
+	if(nom==0) {
+		nom = 1
+		var nomtext = ''
+		var pls = players.sort(sValue)
+		for(i in pls) {
+			nomtext += '<tr id="nom">'
+			nomtext += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			nomtext += '<td align=right>' + ShowValueFormat(pls[i].value).fontsize(1) + '</td>'
+			nomtext += '<td>&nbsp;'+ShowChange(pls[i].valuech)+'</td>'
+			nomtext += '</tr>'
 		}
-		$(val).append('<td width=14%>'+txt+'</td>')
-	})
+		$('#osnom').after(nomtext)
+	} else {
+		nom = 0
+		$('tr#nom').remove()
+	}
+
+}
+function ShowShortName(fullname){
+	var namearr = fullname.replace(/^\s+/, "").replace(/\s+$/, "").split(' ')
+	var shortname = ''
+	for(n in namearr) {
+		if(n==0){
+			if(namearr[1] == undefined) shortname += namearr[n]
+			else shortname += namearr[n][0] + '.'
+		} else {
+			shortname += namearr[n] + '&nbsp;'
+		}
+	}
+	return shortname
 }
 
 function ShowChange(value){
@@ -486,30 +511,34 @@ function ShowChange(value){
 	else if(value < 0)	return '<sup><font color="red">' 	+ value + '</font></sup>'
 	else 		  		return ''
 }
+function ShowValueFormat(value){
+	if (value > 1000000)	return (value/1000000).toFixed(3).replace(/\./g,',')+'$т'
+	else 					return (value/1000)+'$т'
+}
 
 function EditFinance(){
 	var txt = $('table.layer1 td.l4:eq(1)').text().split(': ')[1]
 	var txt2 = ''
 	switch (txt){
 		case 'банкрот': 				 txt2 += 'меньше 0'		;break;
-		case 'жалкое': 					 txt2 += '1т$ - 200т$'	;break;
-		case 'бедное': 					 txt2 += '200т$ - 500т$';break;
-		case 'среднее': 				 txt2 += '500т$ - 1м$'	;break;
-		case 'нормальное': 				 txt2 += '1м$ - 3м$'	;break;
-		case 'благополучное': 			 txt2 += '3м$ - 6м$'	;break;
-		case 'отличное': 				 txt2 += '6м$ - 15м$'	;break;
-		case 'богатое': 				 txt2 += '15м$ - 40м$'	;break;
-		case 'некуда деньги девать :-)': txt2 += 'больше 40м$'	;break;
+		case 'жалкое': 					 txt2 += '1$т - 200$т'	;break;
+		case 'бедное': 					 txt2 += '200$т - 500$т';break;
+		case 'среднее': 				 txt2 += '500$т - 1$м'	;break;
+		case 'нормальное': 				 txt2 += '1$м - 3$м'	;break;
+		case 'благополучное': 			 txt2 += '3$м - 6$м'	;break;
+		case 'отличное': 				 txt2 += '6$м - 15$м'	;break;
+		case 'богатое': 				 txt2 += '15$м - 40$м'	;break;
+		case 'некуда деньги девать :-)': txt2 += 'больше 40$м'	;break;
 		default:
 			var fin = parseInt(txt.replace(/,/g,'').replace('$',''))
-			if (fin > 40000000) 		{txt = 'некуда деньги девать';	txt2 = 'больше 40м$'}
-			else if (fin >= 15000000)	{txt = 'богатое';				txt2 = '15м$ - 40м$'}
-			else if (fin >= 6000000) 	{txt = 'отличное';				txt2 = '6м$ - 15м$'}
-			else if (fin >= 3000000) 	{txt = 'благополучное';			txt2 = '3м$ - 6м$'}
-			else if (fin >= 1000000) 	{txt = 'нормальное';			txt2 = '1м$ - 3м$'}
-			else if (fin >= 500000) 	{txt = 'среднее';				txt2 = '500т$ - 1м$'}
-			else if (fin >= 200000) 	{txt = 'бедное';				txt2 = '200$ - 500т$'}
-			else if (fin >=0) 			{txt = 'жалкое';				txt2 = '1т$ - 200т$'}
+			if (fin > 40000000) 		{txt = 'некуда деньги девать';	txt2 = 'больше 40$м'}
+			else if (fin >= 15000000)	{txt = 'богатое';				txt2 = '15$м - 40$м'}
+			else if (fin >= 6000000) 	{txt = 'отличное';				txt2 = '6$м - 15м$'}
+			else if (fin >= 3000000) 	{txt = 'благополучное';			txt2 = '3$м - 6$м'}
+			else if (fin >= 1000000) 	{txt = 'нормальное';			txt2 = '1$м - 3$м'}
+			else if (fin >= 500000) 	{txt = 'среднее';				txt2 = '500$т - 1$т'}
+			else if (fin >= 200000) 	{txt = 'бедное';				txt2 = '200$т - 500$т'}
+			else if (fin >=0) 			{txt = 'жалкое';				txt2 = '1$т - 200$т'}
 			else if (fin < 0) 			{txt = 'банкрот';				txt2 = 'меньше 0'}
 	}
 	$('#finance1').html(txt)
