@@ -363,12 +363,12 @@ function Ready(){
 
 			// print to right menu
 			var thtml = ''
-			thtml += '<tr><th colspan=2><br>Основной состав</th><th width=20%></th></tr>'
-			thtml += '<tr id="osnom"><th align=left><a href="javascript:void(ShowValuesChange())">номиналы</a>:</td><td align=right><b>'
+			thtml += '<tr><th colspan=3><br>Основной состав</th></tr>'
+			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowValuesChange())">номиналы</a>:</td><td align=right><b>'
 			thtml += ShowValueFormat(team.value*1000)
-			thtml += '</b></td></tr>'
-			thtml += '<tr id="oszp"><th>зарплаты:</td><td align=right><b>'
-			thtml += ((team.wage)/1000).toFixed(3).replace(/\./g,',')+'$'
+			thtml += '</b></td><td width=10%></td></tr>'
+			thtml += '<tr id="oszp"><th align=left>зарплаты:</td><td align=right><b>'
+			thtml += ((team.wage)/1000).toFixed(3).replace(/\./g,',')+'$&nbsp;'
 			thtml += '</b></td></tr>'
 /**
 			if(team.value2!=0 || team.wage2!=0) thtml += '<tr><th colspan=2><br>Арендовано</th><th width=30%></th></tr>'
