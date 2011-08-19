@@ -505,7 +505,7 @@ function ShowPlayersZp(){
 		for(i in pls) {
 			text += '<tr id="zp">'
 			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
-			text += '<td align=right>' + ShowValueFormat(pls[i].wage).fontsize(1) + '</td>'
+			text += '<td align=right>' + (ShowValueFormat(pls[i].wage) + pls[i].contract).fontsize(1) + '</td>'
 			text += '</tr>'
 		}
 		$('#oszp').after(text)
