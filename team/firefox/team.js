@@ -17,6 +17,7 @@ var players = []
 var pls = []
 var countSk = [0]
 var nom = 0
+var zp = 0
 var team = {
 	'wage'	: 0,
 	'wage2'	: 0,
@@ -278,7 +279,11 @@ function sValue(i, ii) { // По value (убыванию)
     else if	(i.value > ii.value)	return -1
     else							return  0
 }
-
+function sZp(i, ii) { // По zp (убыванию)
+    if 		(i.wage < ii.wage)	return  1
+    else if	(i.wage > ii.wage)	return -1
+    else						return  0
+}
 
 function PlayersInfoGet(){
 	$('tr[id^=tblRosterTr]').each(function(i,val){
@@ -364,11 +369,11 @@ function Ready(){
 			// print to right menu
 			var thtml = ''
 			thtml += '<tr><th colspan=3><br>Основной состав</th></tr>'
-			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowValuesChange())">номиналы</a>:</td><td align=right><b>'
-			thtml += ShowValueFormat(team.value*1000)
+			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</td><td align=right><b>'
+			thtml += ShowValueFormatT(team.value*1000)
 			thtml += '</b></td><td width=10%></td></tr>'
-			thtml += '<tr id="oszp"><th align=left>зарплаты:</td><td align=right><b>'
-			thtml += ((team.wage)/1000).toFixed(3).replace(/\./g,',')+'$&nbsp;'
+			thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</td><td align=right><b>'
+			thtml += ShowValueFormat(team.wage)
 			thtml += '</b></td></tr>'
 /**
 			if(team.value2!=0 || team.wage2!=0) thtml += '<tr><th colspan=2><br>Арендовано</th><th width=30%></th></tr>'
@@ -473,7 +478,7 @@ function Ready(){
 	}
 }
 
-function ShowValuesChange(){
+function ShowPlayersValue(){
 	if(nom==0) {
 		nom = 1
 		var nomtext = ''
@@ -481,7 +486,7 @@ function ShowValuesChange(){
 		for(i in pls) {
 			nomtext += '<tr id="nom">'
 			nomtext += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
-			nomtext += '<td align=right>' + ShowValueFormat(pls[i].value).fontsize(1) + '</td>'
+			nomtext += '<td align=right>' + ShowValueFormatT(pls[i].value).fontsize(1) + '</td>'
 			nomtext += '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>'
 			nomtext += '</tr>'
 		}
@@ -490,8 +495,27 @@ function ShowValuesChange(){
 		nom = 0
 		$('tr#nom').remove()
 	}
+}
+
+function ShowPlayersZp(){
+	if(zp==0) {
+		zp = 1
+		var text = ''
+		var pls = players.sort(sZp)
+		for(i in pls) {
+			text += '<tr id="zp">'
+			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td align=right>' + ShowValueFormat(pls[i].wage).fontsize(1) + '</td>'
+			text += '</tr>'
+		}
+		$('#oszp').after(text)
+	} else {
+		zp = 0
+		$('tr#zp').remove()
+	}
 
 }
+
 function ShowShortName(fullname){
 	var namearr = fullname.replace(/^\s+/, "").replace(/\s+$/, "").split(' ')
 	var shortname = ''
@@ -511,9 +535,13 @@ function ShowChange(value){
 	else if(value < 0)	return '<sup><font color="red">' 	+ value + '</font></sup>'
 	else 		  		return ''
 }
-function ShowValueFormat(value){
+function ShowValueFormatT(value){
 	if (value > 1000000)	return (value/1000000).toFixed(3).replace(/\./g,',')+'$т'
-	else 					return (value/1000)+'$т'
+	else 					return (value/1000) + '$т'
+}
+function ShowValueFormat(value){
+	if (value > 1000)	return (value/1000).toFixed(3).replace(/\./g,',') + '$&nbsp;'
+	else				return (value) + '$&nbsp;'
 }
 
 function EditFinance(){
