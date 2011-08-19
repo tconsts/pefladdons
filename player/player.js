@@ -777,6 +777,7 @@ $().ready(function() {
 	// get post-info
 	var ms2 = $('td.back4 > center:first').html()
 	if (ms2 != null){
+		players[0].newpos = ''
 		if(ms2.indexOf('New pos:')!=-1) {
 			players[0].newpos = ms2.split('New pos: ')[1].split('<')[0]
 			$('td.back4 table center:first b:first').after(' ('+players[0].newpos + ')')
@@ -844,7 +845,11 @@ $().ready(function() {
 		var sksstr = psj[5].split(',') 			// !сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,пс,f=*0,Фам
 		var koff = 1
 
-		if ((players[0].position.indexOf(psj[2]) == -1) || (players[0].position.indexOf(psj[3]) == -1)) koff = 1000
+		if ((players[0].position.indexOf(psj[2]) == -1 || players[0].position.indexOf(psj[3]) == -1) &&
+			(players[0].position.indexOf(psj[2]) == -1 || players[0].newpos.indexOf(psj[3]) == -1) &&
+			(players[0].newpos.indexOf(psj[2]) == -1 || players[0].position.indexOf(psj[3]) == -1) &&
+			(players[0].newpos.indexOf(psj[2]) == -1 || players[0].newpos.indexOf(psj[3]) == -1)
+		) koff = 1000
 
 
 		for (var s in sksstr) {
