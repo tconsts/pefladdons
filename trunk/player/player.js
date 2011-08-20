@@ -269,11 +269,11 @@ function CheckPlayer(nn){
 	// позиция
 	header += '<tr align=center><td>'
 	header += '<b>' + players[0].position + '</b>'
-	if(players[0].newpos != undefined) header += ' (' + players[0].newpos + ')'
+	if(players[0].newpos != '') header += ' (' + players[0].newpos + ')'
 	header += '</td>'
 	header += '<td>'
 	header += '<b>' + players[nn].position + '</b>'
-	if(players[nn].newpos != undefined) header += ' (' + players[nn].newpos + ')'
+	if(players[nn].newpos != '') header += ' (' + players[nn].newpos + ')'
 	header += '</td></tr>'
 	// умения
 	header += '<tr align=center><td>'
@@ -367,7 +367,7 @@ function CodeForForum(){
 		if (ptype == 'p') x += ' | [player=' + pl.id + '][img]images/eye.png[/img][/player]'
 		if (pl.natfull != ' ') x+= ' | [b]' + pl.natfull + '[/b]'
 		x += ' | ' + pl.position + ' ' 
-		if(pl.newpos != undefined) x += '(' +pl.newpos + ') '
+		if(pl.newpos != '') x += '(' +pl.newpos + ') '
 		x += pl.age
 		if (pl.sale == 1)	x += ' | [img]system/img/g/sale.png[/img]'
 		if (pl.teamid == undefined) x += ' | ' + pl.team
@@ -422,7 +422,7 @@ function CodeForForum(){
 			.replace(/"/g,'')
 			.replace(/\[br\]/g,'\n')
 		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+pl.position+'[b]'
-		if(pl.newpos != undefined) x += '[/b] (' +pl.newpos + ')[b]'
+		if(pl.newpos != '') x += '[/b] (' +pl.newpos + ')[b]'
 		x += '\n\nУмения[/b](сс='+pl.sumskills+')[/center]\n\n'
 	}
 
