@@ -373,18 +373,81 @@ function Ready(){
 			if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
 				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')}
 
+			var sumvaluechange = 0
+			if(UrlValue('j')==99999){
+				// Players value
+				var text2 = '' //GetStorageData('playersvalue')
+				if(ff)	text2 = String(globalStorage[location.hostname]['playersvalue'])
+				else	text2 = sessionStorage['playersvalue']
+
+				/**/
+				//debug
+				$('td.back4').prepend('<span id=hiden></span>')
+				$('span#hiden').hide().append(text2)
+				/**/
+				
+				if (text2 != undefined){
+					var t1 = text2.split(',')
+					var sumvalueold = 0
+					for(j in t1){
+						var t2 = t1[j].split(':')
+						pls[t2[0]] = {}
+						pls[t2[0]].value = parseInt(t2[1])*1000
+						pls[t2[0]].valuech = parseInt(t2[2])*1000
+						sumvalueold += (isNaN(parseInt(t2[1])) ? 0 : parseInt(t2[1]))
+					}
+					// Update current
+					var sumvaluenew = 0
+					for (i in players) {
+						var pid = players[i].id
+						if(pls[pid] != undefined){
+							if(players[i].value != pls[pid].value){
+								players[i].valuech = players[i].value - pls[pid].value
+							}else{
+								players[i].valuech = pls[pid].valuech
+							}
+						} else {
+							players[i].valuech = 0
+						}
+						sumvaluechange += players[i].valuech/1000
+						sumvaluenew += players[i].value/1000
+					}
+					if(sumvaluenew != sumvalueold){
+						sumvaluechange = sumvaluenew - sumvalueold
+					}
+				}
+				
+				// Save
+				text = ''
+				for(j in players) {
+					text += players[j].id + ':'
+					text += players[j].value/1000 + ':'
+					text += (players[j].valuech != undefined ? players[j].valuech/1000 : 0)
+					text += ','
+				}
+				//SaveStorageData('playersvalue',text)
+				if(ff)	globalStorage[location.hostname]['playersvalue'] = text
+				else	sessionStorage['playersvalue'] = text
+			}
+
 			// print to right menu
 			var thtml = ''
-			thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b></td></tr>'
+			thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b>'
+//			if(sumvaluechange != 0) 
+			thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
+			thtml += '</td></tr>'
 			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</th><th align=right>'
 			thtml += ShowValueFormat(team.value)+'т'
-			thtml += '</th><td width=10%></td></tr>'
+			thtml += '</th><td width=10%>'
+			if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
+			thtml += '</td></tr>'
 			thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
 			thtml += ShowValueFormat(team.wage)+'&nbsp;'
 			thtml += '</th></tr>'
 			thtml += '<tr id="osskills"><th align=left><a href="javascript:void(ShowPlayersSkillChange())">скилы</a>&nbsp;'+('(срд.)').fontsize(1)+':</th><th align=right>'
 			thtml += (team.ss/countSostavMax).toFixed(2) + '&nbsp;'
 			thtml += '</th></tr>'
+
 
 /**
 			if(team.value2!=0 || team.wage2!=0) thtml += '<tr><th colspan=2><br>Арендовано</th><th width=30%></th></tr>'
@@ -442,57 +505,6 @@ function Ready(){
 			for(j in tfin) text += j + ':' + tfin[j].zp + ':' + tfin[j].nom + ','
 			sessionStorage.teamsfin = text
 
-			if(UrlValue('j')==99999){
-				// Players value
-				var text2 = '' //GetStorageData('playersvalue')
-				if(ff)	text2 = String(globalStorage[location.hostname]['playersvalue'])
-				else	text2 = sessionStorage['playersvalue']
-
-				/**/
-				//debug
-				$('td.back4').prepend('<span id=hiden></span>')
-				$('span#hiden').hide().append(text2)
-				/**/
-				
-				if (text2 != undefined){
-					var t1 = text2.split(',')
-					for(j in t1){
-						var t2 = t1[j].split(':')
-						pls[t2[0]] = {}
-						pls[t2[0]].value = parseInt(t2[1])*1000
-						pls[t2[0]].valuech = parseInt(t2[2])*1000
-					}
-					// Update current
-					var sumvalue = 0
-					for (i in players) {
-						var pid = players[i].id
-						if(pls[pid] != undefined){
-							if(players[i].value != pls[pid].value){
-								players[i].valuech = players[i].value - pls[pid].value
-							}else{
-								players[i].valuech = pls[pid].valuech
-							}
-						}
-						sumvalue += players[i].valuech/1000
-					}
-					if(sumvalue != 0) {
-						$('td#os').append('&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>')
-						$('tr#osnom td:last').html('&nbsp;'+ShowChange(sumvalue))
-					}
-				}
-
-				// Save
-				text = ''
-				for(j in players) {
-					text += players[j].id + ':'
-					text += players[j].value/1000 + ':'
-					text += (players[j].valuech != undefined ? players[j].valuech/1000 : 0)
-					text += ','
-				}
-				//SaveStorageData('playersvalue',text)
-				if(ff)	globalStorage[location.hostname]['playersvalue'] = text
-				else	sessionStorage['playersvalue'] = text
-			}
 		}
 	}
 }
@@ -510,6 +522,7 @@ function ForgotPlValueCh(){
 	if(ff)	globalStorage[location.hostname]['playersvalue'] = text
 	else	sessionStorage['playersvalue'] = text
 
+	nom = 0
 	$('a#os').remove()
 	$('tr#nom').remove()
 	$('tr#osnom td:last').html('')
