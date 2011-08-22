@@ -50,13 +50,13 @@ function GetPlayerHistory(n,pid){
 				stats[sid].sr = 0
 			}
 			if(d[6] == '') d[6] = 0
-			stats[sid].sr	= ((parseInt(d[2])*parseFloat(d[6]) + stats[sid].gm*stats[sid].sr)/(parseInt(d[2])+stats[sid].gm)).toFixed(2)
+			stats[sid].sr	= ((parseInt(d[2])*parseFloat(d[6].replace(',','.')) + stats[sid].gm*stats[sid].sr)/(parseInt(d[2])+stats[sid].gm)).toFixed(2)
 			stats[sid].gm	+= parseInt(d[2])
 			stats[sid].gl	+= parseInt(d[3])
 			stats[sid].ps	+= parseInt(d[4])
 			stats[sid].im	+= parseInt(d[5])
 			if(!isNaN(sid)){
-				stats[0].sr		= ((parseInt(d[2])*parseFloat(d[6]) + stats[0].gm*stats[0].sr)/(parseInt(d[2])+stats[0].gm)).toFixed(2)
+				stats[0].sr		= ((parseInt(d[2])*parseFloat(d[6].replace(',','.')) + stats[0].gm*stats[0].sr)/(parseInt(d[2])+stats[0].gm)).toFixed(2)
 				stats[0].gm		+= parseInt(d[2])
 				stats[0].gl		+= parseInt(d[3])
 				stats[0].ps		+= parseInt(d[4])
