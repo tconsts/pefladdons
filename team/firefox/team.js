@@ -18,13 +18,17 @@ var pls = []
 var countSk = [0]
 var nom = 0
 var zp = 0
+var sk = 0
 var team = {
 	'wage'	: 0,
 	'wage2'	: 0,
 	'wage3'	: 0,
 	'value'	: 0,
 	'value2': 0,
-	'value3': 0
+	'value3': 0,
+	'ss'	: 0,
+	'ss2'	: 0,
+	'ss3'	: 0
 }
 var skills = {
 	'N'	  : 'pn',
@@ -77,7 +81,7 @@ $().ready(function() {
 
 		// Draw right panel and fill data
 		var preparedhtml = ''
-		preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
+		preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
 		preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 		preparedhtml += '</td></tr></table>'
 		$('body table.border:last').before(preparedhtml)
@@ -194,7 +198,6 @@ function ShowSkillsY() {
 }
 
 function ShowSkills(param){
-
 	if(param == 1){
 		$('table[background]:eq(1)').hide()
 		$('td#crabglobalright').html('')
@@ -330,19 +333,22 @@ function CountryInfoGet(){
 function GetPl(pn){
 	// get player skills with number pn
 	var skillsum = 0
+	var skillchange = []
 	$('td#pl'+pn+' table:first td:even').each(function(){
 		var skillarrow = ''
 		var skillname = $(this).html();
 		var skillvalue = parseInt($(this).next().html().replace('<b>',''));
-
 		if ($(this).next().find('img').attr('src') != undefined){
 			skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
 		}
 		skillsum += skillvalue;
-		players[pn][skillname] = skillvalue + skillarrow;
+		players[pn][skillname] = skillvalue + skillarrow
+
+		if($(this).next().html().indexOf('*') != -1) skillchange.push(skillname)
 	})
-	players[pn].sumskills = skillsum
-	players[pn].sorting	= skillsum
+	players[pn].sumskills	= skillsum
+	players[pn].sorting		= skillsum
+	players[pn].skchange	= (skillchange[0] != undefined ? skillchange.join(',') : '')
 
 	// get player header info
 	$('td#pl'+pn+' table').remove()
@@ -354,6 +360,7 @@ function GetPl(pn){
 
 	team.wage	+= players[pn].wage
 	team.value	+= players[pn].value/1000
+	team.ss		+= players[pn].sumskills
 	$('table#pl'+pn).remove()
 	Ready()
 }
@@ -369,12 +376,16 @@ function Ready(){
 			// print to right menu
 			var thtml = ''
 			thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b></td></tr>'
-			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</td><td align=right><b>'
-			thtml += ShowValueFormatT(team.value*1000)
-			thtml += '</b></td><td width=10%></td></tr>'
-			thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</td><td align=right><b>'
-			thtml += ShowValueFormat(team.wage)
-			thtml += '</b></td></tr>'
+			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</th><th align=right>'
+			thtml += ShowValueFormat(team.value)+'т'
+			thtml += '</th><td width=10%></td></tr>'
+			thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
+			thtml += ShowValueFormat(team.wage)+'&nbsp;'
+			thtml += '</th></tr>'
+			thtml += '<tr id="osskills"><th align=left><a href="javascript:void(ShowPlayersSkillChange())">скилы</a>&nbsp;'+('(срд.)').fontsize(1)+':</th><th align=right>'
+			thtml += (team.ss/countSostavMax).toFixed(2) + '&nbsp;'
+			thtml += '</th></tr>'
+
 /**
 			if(team.value2!=0 || team.wage2!=0) thtml += '<tr><th colspan=2><br>Арендовано</th><th width=30%></th></tr>'
 			if(team.value2!=0){
@@ -407,7 +418,7 @@ function Ready(){
 				thtml += '</td></tr>'
 			}
 /**/
-			$('#crabright table').append(thtml)
+			$('#crabright table:first').append(thtml)
 
 			var tfin = []
 			// Get
@@ -512,7 +523,7 @@ function ShowPlayersValue(){
 		for(i in pls) {
 			nomtext += '<tr id="nom">'
 			nomtext += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
-			nomtext += '<td align=right>' + ShowValueFormatT(pls[i].value).fontsize(1) + '</td>'
+			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
 			nomtext += '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>'
 			nomtext += '</tr>'
 		}
@@ -531,7 +542,7 @@ function ShowPlayersZp(){
 		for(i in pls) {
 			text += '<tr id="zp">'
 			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
-			text += '<td align=right>' + ShowValueFormat(pls[i].wage) + '</td>'
+			text += '<td align=right>' + (ShowValueFormat(pls[i].wage) + '&nbsp;').fontsize(1) + '</td>'
 			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
 			text += '</tr>'
 		}
@@ -540,7 +551,34 @@ function ShowPlayersZp(){
 		zp = 0
 		$('tr#zp').remove()
 	}
+}
 
+function ShowPlayersSkillChange(){
+	if(sk==0) {
+		sk = 1
+		var text = ''
+		var pls = players.sort(sSkills)
+		for(i in pls) {
+			text += '<tr id="skills">'
+			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td align=right>' + (pls[i].sumskills + '&nbsp;').fontsize(1) + '</td>'
+//			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
+			if(pls[i].skchange != '') {
+				var skillchange = pls[i].skchange.split(',')
+				for(j in skillchange) {
+					text += '<tr id="skills"><td align=right colspan=2><i>'+(skillchange[j] + '&nbsp;').fontsize(1)
+					text += (pls[i][skillchange[j]].split('.')[0] + '&nbsp;').fontsize(1) +'</i></td>'
+					text += '<td><img height="10" src="system/img/g/'+pls[i][skillchange[j]].split('.')[1]+'.gif"></img>'
+					text += '</td></tr>'
+				}
+			}
+			text += '</tr>'
+		}
+		$('#osskills').after(text)
+	} else {
+		sk = 0
+		$('tr#skills').remove()
+	}
 }
 
 function ShowShortName(fullname){
@@ -562,13 +600,9 @@ function ShowChange(value){
 	else if(value < 0)	return '<sup><font color="red">' 	+ value + '</font></sup>'
 	else 		  		return ''
 }
-function ShowValueFormatT(value){
-	if (value > 1000000)	return (value/1000000).toFixed(3).replace(/\./g,',')+'$т'
-	else 					return (value/1000) + '$т'
-}
 function ShowValueFormat(value){
-	if (value > 1000)	return (value/1000).toFixed(3).replace(/\./g,',') + '$&nbsp;'
-	else				return (value) + '$&nbsp;'
+	if (value > 1000)	return (value/1000).toFixed(3).replace(/\./g,',') + '$'
+	else				return (value) + '$'
 }
 
 function EditFinance(){
