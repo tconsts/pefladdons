@@ -568,8 +568,10 @@ function ShowPlayersSkillChange(){
 				for(j in skillchange) {
 					text += '<tr id="skills"><td align=right colspan=2><i>'+(skillchange[j] + '&nbsp;').fontsize(1)
 					text += (pls[i][skillchange[j]].split('.')[0] + '&nbsp;').fontsize(1) +'</i></td>'
-					text += '<td><img height="10" src="system/img/g/'+pls[i][skillchange[j]].split('.')[1]+'.gif"></img>'
-					text += '</td></tr>'
+					if(pls[i][skillchange[j]].split('.')[1] != undefined) {
+						text += '<td><img height="10" src="system/img/g/'+pls[i][skillchange[j]].split('.')[1]+'.gif"></img></td>'
+					}
+					text += '</tr>'
 				}
 			}
 			text += '</tr>'
