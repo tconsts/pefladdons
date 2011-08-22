@@ -30,6 +30,7 @@ function GetPlayerHistory(n,pid){
 	$('#ph'+n).append(head)
 
 	var table = '<table id=debug style="display: none;"></table>'
+//	var table = '<table id=debug></table>'
 	$('#ph'+n).after(table)
 
 	$('#debug').load('hist.php?id='+pid+'&t=p table:eq(0) tr:gt(0)',function(){
@@ -49,33 +50,31 @@ function GetPlayerHistory(n,pid){
 				stats[sid].im = 0
 				stats[sid].sr = 0
 			}
-			if(d[6] == '') d[6] = 0
-			stats[sid].sr	= ((parseInt(d[2])*parseFloat(d[6].replace(',','.')) + stats[sid].gm*stats[sid].sr)/(parseInt(d[2])+stats[sid].gm)).toFixed(2)
+			if(d[6] == '') d[6] = 0	// can delete string?
+			stats[sid].sr	= (parseInt(d[2])+stats[sid].gm ==0 ? 0 : ((parseInt(d[2])*parseFloat(d[6].replace(',','.')) + (stats[sid].gm*stats[sid].sr))/(parseInt(d[2])+stats[sid].gm)).toFixed(2))
 			stats[sid].gm	+= parseInt(d[2])
 			stats[sid].gl	+= parseInt(d[3])
 			stats[sid].ps	+= parseInt(d[4])
 			stats[sid].im	+= parseInt(d[5])
 			if(!isNaN(sid)){
-				stats[0].sr		= ((parseInt(d[2])*parseFloat(d[6].replace(',','.')) + stats[0].gm*stats[0].sr)/(parseInt(d[2])+stats[0].gm)).toFixed(2)
+				stats[0].sr		= (parseInt(d[2])+stats[0].gm == 0 ? 0 : ((parseInt(d[2])*parseFloat(d[6].replace(',','.')) + stats[0].gm*stats[0].sr)/(parseInt(d[2])+stats[0].gm)).toFixed(2))
 				stats[0].gm		+= parseInt(d[2])
 				stats[0].gl		+= parseInt(d[3])
 				stats[0].ps		+= parseInt(d[4])
 				stats[0].im		+= parseInt(d[5])
 			}
 		})
+		//print
 		var data = ''
 		for (ss=stats.length-1;ss>=0;ss--){
-//		for (ss in stats){
 			if(stats[ss] !=undefined && stats[ss].gm != ''){
 				if (ss==0)	data += '<tr bgcolor=#88C274><td>Итого</td>'
 				else 		data += '<tr bgcolor=A3DE8F><td>Сезон '+ss+'</td>'
-				for (p in stats[ss]) data += '<td>'+ stats[ss][p]+'</td>'
+				for (p in stats[ss]) data += '<td>'+ String(stats[ss][p]).replace('.',',')+'</td>'
 				data += '<td> </td><td> </td></tr>'
 			}
 		}
 		$('#ph'+n).append(data)
-
-
 	})
 }
 
@@ -336,7 +335,7 @@ function CheckPlayer(nn){
 		if(i!=1) $(val).find('td:eq(7)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['kk'+i]!=undefined ? players[nn]['kk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
 		if(i!=1) $(val).find('td:eq(6)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['zk'+i]!=undefined ? players[nn]['zk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
 
-		$(val).find('td:eq(5)').after('<td>'+(parseFloat(players[nn]['sr'+i])==0 || players[nn]['sr'+i]==undefined ? ' ':(parseFloat(players[nn]['sr'+i])).toFixed(2))+'</td><td bgcolor=C9F8B7 width=1%> </td>')
+		$(val).find('td:eq(5)').after('<td>'+(parseFloat(players[nn]['sr'+i])==0 || players[nn]['sr'+i]==undefined ? '0,00' : String((parseFloat(players[nn]['sr'+i])).toFixed(2)).replace('.',','))+'</td><td bgcolor=C9F8B7 width=1%> </td>')
 		$(val).find('td:eq(4)').after('<td>'+(players[nn]['im'+i]!=undefined ? players[nn]['im'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
 		$(val).find('td:eq(3)').after('<td>'+(players[nn]['ps'+i]!=undefined ? players[nn]['ps'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
 		$(val).find('td:eq(2)').after('<td>'+(players[nn]['gl'+i]!=undefined ? players[nn]['gl'+i] : '?') +'</td><td bgcolor=C9F8B7 width=1%> </td>')
