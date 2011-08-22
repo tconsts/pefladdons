@@ -368,7 +368,7 @@ function Ready(){
 
 			// print to right menu
 			var thtml = ''
-			thtml += '<tr><th colspan=3><br>Основной состав</th></tr>'
+			thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b></td></tr>'
 			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</td><td align=right><b>'
 			thtml += ShowValueFormatT(team.value*1000)
 			thtml += '</b></td><td width=10%></td></tr>'
@@ -437,9 +437,12 @@ function Ready(){
 				if(ff)	text2 = String(globalStorage[location.hostname]['playersvalue'])
 				else	text2 = sessionStorage['playersvalue']
 
+				/**/
+				//debug
 				$('td.back4').prepend('<span id=hiden></span>')
 				$('span#hiden').hide().append(text2)
-
+				/**/
+				
 				if (text2 != undefined){
 					var t1 = text2.split(',')
 					for(j in t1){
@@ -449,6 +452,7 @@ function Ready(){
 						pls[t2[0]].valuech = parseInt(t2[2])*1000
 					}
 					// Update current
+					var sumvalue = 0
 					for (i in players) {
 						var pid = players[i].id
 						if(pls[pid] != undefined){
@@ -458,6 +462,11 @@ function Ready(){
 								players[i].valuech = pls[pid].valuech
 							}
 						}
+						sumvalue += players[i].valuech/1000
+					}
+					if(sumvalue != 0) {
+						$('td#os').append('&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>')
+						$('tr#osnom td:last').html('&nbsp;'+ShowChange(sumvalue))
 					}
 				}
 
@@ -472,10 +481,27 @@ function Ready(){
 				//SaveStorageData('playersvalue',text)
 				if(ff)	globalStorage[location.hostname]['playersvalue'] = text
 				else	sessionStorage['playersvalue'] = text
-
 			}
 		}
 	}
+}
+
+function ForgotPlValueCh(){
+	var text = ''
+	for(j in players) {
+		players[j].valuech = 0
+		text += players[j].id + ':'
+		text += players[j].value/1000 + ':'
+		text += 0
+		text += ','
+	}
+	//SaveStorageData('playersvalue',text)
+	if(ff)	globalStorage[location.hostname]['playersvalue'] = text
+	else	sessionStorage['playersvalue'] = text
+
+	$('a#os').remove()
+	$('tr#nom').remove()
+	$('tr#osnom td:last').html('')
 }
 
 function ShowPlayersValue(){
@@ -562,7 +588,7 @@ function EditFinance(){
 			var fin = parseInt(txt.replace(/,/g,'').replace('$',''))
 			if (fin > 40000000) 		{txt = 'некуда деньги девать';	txt2 = 'больше 40$м'}
 			else if (fin >= 15000000)	{txt = 'богатое';				txt2 = '15$м - 40$м'}
-			else if (fin >= 6000000) 	{txt = 'отличное';				txt2 = '6$м - 15м$'}
+			else if (fin >= 6000000) 	{txt = 'отличное';				txt2 = '6$м - 15$м'}
 			else if (fin >= 3000000) 	{txt = 'благополучное';			txt2 = '3$м - 6$м'}
 			else if (fin >= 1000000) 	{txt = 'нормальное';			txt2 = '1$м - 3$м'}
 			else if (fin >= 500000) 	{txt = 'среднее';				txt2 = '500$т - 1$т'}
