@@ -540,7 +540,7 @@ function ShowPlayersValue(){
 			nomtext += '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>'
 			nomtext += '</tr>'
 		}
-		$('#osnom').after(nomtext)
+		$('#osnom').after(nomtext + '<tr id="nom"><td>&nbsp;</td></tr>')
 	} else {
 		nom = 0
 		$('tr#nom').remove()
@@ -559,7 +559,7 @@ function ShowPlayersZp(){
 			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
 			text += '</tr>'
 		}
-		$('#oszp').after(text)
+		$('#oszp').after(text + '<tr id="zp"><td>&nbsp;</td></tr>')
 	} else {
 		zp = 0
 		$('tr#zp').remove()
@@ -589,7 +589,7 @@ function ShowPlayersSkillChange(){
 			}
 			text += '</tr>'
 		}
-		$('#osskills').after(text)
+		$('#osskills').after(text + '<tr id="skills"><td>&nbsp;</td></tr>')
 	} else {
 		sk = 0
 		$('tr#skills').remove()
