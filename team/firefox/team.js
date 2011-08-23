@@ -444,9 +444,9 @@ function Ready(){
 			thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
 			thtml += ShowValueFormat(team.wage)+'&nbsp;'
 			thtml += '</th></tr>'
-			thtml += '<tr id="osskills"><th align=left><a href="javascript:void(ShowPlayersSkillChange())">скилы</a>&nbsp;'+('(срд.)').fontsize(1)+':</th><th align=right>'
+			thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
 			thtml += (team.ss/countSostavMax).toFixed(2) + '&nbsp;'
-			thtml += '</th></tr>'
+			thtml += '</th><td></td></tr>'
 
 
 /**
