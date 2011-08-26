@@ -37,7 +37,7 @@ $().ready(function() {
 		var finschet = ''
 		var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
 		if (finschetarr[1]!=undefined && finschetarr[finschetarr.length-1].split('<br>')[0] != schet){
-			finschet = '[center]По пенальти '+finschetarr[finschetarr.length-1].split('<br>')[0] + '[/center]'
+			finschet = ' [center]По пенальти [b][color=red]'+finschetarr[finschetarr.length-1].split('<br>')[0] + '[/color][/b][/center]'
 		}
 		sessionStorage[mid] = finschet + $('td.back4 table:eq(6)')
 			.find('td').removeAttr('width').end()
