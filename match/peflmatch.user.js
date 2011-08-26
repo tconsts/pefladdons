@@ -2,14 +2,14 @@
 // @name           peflmatch
 // @namespace      pefl
 // @description    match page modification (PEFL.ru and .net)
-// @include        http://www.pefl.ru/plug.php?p=refl&t=if&*
-// @include        http://www.pefl.ru/plug.php?p=refl&t=code&*
-// @include        http://pefl.ru/plug.php?p=refl&t=if&*
-// @include        http://pefl.ru/plug.php?p=refl&t=code&*
-// @include        http://www.pefl.net/plug.php?p=refl&t=if&*
-// @include        http://www.pefl.net/plug.php?p=refl&t=code&*
-// @include        http://pefl.net/plug.php?p=refl&t=if&*
-// @include        http://pefl.net/plug.php?p=refl&t=code&*
+// @include        http://www.pefl.ru/*&t=if&*
+// @include        http://www.pefl.ru/*&t=code&*
+// @include        http://pefl.ru/*&t=if&*
+// @include        http://pefl.ru/*&t=code&*
+// @include        http://www.pefl.net/*&t=if&*
+// @include        http://www.pefl.net/*&t=code&*
+// @include        http://pefl.net/*&t=if&*
+// @include        http://pefl.net/*&t=code&*
 // @version			1.0
 // ==/UserScript==
 
