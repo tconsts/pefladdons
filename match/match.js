@@ -48,6 +48,7 @@ $().ready(function() {
 			.replace(/font/g,'color')
 			.replace(/\</g,'[')
 			.replace(/\>/g,']')
+		$('td.back4 table:eq(6) tr:odd').attr('bgcolor','#a3de8f') //#a3de8f #c9f8b7
 	} else {
 		var res = sessionStorage['curmatch']
 		if(res != undefined){
