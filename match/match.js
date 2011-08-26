@@ -34,8 +34,9 @@ $().ready(function() {
 	if(UrlValue('t') == 'if'){
 		sessionStorage['curmatch'] = $('td.back4 table:eq(6)')
 			.find('td').removeAttr('width').removeAttr('bgcolor').end()
+//			.find('tr:odd').attr('bgcolor','#a3de8f').end() //#a3de8f #c9f8b7
 			.html()
-			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/<tbody>/g,'<table width=100% bgcolor=c9f8b7>')
 			.replace(/tbody/g,'table')
 			.replace(/img src="/g,'img]')
 			.replace(/.gif/g,'.gif[/img')
@@ -56,5 +57,4 @@ $().ready(function() {
 			)
 		}
 	}
-
 }, false);
