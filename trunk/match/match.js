@@ -33,8 +33,13 @@ $().ready(function() {
 	if(UrlValue('t') == 'if'){
 		var wimg = '[img]' + $('img[src^="system/img/w"]').attr('src') + '[/img]'
 		var ref = ' [b]Главный арбитр:[/b] ' + $('td.back4 table:eq(2)').html().split('Главный арбитр:')[1].split(').')[0] + ').'
-		//alert(ref)
-		sessionStorage[mid] = $('td.back4 table:eq(6)')
+		var schet = $('td.back4 table:eq(3) td:eq(1)').text()
+		var finschet = ''
+		var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
+		if (finschetarr[1]!=undefined && finschetarr[finschetarr.length-1].split('<br>')[0] != schet){
+			finschet = '[center]По пенальти '+finschetarr[finschetarr.length-1].split('<br>')[0] + '[/center]'
+		}
+		sessionStorage[mid] = finschet + $('td.back4 table:eq(6)')
 			.find('td').removeAttr('width').end()
 			.find('td').removeAttr('bgcolor').end()
 			.prepend('<tr><td colspan=5 width=50%> </td><td colspan=5 width=50%> </td></tr>')
@@ -49,7 +54,7 @@ $().ready(function() {
 			.replace(/font/g,'color')
 			.replace(/\</g,'[')
 			.replace(/\>/g,']')
-			+ wimg + ref
+			+ wimg + ref 
 		$('td.back4 table:eq(6) tr:odd').attr('bgcolor','#a3de8f') //#a3de8f #c9f8b7
 	} else {
 		var res = sessionStorage[mid]
