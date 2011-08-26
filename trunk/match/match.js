@@ -32,7 +32,6 @@ $().ready(function() {
 
 	//Берем оценки за матч(if) и дорисовываем в код для форума(else)
 	if(UrlValue('t') == 'if'){
-		$('td.back4 table:eq(6)').attr('border','5')	// оценки
 		sessionStorage['curmatch'] = $('td.back4 table:eq(6)')
 			.find('td').removeAttr('width').removeAttr('bgcolor').end()
 			.html()
