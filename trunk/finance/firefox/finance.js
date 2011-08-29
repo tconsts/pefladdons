@@ -19,8 +19,9 @@
 
 //document.addEventListener('DOMContentLoaded', function(){
 //(function(){ 		// for ie
+
+var tdivarr = []
 $().ready(function() {
-	var tdivarr = []
 	var tdiv = getCookie('teamdiv');
 	if(tdiv != false) tdivarr = tdiv.split('!')
 
@@ -44,7 +45,21 @@ $().ready(function() {
 		var ck = ''
 		ck = tdivarr.join('!')
 		setCookie('teamdiv',ck);
-	}else{
+	}
+
+	// for finance page
+	if(UrlValue('p') == 'fin'){
+		$('td.back4').prepend('<div id=debug style="display: none;"></div>')
+		$('#debug').load($('a:contains("изменить финансирование")').attr('href') + ' span.text2b',function(){
+			var school = parseInt($('#debug').html().split(' ')[3])
+			if(!isNaN(school)) $('a:contains("изменить финансирование")').before(' ' + format(school) + ' в ИД | ')
+			EditFinance(school)
+		})
+	}
+}, false)
+//})(); // for ie
+
+function EditFinance(school){
 		var fin = {}
 		var finance = []
 		var cur = {}
@@ -68,8 +83,9 @@ $().ready(function() {
 			})
 		})
 
-		var chbonus =	Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
-		var school =	finance[1]['Школа'] - chbonus
+		if(isNaN(school)) {
+			school = finance[1]['Школа'] - Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
+		}
 
 		cur.sponsors =	finance[2]['Спонсоры']
 		cur.stadion =	finance[2]['Стадион']
@@ -179,13 +195,11 @@ $().ready(function() {
 /**/		
 
 		return false
-	}
-}, false)
-//})(); // for ie
+}
 
 function format(num) {
-	if (num < 1000000 && num > -1000000)	return (num/1000).toFixed(0) + ',000$'
-	else 									return (num/1000000).toFixed(3).replace(/\./g,',') + ',000$'
+	if (num < 1000000 && num > -1000000)	return (num/1000).toFixed(0) + (num==0 ? '' : ',000') + '$'
+	else 									return (num/1000000).toFixed(3).replace(/\./g,',') + (num==0 ? '' : ',000') + '$'
 }
 
 function setCookie(name, value) {
