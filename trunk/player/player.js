@@ -90,7 +90,7 @@ function GetPlayerHistory(n,pid){
 		})
 		//print
 		var data = ''
-		for (ss=stats.length-1;ss>=1;ss--){
+		for (ss=stats.length-1;ss>=0;ss--){
 			if(stats[ss] !=undefined && stats[ss].gm != ''){
 				if (ss==0){
 					data += '<tr bgcolor=#88C274><td> </td><td colspan=3>Итого</td>'
