@@ -26,7 +26,7 @@ function GetPlayerHistory(n,pid){
 
 	$('a#th2').attr('href',"javascript:void(ShowTable(2))").html('&ndash;')
 
-	var head = '<tr><td width=3%>С</td><td width=18%>Трансфер</td><td width=2%>Сб</td><td width=2%>Мл</td><td width=10%>Игры</td><td width=10%>Голы</td><td width=10%>Пасы</td><td width=10%>ИМ</td><td width=10%>СР</td><td width=10%> </td><td width=10%> </td></tr>'
+	var head = '<tr><td width=3%>С</td><td width=16%>Трансфер</td><td width=2%>Сб</td><td width=2%>Мл</td><td width=10%>Игры</td><td width=10%>Голы</td><td width=10%>Пасы</td><td width=10%>ИМ</td><td width=10%>СР</td><td width=10%> </td><td width=10%> </td></tr>'
 	$('#ph'+n).append(head)
 
 	var table = '<table id=debug style="display: none;"></table>'
@@ -90,12 +90,17 @@ function GetPlayerHistory(n,pid){
 		})
 		//print
 		var data = ''
-		for (ss=stats.length-1;ss>=0;ss--){
+		data += '<tr bgcolor=#88C274><td><a id=th2 href="javascript:void(ShowCar('+n+'))">+</a> </td><td colspan=3>Итого</td>'
+		for (p in stats[0]){
+			if(p!='sale' && p!='rent' && p!='free' && p!='nat' && p!='u21') {
+				data += '<td>'+ String(stats[0][p]).replace('.',',')+'</td>'
+			}
+		}
+		data += '<td colspan=2> </td></tr>'
+
+		for (ss=stats.length-1;ss>=1;ss--){
 			if(stats[ss] !=undefined && stats[ss].gm != ''){
-				if (ss==0){
-					data += '<tr bgcolor=#88C274><td> </td><td colspan=3>Итого</td>'
-				} else {
-					data += '<tr bgcolor=A3DE8F><td>'
+					data += '<tr bgcolor=A3DE8F id=carpl'+n+' style="display: none;"><td>'
 					data += ss
 					data += '</td><td>'
 					if(stats[ss].sale!=0) 		data += stats[ss].sale.replace('.',',')
@@ -107,7 +112,6 @@ function GetPlayerHistory(n,pid){
 					data += '</td><td>'
 					data += (stats[ss].u21 >0 ? 'v' : ' ')										//U21
 					data += '</td>'
-				}
 				for (p in stats[ss]){
 					if(p!='sale' && p!='rent' && p!='free' && p!='nat' && p!='u21') {
 						data += '<td>'+ String(stats[ss][p]).replace('.',',')+'</td>'
@@ -116,8 +120,18 @@ function GetPlayerHistory(n,pid){
 				data += '<td colspan=2> </td></tr>'
 			}
 		}
+
 		$('#ph'+n).append(data)
 	})
+}
+function ShowCar(n){
+	if ($('a#th2').html() == '+'){
+		$('tr#carpl'+n).show()
+		$('a#th2').html('&ndash;')
+	}else{
+		$('tr#carpl'+n).hide()
+		$('a#th2').html('+')
+	}
 }
 
 function ShowTable(n){
@@ -464,11 +478,12 @@ function CodeForForum(){
 			.replace(/\[br\]/g,'\n')
 		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+pl.position+'[b]'
 		if(pl.newpos != '' && pl.newpos != undefined) x += '[/b] (' +pl.newpos + ')[b]'
-		x += '\n\nУмения[/b](сс='+pl.sumskills+')[/center]\n\n'
+		x += '\n\nУмения[/b](сс='+pl.sumskills+')[/center]'
 	}
 
 	// skills
 	if(skillsshow){
+		x += '\n\n'
 		x += $('td.back4 table table:not(#plheader):first')
 			.find('sup').remove().end()
 			.html()
@@ -506,10 +521,12 @@ function CodeForForum(){
 			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
 	}
 	// fullstat
-//	alert($('table#ph0').html()!=null)
 	if ($('table#ph0').html()!=null && fullstatshow && (ptype == 'p' || ptype == 'pp')){
 		x += '\n\n[center][b]Карьера[/b][/center]\n\n'
-		x += $('table#ph0').html()
+		x += $('table#ph0')
+			.find('a#th2').remove().end()
+			.find('tr').removeAttr('style').removeAttr('id').end()
+			.html()
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/<tbody>/g,'<table width=100%>')
 			.replace(/tbody/g,'table')
@@ -959,8 +976,7 @@ $().ready(function() {
 
 	$('td.back4 table table:eq(1)').attr('id','stat')
 
-	var statseasons = '<br><div id="kar" align=center>Карьера</div>'
-	statseasons += '<div id="th2" align=left><a id="th2" href="javascript:void(GetPlayerHistory(0,'+players[0].id+'))">+</a></div>'
+	var statseasons = '<br><div id="kar" align=center>Карьера</div><br>'
 	statseasons += '<table width=100% id=ph0></table>'
 	$('td.back4 table table:eq(1)').after(statseasons)
 
@@ -975,7 +991,7 @@ $().ready(function() {
 		}
 		PrintPlayers()
 	}
-	//GetPlayerHistory(0,players[0].id)
+	GetPlayerHistory(0,players[0].id)
 
 }, false)
 //})();	// for ie
