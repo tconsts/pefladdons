@@ -26,7 +26,7 @@ function GetPlayerHistory(n,pid){
 
 	$('a#th2').attr('href',"javascript:void(ShowTable(2))").html('&ndash;')
 
-	var head = '<tr><td width=25%> </td><td width=10%>Игры</td><td width=10%>Голы</td><td width=10%>Пасы</td><td width=10%>ИМ</td><td width=10%>СР</td><td width=10%> </td><td width=10%> </td></tr>'
+	var head = '<tr><td width=3%>С</td><td width=18%>Трансфер</td><td width=2%>Сб</td><td width=2%>Мл</td><td width=10%>Игры</td><td width=10%>Голы</td><td width=10%>Пасы</td><td width=10%>ИМ</td><td width=10%>СР</td><td width=10%> </td><td width=10%> </td></tr>'
 	$('#ph'+n).append(head)
 
 	var table = '<table id=debug style="display: none;"></table>'
@@ -34,9 +34,10 @@ function GetPlayerHistory(n,pid){
 	$('#ph'+n).after(table)
 
 	$('#debug').load('hist.php?id='+pid+'&t=p table:eq(0) tr:gt(0)',function(){
+		var flagT = true
 		$('#debug').find('tr').each(function(){
 			var d = []
-			if(isNaN(parseInt($(this).find('td:first').html()))) $(this).remove()
+			if(isNaN(parseInt($(this).find('td:first').html()))) flagT = false
 
 			$(this).find('td').each(function(i, val){
 				d[i] = $(val).html()
@@ -49,6 +50,29 @@ function GetPlayerHistory(n,pid){
 				stats[sid].ps = 0
 				stats[sid].im = 0
 				stats[sid].sr = 0
+				stats[sid].rent = 0
+				stats[sid].free = 0
+				stats[sid].sale = 0
+				stats[sid].nat = 0
+				stats[sid].u21 = 0
+
+			}
+
+			//определим суму транса или аренду
+			if(flagT){
+				if(d[1].indexOf('(')!=-1){
+					var trans = d[1].split('(')[1].split(')')[0]
+					if(!isNaN(parseFloat(trans.replace(',','.')))) {
+						stats[sid].sale = parseFloat(trans.replace(',','.'))
+						stats[sid].sale += '$' + (trans.indexOf('.') !=-1 ? 'т' : 'м')
+					}else{
+						if(trans.length ==6) stats[sid].rent += 1	// аренда
+						if(trans.length ==9) stats[sid].free += 1	// бесплатно
+					}
+				}
+			} else {
+				if(d[1].indexOf('(')!=-1) stats[sid].u21 += 1
+				else stats[sid].nat += 1
 			}
 			if(d[6] == '') d[6] = 0	// can delete string?
 			stats[sid].sr	= (parseInt(d[2])+stats[sid].gm ==0 ? 0 : ((parseInt(d[2])*parseFloat(d[6].replace(',','.')) + (stats[sid].gm*stats[sid].sr))/(parseInt(d[2])+stats[sid].gm)).toFixed(2))
@@ -66,12 +90,30 @@ function GetPlayerHistory(n,pid){
 		})
 		//print
 		var data = ''
-		for (ss=stats.length-1;ss>=0;ss--){
+		for (ss=stats.length-1;ss>=1;ss--){
 			if(stats[ss] !=undefined && stats[ss].gm != ''){
-				if (ss==0)	data += '<tr bgcolor=#88C274><td>Итого</td>'
-				else 		data += '<tr bgcolor=A3DE8F><td>Сезон '+ss+'</td>'
-				for (p in stats[ss]) data += '<td>'+ String(stats[ss][p]).replace('.',',')+'</td>'
-				data += '<td> </td><td> </td></tr>'
+				if (ss==0){
+					data += '<tr bgcolor=#88C274><td> </td><td colspan=3>Итого</td>'
+				} else {
+					data += '<tr bgcolor=A3DE8F><td>'
+					data += ss
+					data += '</td><td>'
+					if(stats[ss].sale!=0) 		data += stats[ss].sale.replace('.',',')
+					else if(stats[ss].free >0)	data += 'бесплатно'
+					else if(stats[ss].rent >0)	data += 'аренда'
+					else data += ' '
+					data += '</td><td>'
+					data += (stats[ss].nat >0 ? 'v' : ' ')										//сборная
+					data += '</td><td>'
+					data += (stats[ss].u21 >0 ? 'v' : ' ')										//U21
+					data += '</td>'
+				}
+				for (p in stats[ss]){
+					if(p!='sale' && p!='rent' && p!='free' && p!='nat' && p!='u21') {
+						data += '<td>'+ String(stats[ss][p]).replace('.',',')+'</td>'
+					}
+				}
+				data += '<td colspan=2> </td></tr>'
 			}
 		}
 		$('#ph'+n).append(data)
