@@ -483,7 +483,7 @@ function CodeForForum(){
 
 	// skills
 	if(skillsshow){
-		x += '\n\n'
+		x += '\n'
 		x += $('td.back4 table table:not(#plheader):first')
 			.find('sup').remove().end()
 			.html()
@@ -508,7 +508,7 @@ function CodeForForum(){
 	}
 	// stat of season
 	if (seasonstatshow && (ptype == 'p' || ptype == 'pp')){
-		x += '\n\n[center][b]Статистика сезона[/b][/center]\n\n'
+		x += '\n[center][b]Статистика сезона[/b][/center]\n'
 		x += $('table#stat').html()
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/<tbody>/g,'<table width=100%>')
@@ -522,7 +522,7 @@ function CodeForForum(){
 	}
 	// fullstat
 	if ($('table#ph0').html()!=null && fullstatshow && (ptype == 'p' || ptype == 'pp')){
-		x += '\n\n[center][b]Карьера[/b][/center]\n\n'
+		x += '\n[center][b]Карьера[/b][/center]\n'
 		x += $('table#ph0')
 			.find('a#th2').remove().end()
 			.find('tr').removeAttr('style').removeAttr('id').end()
