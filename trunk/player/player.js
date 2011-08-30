@@ -980,6 +980,9 @@ $().ready(function() {
 	statseasons += '<table width=100% id=ph0></table>'
 	$('td.back4 table table:eq(1)').after(statseasons)
 
+	// добавим ссылку на заметки
+	$('td.back4 center:last').append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
+
 	// Get info fom Global or Session Storage
 	var text1 = String(navigator.userAgent.indexOf('Firefox') != -1 ? globalStorage[location.hostname].peflplayer : sessionStorage.peflplayer)
 	if (text1 != 'undefined'){
