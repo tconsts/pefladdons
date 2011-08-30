@@ -981,7 +981,9 @@ $().ready(function() {
 	$('td.back4 table table:eq(1)').after(statseasons)
 
 	// добавим ссылку на заметки
-	$('td.back4 center:last').append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
+	if(UrlValue('t')=='yp') { }
+	else if(UrlValue('t')=='yp2')	$('td.back4').append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
+	else 							$('td.back4 center:last').append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
 
 	// Get info fom Global or Session Storage
 	var text1 = String(navigator.userAgent.indexOf('Firefox') != -1 ? globalStorage[location.hostname].peflplayer : sessionStorage.peflplayer)
