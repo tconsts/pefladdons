@@ -8,15 +8,20 @@
 
 var deb = true
 var debnum = 0
+var ff = ''
+var cid = ''
 var countSostav = 0
 var type 	= ''
 var players = []
+var teams = []
 var plChange = []
 var pls = []
 var countSk = [0]
 var nom = 0
 var zp = 0
 var sk = 0
+var pos1 = {'C' :0}
+var pos2 = {'GK':0}
 var team = {
 	'wage'	: 0,
 	'wage2'	: 0,
@@ -58,24 +63,87 @@ var skills = {
 	'рбт' : 'Работоспособность',
 	'тех' : 'Техника'
 }
-var ff = ''
 
 $().ready(function() {
-	if(UrlValue('l')=='y' || UrlValue('n')!=false){
-		//Page for show skills
-		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
-		$('table#tblRostSkills')
-			.attr('width','886')
-		$('table#tblRostSkills img').attr('height','10')
-		$('table#tblRostSkills tr').each(function(){
-			$(this).attr('height','20').find('td:eq(1)').html($(this).find('td:eq(1)').html().replace('<br>','&nbsp;'))
-		})
+	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+	cid = parseInt($('td.back4 table:first table td:first').text())
+
+	if(UrlValue('l')=='y'){
+	//Page for show skills
+		EditSkillsPage()
 	}else if(UrlValue('n')!=false){
-		// Ростер с фильтром(не вся стата показывается)
+	// Ростер с фильтром(не вся стата показывается)
 
 	}else{
-		// browser FireFox or no?
-		ff = (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+	// Ростер
+		//DB get teams info
+		if(ff){
+		// Get info fom Global Storage 
+			// Info for clubs, format: <id_team0>:<task_team0>:<town0>:<stadio_name0>:<stadio_size0>,
+			// ##### Need add: format: club_id, country_name, div, <list of div prizes>
+			var text1 = globalStorage[location.hostname]['tasks']
+			if (text1 != undefined){
+				var t1 = String(text1).split(',')
+				for (i in t1) {
+					var t2 = t1[i].split(':')
+					teams[t2[0]] = {}
+					if(t2[1] != undefined) teams[t2[0]].ttask = t2[1]
+					if(t2[2] != undefined) teams[t2[0]].ttown = t2[2]
+					if(t2[3] != undefined) teams[t2[0]].sname = t2[3]
+					if(t2[4] != undefined) teams[t2[0]].ssize = t2[4]
+				}
+				GetFinish('gs_tm', true)
+			}else{
+				GetFinish('gs_tm', false)
+			}
+			// Info for players
+			text1 = globalStorage[location.hostname]['team']
+			if (text1 != undefined){
+				var pltext = String(text1).split(':',2)[1].split('.')
+				for (i in pltext) {
+					var plsk = pltext[i].split(',')
+					var plx = []
+					plx.id 		= parseInt(plsk[0])
+					plx.num 	= parseInt(plsk[1])
+					plx.morale 	= parseInt(plsk[2])
+					plx.form 	= parseInt(plsk[3])
+					plx.mchange = parseInt(plsk[4])
+					plx.fchange = parseInt(plsk[5])
+					plChange2[plx.id] = []
+					plChange2[plx.id] = plx
+				}
+				GetFinish('gs_pl', true)
+			} else {
+				GetFinish('gs_pl', false)
+			}			
+		} else {
+		// Get Info from DB
+			// Conect to db
+			db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
+			if(!db) {debug('Open DB PEFL fail.');return false;} 
+			else 	{debug('Open DB PEFL ok.')}
+
+			// Get data from db
+			db.transaction(function(tx) {
+				tx.executeSql("DROP TABLE IF EXITS team99999players")
+				tx.executeSql("SELECT id, num, form, morale, fchange, mchange FROM team"+cid+"players", [], 
+					function(tx, result){
+						debug('Select ok, get data:')
+						for(var i = 0; i < result.rows.length; i++) {
+							var plid = result.rows.item(i)['id']
+    						plChange2[plid] = []
+							plChange2[plid] = result.rows.item(i)
+							debug(result.rows.item(i)['num'] + ' ' + result.rows.item(i)['id'] + ' ' +result.rows.item(i)['form'])
+						}
+						GetFinish('db_pl',true)
+					}, 
+					function(tx, error){
+						debug('Select data error:'+error.message)
+						GetFinish('db_pl', false)						
+					}
+				)
+			});
+		}
 
 		// Draw right panel and fill data
 		var preparedhtml = ''
@@ -83,15 +151,17 @@ $().ready(function() {
 		preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 		preparedhtml += '</td></tr></table>'
 		$('body table.border:last').before(preparedhtml)
+
 		$('td.back4 script').remove()
 		$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 		$('#crabrighttable').addClass('border') 
-		var text3 =	'<table width=100%><tr><th colspan=3>Финансовое положение</th></tr>'
-		text3 += 	'<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
-		text3 += 	'</table><br>'
-		$("#crabright").html(text3)
 
-		cid = parseInt($('td.back4 table:first table td:first').text())
+
+		preparedhtml  =	'<table width=100%><tr><th colspan=3>Финансовое положение</th></tr>'
+		preparedhtml += '<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
+		preparedhtml += '</table><br>'
+		$("#crabright").html(preparedhtml)
+
 		countSostavMax  = $('tr[id^=tblRosterTr]').length
 		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
 		TeamHeaderInfoGet();
@@ -106,6 +176,34 @@ $().ready(function() {
 
 function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;'+text+'<br>');}}
 
+function GetFinish(type, res){
+	//gs_pl: true
+	//gs_pl: false
+	//gs_tm: true
+	//gs_tm: false
+	//db_pl: true
+	//db_pl: false
+}
+
+function SaveSD(){
+	var text = teamid + ':'	
+	for(i in plChange) {
+		var pl = plChange[i]
+		text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + '.'
+	}
+	SaveStorageData('team',text)
+}
+
+function EditSkillsPage(){
+	$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
+	$('table#tblRostSkills').attr('width','886')
+	$('table#tblRostSkills td:contains("*")').attr('bgcolor','white')
+	$('table#tblRostSkills img').attr('height','10')
+	$('table#tblRostSkills tr').each(function(){
+		$(this).attr('height','20').find('td:eq(1)').html($(this).find('td:eq(1)').html().replace('<br>','&nbsp;'))
+	})
+}
+
 function ShowFilter(){
 	var style = $('table#tblRostSkillsFilter').attr('style')
 	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
@@ -118,8 +216,6 @@ function ShowFilter(){
 	}
 }
 
-var pos1 = {'C' :0}
-var pos2 = {'GK':0}
 function Filter(num,p){
 	if(num==1){
 		pos1[p] = (pos1[p]==undefined || pos1[p]==0 ? 1 : 0)
@@ -650,21 +746,7 @@ function EditFinance(){
 }
 
 function TeamHeaderInfoGet(){
-	var teams = []
-	// Get info fom Global or Session Storage (info for clubs)
-	// format: <id_team0>:<task_team0>:<town0>:<stadio_name0>:<stadio_size0>,
-	var text1 = GetStorageData('tasks')
-	if (text1 != undefined){
-		var t1 = String(text1).split(',')
-		for (i in t1) {
-			var t2 = t1[i].split(':')
-			teams[t2[0]] = {}
-			if(t2[1] != undefined) teams[t2[0]].ttask = t2[1]
-			if(t2[2] != undefined) teams[t2[0]].ttown = t2[2]
-			if(t2[3] != undefined) teams[t2[0]].sname = t2[3]
-			if(t2[4] != undefined) teams[t2[0]].ssize = t2[4]
-		}
-	}
+
 	// Get current club data
 	var zad = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
 
@@ -698,11 +780,6 @@ function PlayersChange(){
 	var teamid = UrlValue('j')
 	var team21 = UrlValue('h')
 	if (teamid == 99999){
-		// conect to db
-		db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
-		if(!db) {debug('Open DB PEFL fail.');return false;} 
-		else 	{debug('Open DB PEFL ok.')}
-
 		// Get data from page
 		$('table#tblRoster tr:not(#tblRosterRentTitle):gt(0)').each(function(j,valj){
 			var pl = [];
