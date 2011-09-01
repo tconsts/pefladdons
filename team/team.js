@@ -14,6 +14,7 @@ var players2 = []
 var teams = []
 var team_cur = {}
 var m = []
+var remember = 0
 
 var countSostav = 0
 var plChange = []
@@ -72,9 +73,9 @@ $().ready(function() {
 			GetInfoDBPl(db)
 		}
 
-		countSostavMax  = $('tr[id^=tblRosterTr]').length
-		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
 		if(UrlValue('h')!=1){
+			countSostavMax  = $('tr[id^=tblRosterTr]').length
+			countRentMax 	= $('tr[id^=tblRosterRentTr]').length
 			GetInfoPagePl()
 			GetInfoPageTm()
 		}
@@ -100,20 +101,28 @@ function GetFinish(type, res){
 	//pg_pl: true
 	//pg_tm: true
 	if(ff) {
-		if(m.savedatatm==undefined && m.gs_tm!=undefined && m.gs_tm==false){
+		if(m.savedatatm==undefined && m.gs_tm!=undefined && m.pg_tm){
 			m.savedatatm = true
-			SaveGSDataTm(cid)
+			ModifyTeams(cid)
 		}
-		if(m.savedatapl==undefined && m.gs_pl!=undefined && m.gs_pl==false){
+		if(m.savedatapl==undefined && m.gs_pl==false && m.pg_pl){
 			m.savedatapl = true
 			SaveGSDataPl(cid)
 		}
+		if(m.savedatapl==undefined && m.gs_pl && m.pg_pl){
+			m.savedatapl = true
+			ModifyPlayers(cid)
+		}
 	}else{
-		if(!m.savedatapl && !m.db_pl && m.pg_pl){
+		if(m.savedatatm==undefined && m.db_tm!=undefined && m.pg_tm){
+			m.savedatatm = true
+			ModifyTeams(cid)
+		}
+		if(m.savedatapl==undefined && m.db_pl==false && m.pg_pl){
 			m.savedatapl = true
 			SaveDBDataPl(cid)
 		}
-		if(!m.savedatapl &&  m.db_pl && m.pg_pl){
+		if(m.savedatapl==undefined && m.db_pl && m.pg_pl){
 			m.savedatapl = true
 			ModifyPlayers()
 		}
@@ -125,7 +134,22 @@ function GetFinish(type, res){
 	}
 }
 
-function ModifyPlayers(){
+function ModifyTeams(cid){
+	debug('ModifyTeams ok')
+	//teams and team_cur
+	teams[cid] = team_cur
+
+	if(ff)	SaveGSDataTM(cid)
+	else	SaveDBDataTM(cid)
+}
+
+function SaveDBDataTM(cid){
+	debug('SaveDBDataTM ok')
+	for (i in teams) debug(i + ' ' + teams[i].ttown + ' ' + teams[i].wage)
+}
+
+function ModifyPlayers(cid){
+	debug('ModifyPlayers ok')
 	// Check for update
 	for(i in players) {
 		var pl = players[i]
@@ -133,6 +157,8 @@ function ModifyPlayers(){
 			var pl2 = players2[pl.id]
 			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
 				remember = 1
+				debug('Need save pl')
+				break
 			}
 		}
 	}
@@ -143,7 +169,7 @@ function ModifyPlayers(){
 			var pl2 = players2[pl.id]
 			if (remember == 1){
 				players[i]['mchange'] = pl.morale - pl2.morale
-				pllayers[i]['fchange'] = pl.form - pl2.form
+				players[i]['fchange'] = pl.form   - pl2.form
 			} else {
 				players[i]['mchange'] = pl2.mchange
 				players[i]['fchange'] = pl2.fchange
@@ -158,17 +184,23 @@ function ModifyPlayers(){
 		$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(4)').append(ShowChange(pl['mchange']))
 		$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(5)').append(ShowChange(pl['fchange']))
 	}
-	if (remember ==1 && team21 != 1) SaveDBtable(teamid)
+	// Save if not team21
+	if (remember==1 && UrlValue('h')!=1){
+		if(ff)	SaveGSDataPl(cid)
+		else	SaveDBDataPl(cid)
+	}
 }
 
 function SaveGSDataPl(teamid){
 	delete globalStorage[location.hostname]['playersvalue']
-	var text = teamid + ':'	
-	for(i in players) {
-		var pl = players[i]
-		text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + ',' + pl.value + ',' + pl.valuech +'.'
+	if(UrlValue('j')==99999){
+		var text = teamid + ':'	
+		for(i in players) {
+			var pl = players[i]
+			text += pl.id + ',' + pl.num + ',' + pl.morale + ',' + pl.form + ',' + pl.mchange + ',' + pl.fchange + ',' + pl.value + ',' + pl.valuech +'.'
+		}
+		globalStorage[location.hostname]['team'] = text
 	}
-	globalStorage[location.hostname]['team'] = text
 }
 
 function SaveGSDataTm(teamid){
@@ -198,7 +230,7 @@ function GetInfoDBPl(db){
 					var plid = result.rows.item(i)['id']
     				players2[plid] = []
 					players2[plid] = result.rows.item(i)
-					debug(result.rows.item(i)['id'] + ' ' +result.rows.item(i)['form'] + ' ' + result.rows.item(i)['value'])
+//					debug(result.rows.item(i)['id'] + ' ' +result.rows.item(i)['form'] + ' ' + result.rows.item(i)['value'])
 				}
 				GetFinish('db_pl',true)
 			}, 
@@ -211,24 +243,26 @@ function GetInfoDBPl(db){
 }
 
 function SaveDBDataPl(teamid){
-	db.transaction(function(tx) {
-		tx.executeSql("DROP TABLE IF EXISTS team"+teamid+"pl",[],
-			function(tx, result){debug('drop table ok')},
-			function(tx, error) {debug('drop table error' + error.message)}
-		);                                           
-		tx.executeSql("CREATE TABLE IF NOT EXISTS team"+teamid+"pl (id INT, num INT, form INT, morale INT, fchange INT, mchange INT, value INT, valuech INT)", [],
-			function(tx, result){debug('create table ok')},
-			function(tx, error) {debug('create table error'	+error.message)}
-		);
-		for(i in players) {
-			var pl = players[i]
-			tx.executeSql("INSERT INTO team"+teamid+"pl (id, num, form, morale, fchange, mchange, value, valuech) values(?, ?, ?, ?, ?, ?, ?, ?)", 
-				[pl.id, pl.num, pl.form, pl.morale, pl.fchange, pl.mchange, pl.value, pl.valuech],
-				function(tx, result){debug('insert data ok')},
-				function(tx, error) {debug('insert data error:'	+error.message)
-			});
-		}
-	});
+	if(UrlValue('j')==99999){
+		db.transaction(function(tx) {
+			tx.executeSql("DROP TABLE IF EXISTS team"+teamid+"pl",[],
+				function(tx, result){debug('drop table ok')},
+				function(tx, error) {debug('drop table error' + error.message)}
+			);                                           
+			tx.executeSql("CREATE TABLE IF NOT EXISTS team"+teamid+"pl (id INT, num INT, form INT, morale INT, fchange INT, mchange INT, value INT, valuech INT)", [],
+				function(tx, result){debug('create table ok')},
+				function(tx, error) {debug('create table error'	+error.message)}
+			);
+			for(i in players) {
+				var pl = players[i]
+				tx.executeSql("INSERT INTO team"+teamid+"pl (id, num, form, morale, fchange, mchange, value, valuech) values(?, ?, ?, ?, ?, ?, ?, ?)", 
+					[pl.id, pl.num, pl.form, pl.morale, pl.fchange, pl.mchange, pl.value, pl.valuech],
+					function(tx, result){debug('insert data ok')},
+					function(tx, error) {debug('insert data error:'	+error.message)
+				});
+			}
+		});
+	}
 }
 
 function ClearTasks(club_id, club_zad){
@@ -278,7 +312,6 @@ function GetInfoPagePl(){
 	})
 
 	debug('GetInfoPagePl ok')
-//	GetFinish('pg_pl', true)
 }
 
 function GetPl(pn){
@@ -329,17 +362,13 @@ function Ready(){
 				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')}
 
 			var sumvaluechange = 0
+
 			if(UrlValue('j')==99999){
 				// Players value
 				var text2 = '' //GetStorageData('playersvalue')
 				if(ff)	text2 = String(globalStorage[location.hostname]['playersvalue'])
 				else	text2 = sessionStorage['playersvalue']
 
-
-				//debug
-				$('td.back4').prepend('<span id=hiden></span>')
-				$('span#hiden').hide().append(text2)
-				
 				if (text2 != undefined){
 					var t1 = text2.split(',')
 					var sumvalueold = 0
@@ -370,18 +399,6 @@ function Ready(){
 						sumvaluechange = sumvaluenew - sumvalueold
 					}
 				}
-				
-				// Save
-				text = ''
-				for(j in players) {
-					text += players[j].id + ':'
-					text += players[j].value/1000 + ':'
-					text += (players[j].valuech != undefined ? players[j].valuech/1000 : 0)
-					text += ','
-				}
-				//SaveStorageData('playersvalue',text)
-				if(ff)	globalStorage[location.hostname]['playersvalue'] = text
-				else	sessionStorage['playersvalue'] = text
 			}
 
 			// print to right menu
@@ -518,8 +535,9 @@ function GetInfoDBTm(db){
 //		tx.executeSql("DROP TABLE IF EXITS teams")
 		tx.executeSql("SELECT * FROM teams", [],
 			function(tx, result){
-				debug('Select teams ok:')
+				debug('Select teams ok')
 				for(var i = 0; i < result.rows.length; i++) {
+					teams = result.rows.item(i)
 					debug(result.rows.item(i)['tid'] + ' ' +result.rows.item(i)['ttask'] + ' ' + result.rows.item(i)['ttown'])
 				}
 				GetFinish('db_tm',true)
@@ -594,6 +612,12 @@ function ShowSkillsY() {
 	})
 }
 
+function ShowChange(value){
+	if(value > 0) 		return '<sup><font color="green">+' + value + '</font></sup>'
+	else if(value < 0)	return '<sup><font color="red">' 	+ value + '</font></sup>'
+	else 		  		return ''
+}
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
@@ -603,9 +627,6 @@ function UrlValue(key,url){
 function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;'+text+'<br>');}}
 
 /**
-function SaveTeamData(){
-}
-
 function ShowFilter(){
 	var style = $('table#tblRostSkillsFilter').attr('style')
 	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
@@ -774,8 +795,6 @@ function sZp(i, ii) { // По zp (убыванию)
     else						return  0
 }
 
-function PlayersInfoGet(){
-}
 
 function CountryInfoGet(){
 	var srch="Вы вошли как "
@@ -893,18 +912,9 @@ function ShowShortName(fullname){
 	return shortname
 }
 
-function ShowChange(value){
-	if(value > 0) 		return '<sup><font color="green">+' + value + '</font></sup>'
-	else if(value < 0)	return '<sup><font color="red">' 	+ value + '</font></sup>'
-	else 		  		return ''
-}
 function ShowValueFormat(value){
 	if (value > 1000)	return (value/1000).toFixed(3).replace(/\./g,',') + '$'
 	else				return (value) + '$'
-}
-
-function TeamHeaderInfoGet(){
-
 }
 
 function SaveStorageData(key,data){
