@@ -142,11 +142,64 @@ function ModifyTeams(cid){
 	if(ff)	SaveGSDataTM(cid)
 	else	SaveDBDataTM(cid)
 }
+//
+//////////////// TEAM Section(start) ////////////////
+//
+function GetInfoPageTm(){
+	// Get current club data
+	team_cur.ttown = $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
+	team_cur.sname = $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
+	team_cur.ssize = $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
+	team_cur.ttask = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
+	GetFinish('pg_tm', true)
+}
+
+function SaveGSDataTm(teamid){
+	var text = ''
+	for (i in teams) {
+		if(teams[i] != undefined) {
+			var tmi = teams[i]
+			text += i+':'
+			text += (tmi.ttask != undefined ? tmi.ttask : '') +':'
+			text += (tmi.ttown != undefined ? tmi.ttown : '') +':'
+			text += (tmi.sname != undefined ? tmi.sname : '') +':'
+			text += (tmi.ssize != undefined ? tmi.ssize : '') 
+			text += ','
+		}
+	}
+	globalStorage[location.hostname]['tasks'] = text
+}
+
+function GetInfoDBTm(db){
+	db.transaction(function(tx) {
+//		tx.executeSql("DROP TABLE IF EXITS teams")
+		tx.executeSql("SELECT * FROM teams", [],
+			function(tx, result){
+				debug('Select teams ok')
+				for(var i = 0; i < result.rows.length; i++) {
+					teams = result.rows.item(i)
+					debug(result.rows.item(i)['tid'] + ' ' +result.rows.item(i)['ttask'] + ' ' + result.rows.item(i)['ttown'])
+				}
+				GetFinish('db_tm',true)
+			},
+			function(tx, error){
+				debug(error.message)
+				GetFinish('db_tm', false)
+			}
+		)
+	})
+}
 
 function SaveDBDataTM(cid){
 	debug('SaveDBDataTM ok')
-	for (i in teams) debug(i + ' ' + teams[i].ttown + ' ' + teams[i].wage)
+	for (i in teams) debug(i + ' ' + teams[i].tnat + ' ' + teams[i].ttown + ' ' + teams[i].wage)
+
 }
+
+//
+//////////////// TEAM Section(finish) ////////////////
+//
+
 
 function ModifyPlayers(cid){
 	debug('ModifyPlayers ok')
@@ -203,21 +256,6 @@ function SaveGSDataPl(teamid){
 	}
 }
 
-function SaveGSDataTm(teamid){
-	var text = ''
-	for (i in teams) {
-		if(teams[i] != undefined) {
-			var tmi = teams[i]
-			text += i+':'
-			text += (tmi.ttask != undefined ? tmi.ttask : '') +':'
-			text += (tmi.ttown != undefined ? tmi.ttown : '') +':'
-			text += (tmi.sname != undefined ? tmi.sname : '') +':'
-			text += (tmi.ssize != undefined ? tmi.ssize : '') 
-			text += ','
-		}
-	}
-	globalStorage[location.hostname]['tasks'] = text
-}
 
 function GetInfoDBPl(db){
 	db.transaction(function(tx) {
@@ -273,14 +311,31 @@ function ClearTasks(club_id, club_zad){
 		debug('Задачи очищены.')
 	}
 }
-
-function GetInfoPageTm(){
-	// Get current club data
-	team_cur.ttown = $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
-	team_cur.sname = $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
-	team_cur.ssize = $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
-	team_cur.ttask = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
-	GetFinish('pg_tm', true)
+function GetInfoStoragePl() {
+	// Info for players
+	var text1 = globalStorage[location.hostname]['team']
+	if (text1 != undefined){
+		var pltext = String(text1).split(':',2)[1].split('.')
+		for (i in pltext) {
+			var plsk = pltext[i].split(',')
+			var plx = []
+			plx.id 		= parseInt(plsk[0])
+			plx.num 	= parseInt(plsk[1])
+			plx.morale 	= parseInt(plsk[2])
+			plx.form 	= parseInt(plsk[3])
+			plx.mchange = parseInt(plsk[4])
+			plx.fchange = parseInt(plsk[5])
+			plx.value 	= parseInt(plsk[6])
+			plx.valuech = parseInt(plsk[7])
+			players2[plx.id] = []
+			players2[plx.id] = plx
+		}
+		debug('GetInfoStoragePl ok')
+		GetFinish('gs_pl', true)
+	} else {
+		debug('GetInfoStoragePl fail')
+		GetFinish('gs_pl', false)
+	}			
 }
 
 function GetInfoPagePl(){
@@ -479,75 +534,6 @@ function Ready(){
 		}
 		/**/
 	}
-}
-
-function GetInfoStorageTm(){
-	// Info for clubs, format: <id_team0>:<task_team0>:<town0>:<stadio_name0>:<stadio_size0>,
-	// ##### Need add: format: club_id, country_name, div, <list of div prizes>
-	var text1 = globalStorage[location.hostname]['tasks']
-	if (text1 != undefined){
-		var t1 = String(text1).split(',')
-		for (i in t1) {
-			var t2 = t1[i].split(':')
-			teams[t2[0]] = {}
-			if(t2[1] != undefined) teams[t2[0]].ttask = t2[1]
-			if(t2[2] != undefined) teams[t2[0]].ttown = t2[2]
-			if(t2[3] != undefined) teams[t2[0]].sname = t2[3]
-			if(t2[4] != undefined) teams[t2[0]].ssize = t2[4]
-		}
-		debug('GetInfoStorageTm ok')
-		GetFinish('gs_tm', true)
-	}else{
-		debug('GetInfoStorageTm fail')
-		GetFinish('gs_tm', false)
-	}
-}
-
-function GetInfoStoragePl() {
-	// Info for players
-	var text1 = globalStorage[location.hostname]['team']
-	if (text1 != undefined){
-		var pltext = String(text1).split(':',2)[1].split('.')
-		for (i in pltext) {
-			var plsk = pltext[i].split(',')
-			var plx = []
-			plx.id 		= parseInt(plsk[0])
-			plx.num 	= parseInt(plsk[1])
-			plx.morale 	= parseInt(plsk[2])
-			plx.form 	= parseInt(plsk[3])
-			plx.mchange = parseInt(plsk[4])
-			plx.fchange = parseInt(plsk[5])
-			plx.value 	= parseInt(plsk[6])
-			plx.valuech = parseInt(plsk[7])
-			players2[plx.id] = []
-			players2[plx.id] = plx
-		}
-		debug('GetInfoStoragePl ok')
-		GetFinish('gs_pl', true)
-	} else {
-		debug('GetInfoStoragePl fail')
-		GetFinish('gs_pl', false)
-	}			
-}
-
-function GetInfoDBTm(db){
-	db.transaction(function(tx) {
-//		tx.executeSql("DROP TABLE IF EXITS teams")
-		tx.executeSql("SELECT * FROM teams", [],
-			function(tx, result){
-				debug('Select teams ok')
-				for(var i = 0; i < result.rows.length; i++) {
-					teams = result.rows.item(i)
-					debug(result.rows.item(i)['tid'] + ' ' +result.rows.item(i)['ttask'] + ' ' + result.rows.item(i)['ttown'])
-				}
-				GetFinish('db_tm',true)
-			},
-			function(tx, error){
-				debug(error.message)
-				GetFinish('db_tm', false)
-			}
-		)
-	})
 }
 
 function EditFinance(){
