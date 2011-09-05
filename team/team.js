@@ -117,6 +117,7 @@ function GetFinish(type, res){
 		if(m.savedatatm==undefined && m.db_tm!=undefined && m.pg_tm && m.pg_pl){
 			m.savedatatm = true
 			ModifyTeams()
+			PrintRightInfo()
 		}
 		if(m.savedatapl==undefined && m.db_pl==false && m.pg_pl){
 			m.savedatapl = true
@@ -462,6 +463,32 @@ function GetPl(pn){
 	//debug('GetPl ok: '+pn+' '+players[pn].id)
 	Ready()
 }
+function PrintRightInfo(){
+			// print link to skills page
+			if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
+				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')}
+
+			// print to right menu
+			var thtml = ''
+			thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b>'
+//			if(sumvaluechange != 0) 
+			thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
+			thtml += '</td></tr>'
+			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</th><th align=right>'
+			thtml += ShowValueFormat(team_cur.tvalue)+'т'
+			thtml += '</th><td width=10%>'
+//			if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
+			thtml += '</td></tr>'
+			thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
+			thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
+			thtml += '</th></tr>'
+			thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
+			thtml += (team_cur.ss/countSostavMax).toFixed(2) + '&nbsp;'
+			thtml += '</th><td></td></tr>'
+			$('#crabright table:first').append(thtml)
+}
+
+
 
 function Ready(){
 	countSostav++
@@ -469,9 +496,6 @@ function Ready(){
 		GetFinish('pg_pl', true)
 /**
 		if(team.wage > 0){ // if VIP
-			// print link to skills page
-			if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
-				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')}
 
 			var sumvaluechange = 0
 
@@ -513,82 +537,6 @@ function Ready(){
 				}
 			}
 
-			// print to right menu
-			var thtml = ''
-			thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b>'
-//			if(sumvaluechange != 0) 
-			thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
-			thtml += '</td></tr>'
-			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</th><th align=right>'
-			thtml += ShowValueFormat(team.value)+'т'
-			thtml += '</th><td width=10%>'
-			if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
-			thtml += '</td></tr>'
-			thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
-			thtml += ShowValueFormat(team.wage)+'&nbsp;'
-			thtml += '</th></tr>'
-			thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
-			thtml += (team.ss/countSostavMax).toFixed(2) + '&nbsp;'
-			thtml += '</th><td></td></tr>'
-
-
-
-			if(team.value2!=0 || team.wage2!=0) thtml += '<tr><th colspan=2><br>Арендовано</th><th width=30%></th></tr>'
-			if(team.value2!=0){
-				thtml += '<tr><td>номиналы</td><td align=right>'
-				var nom2pr = team.value2
-				if(nom2>=1000) nom2pr = (team.value2/1000).toFixed(3)
-				thtml += (String(nom2pr).replace(/\./g,',')+',000$').fontsize(1)
-				thtml += '</td></tr>'
-			}
-			if (team.wage2 !=0) {
-				thtml += '<tr><td>зарплаты:</td><td align=right>'
-				var wage2pr = team.wage2
-				if(team.wage2>=1000) wage2pr = (team.wage2/1000).toFixed(3)
-				thtml += (String(wage2pr).replace(/\./g,',')+'$').fontsize(1)
-				thtml += '</td></tr>'
-			} 
-			if(team.value3!=0 || team.wage3!=0) thtml += '<tr><th colspan=2><br>В аренде</th><th width=30%></th></tr>'
-			if(team.value3!=0){
-				thtml += '<tr><td>номиналы:</td><td align=right>'
-				var nom3pr = team.value3
-				if(team.value3>=1000) nom3pr = (team.value3/1000).toFixed(3)
-				thtml += (String(nom3pr).replace(/\./g,',')+',000$').fontsize(1)
-				thtml += '</td></tr>'
-			}
-			if(team.wage3!=0){
-				thtml += '<tr><td>зарплаты:</td><td align=right>'
-				var wage3pr = team.wage3
-				if(team.wage3>=1000) wage3pr = (team.wage3/1000).toFixed(3)
-				thtml += (String(wage3pr).replace(/\./g,',')+'$').fontsize(1)
-				thtml += '</td></tr>'
-			}
-
-			$('#crabright table:first').append(thtml)
-
-			var tfin = []
-			// Get
-			var text1 = sessionStorage.teamsfin
-			if (text1 != undefined){
-				var t1 = text1.split(',')
-				for(j in t1){
-					var t2 = t1[j].split(':')
-					var tf = {}
-					tf.zp = t2[1]
-					tf.nom = t2[2]
-					if(t2[0]) tfin[t2[0]] = tf
-				}
-			}
-			// update current
-			tfin[cid] = {}
-			tfin[cid].zp  = team.wage
-			tfin[cid].nom = team.value
-			//Save
-			var text = ''
-			for(j in tfin) text += j + ':' + tfin[j].zp + ':' + tfin[j].nom + ','
-			sessionStorage.teamsfin = text
-
-		}
 		/**/
 	}
 }
@@ -653,21 +601,148 @@ function ShowSkillsY() {
 	})
 }
 
-function ShowChange(value){
-	if(value > 0) 		return '<sup><font color="green">+' + value + '</font></sup>'
-	else if(value < 0)	return '<sup><font color="red">' 	+ value + '</font></sup>'
-	else 		  		return ''
+function ShowPlayersValue(){
+	if(nom==0) {
+		nom = 1
+		var nomtext = ''
+		var pls = players.sort(sValue)
+		for(i in pls) {
+			nomtext += '<tr id="nom">'
+			nomtext += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
+			nomtext += '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>'
+			nomtext += '</tr>'
+		}
+		$('#osnom').after(nomtext + '<tr id="nom"><td>&nbsp;</td></tr>')
+	} else {
+		nom = 0
+		$('tr#nom').remove()
+	}
 }
 
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	return false
+function ShowPlayersZp(){
+	if(zp==0) {
+		zp = 1
+		var text = ''
+		var pls = players.sort(sZp)
+		for(i in pls) {
+			text += '<tr id="zp">'
+			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td align=right>' + (ShowValueFormat(pls[i].wage) + '&nbsp;').fontsize(1) + '</td>'
+			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
+			text += '</tr>'
+		}
+		$('#oszp').after(text + '<tr id="zp"><td>&nbsp;</td></tr>')
+	} else {
+		zp = 0
+		$('tr#zp').remove()
+	}
 }
 
-function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;'+text+'<br>');}}
+function ShowPlayersSkillChange(){
+	if(sk==0) {
+		sk = 1
+		var text = ''
+		var pls = players.sort(sSkills)
+		for(i in pls) {
+			text += '<tr id="skills">'
+			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td align=right>' + (pls[i].sumskills + '&nbsp;').fontsize(1) + '</td>'
+//			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
+			if(pls[i].skchange != '') {
+				var skillchange = pls[i].skchange.split(',')
+				for(j in skillchange) {
+					text += '<tr id="skills"><td align=right colspan=2><i>'+(skillchange[j] + '&nbsp;').fontsize(1)
+					text += (pls[i][skillchange[j]].split('.')[0] + '&nbsp;').fontsize(1) +'</i></td>'
+					if(pls[i][skillchange[j]].split('.')[1] != undefined) {
+						text += '<td><img height="10" src="system/img/g/'+pls[i][skillchange[j]].split('.')[1]+'.gif"></img></td>'
+					}
+					text += '</tr>'
+				}
+			}
+			text += '</tr>'
+		}
+		$('#osskills').after(text + '<tr id="skills"><td>&nbsp;</td></tr>')
+	} else {
+		sk = 0
+		$('tr#skills').remove()
+	}
+}
 
-/**
+function ShowSkills(param){
+	if(param == 1){
+		$('table[background]:eq(1)').hide()
+		$('td#crabglobalright').html('')
+		$('table#tblRoster')
+			.attr('id','tblRostSkills')
+			.attr('width','886')
+			.attr('bgcolor','BFDEB3')
+
+		var filter = ''
+		filter += '<tr align=center><th width=10%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th></tr>'
+		filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td bgcolor=a3de8f id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
+		filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td bgcolor=a3de8f id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
+		filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td bgcolor=a3de8f id="L DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="R DF">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td bgcolor=a3de8f id="L DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="R DM">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td bgcolor=a3de8f id="L MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="R MF">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td bgcolor=a3de8f id="L AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="R AM">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<th></th></tr>'
+		$('table#tblRosterFilter')
+			.attr('id','tblRostSkillsFilter')
+			.attr('width','50%')
+			.attr('align','center')
+			.attr('cellspacing','1')
+			.attr('cellpadding','1')
+			.after('<div id="filter">&nbsp;</div>')
+			.before('<a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a>')
+			.html(filter)
+		$('span#tskills').html('Ростер команды')
+		$('a#tskills').attr('href','')
+		ShowFilter()
+		ShowSkills(2)
+	}
+	$('table#tblRostSkills tr').remove()
+	if(param == 2) type = (type=='img' ? 'num' : 'img')
+
+	var hd = 'N Имя Сум лид дрб удр пас вид глв<br>вых нав длу псо<br>реа ско штр впз угл<br>рук тех мощ отб рбт вын Мор Фор Поз'
+	var hd2= hd.split(' ')
+
+	var header = '<tr align="left" style="font-weight:bold;" id="tblRostSkillsTHTr0">'
+	header += '<td><a class="sort">'+hd2.join('</a></td><td><a class="sort">')+'</a></td>'
+	header += '</tr>'
+	$('table#tblRostSkills').append(header)
+	$('table#tblRostSkills tr:first a').each(function(i,val){
+		$(val).attr('href','javascript:void(CountSkills('+i+'))')
+	})
+
+	var pf = players.sort(sSkills)
+	for(i=0;i<pf.length;i++) {
+		if(pf[i]!=undefined){
+			var tr ='<tr height=20 id="'+pf[i].position+'">'
+			for(j in hd2) {
+				var tdcolor = (countSk[j] ==1 ? ' bgcolor=white' : '')
+				var skn = hd2[j]
+				var key1 = pf[i][skills[skn.split('<br>')[0]]]
+				var key2 = pf[i][skills[skn.split('<br>')[1]]]
+					var sk = (key1!=undefined ? key1 : key2)
+				if(skn=='Имя') 					tr += '<td'+tdcolor+'><a href="plug.php?p=refl&t=p&j='+pf[i].id+'&z='+pf[i].hash+'">'+sk+'</a></td>'
+				else if(skn=='Поз') 			tr += '<td'+tdcolor+'>'+sk+'</td>'
+				else if(skn=='Сум') 			tr += '<td'+tdcolor+'><b>'+parseInt(sk)+'</b></td>'
+				else if(!isNaN(parseInt(sk)) && type=='num')	tr += '<td'+tdcolor+'>'+parseInt(sk)+'</td>'
+				else if(!isNaN(parseInt(sk)) && type=='img')	tr += '<td'+tdcolor+'>'+String(sk).split('.')[0]+(String(sk).split('.')[1]!=undefined ? '&nbsp;<img height="10" src="system/img/g/'+String(sk).split('.')[1]+'.gif"></img>' : '')+'</td>'
+				else 							tr += '<td'+tdcolor+'> </td>'
+			}
+			tr += '</tr>'
+			$('table#tblRostSkills').append(tr)
+		}
+	}
+
+	// Run filter
+	Filter(3,'')
+	$('table#tblRostSkills tr:even').attr('bgcolor','a3de8f')
+	$('table#tblRostSkills tr:odd').attr('bgcolor','C9F8B7')
+}
+
 function ShowFilter(){
 	var style = $('table#tblRostSkillsFilter').attr('style')
 	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
@@ -745,79 +820,24 @@ function CountSkills(tdid){
 	ShowSkills()
 }
 
-function ShowSkills(param){
-	if(param == 1){
-		$('table[background]:eq(1)').hide()
-		$('td#crabglobalright').html('')
-		$('table#tblRoster')
-			.attr('id','tblRostSkills')
-			.attr('width','886')
-			.attr('bgcolor','BFDEB3')
-
-		var filter = ''
-		filter += '<tr align=center><th width=10%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th></tr>'
-		filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td bgcolor=a3de8f id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
-		filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td bgcolor=a3de8f id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
-		filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td bgcolor=a3de8f id="L DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="R DF">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td bgcolor=a3de8f id="L DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="R DM">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td bgcolor=a3de8f id="L MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="R MF">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td bgcolor=a3de8f id="L AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="R AM">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<th></th></tr>'
-		$('table#tblRosterFilter')
-			.attr('id','tblRostSkillsFilter')
-			.attr('width','50%')
-			.attr('align','center')
-			.attr('cellspacing','1')
-			.attr('cellpadding','1')
-			.after('<div id="filter">&nbsp;</div>')
-			.before('<a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a>')
-			.html(filter)
-		$('span#tskills').html('Ростер команды')
-		$('a#tskills').attr('href','')
-		ShowFilter()
-		ShowSkills(2)
-	}
-	$('table#tblRostSkills tr').remove()
-	if(param == 2) type = (type=='img' ? 'num' : 'img')
-
-	var hd = 'N Имя Сум лид дрб удр пас вид глв<br>вых нав длу псо<br>реа ско штр впз угл<br>рук тех мощ отб рбт вын Мор Фор Поз'
-	var hd2= hd.split(' ')
-
-	var header = '<tr align="left" style="font-weight:bold;" id="tblRostSkillsTHTr0">'
-	header += '<td><a class="sort">'+hd2.join('</a></td><td><a class="sort">')+'</a></td>'
-	header += '</tr>'
-	$('table#tblRostSkills').append(header)
-	$('table#tblRostSkills tr:first a').each(function(i,val){
-		$(val).attr('href','javascript:void(CountSkills('+i+'))')
-	})
-
-	var pf = players.sort(sSkills)
-	for(i=0;i<pf.length;i++) {
-		if(pf[i]!=undefined){
-			var tr ='<tr height=20 id="'+pf[i].position+'">'
-			for(j in hd2) {
-				var tdcolor = (countSk[j] ==1 ? ' bgcolor=white' : '')
-				var skn = hd2[j]
-				var key1 = pf[i][skills[skn.split('<br>')[0]]]
-				var key2 = pf[i][skills[skn.split('<br>')[1]]]
-					var sk = (key1!=undefined ? key1 : key2)
-				if(skn=='Имя') 					tr += '<td'+tdcolor+'><a href="plug.php?p=refl&t=p&j='+pf[i].id+'&z='+pf[i].hash+'">'+sk+'</a></td>'
-				else if(skn=='Поз') 			tr += '<td'+tdcolor+'>'+sk+'</td>'
-				else if(skn=='Сум') 			tr += '<td'+tdcolor+'><b>'+parseInt(sk)+'</b></td>'
-				else if(!isNaN(parseInt(sk)) && type=='num')	tr += '<td'+tdcolor+'>'+parseInt(sk)+'</td>'
-				else if(!isNaN(parseInt(sk)) && type=='img')	tr += '<td'+tdcolor+'>'+String(sk).split('.')[0]+(String(sk).split('.')[1]!=undefined ? '&nbsp;<img height="10" src="system/img/g/'+String(sk).split('.')[1]+'.gif"></img>' : '')+'</td>'
-				else 							tr += '<td'+tdcolor+'> </td>'
-			}
-			tr += '</tr>'
-			$('table#tblRostSkills').append(tr)
+function ShowShortName(fullname){
+	var namearr = fullname.replace(/^\s+/, "").replace(/\s+$/, "").split(' ')
+	var shortname = ''
+	for(n in namearr) {
+		if(n==0){
+			if(namearr[1] == undefined) shortname += namearr[n]
+			else shortname += namearr[n][0] + '.'
+		} else {
+			shortname += namearr[n] + '&nbsp;'
 		}
 	}
+	return shortname
+}
 
-	// Run filter
-	Filter(3,'')
-	$('table#tblRostSkills tr:even').attr('bgcolor','a3de8f')
-	$('table#tblRostSkills tr:odd').attr('bgcolor','C9F8B7')
 
+function ShowValueFormat(value){
+	if (value > 1000)	return (value/1000).toFixed(3).replace(/\./g,',') + '$'
+	else				return (value) + '$'
 }
 
 function sSkills(i, ii) { // По SumSkills (убыванию)
@@ -836,6 +856,21 @@ function sZp(i, ii) { // По zp (убыванию)
     else						return  0
 }
 
+function ShowChange(value){
+	if(value > 0) 		return '<sup><font color="green">+' + value + '</font></sup>'
+	else if(value < 0)	return '<sup><font color="red">' 	+ value + '</font></sup>'
+	else 		  		return ''
+}
+
+function UrlValue(key,url){
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
+	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
+	return false
+}
+
+function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;'+text+'<br>');}}
+
+/**
 
 function CountryInfoGet(){
 	var srch="Вы вошли как "
@@ -871,102 +906,6 @@ function ForgotPlValueCh(){
 	$('tr#osnom td:last').html('')
 }
 
-function ShowPlayersValue(){
-	if(nom==0) {
-		nom = 1
-		var nomtext = ''
-		var pls = players.sort(sValue)
-		for(i in pls) {
-			nomtext += '<tr id="nom">'
-			nomtext += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
-			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
-			nomtext += '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>'
-			nomtext += '</tr>'
-		}
-		$('#osnom').after(nomtext + '<tr id="nom"><td>&nbsp;</td></tr>')
-	} else {
-		nom = 0
-		$('tr#nom').remove()
-	}
-}
-
-function ShowPlayersZp(){
-	if(zp==0) {
-		zp = 1
-		var text = ''
-		var pls = players.sort(sZp)
-		for(i in pls) {
-			text += '<tr id="zp">'
-			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
-			text += '<td align=right>' + (ShowValueFormat(pls[i].wage) + '&nbsp;').fontsize(1) + '</td>'
-			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
-			text += '</tr>'
-		}
-		$('#oszp').after(text + '<tr id="zp"><td>&nbsp;</td></tr>')
-	} else {
-		zp = 0
-		$('tr#zp').remove()
-	}
-}
-
-function ShowPlayersSkillChange(){
-	if(sk==0) {
-		sk = 1
-		var text = ''
-		var pls = players.sort(sSkills)
-		for(i in pls) {
-			text += '<tr id="skills">'
-			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
-			text += '<td align=right>' + (pls[i].sumskills + '&nbsp;').fontsize(1) + '</td>'
-//			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
-			if(pls[i].skchange != '') {
-				var skillchange = pls[i].skchange.split(',')
-				for(j in skillchange) {
-					text += '<tr id="skills"><td align=right colspan=2><i>'+(skillchange[j] + '&nbsp;').fontsize(1)
-					text += (pls[i][skillchange[j]].split('.')[0] + '&nbsp;').fontsize(1) +'</i></td>'
-					if(pls[i][skillchange[j]].split('.')[1] != undefined) {
-						text += '<td><img height="10" src="system/img/g/'+pls[i][skillchange[j]].split('.')[1]+'.gif"></img></td>'
-					}
-					text += '</tr>'
-				}
-			}
-			text += '</tr>'
-		}
-		$('#osskills').after(text + '<tr id="skills"><td>&nbsp;</td></tr>')
-	} else {
-		sk = 0
-		$('tr#skills').remove()
-	}
-}
-
-function ShowShortName(fullname){
-	var namearr = fullname.replace(/^\s+/, "").replace(/\s+$/, "").split(' ')
-	var shortname = ''
-	for(n in namearr) {
-		if(n==0){
-			if(namearr[1] == undefined) shortname += namearr[n]
-			else shortname += namearr[n][0] + '.'
-		} else {
-			shortname += namearr[n] + '&nbsp;'
-		}
-	}
-	return shortname
-}
-
-function ShowValueFormat(value){
-	if (value > 1000)	return (value/1000).toFixed(3).replace(/\./g,',') + '$'
-	else				return (value) + '$'
-}
-
-function SaveStorageData(key,data){
-	if(ff)	globalStorage[location.hostname][key] = data
-	else	sessionStorage[key] = data
-}
-
-function GetStorageData(key){
-	if(ff)	return globalStorage[location.hostname][key]
-	else	return sessionStorage[key]
-}
 function setCookie(name, value) {
 	var exdate=new Date();
 	exdate.setDate(exdate.getDate() + 356); // +1 year
