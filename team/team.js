@@ -12,7 +12,7 @@ var type 	= 'img'
 var players  = []
 var players2 = []
 var teams = []
-var team_cur = {'twage':0, 'tvalue':0}
+var team_cur = {'twage':0, 'tvalue':0, 'ss':0}
 var m = []
 var remember = 0
 
