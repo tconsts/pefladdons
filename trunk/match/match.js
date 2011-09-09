@@ -1,15 +1,9 @@
 // ==UserScript==
 // @name           peflmatch
 // @namespace      pefl
-// @description    match page modification (PEFL.ru and .net)
-// @include        http://www.pefl.ru/*&t=if&*
-// @include        http://www.pefl.ru/*&t=code&*
-// @include        http://pefl.ru/*&t=if&*
-// @include        http://pefl.ru/*&t=code&*
-// @include        http://www.pefl.net/*&t=if&*
-// @include        http://www.pefl.net/*&t=code&*
-// @include        http://pefl.net/*&t=if&*
-// @include        http://pefl.net/*&t=code&*
+// @description    match page modification
+// @include        http://*pefl.*/*&t=if&*
+// @include        http://*pefl.*/*&t=code&*
 // ==/UserScript==
 
 function UrlValue(key,url){
@@ -27,6 +21,29 @@ function ShowTable(n){
 		$('td.back4 table:eq('+n+')').hide()
 		$('a#treport'+n).html('+')
 	}
+}
+
+
+function TrimString(sInString){
+	sInString = sInString.replace(/\&nbsp\;/g,' ');
+	return sInString.replace(/(^\s+)|(\s+$)/g, '');
+}
+
+var select = ''
+
+function SelPl(name){
+	select = name
+//	alert(select)
+	$('p[id^=matchMoment]').each(function(){
+		var momText = $(this).html()
+		$(this).removeAttr('style')
+			.find('font').removeAttr('color')
+
+		if(momText.indexOf(name)!= -1) {
+			$(this).css({'background-color' : 'a3de8f', 'font-weight' : 'bolder'}); 
+			$(this).html(momText.replace(new RegExp(name,'g'), '<font color=red>'+name+'</font>'))
+		}
+	})
 }
 
 $().ready(function() {
@@ -50,6 +67,7 @@ $().ready(function() {
 			)
 		}
 	}else{
+
 		// даем возможность скрыть отчет
 		$('td.back4 table:eq(2)').before('<br><a id="treport" href="javascript:void(ShowTable(2))">&ndash;</a>')
 
@@ -63,7 +81,7 @@ $().ready(function() {
 			finschet = ' [center]По пенальти [b][color=red]'+finschetarr[finschetarr.length-1].split('<br>')[0] + '[/color][/b][/center]'
 		}
 		sessionStorage[mid] = finschet + $('td.back4 table:eq(6)')
-			.find('img').removeAttr('ilo-full-src').end()
+			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 			.find('td').removeAttr('width').end()
 			.find('td').removeAttr('bgcolor').end()
 			.prepend('<tr><td colspan=5 width=50%> </td><td colspan=5 width=50%> </td></tr>')
@@ -94,6 +112,21 @@ $().ready(function() {
 		    content+=x[i] //+'<br>';
 		}
 		$('td.back4 table:eq(2) td:first center:first').html(content);
+
+
+		// Set selector for players
+		$('td.back4 table:first td:has(small)').each(function(){
+			var text = TrimString($(this).find('small').html()).split('.',2)
+			var name = (text[1]!=undefined ? text[1] : text[0])
+			$(this).html('<a href="javascript:void(SelPl(\''+name+'\'))">'+$(this).html()+'</a>')
+		})
+		$('td.back4 table:eq(6) tr').each(function(){
+			$(this).find('td:eq(1), td:eq(6)').each(function(i, val){
+				var text = TrimString($(val).text()).split('(')[0].split('.',2)
+				var name = (text[1]!=undefined ? text[1] : text[0])
+				$(val).html('<a id="pl" href="javascript:void(SelPl(\''+name+'\'))">'+$(val).html()+'</a>')
+			})
+		})
 
 	}
 }, false);
