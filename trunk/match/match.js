@@ -118,13 +118,13 @@ $().ready(function() {
 		$('td.back4 table:first td:has(small)').each(function(){
 			var text = TrimString($(this).find('small').html()).split('.',2)
 			var name = (text[1]!=undefined ? text[1] : text[0])
-			$(this).html('<a href="javascript:void(SelPl(\''+name+'\'))">'+$(this).html()+'</a>')
+			$(this).html('<a href=javascript:void(SelPl("'+name+'"))>'+$(this).html()+'</a>')
 		})
 		$('td.back4 table:eq(6) tr').each(function(){
 			$(this).find('td:eq(1), td:eq(6)').each(function(i, val){
 				var text = TrimString($(val).text()).split('(')[0].split('.',2)
 				var name = (text[1]!=undefined ? text[1] : text[0])
-				$(val).html('<a id="pl" href="javascript:void(SelPl(\''+name+'\'))">'+$(val).html()+'</a>')
+				$(val).html('<a href=javascript:void(SelPl("'+name+'"))>'+$(val).html()+'</a>')
 			})
 		})
 
