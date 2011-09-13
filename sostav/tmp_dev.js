@@ -12,6 +12,7 @@ var groups = [[]];
 var trnman = []
 var trn = [0]
 var db = false
+var num_players = 0
 var deb = true
 var debnum = 0
 
@@ -85,7 +86,7 @@ $().ready(function() {
 			if (tmpkey.indexOf('trn') != -1) trn[0].push(tmpvalue)
 			i++;
 		}
-		var num_players 	= data_assoc["n"];
+		num_players 	= data_assoc["n"];
 		var trnManagerNick	= data_assoc["s0"];
 
 		// данные о тренировках
@@ -247,9 +248,13 @@ $().ready(function() {
 		}
 		if (trnManagerNick == curManagerNick){
 			getData()
-			saveData()
 		}
+	})
+	}
+}, false)
 
+function showData(){
+		debug('showData go')
 		var tn = [0,8,9,10,2,11,13,14]
 
 		$('td.back4 table table:eq(1)')
@@ -345,9 +350,7 @@ $().ready(function() {
 		if(countinj >0) $('td.back4').append(pinj)
 		if(countnot >0) $('td.back4').append(pnot)
 
-	})
-	}
-}, false)
+}
 
 function DBConnect(){
 	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
@@ -359,10 +362,10 @@ function getData(){
 	if(ff){
 		var trnnum = 1
 		var x = globalStorage[location.hostname]['training']
-		debug('Get from GS '+x)
+		debug('Get from GS ')
 		if(x == undefined){
 			x = getCookie('pefltraining')
-			debug('Get cookie ' + x)
+			debug('Get cookie ')
 		}
 		if(x != undefined){
 			xx = String(x).split(';')
@@ -373,17 +376,36 @@ function getData(){
 				trnnum++
 			}
 		}
+		saveData()
 	}else{
-		var trnnum = 1
-		if (getCookie('pefltraining')){
-			var x = getCookie('pefltraining').split(';')
-			for (var p in x) {
-				var y = x[p].split(',')
-				if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
-				trn[trnnum] = y
-				trnnum++
-			}
-		}
+		if(!db) DBConnect()
+		debug('Get DB')
+		db.transaction(function(tx) {
+			//tx.executeSql("DROP TABLE IF EXITS training")
+			tx.executeSql("SELECT * FROM training", [],
+				function(tx, result){
+					debug('Select trtable ok')
+					for(var i = 0; i < result.rows.length; i++) {
+						trn[i] = result.rows.item(i)
+					}					
+					saveData()
+				},
+				function(tx, error){
+					debug(error.message)
+					x = getCookie('pefltraining')
+					if(x != undefined){
+						xx = String(x).split(';')
+						for (var p in xx) {
+							var y = xx[p].split(',')
+							if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
+							trn[trnnum] = y
+							trnnum++
+						}
+					}
+					saveData()
+				}
+			)
+		})
 	}
 }
 
@@ -396,19 +418,34 @@ function saveData(){
 				save += (f<3 && trn[f+1] ? ';' :'')
 			}
 		}
-		deleteCookie('pefltraining')
 		globalStorage[location.hostname]['training'] = save
-		debug('Save GS ' + save)
+		debug('Save GS ')
+		showData()
 	}else{
-		var save = ''
-		for (var f=0;f<4;f++){
-			if (trn[f]){
-				for (var l in trn[f]) save += trn[f][l] + (l<trn[f].length-1 ? ',' : '')
-				save += (f<3 && trn[f+1] ? ';' :'')
+		debug('Save DB go')
+		if(!db) DBConnect()
+		db.transaction(function(tx) {
+			tx.executeSql("DROP TABLE IF EXISTS training",[],
+				function(tx, result){debug('drop trtable ok')},
+				function(tx, error) {debug('drop trtable error' + error.message)}
+			);                                           
+			tx.executeSql("CREATE TABLE IF NOT EXISTS training (date INT, 1 INT, 2 INT, 3 INT, 4 INT, 5 INT, 6 INT, 7 INT, 8 INT)", [],
+				function(tx, result){debug('create trtable ok')},
+				function(tx, error) {debug('create trtable error'+error.message)}
+			);
+			for (var f=0;f<4;f++){
+				var trnf = trn[f]
+				debug(trnf)
+				tx.executeSql("INSERT INTO training (date, 1, 2, 3, 4, 5, 6, 7, 8) values(?, ?, ?, ?, ?, ?, ?, ?)", 
+					[trnf[0], trnf[1], trnf[2], trnf[3], trnf[4], trnf[5], trnf[6], trnf[7], trnf[8]],
+					function(result){debug('insert trdata ok')},
+					function(tx, error) {debug('insert trdata error:'+error.message)
+				});
 			}
-		}
-		setCookie('pefltraining',save)
+			showData()
+		});
 	}
+	deleteCookie('pefltraining')
 }
 
 function debug(text){
