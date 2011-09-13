@@ -12,6 +12,8 @@ var groups = [[]];
 var trnman = []
 var trn = [0]
 var db = false
+var debug = true
+var debnum = 0
 
 var itrains = []
 itrains[0]	= {level:2,	tr:1,	name: 'Общая'}
@@ -357,7 +359,12 @@ function getData(){
 	if(ff){
 		var trnnum = 1
 		var x = globalStorage['pefl.ru']['training']
-		if(x == undefined) x = getCookie('pefltraining')
+		if(x == undefined) {
+			x = getCookie('pefltraining')
+			debug('Get cookie')
+		}else{
+			debug('Get from GS')
+		}
 		if(x != undefined){
 			for (var p in x) {
 				var y = x[p].split(',')
@@ -391,6 +398,7 @@ function saveData(){
 		}
 //		deleteCookie('pefltraining')
 		globalStorage['pefl.ru']['training'] = save
+		debug('Save GS')
 	}else{
 		var save = ''
 		for (var f=0;f<4;f++){
@@ -401,6 +409,11 @@ function saveData(){
 		}
 		setCookie('pefltraining',save)
 	}
+}
+
+function debug(text){
+	debnum++
+	if(debug) $('td.back4').append(debnum+': '+text+'<br>')
 }
 
 function setCookie(name, value) {
@@ -418,7 +431,7 @@ function getCookie(name) {
 }
 
 function deleteCookie(name){
-	
+	debug('Delete cookie')
 }
 
 
