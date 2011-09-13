@@ -358,12 +358,11 @@ function DBConnect(){
 function getData(){
 	if(ff){
 		var trnnum = 1
-		var x = globalStorage['pefl.ru']['training']
+		var x = globalStorage[location.hostname]['training']
+		debug('Get from GS '+x)
 		if(x == undefined){
 			x = getCookie('pefltraining')
 			debug('Get cookie ' + x)
-		}else{
-			debug('Get from GS '+x)
 		}
 		if(x != undefined){
 			for (var p in x) {
@@ -397,7 +396,7 @@ function saveData(){
 			}
 		}
 		deleteCookie('pefltraining')
-		globalStorage['pefl.ru']['training'] = save
+		globalStorage[location.hostname]['training'] = save
 		debug('Save GS ' + save)
 	}else{
 		var save = ''
