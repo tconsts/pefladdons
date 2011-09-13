@@ -358,10 +358,10 @@ function DBConnect(){
 function getData(){
 	if(ff){
 		var trnnum = 1
-		var x = String(globalStorage[location.hostname]['training'])
+		var x = globalStorage[location.hostname]['training'].split(';')
 		debug('Get from GS '+x)
 		if(x == undefined){
-			x = getCookie('pefltraining')
+			x = getCookie('pefltraining').split(';')
 			debug('Get cookie ' + x)
 		}
 		if(x != undefined){
