@@ -12,7 +12,7 @@ var groups = [[]];
 var trnman = []
 var trn = [0]
 var db = false
-var debug = true
+var deb = true
 var debnum = 0
 
 var itrains = []
@@ -359,11 +359,11 @@ function getData(){
 	if(ff){
 		var trnnum = 1
 		var x = globalStorage['pefl.ru']['training']
-		if(x == undefined) {
+		if(x == undefined){
 			x = getCookie('pefltraining')
-			debug('Get cookie')
+			debug('Get cookie ' + x)
 		}else{
-			debug('Get from GS')
+			debug('Get from GS '+x)
 		}
 		if(x != undefined){
 			for (var p in x) {
@@ -396,9 +396,9 @@ function saveData(){
 				save += (f<3 && trn[f+1] ? ';' :'')
 			}
 		}
-//		deleteCookie('pefltraining')
+		deleteCookie('pefltraining')
 		globalStorage['pefl.ru']['training'] = save
-		debug('Save GS')
+		debug('Save GS ' + save)
 	}else{
 		var save = ''
 		for (var f=0;f<4;f++){
@@ -413,7 +413,7 @@ function saveData(){
 
 function debug(text){
 	debnum++
-	if(debug) $('td.back4').append(debnum+': '+text+'<br>')
+	if(deb) $('td.back4').append(debnum+': '+text+'<br>')
 }
 
 function setCookie(name, value) {
@@ -431,7 +431,7 @@ function getCookie(name) {
 }
 
 function deleteCookie(name){
-	debug('Delete cookie')
+	debug('Delete cookie ' + name)
 }
 
 
