@@ -358,7 +358,7 @@ function DBConnect(){
 function getData(){
 	if(ff){
 		var trnnum = 1
-		var x = globalStorage[location.hostname]['training'].split(';')
+		var x = String(globalStorage[location.hostname]['training']).split(';')
 		debug('Get from GS '+x)
 		if(x == undefined){
 			x = getCookie('pefltraining').split(';')
