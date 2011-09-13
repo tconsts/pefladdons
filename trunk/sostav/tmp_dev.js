@@ -365,7 +365,7 @@ function getData(){
 			debug('Get cookie ' + x)
 		}
 		if(x != undefined){
-			xx = x.split(';')
+			xx = String(x).split(';')
 			for (var p in xx) {
 				var y = xx[p].split(',')
 				if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
