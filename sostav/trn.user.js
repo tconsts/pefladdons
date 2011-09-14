@@ -1,11 +1,9 @@
 // ==UserScript==
 // @name           pefltraining
 // @namespace      pefl
-// @description    modification training page (PEFL.ru)
-// @include        http://www.pefl.ru/plug.php?p=training*
-// @include        http://pefl.ru/plug.php?p=training*
-// @include        http://pefl.net/plug.php?p=training*
-// @include        http://www.pefl.net/plug.php?p=training*
+// @description    modification training page
+// @include        http:/*pefl.*/plug.php?p=training*
+// @version        2.0
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];

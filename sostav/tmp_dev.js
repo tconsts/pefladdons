@@ -6,6 +6,10 @@
 // @version        2.0
 // ==/UserScript==
 
+
+if(typeof (deb) == 'undefined') deb = false
+var debnum = 0
+
 var data_assoc = [];
 var players = [];
 var groups = [[]];
@@ -13,8 +17,6 @@ var trnman = []
 var trn = [0]
 var db = false
 var num_players = 0
-if(typeof (deb) == 'undefined') deb = false
-var debnum = 0
 
 var itrains = []
 itrains[0]	= {level:2,	tr:1,	name: 'Общая'}
@@ -73,7 +75,6 @@ $().ready(function() {
 	var srch="Вы вошли как "
 	var curManagerNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 
-	if(UrlValue('p') == 'training') {
 	$.get('training.php', {}, function(data){
 		debug('Get data from training.php')
 		var dataarray = data.split('&');
@@ -166,6 +167,17 @@ $().ready(function() {
 			players[playerid] = tmpplayer;
 		}
 
+		if (trnManagerNick == curManagerNick){
+			getData()
+		}
+	})
+
+}, false)
+
+function showData(){
+	if(UrlValue('p') == 'training') {
+		debug('showData go')
+
 		var xtr = '<br><table id="trn" width=100% bgcolor=A3DE8F></td></tr>'
 		xtr += '<tr><td bgcolor=C9F8B7 colspan=15><b>Тренировка основы:</b>'
 		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр3</th><th bgcolor=A3DE8F></th><th width=5%>наг</th><th width=70%>тренировка</th>'
@@ -177,6 +189,7 @@ $().ready(function() {
 		xtr += '</tr>'
 		xtr += '</table>'
 		$('td.back4 table table:eq(1)').after(xtr)
+
 		for (p in trains){ 
 			var sumtrn = 0
 			for(i=1;i<=3;i++) for(j=1;j<=3;j++) sumtrn += trains[p]['count'+i+j]
@@ -249,15 +262,6 @@ $().ready(function() {
 				$('tr#ind2:first').after(xtr)
 			}
 		}
-		if (trnManagerNick == curManagerNick){
-			getData()
-		}
-	})
-	}
-}, false)
-
-function showData(){
-		debug('showData go')
 		var tn = [0,8,9,10,2,11,13,14]
 
 		$('td.back4 table table:eq(1)')
@@ -352,6 +356,9 @@ function showData(){
 		if(countnot >0) $('td.back4 table:first center').after(pnot)
 		if(countinj >0) $('td.back4 table:first center').after(pinj)
 		if(countrest>0) $('td.back4 table:first center').after(prest)
+	} else {
+		debug('showData is off(training2)')
+	}
 }
 
 function DBConnect(){
@@ -471,13 +478,6 @@ function debug(text){
 	}
 }
 
-function setCookie(name, value) {
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() + 30); 
-	if (!name || !value) return false;
-	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
-	return true
-}
 function getCookie(name) {
 	    var pattern = "(?:; )?" + name + "=([^;]*);?"
 	    var regexp  = new RegExp(pattern)
@@ -493,7 +493,6 @@ function deleteCookie(name){
 	document.cookie = name + '=; expires='+ exdate.toUTCString() + '; path=/'
 	return true
 }
-
 
 function check(d) {return (d<10 ? "0"+d : d)}
 
