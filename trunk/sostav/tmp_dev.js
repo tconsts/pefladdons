@@ -2,7 +2,7 @@
 // @name           pefltraining
 // @namespace      pefl
 // @description    modification training page
-// @include        http://*.pefl.*/plug.php?p=training*
+// @include        http://*pefl.*/plug.php?p=training*
 // @version        2.0
 // ==/UserScript==
 
@@ -13,7 +13,7 @@ var trnman = []
 var trn = [0]
 var db = false
 var num_players = 0
-var deb = true
+if(typeof (deb) == 'undefined') deb = false
 var debnum = 0
 
 var itrains = []
@@ -75,6 +75,7 @@ $().ready(function() {
 
 	if(UrlValue('p') == 'training') {
 	$.get('training.php', {}, function(data){
+		debug('Get data from training.php')
 		var dataarray = data.split('&');
 		var i = 0;
 		while(dataarray[i] != null) {
@@ -86,6 +87,8 @@ $().ready(function() {
 			if (tmpkey.indexOf('trn') != -1) trn[0].push(tmpvalue)
 			i++;
 		}
+		debug(trn[0])
+
 		num_players 	= data_assoc["n"];
 		var trnManagerNick	= data_assoc["s0"];
 
@@ -163,7 +166,7 @@ $().ready(function() {
 			players[playerid] = tmpplayer;
 		}
 
-		var xtr = '<table id="trn" width=100% bgcolor=A3DE8F></td></tr>'
+		var xtr = '<br><table id="trn" width=100% bgcolor=A3DE8F></td></tr>'
 		xtr += '<tr><td bgcolor=C9F8B7 colspan=15><b>Тренировка основы:</b>'
 		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр3</th><th bgcolor=A3DE8F></th><th width=5%>наг</th><th width=70%>тренировка</th>'
 //		xtr += '<th width=30%>тренер(гр)</th>'
@@ -173,7 +176,7 @@ $().ready(function() {
 //		xtr += '<th>тренер(гр)</th>'
 		xtr += '</tr>'
 		xtr += '</table>'
-		$('td.back4').append(xtr)
+		$('td.back4 table table:eq(1)').after(xtr)
 		for (p in trains){ 
 			var sumtrn = 0
 			for(i=1;i<=3;i++) for(j=1;j<=3;j++) sumtrn += trains[p]['count'+i+j]
@@ -346,10 +349,9 @@ function showData(){
 				pnot  += '&nbsp;'+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
 			}
 		}
-		if(countrest>0) $('td.back4').append(prest)
-		if(countinj >0) $('td.back4').append(pinj)
-		if(countnot >0) $('td.back4').append(pnot)
-
+		if(countnot >0) $('td.back4 table:first center').after(pnot)
+		if(countinj >0) $('td.back4 table:first center').after(pinj)
+		if(countrest>0) $('td.back4 table:first center').after(prest)
 }
 
 function DBConnect(){
@@ -379,24 +381,36 @@ function getData(){
 		saveData()
 	}else{
 		if(!db) DBConnect()
-		debug('Get DB')
+		debug('Get DB go')
 		db.transaction(function(tx) {
-			//tx.executeSql("DROP TABLE IF EXITS training")
+//			tx.executeSql("DROP TABLE IF EXISTS training")
 			tx.executeSql("SELECT * FROM training", [],
 				function(tx, result){
 					debug('Select trtable ok')
+					var trnnum = 1
 					for(var i = 0; i < result.rows.length; i++) {
-						trn[i] = result.rows.item(i)
-					}					
+						trn[i] = []
+						var num = 0
+						if(i==0 && trn[0][1]==result.rows.item(0)[1] && trn[0][2]==result.rows.item(0)[2]) trnnum=0
+						for(var j in result.rows.item(i)) {
+							trn[trnnum][num] = result.rows.item(i)[j]
+							num++
+						}
+						trnnum++
+					}
+					for (var i in trn) debug('i'+i+':'+trn[i])
 					saveData()
 				},
 				function(tx, error){
 					debug(error.message)
 					x = getCookie('pefltraining')
+					var trnnum = 1
 					if(x != undefined){
+				        debug('Get cookie ')
 						xx = String(x).split(';')
 						for (var p in xx) {
 							var y = xx[p].split(',')
+							debug(xx[p])
 							if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
 							trn[trnnum] = y
 							trnnum++
@@ -410,6 +424,8 @@ function getData(){
 }
 
 function saveData(){
+	deleteCookie('pefltraining')
+	showData()
 	if(ff){
 		var save = ''
 		for (var f=0;f<4;f++){
@@ -420,7 +436,6 @@ function saveData(){
 		}
 		globalStorage[location.hostname]['training'] = save
 		debug('Save GS ')
-		showData()
 	}else{
 		debug('Save DB go')
 		if(!db) DBConnect()
@@ -429,28 +444,29 @@ function saveData(){
 				function(tx, result){debug('drop trtable ok')},
 				function(tx, error) {debug('drop trtable error' + error.message)}
 			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS training (date INT, 1 INT, 2 INT, 3 INT, 4 INT, 5 INT, 6 INT, 7 INT, 8 INT)", [],
+			tx.executeSql("CREATE TABLE IF NOT EXISTS training (date, t1, t2, t3, t4, t5, t6, t7)", [],
 				function(tx, result){debug('create trtable ok')},
 				function(tx, error) {debug('create trtable error'+error.message)}
 			);
 			for (var f=0;f<4;f++){
 				var trnf = trn[f]
 				debug(trnf)
-				tx.executeSql("INSERT INTO training (date, 1, 2, 3, 4, 5, 6, 7, 8) values(?, ?, ?, ?, ?, ?, ?, ?)", 
-					[trnf[0], trnf[1], trnf[2], trnf[3], trnf[4], trnf[5], trnf[6], trnf[7], trnf[8]],
+				tx.executeSql("INSERT INTO training (date, t1, t2, t3, t4, t5, t6, t7) values(?, ?, ?, ?, ?, ?, ?, ?)", 
+					[trnf[0], trnf[1], trnf[2], trnf[3], trnf[4], trnf[5], trnf[6], trnf[7]],
 					function(result){debug('insert trdata ok')},
 					function(tx, error) {debug('insert trdata error:'+error.message)
 				});
 			}
-			showData()
 		});
 	}
-	deleteCookie('pefltraining')
 }
 
 function debug(text){
 	debnum++
-	if(deb) $('td.back4').append(debnum+': '+text+'<br>')
+	if(deb) {
+		if(debnum == 1)  $('td.back4').append('<hr>DEBUG:<br>')
+		$('td.back4').append(debnum+': \''+text+'\'<br>')
+	}
 }
 
 function setCookie(name, value) {
@@ -469,6 +485,11 @@ function getCookie(name) {
 
 function deleteCookie(name){
 	debug('Delete cookie ' + name)
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() - 30); 
+	if (!name) return false;
+	document.cookie = name + '=; expires='+ exdate.toUTCString() + '; path=/'
+	return true
 }
 
 
