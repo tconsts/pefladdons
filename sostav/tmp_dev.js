@@ -403,14 +403,14 @@ function getData(){
 				},
 				function(tx, error){
 					debug(error.message)
-					x = getCookie('pefltraining')
 					var trnnum = 1
-					if(x != undefined){
-				        debug('Get cookie ')
+					x = getCookie('pefltraining')
+					if(x){
+				        debug('Get cookie ' +x)
 						xx = String(x).split(';')
 						for (var p in xx) {
 							var y = xx[p].split(',')
-							debug(xx[p])
+							debug('xx[p]: '+xx[p])
 							if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
 							trn[trnnum] = y
 							trnnum++
@@ -450,12 +450,14 @@ function saveData(){
 			);
 			for (var f=0;f<4;f++){
 				var trnf = trn[f]
-				debug(trnf)
-				tx.executeSql("INSERT INTO training (date, t1, t2, t3, t4, t5, t6, t7) values(?, ?, ?, ?, ?, ?, ?, ?)", 
-					[trnf[0], trnf[1], trnf[2], trnf[3], trnf[4], trnf[5], trnf[6], trnf[7]],
-					function(result){debug('insert trdata ok')},
-					function(tx, error) {debug('insert trdata error:'+error.message)
-				});
+				if (trnf){
+					debug('tnrf: '+trnf)
+					tx.executeSql("INSERT INTO training (date, t1, t2, t3, t4, t5, t6, t7) values(?, ?, ?, ?, ?, ?, ?, ?)", 
+						[trnf[0], trnf[1], trnf[2], trnf[3], trnf[4], trnf[5], trnf[6], trnf[7]],
+						function(result){debug('insert trdata ok')},
+						function(tx, error) {debug('insert trdata error:'+error.message)
+					});
+				}
 			}
 		});
 	}
