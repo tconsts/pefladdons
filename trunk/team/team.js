@@ -41,6 +41,9 @@ $().ready(function() {
 	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	cid = parseInt($('td.back4 table:first table td:first').text())
 
+	today = new Date()
+	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
+
 	if(UrlValue('l')=='y'){			//Page for show skills
 		EditSkillsPage()
 	}else if(UrlValue('n')!=false){	//Ростер с фильтром(не вся стата показывается)
@@ -113,20 +116,10 @@ function GetFinish(type, res){
 /**/
 }
 
-function ModifyTeams(){
-	debug('ModifyTeams ok')
-	//teams and team_cur
-	for(i in team_cur){
-		if(team_cur[i] != '') teams[cid][i] = team_cur[i]
-	}
-	SaveDataTm()
-}
 //
 //////////////// TEAM Section(start) ////////////////
 //
 function GetInfoPageTm(){
-	var today = new Date()
-	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 
 	// Get current club data
 	team_cur.tid   = cid
@@ -134,7 +127,7 @@ function GetInfoPageTm(){
 	team_cur.sname = $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
 	team_cur.ssize = $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
 	team_cur.ttask = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
-	team_cur.ncode = ''
+	team_cur.ncode = parseInt(UrlValue('j',$('td.back4 table:first table td:eq(1) a').attr('href')))
 	team_cur.nname = ''
 	team_cur.dname = ''
 	team_cur.dnum  = ''
@@ -142,6 +135,15 @@ function GetInfoPageTm(){
 	team_cur.tvalue= 0
 	team_cur.tdate = today
 	GetFinish('pg_tm', true)
+}
+
+function ModifyTeams(){
+	debug('ModifyTeams ok')
+	//teams and team_cur
+	for(i in team_cur){
+		if(team_cur[i] != '') teams[cid][i] = team_cur[i]
+	}
+	SaveDataTm()
 }
 
 function SaveDataTm(){
@@ -265,6 +267,7 @@ function SaveDataPl(){
 			for(i in players) {
 				var pl = players[i]
 				text += pl.id 		+ ',' 
+				text += pl.tid 		+ ',' 
 				text += pl.num 		+ ',' 
 				text += pl.morale 	+ ',' 
 				text += pl.form 	+ ',' 
@@ -313,13 +316,14 @@ function GetDataPl() {
 				var plsk = pltext[i].split(',')
 				var plx = []
 				plx.id 		= parseInt(plsk[0])
-				plx.num 	= parseInt(plsk[1])
-				plx.morale 	= parseInt(plsk[2])
-				plx.form 	= parseInt(plsk[3])
-				plx.mchange = parseInt(plsk[4])
-				plx.fchange = parseInt(plsk[5])
-				plx.value 	= parseInt(plsk[6])
-				plx.valuech = parseInt(plsk[7])
+				plx.tid 	= parseInt(plsk[1])
+				plx.num 	= parseInt(plsk[2])
+				plx.morale 	= parseInt(plsk[3])
+				plx.form 	= parseInt(plsk[4])
+				plx.mchange = parseInt(plsk[5])
+				plx.fchange = parseInt(plsk[6])
+				plx.value 	= parseInt(plsk[7])
+				plx.valuech = parseInt(plsk[8])
 				players2[plx.id] = []
 				players2[plx.id] = plx
 			}
@@ -363,6 +367,8 @@ function GetInfoPagePl(){
 		players[pn] = {}
 		players[pn].pn 		= pn
 		players[pn].id 		= pid
+		players[pn].tid 	= cid
+		players[pn].num 	= i
 		players[pn].hash	= UrlValue('z',$(val).find('td:eq(1) a:first').attr('href'))
 		players[pn].name	= $(val).find('td:eq(1) a').html()
 								.split('<img')[0]
