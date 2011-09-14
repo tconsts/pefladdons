@@ -94,7 +94,6 @@ function GetFinish(type, res){
 	if(m.savedatatm==undefined && m.get_tm!=undefined && m.pg_tm){
 		m.savedatatm = true
 		ModifyTeams()
-		PrintRightInfo()
 	}
 	if(m.savedatapl==undefined && m.get_pl==false && m.pg_pl){
 		m.savedatapl = true
@@ -103,6 +102,7 @@ function GetFinish(type, res){
 	if(m.savedatapl==undefined && m.get_pl && m.pg_pl){
 		m.savedatapl = true
 		ModifyPlayers()
+		PrintRightInfo()
 	}
 	if(m.p_pl){
 			
@@ -120,7 +120,7 @@ function GetFinish(type, res){
 //////////////// TEAM Section(start) ////////////////
 //
 function GetInfoPageTm(){
-
+	debug('GetInfoPageTm ok')
 	// Get current club data
 	team_cur.tid	= cid
 	team_cur.ttown	= $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
@@ -134,8 +134,8 @@ function GetInfoPageTm(){
 	team_cur.twage	= 0
 	team_cur.tvalue	= 0
 	team_cur.tdate	= today
-	team_cur.mname	= ''
-	team_cur.mid	= 0
+	team_cur.mname	= $('td.back4 table table:eq(1) table:first td:first span').text()
+	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href')))
 	GetFinish('pg_tm', true)
 }
 
@@ -237,8 +237,8 @@ function GetDataTm(){
 		debug('GetDataTm empty(GS)')
 		GetFinish('get_tm',true)
 	}else{
-		debug('GetDataTm go(DB)')
 		if(!db) DBConnect()
+		debug('GetDataTm go(DB)')
 
 		db.transaction(function(tx) {
 //			tx.executeSql("DROP TABLE IF EXITS teams")
@@ -404,7 +404,7 @@ function GetInfoPagePl(){
 //
 
 function ModifyPlayers(){
-	debug('ModifyPlayers start')
+	debug('ModifyPlayers go')
 	// Check for update
 	for(i in players) {
 		var pl = players[i]
@@ -412,7 +412,7 @@ function ModifyPlayers(){
 			var pl2 = players2[pl.id]
 			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
 				remember = 1
-				debug('Need_plsave '+pl.id+':'+pl.morale +'/'+pl2.morale+':'+pl.form+'/'+pl2.form)
+				debug('Need pl save '+pl.id+':'+pl.morale +'/'+pl2.morale+':'+pl.form+'/'+pl2.form)
 				break;
 			}
 		}
@@ -425,15 +425,15 @@ function ModifyPlayers(){
 			if (remember == 1){
 				players[i]['mchange'] = pl.morale - pl2.morale
 				players[i]['fchange'] = pl.form   - pl2.form
-				debug('plCalc '+pl.id+':'+pl.form+'/'+pl.fchange)
 			} else {
 				players[i]['mchange'] = pl2.mchange
 				players[i]['fchange'] = pl2.fchange
-				debug('plCalc '+pl.id+':'+pl.form+'/'+pl.fchange)
 			}
+			//debug('plCalc '+pl.id+':'+pl.form+'/'+pl.fchange)
 		}
 	}
 	// Update page
+	debug('Update players ')
 	for(i in players) {
 		var pl = players[i]
 		$('table#tblRoster tr#tblRosterTr'		+ i + ' td:eq(4)').append(ShowChange(pl['mchange']))
@@ -493,31 +493,30 @@ function GetPl(pn){
 	Ready()
 }
 function PrintRightInfo(){
-			// print link to skills page
-			if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
-				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')}
+	debug('PrintRightInfo go')
+	// print link to skills page
+	if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
+		$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')}
 
-			// print to right menu
-			var thtml = ''
-			thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b>'
-//			if(sumvaluechange != 0) 
-			thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
-			thtml += '</td></tr>'
-			thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</th><th align=right>'
-			thtml += ShowValueFormat(team_cur.tvalue)+'т'
-			thtml += '</th><td width=10%>'
-//			if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
-			thtml += '</td></tr>'
-			thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
-			thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
-			thtml += '</th></tr>'
-			thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
-			thtml += (team_cur.ss/countSostavMax).toFixed(2) + '&nbsp;'
-			thtml += '</th><td></td></tr>'
-			$('#crabright table:first').append(thtml)
+	// print to right menu
+	var thtml = ''
+	thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b>'
+//	if(sumvaluechange != 0) 
+	thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
+	thtml += '</td></tr>'
+	thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</th><th align=right>'
+	thtml += ShowValueFormat(team_cur.tvalue)+'т'
+	thtml += '</th><td width=10%>'
+//	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
+	thtml += '</td></tr>'
+	thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
+	thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
+	thtml += '</th></tr>'
+	thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += (team_cur.ss/countSostavMax).toFixed(2) + '&nbsp;'
+	thtml += '</th><td></td></tr>'
+	$('#crabright table:first').append(thtml)
 }
-
-
 
 function Ready(){
 	countSostav++
@@ -571,6 +570,7 @@ function Ready(){
 }
 
 function EditFinance(){
+	debug('EditFinance go')
 	var txt = $('table.layer1 td.l4:eq(1)').text().split(': ')[1]
 	var txt2 = ''
 	switch (txt){
@@ -899,7 +899,7 @@ function UrlValue(key,url){
 
 function check(d) {return (d<10 ? "0"+d : d)}
 
-function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;'+text+'<br>');}}
+function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
 /**
 
