@@ -26,7 +26,7 @@ function GetPlayerHistory(n,pid){
 
 	$('a#th2').attr('href',"javascript:void(ShowTable(2))").html('&ndash;')
 
-	var head = '<tr><td width=3%>С</td><td width=16%>Трансфер</td><td width=2%>Сб</td><td width=2%>Мл</td><td width=10%>Игры</td><td width=10%>Голы</td><td width=10%>Пасы</td><td width=10%>ИМ</td><td width=10%>СР</td><td width=10%> </td><td width=10%> </td></tr>'
+	var head = '<tr><td width=3%>С</td><td width=16%>Трансфер</td><td width=3%>Сб</td><td width=3%>Мл</td><td width=10%>Игры</td><td width=13%>Голы</td><td width=13%>Пасы</td><td width=13%>ИМ</td><td width=8%>СР</td><td width=8%> </td><td width=8%> </td></tr>'
 	$('#ph'+n).append(head)
 
 	var table = '<table id=debug style="display: none;"></table>'
@@ -93,13 +93,18 @@ function GetPlayerHistory(n,pid){
 		data += '<tr bgcolor=#88C274><td><a id=th2 href="javascript:void(ShowCar('+n+'))">+</a> </td><td colspan=3>Итого</td>'
 		for (p in stats[0]){
 			if(p!='sale' && p!='rent' && p!='free' && p!='nat' && p!='u21') {
-				data += '<td>'+ String(stats[0][p]).replace('.',',')+'</td>'
+				data += '<td>' 
+				data +=	String(stats[0][p]).replace('.',',')
+				if(p!='gm' && p!='sr' && stats[0].gm!=0 && stats[0][p]!=0) {
+					data += '('+parseFloat(stats[0][p]/stats[0].gm).toFixed(2)+')'
+				}
+				data += '</td>'
 			}
 		}
 		data += '<td colspan=2> </td></tr>'
 
 		for (ss=stats.length-1;ss>=1;ss--){
-			if(stats[ss] !=undefined && stats[ss].gm != ''){
+			if(stats[ss] !=undefined){
 					data += '<tr bgcolor=A3DE8F id=carpl'+n+' style="display: none;"><td>'
 					data += ss
 					data += '</td><td>'
@@ -108,13 +113,19 @@ function GetPlayerHistory(n,pid){
 					else if(stats[ss].rent >0)	data += 'аренда'
 					else data += ' '
 					data += '</td><td>'
-					data += (stats[ss].nat >0 ? 'v' : ' ')										//сборная
+					data += (stats[ss].nat >0 ? '<img src="system/img/g/tick.gif" width=10>' : ' ')		//сборная
 					data += '</td><td>'
-					data += (stats[ss].u21 >0 ? 'v' : ' ')										//U21
+					data += (stats[ss].u21 >0 ? '<img src="system/img/g/tick.gif" width=10>' : ' ')		//U21
 					data += '</td>'
 				for (p in stats[ss]){
 					if(p!='sale' && p!='rent' && p!='free' && p!='nat' && p!='u21') {
-						data += '<td>'+ String(stats[ss][p]).replace('.',',')+'</td>'
+						var ststr = ''
+						data += '<td>'
+						data += String(stats[ss][p]).replace('.',',')
+						if(p!='gm' && p!='sr' && stats[ss].gm!=0 && stats[ss][p]!=0) {
+							data += '('+parseFloat(stats[ss][p]/stats[ss].gm).toFixed(2)+')'
+						}
+						data += '</td>'
 					}
 				}
 				data += '<td colspan=2> </td></tr>'
@@ -527,7 +538,10 @@ function CodeForForum(){
 	if ($('table#ph0').html()!=null && fullstatshow && (ptype == 'p' || ptype == 'pp')){
 		x += '\n[center][b]Карьера[/b][/center]\n'
 		x += $('table#ph0')
-			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+			.find('img')
+				.removeAttr('ilo-full-src')		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+				.removeAttr('width')
+				.end()
 			.find('a#th2').remove().end()
 			.find('tr').removeAttr('style').removeAttr('id').end()
 			.html()
@@ -871,8 +885,12 @@ $().ready(function() {
 		players[0].zk4 = ' '
 		players[0].kk4 = ' '
 
-		$('td.back4 table:first table:eq(1) tr:first td:gt(0)').attr('width','10%')
-		$('td.back4 table:first table:eq(1) tr:first').append('<td width=10%>ЖК <img src="system/img/gm/y.gif"></img></td><td width=10%>КК <img src="system/img/gm/r.gif"></img></td>')
+		$('td.back4 table:first table:eq(1) tr:first')
+			.find('td:eq(0)').attr('width','27%').end()
+			.find('td:eq(1)').attr('width','10%').end()
+			.find('td:gt(1)').attr('width','13%').end()
+			.find('td:last').attr('width','8%').end()
+			.append('<td width=8%>ЖК <img src="system/img/gm/y.gif"></img></td><td width=8%>КК <img src="system/img/gm/r.gif"></img></td>')
 		$('td.back4 table:first table:eq(1) tr:gt(0)').each(function(i,val){
 			if(i==0)		$(val).append('<td rowspan=2>'+players[0].zk0+'</td><td rowspan=2>'+players[0].kk0+'</td>')
 			else if(i==2)	$(val).append('<td>'+players[0].zk2+'</td><td>'+players[0].kk2+'</td>')
