@@ -125,7 +125,9 @@ function TableCodeForForum(continent){
 	x += '[/b] ('
 	x += continent
 	x += ')[spoiler]'
-	x += $('table.reit').html()
+	x += $('table.reit')
+		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+		.html()
 		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
 		.replace(/tbody/g,'table')
 		.replace(/<th/g,'[td')
