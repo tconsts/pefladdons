@@ -142,6 +142,7 @@ function GetInfoPageTm(){
 function ModifyTeams(){
 	debug('ModifyTeams ok')
 	//teams and team_cur
+	if(teams[cid] == undefined) teams[cid] =[]
 	for(i in team_cur){
 		if(team_cur[i] != '') teams[cid][i] = team_cur[i]
 	}
