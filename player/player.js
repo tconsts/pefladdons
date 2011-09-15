@@ -485,6 +485,7 @@ function CodeForForum(){
 	if(skillsshow){
 		x += '\n'
 		x += $('td.back4 table table:not(#plheader):first')
+			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 			.find('sup').remove().end()
 			.html()
 			.replace(/<!-- [а-я] -->/g,'')
@@ -509,7 +510,9 @@ function CodeForForum(){
 	// stat of season
 	if (seasonstatshow && (ptype == 'p' || ptype == 'pp')){
 		x += '\n[center][b]Статистика сезона[/b][/center]\n'
-		x += $('table#stat').html()
+		x += $('table#stat')
+			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+			.html()
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/<tbody>/g,'<table width=100%>')
 			.replace(/tbody/g,'table')
@@ -524,6 +527,7 @@ function CodeForForum(){
 	if ($('table#ph0').html()!=null && fullstatshow && (ptype == 'p' || ptype == 'pp')){
 		x += '\n[center][b]Карьера[/b][/center]\n'
 		x += $('table#ph0')
+			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 			.find('a#th2').remove().end()
 			.find('tr').removeAttr('style').removeAttr('id').end()
 			.html()
