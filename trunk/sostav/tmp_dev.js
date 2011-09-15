@@ -396,16 +396,19 @@ function getData(){
 					debug('Select trtable ok')
 					var trnnum = 1
 					for(var i = 0; i < result.rows.length; i++) {
-						trn[i] = []
+						if(trnnum>0) trn[trnnum] = []
 						var num = 0
-						if(i==0 && trn[0][1]==result.rows.item(0)[1] && trn[0][2]==result.rows.item(0)[2]) trnnum=0
+						if(i==0 && trn[0][1]==result.rows.item(0)['t1'] && trn[0][2]==result.rows.item(0)['t2']) {
+							trnnum=0
+							debug('Not need update')
+						}
 						for(var j in result.rows.item(i)) {
 							trn[trnnum][num] = result.rows.item(i)[j]
 							num++
 						}
 						trnnum++
 					}
-					for (var i in trn) debug('i'+i+':'+trn[i])
+					for (var i in trn) debug('trn:'+i+':'+trn[i])
 					saveData()
 				},
 				function(tx, error){
