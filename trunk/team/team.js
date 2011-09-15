@@ -12,7 +12,7 @@ var type 	= 'img'
 var players  = []
 var players2 = []
 var teams = []
-var team_cur = {'twage':0, 'tvalue':0, 'ss':0}
+var team_cur = {}//{'twage':0, 'tvalue':0, 'ss':0}
 var m = []
 var remember = 0
 var db = false
@@ -91,12 +91,13 @@ function GetFinish(type, res){
 	//pg_pl: true
 	//pg_tm: true
 	//p_pl:
-	if(m.savedatatm==undefined && m.get_tm!=undefined && m.pg_tm){
+	if(m.savedatatm==undefined && m.get_tm!=undefined && m.pg_tm && m.pg_pl){
 		m.savedatatm = true
 		ModifyTeams()
 	}
 	if(m.savedatapl==undefined && m.get_pl==false && m.pg_pl){
 		m.savedatapl = true
+		PrintRightInfo()
 		SaveDataPl()
 	}
 	if(m.savedatapl==undefined && m.get_pl && m.pg_pl){
@@ -123,6 +124,7 @@ function GetInfoPageTm(){
 	debug('GetInfoPageTm ok')
 	// Get current club data
 	team_cur.tid	= cid
+	team_cur.tname	= $('td.back4 table table:first td:last').text().split(' (')[0]
 	team_cur.ttown	= $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
 	team_cur.sname	= $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
 	team_cur.ssize	= $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
@@ -136,16 +138,20 @@ function GetInfoPageTm(){
 	team_cur.tdate	= today
 	team_cur.mname	= $('td.back4 table table:eq(1) table:first td:first span').text()
 	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href')))
+	team_cur.ss		= 0
+	team_cur.plnum	= countSostavMax
 	GetFinish('pg_tm', true)
 }
 
 function ModifyTeams(){
 	debug('ModifyTeams ok')
 	//teams and team_cur
-	if(teams[cid] == undefined) teams[cid] =[]
+	if(typeof(teams[cid]) == 'undefined') teams[cid] = {}
 	for(i in team_cur){
-		if(team_cur[i] != '') teams[cid][i] = team_cur[i]
+		if(teams[cid][i] == undefined) teams[cid][i] = ''
+		if(team_cur[i] != '') teams[cid][i] = team_cur[i] + (i=='ss' ? 100 : 0)
 	}
+	debug('ss:'+teams[cid]['ss']+'='+team_cur['ss'])
 	SaveDataTm()
 }
 
@@ -156,6 +162,7 @@ function SaveDataTm(){
 			if(teams[i] != undefined) {
 				var tmi = teams[i]
 				text += i+':'
+				text += (tmi.tname != undefined ? tmi.ttask : '') +':'
 				text += (tmi.ttask != undefined ? tmi.ttask : '') +':'
 				text += (tmi.ttown != undefined ? tmi.ttown : '') +':'
 				text += (tmi.sname != undefined ? tmi.sname : '') +':'
@@ -168,7 +175,9 @@ function SaveDataTm(){
 				text += (tmi.tvalue!= undefined ? tmi.tvalue: '') +':'
 				text += (tmi.tdate != undefined ? tmi.tdate : '') +':'
 				text += (tmi.mname != undefined ? tmi.tman  : '') +':'
-				text += (tmi.mid   != undefined ? tmi.mid   : '') 
+				text += (tmi.mid   != undefined ? tmi.mid   : '') +':'
+				text += (tmi.ss    != undefined ? tmi.ss    : '') +':'
+				text += (tmi.plnum != undefined ? tmi.plnum : '') 
 				text += ','
 			}
 		}
@@ -176,22 +185,21 @@ function SaveDataTm(){
 		debug('SaveDataTM ok(GS)')
 	}else{
 		debug('SaveDataTM go(DB)')
-//		for (i in teams) debug('s'+i + '_' + teams[i].ttown + '_' + teams[i].tdate + '_' + teams[i].twage)
-
 		db.transaction(function(tx) {
 			tx.executeSql("DROP TABLE IF EXISTS teams",[],
 				function(tx, result){debug('drop tmtable ok')},
 				function(tx, error) {debug('drop tmtable error' + error.message)}
 			);                                           
 			// additional format: club_id, national_code, national_name, divname, divnum, <list of div prizes>
-			tx.executeSql("CREATE TABLE IF NOT EXISTS teams (tid INT, ttask TEXT, ttown TEXT, sname TEXT, ssize INT, ncode INT, nname TEXT, dname TEXT, dnum INT, twage INT, tvalue INT, tdate TEXT, mname TEXT, mid INT)", [],
+			tx.executeSql("CREATE TABLE IF NOT EXISTS teams (tid INT, tname TEXT, ttask TEXT, ttown TEXT, sname TEXT, ssize INT, ncode INT, nname TEXT, dname TEXT, dnum INT, twage INT, tvalue INT, tdate TEXT, mname TEXT, mid INT, ss, plnum INT)", [],
 				function(tx, result){debug('create tmtable ok')},
 				function(tx, error) {debug('create tmtable error'	+error.message)}
 			);
 			for(i in teams) {
-				var tmi = teams[cid]
-				tx.executeSql("INSERT INTO teams (tid, ttask, ttown, sname, ssize, ncode, nname, dname, dnum, twage, tvalue, tdate, mname, mid) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					[cid, tmi.ttask, tmi.ttown, tmi.sname, tmi.ssize, tmi.ncode, tmi.nname, tmi.dname, tmi.dnum, tmi.twage, tmi.tvalue, tmi.tdate, tmi.mname, tmi.mid],
+				var tmi = teams[i]
+				debug('s'+tmi.tid+ '_' + tmi.tname + '_' + tmi.ss)
+				tx.executeSql("INSERT INTO teams (tid, tname, ttask, ttown, sname, ssize, ncode, nname, dname, dnum, twage, tvalue, tdate, mname, mid, ss, plnum) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					[tmi.tid, tmi.tname, tmi.ttask, tmi.ttown, tmi.sname, tmi.ssize, tmi.ncode, tmi.nname, tmi.dname, tmi.dnum, tmi.twage, tmi.tvalue, tmi.tdate, tmi.mname, tmi.mid, tmi.ss, tmi.plnum],
 					function(tx, result){debug('insert tmdata ok')},
 					function(tx, error) {debug('insert tmdata error:'	+error.message)
 				});
@@ -212,19 +220,22 @@ function GetDataTm(){
 				var x = ttext[i].split(':')
 				var curt = []
 				curt.id 	=  x[0]
-				curt.ttask	= (x[1] !=undefined ? parseInt(x[1])  : '')
-				curt.ttown	= (x[2] !=undefined ? parseInt(x[2])  : '')
-				curt.sname	= (x[3] !=undefined ? parseInt(x[3])  : '')
-				curt.ssize	= (x[4] !=undefined ? parseInt(x[4])  : '')
-				curt.ncode	= (x[5] !=undefined ? parseInt(x[5])  : '')
-				curt.nname	= (x[6] !=undefined ? parseInt(x[6])  : '')
-				curt.dname	= (x[7] !=undefined ? parseInt(x[7])  : '')
-				curt.dnum	= (x[8] !=undefined ? parseInt(x[8])  : '')
-				curt.twage	= (x[9] !=undefined ? parseInt(x[9])  : '')
-				curt.tvalue	= (x[10]!=undefined ? parseInt(x[10]) : '')
-				curt.tdate	= (x[11]!=undefined ? parseInt(x[11]) : '')
-				curt.mname	= (x[12]!=undefined ? parseInt(x[12]) : '')
-				curt.mid	= (x[13]!=undefined ? parseInt(x[13]) : '')
+				curt.tname	= (x[1] !=undefined ? parseInt(x[1])  : '')
+				curt.ttask	= (x[2] !=undefined ? parseInt(x[2])  : '')
+				curt.ttown	= (x[3] !=undefined ? parseInt(x[3])  : '')
+				curt.sname	= (x[4] !=undefined ? parseInt(x[4])  : '')
+				curt.ssize	= (x[5] !=undefined ? parseInt(x[5])  : '')
+				curt.ncode	= (x[6] !=undefined ? parseInt(x[6])  : '')
+				curt.nname	= (x[7] !=undefined ? parseInt(x[7])  : '')
+				curt.dname	= (x[8] !=undefined ? parseInt(x[8])  : '')
+				curt.dnum	= (x[9] !=undefined ? parseInt(x[9])  : '')
+				curt.twage	= (x[10]!=undefined ? parseInt(x[10]) : '')
+				curt.tvalue	= (x[11]!=undefined ? parseInt(x[11]) : '')
+				curt.tdate	= (x[12]!=undefined ? parseInt(x[12]) : '')
+				curt.mname	= (x[13]!=undefined ? parseInt(x[13]) : '')
+				curt.mid	= (x[14]!=undefined ? parseInt(x[14]) : '')
+				curt.ss		= (x[15]!=undefined ? parseInt(x[15]) : '')
+				curt.plnum	= (x[16]!=undefined ? parseInt(x[16]) : '')
 				teams[curt.id] = []
 				if(curt.id!=undefined) teams[curt.id] = curt
 			}
@@ -242,16 +253,15 @@ function GetDataTm(){
 		debug('GetDataTm go(DB)')
 
 		db.transaction(function(tx) {
-//			tx.executeSql("DROP TABLE IF EXITS teams")
+//			tx.executeSql("DROP TABLE IF EXISTS teams")
 			tx.executeSql("SELECT * FROM teams", [],
 				function(tx, result){
 					debug('Select teams ok')
 					var row = {}
 					for(var i = 0; i < result.rows.length; i++) {
-						row = result.rows.item(i)
-//						debug('g'+result.rows.item(i)['tid'] + '_' +result.rows.item(i)['ttask'] + '_' + result.rows.item(i)['twage'])
+						teams[result.rows.item(i).tid] = result.rows.item(i)
 					}
-					teams[row.tid] = row
+					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tname + '_' + teams[i].ss)
 					GetFinish('get_tm',true)
 				},
 				function(tx, error){
