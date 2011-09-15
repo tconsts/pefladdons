@@ -105,7 +105,7 @@ function GetFinish(type, res){
 		ModifyPlayers()
 		PrintRightInfo()
 	}
-	if(m.p_pl){
+	if(m.pg_pl){
 			
 	}
 
@@ -146,10 +146,10 @@ function GetInfoPageTm(){
 function ModifyTeams(){
 	debug('ModifyTeams ok')
 	//teams and team_cur
-	if(typeof(teams[cid]) == 'undefined') teams[cid] = {}
+	if(typeof(teams[cid]) == 'undefined') {teams[cid] = {}}
 	for(i in team_cur){
-		if(teams[cid][i] == undefined) teams[cid][i] = ''
-		if(team_cur[i] != '') teams[cid][i] = team_cur[i] + (i=='ss' ? 100 : 0)
+		if(teams[cid][i] == undefined) {teams[cid][i] = ''}
+		if(team_cur[i] != '') {teams[cid][i] = team_cur[i] }//+ (i=='ss' ? 100 : 0)}
 	}
 	debug('ss:'+teams[cid]['ss']+'='+team_cur['ss'])
 	SaveDataTm()
