@@ -335,6 +335,7 @@ function TableCodeForForum(){
 	x += $('td.back4 td.back1').text()
 	x += '[/b]\n'
 	x += $('td.back4 table:eq(1)')
+		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 		.find('img').removeAttr('height').end()
 		.html()
 		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
