@@ -98,7 +98,7 @@ function GetPlayerHistory(n,pid){
 		data += '<td colspan=2> </td></tr>'
 
 		for (ss=stats.length-1;ss>=1;ss--){
-			if(stats[ss] !=undefined && (stats[ss].gm !=0 || (stats[ss].free+stats[ss].sale+stats[ss].rent)>0)){
+			if(stats[ss] !=undefined && (stats[ss].gm !=0 || stats[ss].sale!=0 || (stats[ss].free+stats[ss].rent)>0)){
 					data += '<tr bgcolor=A3DE8F id=carpl'+n+' style="display: none;"><td>'
 					data += ss
 					data += '</td><td>'
@@ -551,7 +551,7 @@ function CodeForForum(){
 	}
 	// fullstat
 	if ($('table#ph0').html()!=null && fullstatshow && (ptype == 'p' || ptype == 'pp')){
-		x += '\n[center][b]Карьера[/b][/center]\n'
+		x += '\n[center][b][url=hist.php?id=' + pl.id + '&t=p]Карьера[/url][/b][/center]\n'
 		x += $('table#ph0')
 			.find('img')
 				.removeAttr('ilo-full-src')		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
