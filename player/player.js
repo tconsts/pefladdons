@@ -2,14 +2,8 @@
 // @name           peflplayer
 // @namespace      pefl
 // @description    modification player page and school boys
-// @include        http://www.pefl.ru/plug.php?p=refl&t=p*
-// @include        http://www.pefl.ru/plug.php?p=refl&t=yp*
-// @include        http://pefl.ru/plug.php?p=refl&t=p*
-// @include        http://pefl.ru/plug.php?p=refl&t=yp*
-// @include        http://www.pefl.net/plug.php?p=refl&t=p*
-// @include        http://www.pefl.net/plug.php?p=refl&t=yp*
-// @include        http://pefl.net/plug.php?p=refl&t=p*
-// @include        http://pefl.net/plug.php?p=refl&t=yp*
+// @include        http://*pefl.*/plug.php?p=refl&t=p*
+// @include        http://*pefl.*/plug.php?p=refl&t=yp*
 // ==/UserScript==
 /**/
 
@@ -104,7 +98,7 @@ function GetPlayerHistory(n,pid){
 		data += '<td colspan=2> </td></tr>'
 
 		for (ss=stats.length-1;ss>=1;ss--){
-			if(stats[ss] !=undefined){
+			if(stats[ss] !=undefined && (stats[ss].gm !=0 || (stats[ss].free+stats[ss].sale+stats[ss].rent)>0)){
 					data += '<tr bgcolor=A3DE8F id=carpl'+n+' style="display: none;"><td>'
 					data += ss
 					data += '</td><td>'
@@ -119,13 +113,7 @@ function GetPlayerHistory(n,pid){
 					data += '</td>'
 				for (p in stats[ss]){
 					if(p!='sale' && p!='rent' && p!='free' && p!='nat' && p!='u21') {
-						var ststr = ''
-						data += '<td>'
-						data += String(stats[ss][p]).replace('.',',')
-						if(p!='gm' && p!='sr' && stats[ss].gm!=0 && stats[ss][p]!=0) {
-							data += '('+parseFloat(stats[ss][p]/stats[ss].gm).toFixed(2)+')'
-						}
-						data += '</td>'
+						data += '<td>' + String(stats[ss][p]).replace('.',',') + '</td>'
 					}
 				}
 				data += '<td colspan=2> </td></tr>'
@@ -135,6 +123,33 @@ function GetPlayerHistory(n,pid){
 		$('#ph'+n).append(data)
 	})
 }
+
+function ModifyHistory(){
+	if(mh){
+		//спрятать доп инфу
+		mh = false
+		$('table#ph0 tr:gt(1)').each(function(){
+			$(this).find('td:eq(5)').html(parseInt($(this).find('td:eq(5)').text()))
+			$(this).find('td:eq(6)').html(parseInt($(this).find('td:eq(6)').text()))
+			$(this).find('td:eq(7)').html(parseInt($(this).find('td:eq(7)').text()))
+		})
+	}else{
+		//показать доп инфу
+		mh = true
+		$('table#ph0 tr:gt(1)').each(function(){
+			var gm = parseInt($(this).find('td:eq(4)').text())
+			var gl = parseInt($(this).find('td:eq(5)').text())
+			var ps = parseInt($(this).find('td:eq(6)').text())
+			var im = parseInt($(this).find('td:eq(7)').text())
+			if(gm!=0){ 
+				if(gl!=0) $(this).find('td:eq(5)').html(gl + '('+(gl/gm).toFixed(2)+')')
+				if(ps!=0) $(this).find('td:eq(6)').html(ps + '('+(ps/gm).toFixed(2)+')')
+				if(im!=0) $(this).find('td:eq(7)').html(im + '('+(im/gm).toFixed(2)+')')
+			}
+		})
+	}
+}
+
 function ShowCar(n){
 	if ($('a#th2').html() == '+'){
 		$('tr#carpl'+n).show()
@@ -586,6 +601,7 @@ var sklse = []
 var sklsr = []
 var sklfr = []
 var compare = false
+var mh = false
 
 var ups = {	"a0e":"-2",
 			"a1e":"-1",
@@ -998,7 +1014,7 @@ $().ready(function() {
 
 	$('td.back4 table table:eq(1)').attr('id','stat')
 
-	var statseasons = '<br><div id="kar" align=center>Карьера</div><br>'
+	var statseasons = '<br><div id="kar" align=center>Карьера '+('(<a id="mh" href="javascript:void(ModifyHistory())">more</a>)').fontsize(1)+'</div><br>'
 	statseasons += '<table width=100% id=ph0></table>'
 	$('td.back4 table table:eq(1)').after(statseasons)
 
