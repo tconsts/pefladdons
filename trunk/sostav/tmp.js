@@ -2,20 +2,21 @@
 // @name           pefltraining
 // @namespace      pefl
 // @description    modification training page
-// @include        http://www.pefl.ru/plug.php?p=training*
-// @include        http://pefl.ru/plug.php?p=training*
-// @include        http://pefl.net/plug.php?p=training*
-// @include        http://www.pefl.net/plug.php?p=training*
-// @include        http://pefl.org/plug.php?p=training*
-// @include        http://www.pefl.org/plug.php?p=training*
-// @version			1.0
+// @include        http://*pefl.*/plug.php?p=training*
+// @version        2.0
 // ==/UserScript==
+
+
+if(typeof (deb) == 'undefined') deb = false
+var debnum = 0
 
 var data_assoc = [];
 var players = [];
 var groups = [[]];
 var trnman = []
 var trn = [0]
+var db = false
+var num_players = 0
 
 var itrains = []
 itrains[0]	= {level:2,	tr:1,	name: 'Общая'}
@@ -63,18 +64,19 @@ trains[17]	= {level:4,	tr:30,	ball:0,	name:'Тренировочный матч 
 trains[18]	= {level:-1,tr:31,	ball:0,	name:'Отдых'};
 
 $().ready(function() {
+	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+
 	var text = ''
 	var today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
-
 
 	trn[0] = [today]
 
 	var srch="Вы вошли как "
 	var curManagerNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 
-	if(UrlValue('p') == 'training') {
 	$.get('training.php', {}, function(data){
+		debug('Get data from training.php')
 		var dataarray = data.split('&');
 		var i = 0;
 		while(dataarray[i] != null) {
@@ -86,7 +88,9 @@ $().ready(function() {
 			if (tmpkey.indexOf('trn') != -1) trn[0].push(tmpvalue)
 			i++;
 		}
-		var num_players 	= data_assoc["n"];
+		debug(trn[0])
+
+		num_players 	= data_assoc["n"];
 		var trnManagerNick	= data_assoc["s0"];
 
 		// данные о тренировках
@@ -163,7 +167,18 @@ $().ready(function() {
 			players[playerid] = tmpplayer;
 		}
 
-		var xtr = '<table id="trn" width=100% bgcolor=A3DE8F></td></tr>'
+		if (trnManagerNick == curManagerNick){
+			getData()
+		}
+	})
+
+}, false)
+
+function showData(){
+	if(UrlValue('p') == 'training') {
+		debug('showData go')
+
+		var xtr = '<br><table id="trn" width=100% bgcolor=A3DE8F></td></tr>'
 		xtr += '<tr><td bgcolor=C9F8B7 colspan=15><b>Тренировка основы:</b>'
 		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр3</th><th bgcolor=A3DE8F></th><th width=5%>наг</th><th width=70%>тренировка</th>'
 //		xtr += '<th width=30%>тренер(гр)</th>'
@@ -173,7 +188,8 @@ $().ready(function() {
 //		xtr += '<th>тренер(гр)</th>'
 		xtr += '</tr>'
 		xtr += '</table>'
-		$('td.back4').append(xtr)
+		$('td.back4 table table:eq(1)').after(xtr)
+
 		for (p in trains){ 
 			var sumtrn = 0
 			for(i=1;i<=3;i++) for(j=1;j<=3;j++) sumtrn += trains[p]['count'+i+j]
@@ -246,27 +262,6 @@ $().ready(function() {
 				$('tr#ind2:first').after(xtr)
 			}
 		}
-
-
-		var trnnum = 1
-		if (getCookie('pefltraining') && trnManagerNick == curManagerNick){
-			var x = getCookie('pefltraining').split(';')
-			for (var p in x) {
-				var y = x[p].split(',')
-				if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
-				trn[trnnum] = y
-				trnnum++
-			}
-		}
-		var save = ''
-		for (var f=0;f<4;f++){
-			if (trn[f]){
-				for (var l in trn[f]) save += trn[f][l] + (l<trn[f].length-1 ? ',' : '')
-				save += (f<3 && trn[f+1] ? ';' :'')
-			}
-		}
-		if (trnManagerNick == curManagerNick) setCookie('pefltraining',save)
-
 		var tn = [0,8,9,10,2,11,13,14]
 
 		$('td.back4 table table:eq(1)')
@@ -358,26 +353,148 @@ $().ready(function() {
 				pnot  += '&nbsp;'+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
 			}
 		}
-		if(countrest>0) $('td.back4').append(prest)
-		if(countinj >0) $('td.back4').append(pinj)
-		if(countnot >0) $('td.back4').append(pnot)
-
-	})
+		if(countnot >0) $('td.back4 table:first center').after(pnot)
+		if(countinj >0) $('td.back4 table:first center').after(pinj)
+		if(countrest>0) $('td.back4 table:first center').after(prest)
+	} else {
+		debug('showData is off(training2)')
 	}
-}, false)
-
-function setCookie(name, value) {
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() + 30); 
-	if (!name || !value) return false;
-	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
-	return true
 }
+
+function DBConnect(){
+	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
+	if(!db) {debug('Open DB PEFL fail.');return false;} 
+	else 	{debug('Open DB PEFL ok.')}
+}
+
+function getData(){
+	if(ff){
+		var trnnum = 1
+		var x = globalStorage[location.hostname]['training']
+		debug('Get from GS ')
+		if(x == undefined){
+			x = getCookie('pefltraining')
+			debug('Get cookie ')
+		}
+		if(x != undefined){
+			xx = String(x).split(';')
+			for (var p in xx) {
+				var y = xx[p].split(',')
+				if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
+				trn[trnnum] = y
+				trnnum++
+			}
+		}
+		saveData()
+	}else{
+		if(!db) DBConnect()
+		debug('Get DB go')
+		db.transaction(function(tx) {
+//			tx.executeSql("DROP TABLE IF EXISTS training")
+			tx.executeSql("SELECT * FROM training", [],
+				function(tx, result){
+					debug('Select trtable ok')
+					var trnnum = 1
+					for(var i = 0; i < result.rows.length; i++) {
+						if(trnnum>0) trn[trnnum] = []
+						var num = 0
+						if(i==0 && trn[0][1]==result.rows.item(0)['t1'] && trn[0][2]==result.rows.item(0)['t2']) {
+							trnnum=0
+							debug('Not need update')
+						}
+						for(var j in result.rows.item(i)) {
+							trn[trnnum][num] = result.rows.item(i)[j]
+							num++
+						}
+						trnnum++
+					}
+					for (var i in trn) debug('trn:'+i+':'+trn[i])
+					saveData()
+				},
+				function(tx, error){
+					debug(error.message)
+					var trnnum = 1
+					x = getCookie('pefltraining')
+					if(x){
+				        debug('Get cookie ' +x)
+						xx = String(x).split(';')
+						for (var p in xx) {
+							var y = xx[p].split(',')
+							debug('xx[p]: '+xx[p])
+							if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
+							trn[trnnum] = y
+							trnnum++
+						}
+					}
+					saveData()
+				}
+			)
+		})
+	}
+}
+
+function saveData(){
+	deleteCookie('pefltraining')
+	showData()
+	if(ff){
+		var save = ''
+		for (var f=0;f<4;f++){
+			if (trn[f]){
+				for (var l in trn[f]) save += trn[f][l] + (l<trn[f].length-1 ? ',' : '')
+				save += (f<3 && trn[f+1] ? ';' :'')
+			}
+		}
+		globalStorage[location.hostname]['training'] = save
+		debug('Save GS ')
+	}else{
+		debug('Save DB go')
+		if(!db) DBConnect()
+		db.transaction(function(tx) {
+			tx.executeSql("DROP TABLE IF EXISTS training",[],
+				function(tx, result){debug('drop trtable ok')},
+				function(tx, error) {debug('drop trtable error' + error.message)}
+			);                                           
+			tx.executeSql("CREATE TABLE IF NOT EXISTS training (date, t1, t2, t3, t4, t5, t6, t7)", [],
+				function(tx, result){debug('create trtable ok')},
+				function(tx, error) {debug('create trtable error'+error.message)}
+			);
+			for (var f=0;f<4;f++){
+				var trnf = trn[f]
+				if (trnf){
+					debug('tnrf: '+trnf)
+					tx.executeSql("INSERT INTO training (date, t1, t2, t3, t4, t5, t6, t7) values(?, ?, ?, ?, ?, ?, ?, ?)", 
+						[trnf[0], trnf[1], trnf[2], trnf[3], trnf[4], trnf[5], trnf[6], trnf[7]],
+						function(result){debug('insert trdata ok')},
+						function(tx, error) {debug('insert trdata error:'+error.message)
+					});
+				}
+			}
+		});
+	}
+}
+
+function debug(text){
+	debnum++
+	if(deb) {
+		if(debnum == 1)  $('td.back4').append('<hr>DEBUG:<br>')
+		$('td.back4').append(debnum+': \''+text+'\'<br>')
+	}
+}
+
 function getCookie(name) {
 	    var pattern = "(?:; )?" + name + "=([^;]*);?"
 	    var regexp  = new RegExp(pattern)
 	    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
 	    return false
+}
+
+function deleteCookie(name){
+	debug('Delete cookie ' + name)
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() - 30); 
+	if (!name) return false;
+	document.cookie = name + '=; expires='+ exdate.toUTCString() + '; path=/'
+	return true
 }
 
 function check(d) {return (d<10 ? "0"+d : d)}
