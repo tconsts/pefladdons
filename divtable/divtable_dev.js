@@ -40,6 +40,7 @@ $().ready(function() {
 	text += '<div id="showtasks"><a href="javascript:void(SetTasks(1))">Показать задачи</a>&nbsp;</div>'
 	text += '<div id="showstadio"><a href="javascript:void(SetTasks(2))">Показать стадионы</a>&nbsp;</div>'
 	text += '<div id="showfinance"><a href="javascript:void(SetFin())">Показать финансы</a>&nbsp;</div>'
+	text += '<br><br><a id="teams" href="javascript:void(PrintTeams())">Команды</a><br>'
 
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
@@ -50,14 +51,19 @@ $().ready(function() {
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text)
-	CountryInfoGet();
+//	CountryInfoGet();
+	GetDataTm()
 }, false);
 
 
 function GetFinish(type, res){
 	debug(type + ' ' + res + ' ')
 	m[type] = res;
-	PrintRightInfo()
+	if(m.get_tm!=undefined){
+		CountryInfoGet()
+	}
+
+	//PrintRightInfo()
 }
 function GetDataTm(){
 	if(ff) {
@@ -71,22 +77,22 @@ function GetDataTm(){
 				var x = ttext[i].split(':')
 				var curt = []
 				curt.id 	=  x[0]
-				curt.tname	= (x[1] !=undefined ? parseInt(x[1])  : '')
-				curt.ttask	= (x[2] !=undefined ? parseInt(x[2])  : '')
-				curt.ttown	= (x[3] !=undefined ? parseInt(x[3])  : '')
-				curt.sname	= (x[4] !=undefined ? parseInt(x[4])  : '')
-				curt.ssize	= (x[5] !=undefined ? parseInt(x[5])  : '')
-				curt.ncode	= (x[6] !=undefined ? parseInt(x[6])  : '')
-				curt.nname	= (x[7] !=undefined ? parseInt(x[7])  : '')
-				curt.dname	= (x[8] !=undefined ? parseInt(x[8])  : '')
-				curt.dnum	= (x[9] !=undefined ? parseInt(x[9])  : '')
-				curt.twage	= (x[10]!=undefined ? parseInt(x[10]) : '')
-				curt.tvalue	= (x[11]!=undefined ? parseInt(x[11]) : '')
-				curt.tdate	= (x[12]!=undefined ? parseInt(x[12]) : '')
-				curt.mname	= (x[13]!=undefined ? parseInt(x[13]) : '')
-				curt.mid	= (x[14]!=undefined ? parseInt(x[14]) : '')
-				curt.ss		= (x[15]!=undefined ? parseInt(x[15]) : '')
-				curt.plnum	= (x[16]!=undefined ? parseInt(x[16]) : '')
+				curt.tdate	= (x[1] !=undefined ? parseInt(x[1])  : '')
+				curt.tname	= (x[2] !=undefined ? parseInt(x[2])  : '')
+				curt.ttask	= (x[3] !=undefined ? parseInt(x[3])  : '')
+				curt.ttown	= (x[4] !=undefined ? parseInt(x[4])  : '')
+				curt.tplace	= (x[5] !=undefined ? parseInt(x[5])  : '')
+				curt.twage	= (x[6] !=undefined ? parseInt(x[6])  : '')
+				curt.tvalue	= (x[7] !=undefined ? parseInt(x[7])  : '')
+				curt.tss	= (x[8] !=undefined ? parseInt(x[8])  : '')
+				curt.sname	= (x[9] !=undefined ? parseInt(x[9])  : '')
+				curt.ssize	= (x[10]!=undefined ? parseInt(x[10]) : '')
+				curt.ncode	= (x[11]!=undefined ? parseInt(x[11]) : '')
+				curt.nname	= (x[12]!=undefined ? parseInt(x[12]) : '')
+				curt.did	= (x[13]!=undefined ? parseInt(x[13]) : '')
+				curt.mname	= (x[14]!=undefined ? parseInt(x[14]) : '')
+				curt.mid	= (x[15]!=undefined ? parseInt(x[15]) : '')
+				curt.pnum	= (x[16]!=undefined ? parseInt(x[16]) : '')
 				teams[curt.id] = []
 				if(curt.id!=undefined) teams[curt.id] = curt
 			}
@@ -112,7 +118,7 @@ function GetDataTm(){
 					for(var i = 0; i < result.rows.length; i++) {
 						teams[result.rows.item(i).tid] = result.rows.item(i)
 					}
-					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].dname)
+					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tplace + '_' + teams[i].tname+'_'+teams[i].pnum)
 					GetFinish('get_tm',true)
 					PrintRightInfo()
 				},
@@ -132,22 +138,22 @@ function SaveDataTm(){
 			if(teams[i] != undefined) {
 				var tmi = teams[i]
 				text += i+':'
-				text += (tmi.tname != undefined ? tmi.ttask : '') +':'
+				text += (tmi.tdate != undefined ? tmi.tdate : '') +':'
+				text += (tmi.tname != undefined ? tmi.tname : '') +':'
 				text += (tmi.ttask != undefined ? tmi.ttask : '') +':'
 				text += (tmi.ttown != undefined ? tmi.ttown : '') +':'
+				text += (tmi.tplace!= undefined ? tmi.tplace: '') +':'
+				text += (tmi.twage != undefined ? tmi.twage : '') +':'
+				text += (tmi.tvalue!= undefined ? tmi.tvalue: '') +':'
+				text += (tmi.tss   != undefined ? tmi.tss   : '') +':'
 				text += (tmi.sname != undefined ? tmi.sname : '') +':'
 				text += (tmi.ssize != undefined ? tmi.ssize : '') +':'
 				text += (tmi.ncode != undefined ? tmi.ncode : '') +':'
 				text += (tmi.nname != undefined ? tmi.nname : '') +':'
-				text += (tmi.dname != undefined ? tmi.dname : '') +':'
-				text += (tmi.dnum  != undefined ? tmi.dnum  : '') +':'
-				text += (tmi.twage != undefined ? tmi.twage : '') +':'
-				text += (tmi.tvalue!= undefined ? tmi.tvalue: '') +':'
-				text += (tmi.tdate != undefined ? tmi.tdate : '') +':'
+				text += (tmi.did   != undefined ? tmi.did   : '') +':'
 				text += (tmi.mname != undefined ? tmi.tman  : '') +':'
 				text += (tmi.mid   != undefined ? tmi.mid   : '') +':'
-				text += (tmi.ss    != undefined ? tmi.ss    : '') +':'
-				text += (tmi.plnum != undefined ? tmi.plnum : '') 
+				text += (tmi.pnum  != undefined ? tmi.pnum  : '') +':'
 				text += ','
 			}
 		}
@@ -156,26 +162,48 @@ function SaveDataTm(){
 	}else{
 		debug('SaveDataTM go(DB)')
 		db.transaction(function(tx) {
+			var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace'
+			var zag = list.split(',')
 			tx.executeSql("DROP TABLE IF EXISTS teams",[],
 				function(tx, result){debug('drop tmtable ok')},
 				function(tx, error) {debug('drop tmtable error' + error.message)}
 			);                                           
 			// additional format: club_id, national_code, national_name, divname, divnum, <list of div prizes>
-			tx.executeSql("CREATE TABLE IF NOT EXISTS teams (tid INT, tname TEXT, ttask TEXT, ttown TEXT, sname TEXT, ssize INT, ncode INT, nname TEXT, dname TEXT, dnum INT, twage INT, tvalue INT, tdate TEXT, mname TEXT, mid INT, ss, plnum INT)", [],
+			tx.executeSql("CREATE TABLE IF NOT EXISTS teams ("+list+")", [],
 				function(tx, result){debug('create tmtable ok')},
 				function(tx, error) {debug('create tmtable error'	+error.message)}
 			);
 			for(i in teams) {
 				var tmi = teams[i]
-				debug('s'+tmi.tid+ '_' + tmi.tdate + '_' + tmi.dname)
-				tx.executeSql("INSERT INTO teams (tid, tname, ttask, ttown, sname, ssize, ncode, nname, dname, dnum, twage, tvalue, tdate, mname, mid, ss, plnum) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					[tmi.tid, tmi.tname, tmi.ttask, tmi.ttown, tmi.sname, tmi.ssize, tmi.ncode, tmi.nname, tmi.dname, tmi.dnum, tmi.twage, tmi.tvalue, tmi.tdate, tmi.mname, tmi.mid, tmi.ss, tmi.plnum],
+				for(var j in zag) if (tmi[zag[j]] == undefined) tmi[zag[j]] = ''
+
+				debug('s'+tmi.tid+ '_' + tmi.tplace + '_' + tmi.tname +'_'+tmi.pnum)
+				tx.executeSql("INSERT INTO teams ("+list+") values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					[tmi.tid, tmi.tname, tmi.ttask, tmi.ttown, tmi.sname, tmi.ssize, tmi.ncode, tmi.nname, tmi.did, tmi.twage, tmi.tvalue, tmi.tdate, tmi.mname, tmi.mid, tmi.tss, tmi.pnum, tmi.tplace],
 					function(tx, result){debug('insert tmdata ok')},
 					function(tx, error) {debug('insert tmdata error:'	+error.message)
 				});
 			}
 		});
 	}
+}
+
+function PrintTeams(){
+	var text = '<table width=100% border=1>'
+	teams[0] = {}
+	for(i in teams){
+		for(j in teams[i]) teams[0][j]=j
+	}
+//	text+= '<tr>'
+//	for(j in team_cur) text += '<th>'+j+'</th>'
+//	text+= '</tr>'
+	for(i in teams){
+		text += '<tr>'
+		for(j in teams[0]) text += '<td>' + teams[i][j] + '</td>'
+		text += '</tr>'
+	}
+	text += '</table>'
+	$('td.back4').prepend(text)
 }
 
 function PrintRightInfo(){
@@ -203,12 +231,28 @@ function CountryInfoGet(){
 	})
 	debug(div_cur.dname)
 	debug(div_cur.nname)
+	debug('div_cur.did:'+div_cur.did)
 	debug('div_cur.dnum:'+div_cur.dnum)
 
+	var teams2 = []
 	$('td.back4 table:first table:first tr:gt(0)').each(function(i, val){
-		teams[UrlValue('n',$(val).find('a:has(u)').attr('href'))] = {'tplace':i+1}
+		var tid = UrlValue('n',$(val).find('a:has(u)').attr('href'))
+		teams2[tid] = {}
+		teams2[tid].tid = tid
+		teams2[tid].did = div_cur.did
+		teams2[tid].tplace = i+1
+		teams2[tid].tname = $(val).find('a[href^="plug.php?p=refl&t=k&j='+tid+'&z="]').text()
 	})
-	GetDataTm()
+	for (var i in teams2) {
+		if(typeof(teams[i])=='undefined') teams[i] = teams2[i]
+		else teams[i].did = teams2[i].did
+	}
+
+//	a href="plug.php?p=refl&t=k&j=722&z=2e1449f3185f813db9d49651fd9375a4">Химки</a>
+
+	for (var i in teams) debug('p'+i+'_'+teams[i].tplace+'_'+teams[i].tname+'_'+teams[i].did)
+
+	SaveDataTm()
 
 /**
 	var tDiv = ''

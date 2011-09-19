@@ -43,7 +43,7 @@ $().ready(function() {
 	teams[cid] = {}
 
 	today = new Date()
-	today = check(today.getDate()+1) + '.'+check(today.getMonth()+1)
+	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 
 	if(UrlValue('l')=='y'){			//Page for show skills
 		EditSkillsPage()
@@ -127,22 +127,21 @@ function GetInfoPageTm(){
 	debug('GetInfoPageTm ok')
 	// Get current club data
 	team_cur.tid	= cid
+	team_cur.tdate	= today
 	team_cur.tname	= $('td.back4 table table:first td:last').text().split(' (')[0]
 	team_cur.ttown	= $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
-	team_cur.sname	= $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
-	team_cur.ssize	= $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
 	team_cur.ttask	= $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
-	team_cur.ncode	= parseInt(UrlValue('j',$('td.back4 table:first table td:eq(1) a').attr('href')))
-	team_cur.nname	= $('td.back4 table:first table td:eq(3) font').text().split(', ')[1].split(')')[0]
-	team_cur.dname	= ''
-	team_cur.dnum	= ''
 	team_cur.twage	= 0
 	team_cur.tvalue	= 0
-	team_cur.tdate	= today
+	team_cur.tss	= 0
+	team_cur.sname	= $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
+	team_cur.ssize	= $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
+	team_cur.ncode	= parseInt(UrlValue('j',$('td.back4 table:first table td:eq(1) a').attr('href')))
+	team_cur.nname	= $('td.back4 table:first table td:eq(3) font').text().split(', ')[1].split(')')[0]
+	team_cur.did	= ''
 	team_cur.mname	= $('td.back4 table table:eq(1) table:first td:first span').text()
 	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href')))
-	team_cur.ss		= 0
-	team_cur.plnum	= countSostavMax
+	team_cur.pnum	= countSostavMax
 	GetFinish('pg_tm', true)
 }
 
@@ -165,22 +164,22 @@ function SaveDataTm(){
 			if(teams[i] != undefined) {
 				var tmi = teams[i]
 				text += i+':'
-				text += (tmi.tname != undefined ? tmi.ttask : '') +':'
+				text += (tmi.tdate != undefined ? tmi.tdate : '') +':'
+				text += (tmi.tname != undefined ? tmi.tname : '') +':'
 				text += (tmi.ttask != undefined ? tmi.ttask : '') +':'
 				text += (tmi.ttown != undefined ? tmi.ttown : '') +':'
+				text += (tmi.tplace!= undefined ? tmi.tplace: '') +':'
+				text += (tmi.twage != undefined ? tmi.twage : '') +':'
+				text += (tmi.tvalue!= undefined ? tmi.tvalue: '') +':'
+				text += (tmi.tss   != undefined ? tmi.tss   : '') +':'
 				text += (tmi.sname != undefined ? tmi.sname : '') +':'
 				text += (tmi.ssize != undefined ? tmi.ssize : '') +':'
 				text += (tmi.ncode != undefined ? tmi.ncode : '') +':'
 				text += (tmi.nname != undefined ? tmi.nname : '') +':'
-				text += (tmi.dname != undefined ? tmi.dname : '') +':'
-				text += (tmi.dnum  != undefined ? tmi.dnum  : '') +':'
-				text += (tmi.twage != undefined ? tmi.twage : '') +':'
-				text += (tmi.tvalue!= undefined ? tmi.tvalue: '') +':'
-				text += (tmi.tdate != undefined ? tmi.tdate : '') +':'
+				text += (tmi.did   != undefined ? tmi.did   : '') +':'
 				text += (tmi.mname != undefined ? tmi.tman  : '') +':'
 				text += (tmi.mid   != undefined ? tmi.mid   : '') +':'
-				text += (tmi.ss    != undefined ? tmi.ss    : '') +':'
-				text += (tmi.plnum != undefined ? tmi.plnum : '') 
+				text += (tmi.pnum  != undefined ? tmi.pnum  : '') +':'
 				text += ','
 			}
 		}
@@ -189,20 +188,24 @@ function SaveDataTm(){
 	}else{
 		debug('SaveDataTM go(DB)')
 		db.transaction(function(tx) {
+			var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace'
+			var zag = list.split(',')
 			tx.executeSql("DROP TABLE IF EXISTS teams",[],
 				function(tx, result){debug('drop tmtable ok')},
 				function(tx, error) {debug('drop tmtable error' + error.message)}
 			);                                           
 			// additional format: club_id, national_code, national_name, divname, divnum, <list of div prizes>
-			tx.executeSql("CREATE TABLE IF NOT EXISTS teams (tid INT, tname TEXT, ttask TEXT, ttown TEXT, sname TEXT, ssize INT, ncode INT, nname TEXT, dname TEXT, dnum INT, twage INT, tvalue INT, tdate TEXT, mname TEXT, mid INT, ss, plnum INT)", [],
+			tx.executeSql("CREATE TABLE IF NOT EXISTS teams ("+list+")", [],
 				function(tx, result){debug('create tmtable ok')},
 				function(tx, error) {debug('create tmtable error'	+error.message)}
 			);
 			for(i in teams) {
 				var tmi = teams[i]
-				debug('s'+tmi.tid+ '_' + tmi.tdate + '_' + tmi.dname)
-				tx.executeSql("INSERT INTO teams (tid, tname, ttask, ttown, sname, ssize, ncode, nname, dname, dnum, twage, tvalue, tdate, mname, mid, ss, plnum) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					[tmi.tid, tmi.tname, tmi.ttask, tmi.ttown, tmi.sname, tmi.ssize, tmi.ncode, tmi.nname, tmi.dname, tmi.dnum, tmi.twage, tmi.tvalue, tmi.tdate, tmi.mname, tmi.mid, tmi.ss, tmi.plnum],
+				for(var j in zag) if (tmi[zag[j]] == undefined) tmi[zag[j]] = ''
+
+				debug('s'+tmi.tid+ '_' + tmi.tplace + '_' + tmi.tname +'_'+tmi.pnum)
+				tx.executeSql("INSERT INTO teams ("+list+") values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					[tmi.tid, tmi.tname, tmi.ttask, tmi.ttown, tmi.sname, tmi.ssize, tmi.ncode, tmi.nname, tmi.did, tmi.twage, tmi.tvalue, tmi.tdate, tmi.mname, tmi.mid, tmi.tss, tmi.pnum, tmi.tplace],
 					function(tx, result){debug('insert tmdata ok')},
 					function(tx, error) {debug('insert tmdata error:'	+error.message)
 				});
@@ -244,15 +247,14 @@ function GetDataTm(){
 				curt.ssize	= (x[5] !=undefined ? parseInt(x[5])  : '')
 				curt.ncode	= (x[6] !=undefined ? parseInt(x[6])  : '')
 				curt.nname	= (x[7] !=undefined ? parseInt(x[7])  : '')
-				curt.dname	= (x[8] !=undefined ? parseInt(x[8])  : '')
-				curt.dnum	= (x[9] !=undefined ? parseInt(x[9])  : '')
+				curt.did	= (x[8] !=undefined ? parseInt(x[8])  : '')
 				curt.twage	= (x[10]!=undefined ? parseInt(x[10]) : '')
 				curt.tvalue	= (x[11]!=undefined ? parseInt(x[11]) : '')
 				curt.tdate	= (x[12]!=undefined ? parseInt(x[12]) : '')
 				curt.mname	= (x[13]!=undefined ? parseInt(x[13]) : '')
 				curt.mid	= (x[14]!=undefined ? parseInt(x[14]) : '')
-				curt.ss		= (x[15]!=undefined ? parseInt(x[15]) : '')
-				curt.plnum	= (x[16]!=undefined ? parseInt(x[16]) : '')
+				curt.tss	= (x[15]!=undefined ? parseInt(x[15]) : '')
+				curt.pnum	= (x[16]!=undefined ? parseInt(x[16]) : '')
 				teams[curt.id] = []
 				if(curt.id!=undefined) teams[curt.id] = curt
 			}
@@ -515,7 +517,7 @@ function GetPl(pn){
 //	debug('twage:'+team_cur.twage)
 
 	team_cur.tvalue	+= players[pn].value/1000
-	team_cur.ss		+= players[pn].sumskills
+	team_cur.tss	+= players[pn].sumskills
 	$('table#pl'+pn).remove()
 	//debug('GetPl ok: '+pn+' '+players[pn].id)
 	Ready()
@@ -541,7 +543,7 @@ function PrintRightInfo(){
 	thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
 	thtml += '</th></tr>'
 	thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
-	thtml += (team_cur.ss/countSostavMax).toFixed(2) + '&nbsp;'
+	thtml += (team_cur.tss/countSostavMax).toFixed(2) + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 	$('#crabright table:first').append(thtml)
 }
