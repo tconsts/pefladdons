@@ -13,6 +13,7 @@ var teams = []
 var divs = []
 var div_cur = {}
 var m = []
+var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace'
 
 var diap = []
 var url = {}
@@ -65,34 +66,23 @@ function GetFinish(type, res){
 
 	//PrintRightInfo()
 }
+
 function GetDataTm(){
 	if(ff) {
 //		delete globalStorage[location.hostname]['playersvalue']
 //		delete globalStorage[location.hostname]['tasks']
-
 		var text1 = globalStorage[location.hostname]['teams']
 		if (text1 != undefined){
 			var ttext = String(text1).split(',')
 			for (i in ttext) {
+				var zag = list.split(',')
 				var x = ttext[i].split(':')
 				var curt = []
-				curt.id 	=  x[0]
-				curt.tdate	= (x[1] !=undefined ? parseInt(x[1])  : '')
-				curt.tname	= (x[2] !=undefined ? parseInt(x[2])  : '')
-				curt.ttask	= (x[3] !=undefined ? parseInt(x[3])  : '')
-				curt.ttown	= (x[4] !=undefined ? parseInt(x[4])  : '')
-				curt.tplace	= (x[5] !=undefined ? parseInt(x[5])  : '')
-				curt.twage	= (x[6] !=undefined ? parseInt(x[6])  : '')
-				curt.tvalue	= (x[7] !=undefined ? parseInt(x[7])  : '')
-				curt.tss	= (x[8] !=undefined ? parseInt(x[8])  : '')
-				curt.sname	= (x[9] !=undefined ? parseInt(x[9])  : '')
-				curt.ssize	= (x[10]!=undefined ? parseInt(x[10]) : '')
-				curt.ncode	= (x[11]!=undefined ? parseInt(x[11]) : '')
-				curt.nname	= (x[12]!=undefined ? parseInt(x[12]) : '')
-				curt.did	= (x[13]!=undefined ? parseInt(x[13]) : '')
-				curt.mname	= (x[14]!=undefined ? parseInt(x[14]) : '')
-				curt.mid	= (x[15]!=undefined ? parseInt(x[15]) : '')
-				curt.pnum	= (x[16]!=undefined ? parseInt(x[16]) : '')
+				var num = 0
+				for(j in zag){
+					curt[zag[j]] = (x[num]!=undefined ? x[num] : '')
+					num++
+				}
 				teams[curt.id] = []
 				if(curt.id!=undefined) teams[curt.id] = curt
 			}
@@ -108,19 +98,16 @@ function GetDataTm(){
 	}else{
 		if(!db) DBConnect()
 		debug('GetDataTm go(DB)')
-
 		db.transaction(function(tx) {
 //			tx.executeSql("DROP TABLE IF EXISTS teams")
 			tx.executeSql("SELECT * FROM teams", [],
 				function(tx, result){
 					debug('Select teams ok')
-					var row = {}
 					for(var i = 0; i < result.rows.length; i++) {
 						teams[result.rows.item(i).tid] = result.rows.item(i)
 					}
-					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tplace + '_' + teams[i].tname+'_'+teams[i].pnum)
+					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].dname)
 					GetFinish('get_tm',true)
-					PrintRightInfo()
 				},
 				function(tx, error){
 					debug(error.message)
@@ -134,26 +121,12 @@ function GetDataTm(){
 function SaveDataTm(){
 	if(ff) {
 		var text = ''
-		for (i in teams) {
-			if(teams[i] != undefined) {
+		for (var i in teams) {
+			if(typeof(teams[i])!='undefined') {
 				var tmi = teams[i]
-				text += i+':'
-				text += (tmi.tdate != undefined ? tmi.tdate : '') +':'
-				text += (tmi.tname != undefined ? tmi.tname : '') +':'
-				text += (tmi.ttask != undefined ? tmi.ttask : '') +':'
-				text += (tmi.ttown != undefined ? tmi.ttown : '') +':'
-				text += (tmi.tplace!= undefined ? tmi.tplace: '') +':'
-				text += (tmi.twage != undefined ? tmi.twage : '') +':'
-				text += (tmi.tvalue!= undefined ? tmi.tvalue: '') +':'
-				text += (tmi.tss   != undefined ? tmi.tss   : '') +':'
-				text += (tmi.sname != undefined ? tmi.sname : '') +':'
-				text += (tmi.ssize != undefined ? tmi.ssize : '') +':'
-				text += (tmi.ncode != undefined ? tmi.ncode : '') +':'
-				text += (tmi.nname != undefined ? tmi.nname : '') +':'
-				text += (tmi.did   != undefined ? tmi.did   : '') +':'
-				text += (tmi.mname != undefined ? tmi.tman  : '') +':'
-				text += (tmi.mid   != undefined ? tmi.mid   : '') +':'
-				text += (tmi.pnum  != undefined ? tmi.pnum  : '') +':'
+				var zag = list.split(',')
+				text += tmi.tid
+				for(var j in zag) text += ':' + (tmi[zag[j]]==undefined ? '' : tmi[zag[j]])
 				text += ','
 			}
 		}
@@ -162,26 +135,27 @@ function SaveDataTm(){
 	}else{
 		debug('SaveDataTM go(DB)')
 		db.transaction(function(tx) {
-			var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace'
-			var zag = list.split(',')
 			tx.executeSql("DROP TABLE IF EXISTS teams",[],
-				function(tx, result){debug('drop tmtable ok')},
+				function(tx, result){},
 				function(tx, error) {debug('drop tmtable error' + error.message)}
 			);                                           
-			// additional format: club_id, national_code, national_name, divname, divnum, <list of div prizes>
 			tx.executeSql("CREATE TABLE IF NOT EXISTS teams ("+list+")", [],
 				function(tx, result){debug('create tmtable ok')},
 				function(tx, error) {debug('create tmtable error'	+error.message)}
 			);
-			for(i in teams) {
+			for(var i in teams) {
 				var tmi = teams[i]
-				for(var j in zag) if (tmi[zag[j]] == undefined) tmi[zag[j]] = ''
-
-				debug('s'+tmi.tid+ '_' + tmi.tplace + '_' + tmi.tname +'_'+tmi.pnum)
-				tx.executeSql("INSERT INTO teams ("+list+") values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					[tmi.tid, tmi.tname, tmi.ttask, tmi.ttown, tmi.sname, tmi.ssize, tmi.ncode, tmi.nname, tmi.did, tmi.twage, tmi.tvalue, tmi.tdate, tmi.mname, tmi.mid, tmi.tss, tmi.pnum, tmi.tplace],
-					function(tx, result){debug('insert tmdata ok')},
-					function(tx, error) {debug('insert tmdata error:'	+error.message)
+				var zag1 = []
+				var zag2 = []
+				var zag3 = []
+				for(var j in tmi){
+					zag1.push(j)
+					zag2.push('?')
+					zag3.push(tmi[j])
+				}
+				tx.executeSql("INSERT INTO teams ("+zag1+") values("+zag2+")", zag3,
+					function(tx, result){},
+					function(tx, error) {debug('insert tmdata error:'+error.message)
 				});
 			}
 		});
@@ -189,17 +163,14 @@ function SaveDataTm(){
 }
 
 function PrintTeams(){
+	var zag = list.split(',')
 	var text = '<table width=100% border=1>'
-	teams[0] = {}
-	for(i in teams){
-		for(j in teams[i]) teams[0][j]=j
-	}
-//	text+= '<tr>'
-//	for(j in team_cur) text += '<th>'+j+'</th>'
-//	text+= '</tr>'
+	text+= '<tr>'
+	for(j in zag) text += '<th>'+zag[j]+'</th>'
+	text+= '</tr>'
 	for(i in teams){
 		text += '<tr>'
-		for(j in teams[0]) text += '<td>' + teams[i][j] + '</td>'
+		for(j in zag) text += '<td>' + (teams[i][zag[j]]!=undefined ? teams[i][zag[j]] : '_')  + '</td>'
 		text += '</tr>'
 	}
 	text += '</table>'
