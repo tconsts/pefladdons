@@ -12,6 +12,7 @@ var db = false
 var teams = []
 var divs = []
 var div_cur = {}
+var m = []
 
 var diap = []
 var url = {}
@@ -52,56 +53,125 @@ $().ready(function() {
 	CountryInfoGet();
 }, false);
 
-function GetDataTm(){
-	debug('GetDataTm')
-	if(ff){
 
-		PrintRightInfo()
-		SaveDataTm()
+function GetFinish(type, res){
+	debug(type + ' ' + res + ' ')
+	m[type] = res;
+	PrintRightInfo()
+}
+function GetDataTm(){
+	if(ff) {
+//		delete globalStorage[location.hostname]['playersvalue']
+//		delete globalStorage[location.hostname]['tasks']
+
+		var text1 = globalStorage[location.hostname]['teams']
+		if (text1 != undefined){
+			var ttext = String(text1).split(',')
+			for (i in ttext) {
+				var x = ttext[i].split(':')
+				var curt = []
+				curt.id 	=  x[0]
+				curt.tname	= (x[1] !=undefined ? parseInt(x[1])  : '')
+				curt.ttask	= (x[2] !=undefined ? parseInt(x[2])  : '')
+				curt.ttown	= (x[3] !=undefined ? parseInt(x[3])  : '')
+				curt.sname	= (x[4] !=undefined ? parseInt(x[4])  : '')
+				curt.ssize	= (x[5] !=undefined ? parseInt(x[5])  : '')
+				curt.ncode	= (x[6] !=undefined ? parseInt(x[6])  : '')
+				curt.nname	= (x[7] !=undefined ? parseInt(x[7])  : '')
+				curt.dname	= (x[8] !=undefined ? parseInt(x[8])  : '')
+				curt.dnum	= (x[9] !=undefined ? parseInt(x[9])  : '')
+				curt.twage	= (x[10]!=undefined ? parseInt(x[10]) : '')
+				curt.tvalue	= (x[11]!=undefined ? parseInt(x[11]) : '')
+				curt.tdate	= (x[12]!=undefined ? parseInt(x[12]) : '')
+				curt.mname	= (x[13]!=undefined ? parseInt(x[13]) : '')
+				curt.mid	= (x[14]!=undefined ? parseInt(x[14]) : '')
+				curt.ss		= (x[15]!=undefined ? parseInt(x[15]) : '')
+				curt.plnum	= (x[16]!=undefined ? parseInt(x[16]) : '')
+				teams[curt.id] = []
+				if(curt.id!=undefined) teams[curt.id] = curt
+			}
+			debug('GetDataTm ok(GS)')
+			GetFinish('get_tm', true)
+		} else {
+			debug('GetDataTm fail(GS)')
+			GetFinish('get_tm', false)
+		}			
+
+		debug('GetDataTm empty(GS)')
+		GetFinish('get_tm',true)
 	}else{
 		if(!db) DBConnect()
+		debug('GetDataTm go(DB)')
+
 		db.transaction(function(tx) {
-//			tx.executeSql("DROP TABLE IF EXISTS divs")
-			tx.executeSql("SELECT * FROM divs", [],
+//			tx.executeSql("DROP TABLE IF EXISTS teams")
+			tx.executeSql("SELECT * FROM teams", [],
 				function(tx, result){
-					debug('Select divs ok')
+					debug('Select teams ok')
 					var row = {}
 					for(var i = 0; i < result.rows.length; i++) {
-						divs[result.rows.item(i).did] = result.rows.item(i)
+						teams[result.rows.item(i).tid] = result.rows.item(i)
 					}
-					for(var i in divs) debug('g')
+					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].dname)
+					GetFinish('get_tm',true)
+					PrintRightInfo()
 				},
 				function(tx, error){
 					debug(error.message)
+					GetFinish('get_tm', false)
 				}
 			)
 		})
-
-		PrintRightInfo()
-		SaveDataTm()
 	}
 }
 
 function SaveDataTm(){
-	debug('SaveDataTm')
-	if(ff){
-
+	if(ff) {
+		var text = ''
+		for (i in teams) {
+			if(teams[i] != undefined) {
+				var tmi = teams[i]
+				text += i+':'
+				text += (tmi.tname != undefined ? tmi.ttask : '') +':'
+				text += (tmi.ttask != undefined ? tmi.ttask : '') +':'
+				text += (tmi.ttown != undefined ? tmi.ttown : '') +':'
+				text += (tmi.sname != undefined ? tmi.sname : '') +':'
+				text += (tmi.ssize != undefined ? tmi.ssize : '') +':'
+				text += (tmi.ncode != undefined ? tmi.ncode : '') +':'
+				text += (tmi.nname != undefined ? tmi.nname : '') +':'
+				text += (tmi.dname != undefined ? tmi.dname : '') +':'
+				text += (tmi.dnum  != undefined ? tmi.dnum  : '') +':'
+				text += (tmi.twage != undefined ? tmi.twage : '') +':'
+				text += (tmi.tvalue!= undefined ? tmi.tvalue: '') +':'
+				text += (tmi.tdate != undefined ? tmi.tdate : '') +':'
+				text += (tmi.mname != undefined ? tmi.tman  : '') +':'
+				text += (tmi.mid   != undefined ? tmi.mid   : '') +':'
+				text += (tmi.ss    != undefined ? tmi.ss    : '') +':'
+				text += (tmi.plnum != undefined ? tmi.plnum : '') 
+				text += ','
+			}
+		}
+		globalStorage[location.hostname]['teams'] = text
+		debug('SaveDataTM ok(GS)')
 	}else{
+		debug('SaveDataTM go(DB)')
 		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS divs",[],
-				function(tx, result){debug('drop dvtable ok')},
-				function(tx, error) {debug('drop dvtable error'+error.message)}
+			tx.executeSql("DROP TABLE IF EXISTS teams",[],
+				function(tx, result){debug('drop tmtable ok')},
+				function(tx, error) {debug('drop tmtable error' + error.message)}
 			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS divs ()", [],
-				function(tx, result){debug('create dvtable ok')},
-				function(tx, error) {debug('create dvtable error'+error.message)}
+			// additional format: club_id, national_code, national_name, divname, divnum, <list of div prizes>
+			tx.executeSql("CREATE TABLE IF NOT EXISTS teams (tid INT, tname TEXT, ttask TEXT, ttown TEXT, sname TEXT, ssize INT, ncode INT, nname TEXT, dname TEXT, dnum INT, twage INT, tvalue INT, tdate TEXT, mname TEXT, mid INT, ss, plnum INT)", [],
+				function(tx, result){debug('create tmtable ok')},
+				function(tx, error) {debug('create tmtable error'	+error.message)}
 			);
-			for(i in divs) {
-				var div = divs[i]
-				tx.executeSql("INSERT INTO divs () values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					[],
-					function(tx, result){debug('insert dvdata ok')},
-					function(tx, error) {debug('insert dvdata error:'+error.message)
+			for(i in teams) {
+				var tmi = teams[i]
+				debug('s'+tmi.tid+ '_' + tmi.tdate + '_' + tmi.dname)
+				tx.executeSql("INSERT INTO teams (tid, tname, ttask, ttown, sname, ssize, ncode, nname, dname, dnum, twage, tvalue, tdate, mname, mid, ss, plnum) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					[tmi.tid, tmi.tname, tmi.ttask, tmi.ttown, tmi.sname, tmi.ssize, tmi.ncode, tmi.nname, tmi.dname, tmi.dnum, tmi.twage, tmi.tvalue, tmi.tdate, tmi.mname, tmi.mid, tmi.ss, tmi.plnum],
+					function(tx, result){debug('insert tmdata ok')},
+					function(tx, error) {debug('insert tmdata error:'	+error.message)
 				});
 			}
 		});
