@@ -40,9 +40,10 @@ var skills = {
 $().ready(function() {
 	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	cid = parseInt($('td.back4 table:first table td:first').text())
+	teams[cid] = {}
 
 	today = new Date()
-	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
+	today = check(today.getDate()+1) + '.'+check(today.getMonth()+1)
 
 	if(UrlValue('l')=='y'){			//Page for show skills
 		EditSkillsPage()
@@ -62,6 +63,7 @@ $().ready(function() {
 		preparedhtml  =	'<table width=100%><tr><th colspan=3>Финансовое положение</th></tr>'
 		preparedhtml += '<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
 		preparedhtml += '</table><br>'
+		preparedhtml += '<a id="teams" href="javascript:void(PrintTeams())">Команды</a><br>'
 		$("#crabright").html(preparedhtml)
 		EditFinance();
 
@@ -94,6 +96,7 @@ function GetFinish(type, res){
 	if(m.savedatatm==undefined && m.get_tm!=undefined && m.pg_tm && m.pg_pl){
 		m.savedatatm = true
 		ModifyTeams()
+		//if(deb) PrintTeams()
 	}
 	if(m.savedatapl==undefined && m.get_pl==false && m.pg_pl){
 		m.savedatapl = true
@@ -146,12 +149,12 @@ function GetInfoPageTm(){
 function ModifyTeams(){
 	debug('ModifyTeams ok')
 	//teams and team_cur
-	if(typeof(teams[cid]) == 'undefined') {teams[cid] = {}}
+	var tmt = []
 	for(i in team_cur){
-		if(teams[cid][i] == undefined) {teams[cid][i] = ''}
-		if(team_cur[i] != '') {teams[cid][i] = team_cur[i] }//+ (i=='ss' ? 100 : 0)}
+		tmt[i] = (team_cur[i] != '' ? team_cur[i] : (teams[cid][i]!=undefined ? teams[cid][i] : ''))
 	}
-	debug('ss:'+teams[cid]['ss']+'='+team_cur['ss'])
+	teams[cid] = tmt
+	debug('tname:'+teams[cid]['tname']+'='+team_cur['tname'])
 	SaveDataTm()
 }
 
@@ -197,7 +200,7 @@ function SaveDataTm(){
 			);
 			for(i in teams) {
 				var tmi = teams[i]
-				debug('s'+tmi.tid+ '_' + tmi.tname + '_' + tmi.ss)
+				debug('s'+tmi.tid+ '_' + tmi.tdate + '_' + tmi.dname)
 				tx.executeSql("INSERT INTO teams (tid, tname, ttask, ttown, sname, ssize, ncode, nname, dname, dnum, twage, tvalue, tdate, mname, mid, ss, plnum) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 					[tmi.tid, tmi.tname, tmi.ttask, tmi.ttown, tmi.sname, tmi.ssize, tmi.ncode, tmi.nname, tmi.dname, tmi.dnum, tmi.twage, tmi.tvalue, tmi.tdate, tmi.mname, tmi.mid, tmi.ss, tmi.plnum],
 					function(tx, result){debug('insert tmdata ok')},
@@ -206,6 +209,20 @@ function SaveDataTm(){
 			}
 		});
 	}
+}
+
+function PrintTeams(){
+	var text = '<table width=100% border=1>'
+	text+= '<tr>'
+	for(j in team_cur) text += '<th>'+j+'</th>'
+	text+= '</tr>'
+	for(i in teams){
+		text += '<tr>'
+		for(j in team_cur) text += '<td>' + teams[i][j] + '</td>'
+		text += '</tr>'
+	}
+	text += '</table>'
+	$('td.back4').prepend(text)
 }
 
 function GetDataTm(){
@@ -261,7 +278,7 @@ function GetDataTm(){
 					for(var i = 0; i < result.rows.length; i++) {
 						teams[result.rows.item(i).tid] = result.rows.item(i)
 					}
-					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tname + '_' + teams[i].ss)
+					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].dname)
 					GetFinish('get_tm',true)
 				},
 				function(tx, error){
