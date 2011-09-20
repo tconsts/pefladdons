@@ -16,7 +16,7 @@ var team_cur = {}//{'twage':0, 'tvalue':0, 'ss':0}
 var m = []
 var remember = 0
 var db = false
-var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace'
+var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace,scbud,screit,tfin'
 
 var countSostav = 0
 var plChange = []
@@ -42,10 +42,13 @@ $().ready(function() {
 	today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 
-	if(UrlValue('l')=='y'){			//Page for show skills
+	if(UrlValue('l')=='y'){
+		//Page for show skills
 		EditSkillsPage()
-	}else if(UrlValue('n')!=false){	//Ростер с фильтром(не вся стата показывается)
-	}else{							//Ростер команды
+	}else if(UrlValue('n')!=false){
+		//Ростер с фильтром(не вся стата показывается)
+	}else{
+		//Ростер команды
 		// Draw right panel and fill data
 		var preparedhtml = ''
 		preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td id="crabgloballeft" width=200 valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
@@ -131,6 +134,7 @@ function GetInfoPageTm(){
 	team_cur.twage	= 0
 	team_cur.tvalue	= 0
 	team_cur.tss	= 0
+	team_cur.tplace	= ''
 	team_cur.sname	= $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
 	team_cur.ssize	= $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
 	team_cur.ncode	= parseInt(UrlValue('j',$('td.back4 table:first table td:eq(1) a').attr('href')))
@@ -139,6 +143,8 @@ function GetInfoPageTm(){
 	team_cur.mname	= $('td.back4 table table:eq(1) table:first td:first span').text()
 	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href')))
 	team_cur.pnum	= countSostavMax
+	team_cur.scbud	= $('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0]
+	team_cur.screit	= $('table.layer1 td.l2:eq(1)').text().split(': ',2)[1].split(' (')[0]
 	GetFinish('pg_tm', true)
 }
 
@@ -151,6 +157,7 @@ function ModifyTeams(){
 	}
 	teams[cid] = tmt
 	debug('tname:'+teams[cid]['tname']+'='+team_cur['tname'])
+//	if(teams[cid].tplace>0) $('table.layer1 td.l2:eq(5)').append((' ('+teams[cid].tplace+')').fontsize(1))
 	SaveDataTm()
 }
 
@@ -245,12 +252,15 @@ function GetDataTm(){
 		if(!db) DBConnect()
 		debug('GetDataTm go(DB)')
 		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS teams")
+//			tx.executeSql("DROP TABLE IF EXISTS teams")
 			tx.executeSql("SELECT * FROM teams", [],
 				function(tx, result){
 					debug('Select teams ok')
 					for(var i = 0; i < result.rows.length; i++) {
-						teams[result.rows.item(i).tid] = result.rows.item(i)
+						var row = result.rows.item(i)
+						var id = row.tid
+						teams[id] = {}
+						for(j in row) teams[id][j] = row[j]
 					}
 					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].dname)
 					GetFinish('get_tm',true)
@@ -577,28 +587,29 @@ function EditFinance(){
 	var txt2 = ''
 	switch (txt){
 		case 'банкрот': 				 txt2 += 'меньше 0'		;break;
-		case 'жалкое': 					 txt2 += '1$т - 200$т'	;break;
-		case 'бедное': 					 txt2 += '200$т - 500$т';break;
-		case 'среднее': 				 txt2 += '500$т - 1$м'	;break;
-		case 'нормальное': 				 txt2 += '1$м - 3$м'	;break;
-		case 'благополучное': 			 txt2 += '3$м - 6$м'	;break;
-		case 'отличное': 				 txt2 += '6$м - 15$м'	;break;
-		case 'богатое': 				 txt2 += '15$м - 40$м'	;break;
+		case 'жалкое': 					 txt2 += '1$т-200$т'	;break;
+		case 'бедное': 					 txt2 += '200$т-500$т';break;
+		case 'среднее': 				 txt2 += '500$т-1$м'	;break;
+		case 'нормальное': 				 txt2 += '1$м-3$м'	;break;
+		case 'благополучное': 			 txt2 += '3$м-6$м'	;break;
+		case 'отличное': 				 txt2 += '6$м-15$м'	;break;
+		case 'богатое': 				 txt2 += '15$м-40$м'	;break;
 		case 'некуда деньги девать :-)': txt2 += 'больше 40$м'	;break;
 		default:
 			var fin = parseInt(txt.replace(/,/g,'').replace('$',''))
 			if 		(fin >  40000000)	{txt = 'некуда деньги девать';	txt2 = 'больше 40$м'}
-			else if (fin >= 15000000)	{txt = 'богатое';				txt2 = '15$м - 40$м'}
-			else if (fin >=  6000000) 	{txt = 'отличное';				txt2 = '6$м - 15$м'}
-			else if (fin >=  3000000) 	{txt = 'благополучное';			txt2 = '3$м - 6$м'}
-			else if (fin >=  1000000) 	{txt = 'нормальное';			txt2 = '1$м - 3$м'}
-			else if (fin >=   500000) 	{txt = 'среднее';				txt2 = '500$т - 1$т'}
-			else if (fin >=   200000) 	{txt = 'бедное';				txt2 = '200$т - 500$т'}
-			else if (fin >=		   0)	{txt = 'жалкое';				txt2 = '1$т - 200$т'}
+			else if (fin >= 15000000)	{txt = 'богатое';				txt2 = '15$м-40$м'}
+			else if (fin >=  6000000) 	{txt = 'отличное';				txt2 = '6$м-15$м'}
+			else if (fin >=  3000000) 	{txt = 'благополучное';			txt2 = '3$м-6$м'}
+			else if (fin >=  1000000) 	{txt = 'нормальное';			txt2 = '1$м-3$м'}
+			else if (fin >=   500000) 	{txt = 'среднее';				txt2 = '500$т-1$т'}
+			else if (fin >=   200000) 	{txt = 'бедное';				txt2 = '200$т-500$т'}
+			else if (fin >=		   0)	{txt = 'жалкое';				txt2 = '1$т-200$т'}
 			else if (fin < 		   0)	{txt = 'банкрот';				txt2 = 'меньше 0'}
 	}
 	$('#finance1').html(txt)
 	$('#finance2').html(txt2)
+	team_cur.tfin = txt2
 }
 
 function EditSkillsPage(){
