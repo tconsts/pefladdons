@@ -245,7 +245,7 @@ function GetDataTm(){
 		if(!db) DBConnect()
 		debug('GetDataTm go(DB)')
 		db.transaction(function(tx) {
-//			tx.executeSql("DROP TABLE IF EXISTS teams")
+			tx.executeSql("DROP TABLE IF EXISTS teams")
 			tx.executeSql("SELECT * FROM teams", [],
 				function(tx, result){
 					debug('Select teams ok')
