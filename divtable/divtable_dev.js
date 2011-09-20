@@ -61,6 +61,7 @@ function GetFinish(type, res){
 	debug(type + ' ' + res + ' ')
 	m[type] = res;
 	if(m.get_tm!=undefined){
+		for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].did)
 		CountryInfoGet()
 	}
 
@@ -83,7 +84,6 @@ function GetDataTm(){
 					curt[zag[j]] = (x[num]!=undefined ? x[num] : '')
 					num++
 				}
-				teams[curt.id] = []
 				if(curt.id!=undefined) teams[curt.id] = curt
 			}
 			debug('GetDataTm ok(GS)')
@@ -104,9 +104,10 @@ function GetDataTm(){
 				function(tx, result){
 					debug('Select teams ok')
 					for(var i = 0; i < result.rows.length; i++) {
-						teams[result.rows.item(i).tid] = result.rows.item(i)
+						var id = parseInt(result.rows.item(i).tid)
+						teams[id] = result.rows.item(i)
 					}
-					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].dname)
+//					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].did)
 					GetFinish('get_tm',true)
 				},
 				function(tx, error){
@@ -205,23 +206,20 @@ function CountryInfoGet(){
 	debug('div_cur.did:'+div_cur.did)
 	debug('div_cur.dnum:'+div_cur.dnum)
 
-	var teams2 = []
 	$('td.back4 table:first table:first tr:gt(0)').each(function(i, val){
-		var tid = UrlValue('n',$(val).find('a:has(u)').attr('href'))
-		teams2[tid] = {}
-		teams2[tid].tid = tid
-		teams2[tid].did = div_cur.did
-		teams2[tid].tplace = i+1
-		teams2[tid].tname = $(val).find('a[href^="plug.php?p=refl&t=k&j='+tid+'&z="]').text()
+		var id = parseInt(UrlValue('n',$(val).find('a:has(u)').attr('href')))
+		if(typeof(teams[id])=='undefined') {
+			teams[id] = {}
+			teams[id].tid = id
+			teams[id].tname = $(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]').text()
+		}
+		teams[id].tplace = i+1
+		teams[id].did = div_cur.did
+		debug('p'+tid+'_'+teams[id].did +'_'+ div_cur.did)
 	})
-	for (var i in teams2) {
-		if(typeof(teams[i])=='undefined') teams[i] = teams2[i]
-		else teams[i].did = teams2[i].did
+	for (var i in teams) {
+		debug('p'+i+'_'+teams[i].did + '_' +teams2[i].did)
 	}
-
-//	a href="plug.php?p=refl&t=k&j=722&z=2e1449f3185f813db9d49651fd9375a4">Химки</a>
-
-	for (var i in teams) debug('p'+i+'_'+teams[i].tplace+'_'+teams[i].tname+'_'+teams[i].did)
 
 	SaveDataTm()
 
