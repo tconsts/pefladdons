@@ -46,6 +46,10 @@ function SelPl(name){
 	})
 }
 
+if(typeof (deb) == 'undefined') deb = false
+var debnum = 0
+function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+
 $().ready(function() {
 //	$('td.back4 table:first').attr('border','5')	// расстановка
 //	$('td.back4 table:eq(1)').attr('border','5')	// все вместе кроме расстановки
@@ -77,8 +81,10 @@ $().ready(function() {
 		var schet = $('td.back4 table:eq(3) td:eq(1)').text()
 		var finschet = ''
 		var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
-		if (finschetarr[1]!=undefined && finschetarr[finschetarr.length-1].split('<br>')[0] != schet){
-			finschet = ' [center]По пенальти [b][color=red]'+finschetarr[finschetarr.length-1].split('<br>')[0] + '[/color][/b][/center]'
+		debug((finschetarr[finschetarr.length-1].split('<br>')[0]).trim())
+		debug(schet)
+		if (finschetarr[1]!=undefined && (finschetarr[finschetarr.length-1].split('<br>')[0]).trim() != schet){
+			finschet = ' [center]По пенальти [b][color=red]'+(finschetarr[finschetarr.length-1].split('<br>')[0]).trim() + '[/color][/b][/center]'
 		}
 		sessionStorage[mid] = finschet + $('td.back4 table:eq(6)')
 			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
