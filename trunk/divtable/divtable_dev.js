@@ -13,7 +13,7 @@ var teams = []
 var divs = []
 var div_cur = {}
 var m = []
-var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace'
+var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace,scbud,screit,tfin'
 
 var diap = []
 var url = {}
@@ -52,8 +52,9 @@ $().ready(function() {
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text)
-//	CountryInfoGet();
-	GetDataTm()
+
+	if(!UrlValue('h')) GetDataTm()
+
 }, false);
 
 
@@ -61,7 +62,6 @@ function GetFinish(type, res){
 	debug(type + ' ' + res + ' ')
 	m[type] = res;
 	if(m.get_tm!=undefined){
-		for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].did)
 		CountryInfoGet()
 	}
 
@@ -104,8 +104,10 @@ function GetDataTm(){
 				function(tx, result){
 					debug('Select teams ok')
 					for(var i = 0; i < result.rows.length; i++) {
-						var id = parseInt(result.rows.item(i).tid)
-						teams[id] = result.rows.item(i)
+						var row = result.rows.item(i)
+						var id = row.tid
+						teams[id] = {}
+						for(j in row) teams[id][j] = row[j]
 					}
 //					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].did)
 					GetFinish('get_tm',true)
@@ -195,11 +197,13 @@ function CountryInfoGet(){
 	debug('CountryInfoGet')
 
 	div_cur.dpriz = ''
-	div_cur.did	  = UrlValue('j')
 	div_cur.nname = $('td.back4 td.back1').text().split(', ')[0]
 	div_cur.dname = $('td.back4 td.back1').text().split(', ')[1]
 	$('a[href*="p=refl&t=s&k=0&"]').each(function(i, val){
-		if($(val).text() == div_cur.dname) div_cur.dnum = i+1
+		if($(val).text() == div_cur.dname) {
+			div_cur.dnum = i+1
+			div_cur.did = UrlValue('j',$(val).attr('href'))
+		}
 	})
 	debug(div_cur.dname)
 	debug(div_cur.nname)
@@ -215,11 +219,9 @@ function CountryInfoGet(){
 		}
 		teams[id].tplace = i+1
 		teams[id].did = div_cur.did
-		debug('p'+tid+'_'+teams[id].did +'_'+ div_cur.did)
+//		debug('p'+id+'_'+teams[id].did +'_'+ div_cur.did)
 	})
-	for (var i in teams) {
-		debug('p'+i+'_'+teams[i].did + '_' +teams2[i].did)
-	}
+//	for (var i in teams) debug('p'+i+'_'+teams[i].did)
 
 	SaveDataTm()
 
