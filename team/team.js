@@ -262,7 +262,7 @@ function GetDataTm(){
 						teams[id] = {}
 						for(j in row) teams[id][j] = row[j]
 					}
-					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].dname)
+//					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].dname)
 					GetFinish('get_tm',true)
 				},
 				function(tx, error){
@@ -613,6 +613,7 @@ function EditFinance(){
 }
 
 function EditSkillsPage(){
+	debug('EditSkillsPage')
 	$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
 	$('table#tblRostSkills')
 		.attr('width','886')
@@ -712,6 +713,7 @@ function ShowPlayersSkillChange(){
 }
 
 function ShowSkills(param){
+	debug('ShowSkills param: '+param)
 	if(param == 1){
 		$('table[background]:eq(1)').hide()
 		$('td#crabglobalright').html('')
@@ -732,7 +734,7 @@ function ShowSkills(param){
 		$('table#tblRosterFilter')
 			.attr('id','tblRostSkillsFilter')
 			.attr('width','50%')
-			.attr('align','center')
+			.attr('align','left')
 			.attr('cellspacing','1')
 			.attr('cellpadding','1')
 			.after('<div id="filter">&nbsp;</div>')
@@ -742,7 +744,24 @@ function ShowSkills(param){
 		$('a#tskills').attr('href','')
 		ShowFilter()
 		ShowSkills(2)
+		
+		var sumpl = '<table id="SumPl" width=50%>'
+		sumpl += '<tr><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
+/**		sumpl += '<tr bgcolor=#a3de8f><td width=30%>Лидерство</td><td id="ld" width=20%></td><td width=30%>Дриблинг</td><td id="dr" width=20%></td></tr>'
+		sumpl += '<tr bgcolor=#a3de8f><td>Удары</td><td id="ld"></td><td>Игра в пас</td><td id="dr"></td></tr>'
+		sumpl += '<tr bgcolor=#a3de8f><td>Видение поля</td><td id="ld"></td><td>Игра головой</td><td id="dr"></td></tr>'
+		sumpl += '<tr bgcolor=#a3de8f><td>Навесы</td><td id="ld"></td><td>Дальние удары</td><td id="dr"></td></tr>'
+		sumpl += '<tr bgcolor=#a3de8f><td>Перс. опека</td><td id="ld"></td><td>Скорость</td><td id="dr"></td></tr>'
+		sumpl += '<tr bgcolor=#a3de8f><td>Штрафные</td><td id="ld"></td><td>Выбор позиции</td><td id="dr"></td></tr>'
+		sumpl += '<tr bgcolor=#a3de8f><td>Угловые</td><td id="ld"></td><td>Техника</td><td id="dr"></td></tr>'
+		sumpl += '<tr bgcolor=#a3de8f><td>Мощь</td><td id="ld"></td><td>Отбор мяча</td><td id="dr"></td></tr>'
+		sumpl += '<tr bgcolor=#a3de8f><td>Работоспособность</td><td id="ld"></td><td>Выностливость</td><td id="dr"></td></tr>'
+/**/	sumpl += '</table>'
+		$('table#tblRostSkillsFilter').after(sumpl)
+		$('table#SumPl').hide()
 	}
+
+
 	$('table#tblRostSkills tr').remove()
 	if(param == 2) type = (type=='img' ? 'num' : 'img')
 
@@ -785,13 +804,58 @@ function ShowSkills(param){
 	$('table#tblRostSkills tr:odd').attr('bgcolor','C9F8B7')
 }
 
+function ShowSumPlayer(){
+	debug('ShowSumPlayer go')
+	var ld = {'sum':0,'mx':0,'mn':0,'num':0}
+	var head = []
+	sumplarr = {}
+	$('table#tblRostSkills tr:first td:lt(21):gt(2)').each(function(i, val){
+		head[i] = $(val).find('a').html().split('<br>')[0]
+	})
+
+	$('table#tblRostSkills tr:gt(0):visible').each(function(){
+		$(this).find('td:lt(21):gt(2)').each(function(i,val){
+			var tdval = $(val).text()
+			sumplarr[head[i]] = $(val).text()
+		})
+/**
+		var ldi = parseInt($(val).find('td:eq(3)').text())
+		ld.sum += ldi
+		ld.mx = (ld.mx<ldi ? ldi : ld.mx)
+		ld.mn = (ld.mn==0 || ld.mn>ldi ? ldi : ld.mn)		
+		ld.num += 1
+//		var dri = parseInt($(val).find('td:eq(4)').text())
+/**/
+	})
+
+	$('table#SumPl tr:gt(0)').remove()
+	var n = true
+	var sumpl = ''
+	for(i in sumplarr){
+//		debug(sumplarr[i])
+		if(n){
+			sumpl += '<tr bgcolor=#a3de8f><td width=30%>'+skills[i]+'</td><td width=20%>'+sumplarr[i]+'</td>'
+			n = false
+		}else{
+			sumpl += '<td width=30%>'+skills[i]+'</td><td width=20%>'+sumplarr[i]+'</td></tr>'
+			n = true
+		}
+	}   
+	$('table#SumPl').append(sumpl)
+//	$('td#ld').html((ld.sum/ld.num).toFixed(2)+' ('+ld.mn+':'+ld.mx+')')
+//	$('td#dr').html(dr)
+
+}
+
 function ShowFilter(){
 	var style = $('table#tblRostSkillsFilter').attr('style')
 	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
 		$('table#tblRostSkillsFilter').show()
+		$('table#SumPl').show()
 		$('div#filter').show()
 	}else{
 		$('table#tblRostSkillsFilter').hide()
+		$('table#SumPl').hide()
 		$('div#filter').hide()
 //		Filter(3,'')
 	}
@@ -839,6 +903,7 @@ function Filter(num,p){
 		for (l in pos2) if(sumpos2==0 || (position.indexOf(l)>-1 && pos2[l]==1)) lmark=1
 		if((kmark==1 && lmark==1) || sumpos == 0) $(val).show()
 	})
+	ShowSumPlayer()
 }
 
 function CountSkills(tdid){
