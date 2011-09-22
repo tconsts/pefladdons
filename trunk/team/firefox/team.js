@@ -11,8 +11,11 @@
 // @version			1.1
 // ==/UserScript==
 
+if(typeof (deb) == 'undefined') deb = false
+var debnum = 0
+var type 	= 'num'
+
 var countSostav = 0
-var type 	= ''
 var players = []
 var pls = []
 var countSk = [0]
@@ -110,9 +113,11 @@ function ShowFilter(){
 	var style = $('table#tblRostSkillsFilter').attr('style')
 	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
 		$('table#tblRostSkillsFilter').show()
+		$('table#SumPl').show()
 		$('div#filter').show()
 	}else{
 		$('table#tblRostSkillsFilter').hide()
+		$('table#SumPl').hide()
 		$('div#filter').hide()
 //		Filter(3,'')
 	}
@@ -162,6 +167,56 @@ function Filter(num,p){
 		for (l in pos2) if(sumpos2==0 || (position.indexOf(l)>-1 && pos2[l]==1)) lmark=1
 		if((kmark==1 && lmark==1) || sumpos == 0) $(val).show()
 	})
+	ShowSumPlayer()
+}
+
+function HidePl(num,fl){
+	if(fl){
+		$('table#tblRostSkills tr:eq('+num+') a#x').attr('href','javascript:void(HidePl('+(num)+',false))')
+		$('table#tblRostSkills tr:eq('+num+') td:gt(2)').each(function(){
+			$(this).hide()
+		})
+	}else{
+		$('table#tblRostSkills tr:eq('+num+') a#x').attr('href','javascript:void(HidePl('+(num)+',true))')
+		$('table#tblRostSkills tr:eq('+num+') td:gt(2)').each(function(){
+			$(this).removeAttr('style')
+		})
+	}
+	ShowSumPlayer()	
+}
+
+function ShowSumPlayer(){
+	var ld = {'sum':0,'mx':0,'mn':0,'num':0}
+	var head = []
+	sumplarr = {}
+	$('table#tblRostSkills tr:first td:lt(21):gt(2)').each(function(i, val){
+		head[i] = $(val).find('a').html().split('<br>')[0]
+		sumplarr[head[i]] = {'sum':0,'mx':0,'mn':0,'num':0}
+	})
+
+	$('table#tblRostSkills tr:gt(0):visible').each(function(){
+		$(this).find('td:lt(21):gt(2):visible').each(function(i,val){
+			var tdval = parseInt($(val).text())
+			var param = sumplarr[head[i]]
+			param.sum  += tdval
+			param.mx	= (param.mx < tdval ? tdval : param.mx)
+			param.mn	= (param.mn==0 || param.mn > tdval ? tdval : param.mn)
+			param.num  += 1
+		})
+	})
+
+	$('table#SumPl tr:gt(0)').remove()
+	var tr = true
+	var sumpl = ''
+	for(i in sumplarr){
+		var param = sumplarr[i]
+		var text = (param.num==0 ? ' ' : (param.sum/param.num).toFixed(2) + (param.num>1 ? ' ('+param.mn+':'+param.mx+')' : ''))
+		sumpl += (tr ? '<tr bgcolor=#a3de8f>' : '')
+		sumpl += '<td width=30%>'+skills[i]+'</td><td width=20%>'+text+'</td>'
+		sumpl += (tr ? '' : '</tr>')
+		tr = (tr ? false : true)
+	}   
+	$('table#SumPl').append(sumpl)
 }
 
 function CountSkills(tdid){
@@ -218,7 +273,7 @@ function ShowSkills(param){
 		$('table#tblRosterFilter')
 			.attr('id','tblRostSkillsFilter')
 			.attr('width','50%')
-			.attr('align','center')
+			.attr('align','left')
 			.attr('cellspacing','1')
 			.attr('cellpadding','1')
 			.after('<div id="filter">&nbsp;</div>')
@@ -227,7 +282,12 @@ function ShowSkills(param){
 		$('span#tskills').html('Ростер команды')
 		$('a#tskills').attr('href','')
 		ShowFilter()
-		ShowSkills(2)
+
+		var sumpl = '<table id="SumPl" width=50%>'
+		sumpl += '<tr><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
+		sumpl += '</table>'
+		$('table#tblRostSkillsFilter').after(sumpl)
+		$('table#SumPl').hide()
 	}
 	$('table#tblRostSkills tr').remove()
 	if(param == 2) type = (type=='img' ? 'num' : 'img')
@@ -238,7 +298,9 @@ function ShowSkills(param){
 	var header = '<tr align="left" style="font-weight:bold;" id="tblRostSkillsTHTr0">'
 	header += '<td><a class="sort">'+hd2.join('</a></td><td><a class="sort">')+'</a></td>'
 	header += '</tr>'
-	$('table#tblRostSkills').append(header)
+	$('table#tblRostSkills')
+		.append(header)
+		.find('tr:first td:last').attr('width','10%')
 	$('table#tblRostSkills tr:first a').each(function(i,val){
 		$(val).attr('href','javascript:void(CountSkills('+i+'))')
 	})
@@ -252,10 +314,10 @@ function ShowSkills(param){
 				var skn = hd2[j]
 				var key1 = pf[i][skills[skn.split('<br>')[0]]]
 				var key2 = pf[i][skills[skn.split('<br>')[1]]]
-					var sk = (key1!=undefined ? key1 : key2)
+				var sk = (key1!=undefined ? key1 : key2)
 				if(skn=='Имя') 					tr += '<td'+tdcolor+'><a href="plug.php?p=refl&t=p&j='+pf[i].id+'&z='+pf[i].hash+'">'+sk+'</a></td>'
 				else if(skn=='Поз') 			tr += '<td'+tdcolor+'>'+sk+'</td>'
-				else if(skn=='Сум') 			tr += '<td'+tdcolor+'><b>'+parseInt(sk)+'</b></td>'
+				else if(skn=='Сум') 			tr += '<td'+tdcolor+'><b><a id="x" href="javascript:void(HidePl('+(i+1)+',true))">'+parseInt(sk)+'</a></b></td>'
 				else if(!isNaN(parseInt(sk)) && type=='num')	tr += '<td'+tdcolor+'>'+parseInt(sk)+'</td>'
 				else if(!isNaN(parseInt(sk)) && type=='img')	tr += '<td'+tdcolor+'>'+String(sk).split('.')[0]+(String(sk).split('.')[1]!=undefined ? '&nbsp;<img height="10" src="system/img/g/'+String(sk).split('.')[1]+'.gif"></img>' : '')+'</td>'
 				else 							tr += '<td'+tdcolor+'> </td>'
@@ -371,7 +433,10 @@ function Ready(){
 		if(team.wage > 0){ // if VIP
 			// print link to skills page
 			if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
-				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')}
+				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')
+			}else{
+				$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))"><span>Скиллы игроков</span></a><br><br>')
+			}
 
 			var sumvaluechange = 0
 			if(UrlValue('j')==99999){
@@ -380,12 +445,6 @@ function Ready(){
 				if(ff)	text2 = String(globalStorage[location.hostname]['playersvalue'])
 				else	text2 = sessionStorage['playersvalue']
 
-				/**/
-				//debug
-				$('td.back4').prepend('<span id=hiden></span>')
-				$('span#hiden').hide().append(text2)
-				/**/
-				
 				if (text2 != undefined){
 					var t1 = text2.split(',')
 					var sumvalueold = 0
@@ -806,3 +865,5 @@ function UrlValue(key,url){
 	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
 	return false
 }
+
+function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;\''+text+'\'<br>');}}
