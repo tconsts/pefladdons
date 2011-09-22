@@ -210,7 +210,7 @@ function ShowSumPlayer(){
 	var sumpl = ''
 	for(i in sumplarr){
 		var param = sumplarr[i]
-		var text = (param.num==0 ? ' ' : (param.sum/param.num).toFixed(2) + (param.num>1 ? ' ('+param.mn+':'+param.mx+')' : ''))
+		var text = (param.num==0 ? ' ' : (param.sum/param.num).toFixed(1) + (param.num>1 && param.mn!=param.mx ? ' ('+param.mn+'-'+param.mx+')' : ''))
 		sumpl += (tr ? '<tr bgcolor=#a3de8f>' : '')
 		sumpl += '<td width=30%>'+skills[i]+'</td><td width=20%>'+text+'</td>'
 		sumpl += (tr ? '' : '</tr>')
