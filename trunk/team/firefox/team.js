@@ -277,7 +277,7 @@ function ShowSkills(param){
 			.attr('cellspacing','1')
 			.attr('cellpadding','1')
 			.after('<div id="filter">&nbsp;</div>')
-			.before('<a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a>')
+			.before('<a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a><br>')
 			.html(filter)
 		$('span#tskills').html('Ростер команды')
 		$('a#tskills').attr('href','')
