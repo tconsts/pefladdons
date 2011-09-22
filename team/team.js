@@ -16,11 +16,12 @@ var team_cur = {}//{'twage':0, 'tvalue':0, 'ss':0}
 var m = []
 var remember = 0
 var db = false
-var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace,scbud,screit,tfin'
-
+var list = {
+	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
+	'teams':	'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace,scbud,screit,tfin',
+	'divs':		'did,dname,dnum,dprize'
+}
 var countSostav = 0
-var plChange = []
-var pls = []
 var countSk = [0]
 var nom = 0
 var zp = 0
@@ -63,12 +64,14 @@ $().ready(function() {
 		preparedhtml  =	'<table width=100%><tr><th colspan=3>Финансовое положение</th></tr>'
 		preparedhtml += '<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
 		preparedhtml += '</table><br>'
-		preparedhtml += '<a id="teams" href="javascript:void(PrintTeams())">Команды</a><br>'
+		preparedhtml += '<a id="players" href="javascript:void(Print(\'players\'))">Игроки</a><br>'
+		preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">Команды</a><br>'
+		preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">Дивизионы</a><br>'
 		$("#crabright").html(preparedhtml)
 		EditFinance();
 
-		GetDataTm()
-		GetDataPl()
+		GetData('teams')
+		GetData('players')
 
 		countSostavMax  = $('tr[id^=tblRosterTr]').length
 		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
@@ -86,28 +89,25 @@ function DBConnect(){
 function GetFinish(type, res){
 	debug(type + ' ' + res + ' ')
 	m[type] = res;
-	//get_pl: true
-	//get_tm: true
-	//pg_pl: true
-	//pg_tm: true
+	//get_players: true
+	//get_teams: true
+	//pg_players: true
+	//pg_teams: true
 	//p_pl:
-	if(m.savedatatm==undefined && m.get_tm!=undefined && m.pg_tm && m.pg_pl){
+	if(m.savedatatm==undefined && m.get_teams!=undefined && m.pg_teams && m.pg_players){
 		m.savedatatm = true
 		ModifyTeams()
 		//if(deb) PrintTeams()
 	}
-	if(m.savedatapl==undefined && m.get_pl==false && m.pg_pl){
+	if(m.savedatapl==undefined && m.get_players==false && m.pg_players){
 		m.savedatapl = true
 		PrintRightInfo()
-		SaveDataPl()
+		SaveData('players')
 	}
-	if(m.savedatapl==undefined && m.get_pl && m.pg_pl){
+	if(m.savedatapl==undefined && m.get_players && m.pg_players){
 		m.savedatapl = true
 		ModifyPlayers()
 		PrintRightInfo()
-	}
-	if(m.pg_pl){
-			
 	}
 
 /**
@@ -122,7 +122,7 @@ function GetFinish(type, res){
 //////////////// TEAM Section(start) ////////////////
 //
 function GetInfoPageTm(){
-	debug('GetInfoPageTm ok')
+	debug('teams:GetInfoPage ok')
 	// Get current club data
 	team_cur.tid	= cid
 	team_cur.tdate	= today
@@ -143,11 +143,11 @@ function GetInfoPageTm(){
 	team_cur.pnum	= countSostavMax
 	team_cur.scbud	= $('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0]
 	team_cur.screit	= $('table.layer1 td.l2:eq(1)').text().split(': ',2)[1].split(' (')[0]
-	GetFinish('pg_tm', true)
+	GetFinish('pg_teams', true)
 }
 
 function ModifyTeams(){
-	debug('ModifyTeams ok')
+	debug('teams:ModifyTeams ok')
 	//teams and team_cur
 	var tmt = []
 	for(var i in team_cur){
@@ -156,220 +156,133 @@ function ModifyTeams(){
 	teams[cid] = tmt
 	debug('tname:'+teams[cid]['tname']+'='+team_cur['tname'])
 //	if(teams[cid].tplace>0) $('table.layer1 td.l2:eq(5)').append((' ('+teams[cid].tplace+')').fontsize(1))
-	SaveDataTm()
+	SaveData('teams')
 }
 
-function PrintTeams(){
-	var zag = list.split(',')
+function Print(dataname){
+	var head = list[dataname].split(',')
+	var data = []
+	switch (dataname){
+		case 'players': data = players;	break
+		case 'teams': 	data = teams;	break
+		case 'divs'	: 	data = divs;	break
+		default: return false
+	}
 	var text = '<table width=100% border=1>'
 	text+= '<tr>'
-	for(j in zag) text += '<th>'+zag[j]+'</th>'
+	for(j in head) text += '<th>'+head[j]+'</th>'
 	text+= '</tr>'
-	for(i in teams){
+	for(i in data){
 		text += '<tr>'
-		for(j in zag) text += '<td>' + (teams[i][zag[j]]!=undefined ? teams[i][zag[j]] : '_')  + '</td>'
+		for(j in head) text += '<td>' + (data[i][head[j]]!=undefined ? data[i][head[j]] : '_')  + '</td>'
 		text += '</tr>'
 	}
 	text += '</table>'
 	$('td.back4').prepend(text)
 }
 
-function SaveDataTm(){
-	if(UrlValue('h')==1) return false
+function SaveData(dataname){
+	debug(dataname+':SaveData go')
+	if(UrlValue('h')==1 || (dataname=='teams' && UrlValue('j')==99999)) return false
+
+	var data = []
+	var head = list[dataname].split(',')
+	switch (dataname){
+		case 'players': data = players;	break
+		case 'teams': 	data = teams;	break
+		case 'divs'	: 	data = divs;	break
+		default: return false
+	}
 	if(ff) {
 		var text = ''
-		for (var i in teams) {
-			if(typeof(teams[i])!='undefined') {
-				var tmi = teams[i]
-				var zag = list.split(',')
-				text += tmi.tid
-				for(var j in zag) text += ':' + (tmi[zag[j]]==undefined ? '' : tmi[zag[j]])
+		for (var i in data) {
+			if(typeof(data[i])!='undefined') {
+				var dti = data[i]
+				text += dti[head[0]]
+				for(var j in head) text += ':' + (dti[head[j]]==undefined ? '' : dti[head[j]])
 				text += ','
 			}
 		}
-		globalStorage[location.hostname]['teams'] = text
-		debug('SaveDataTM ok(GS)')
+		globalStorage[location.hostname][dataname] = text
+		debug(dataname+':SaveData(GS)')
 	}else{
-		debug('SaveDataTM go(DB)')
+		debug(dataname+':SaveData(DB)')
 		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS teams",[],
+			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
 				function(tx, result){},
-				function(tx, error) {debug('drop tmtable error' + error.message)}
+				function(tx, error) {debug(dataname+':drop error:' + error.message)}
 			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS teams ("+list+")", [],
-				function(tx, result){debug('create tmtable ok')},
-				function(tx, error) {debug('create tmtable error'	+error.message)}
+			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+list[dataname]+")", [],
+				function(tx, result){debug(dataname+':create ok')},
+				function(tx, error) {debug(dataname+':create error:'+error.message)}
 			);
-			for(var i in teams) {
-				var tmi = teams[i]
+			for(var i in data) {
+				var dti = data[i]
 				var x1 = []
 				var x2 = []
 				var x3 = []
-				for(var j in tmi){
-					x1.push(j)
+				for(var j in head){
+					x1.push(head[j])
 					x2.push('?')
-					x3.push(tmi[j])
+					x3.push(dti[head[j]])
 				}
-				tx.executeSql("INSERT INTO teams ("+x1+") values("+x2+")", x3,
+				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
-					function(tx, error) {debug('insert tmdata error:'+error.message)
+					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
 				});
 			}
 		});
 	}
 }
 
-function GetDataTm(){
+function GetData(dataname){
+	debug(dataname+':GetData go')
+	var data = []
+	var head = list[dataname].split(',')
+	switch (dataname){
+		case 'players': data = players;	break
+		case 'teams': 	data = teams;	break
+		case 'divs'	: 	data = divs;	break
+		default: return false
+	}
 	if(ff) {
-//		delete globalStorage[location.hostname]['playersvalue']
-//		delete globalStorage[location.hostname]['tasks']
-		var text1 = globalStorage[location.hostname]['teams']
+		var text1 = globalStorage[location.hostname][dataname]
 		if (text1 != undefined){
 			var ttext = String(text1).split(',')
 			for (i in ttext) {
-				var zag = list.split(',')
 				var x = ttext[i].split(':')
 				var curt = []
 				var num = 0
-				for(j in zag){
-					curt[zag[j]] = (x[num]!=undefined ? x[num] : '')
+				for(j in head){
+					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 					num++
 				}
-				teams[curt.id] = []
-				if(curt.id!=undefined) teams[curt.id] = curt
+				data[curt.id] = []
+				if(curt.id!=undefined) data[curt.id] = curt
 			}
-			debug('GetDataTm ok(GS)')
-			GetFinish('get_tm', true)
+			GetFinish('get_'+dataname, true)
 		} else {
-			debug('GetDataTm fail(GS)')
-			GetFinish('get_tm', false)
+			GetFinish('get_'+dataname, false)
 		}			
-
-		debug('GetDataTm empty(GS)')
-		GetFinish('get_tm',true)
 	}else{
 		if(!db) DBConnect()
-		debug('GetDataTm go(DB)')
+		debug(dataname+':GetData(DB)')
 		db.transaction(function(tx) {
 //			tx.executeSql("DROP TABLE IF EXISTS teams")
-			tx.executeSql("SELECT * FROM teams", [],
+			tx.executeSql("SELECT * FROM "+dataname, [],
 				function(tx, result){
-					debug('Select teams ok')
+					debug(dataname+':Select ok')
 					for(var i = 0; i < result.rows.length; i++) {
 						var row = result.rows.item(i)
 						var id = row.tid
-						teams[id] = {}
-						for(j in row) teams[id][j] = row[j]
+						data[id] = {}
+						for(j in row) data[id][j] = row[j]
 					}
-//					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].dname)
-					GetFinish('get_tm',true)
+					GetFinish('get_'+dataname,true)
 				},
 				function(tx, error){
 					debug(error.message)
-					GetFinish('get_tm', false)
-				}
-			)
-		})
-	}
-}
-//
-//////////////// TEAM Section(finish) ////////////////
-//
-//////////////// PLAYERS Section(start) //////////////
-//
-function SaveDataPl(){
-	if(UrlValue('j')==99999 && UrlValue('h')!=1){
-		if(ff){
-			var text = cid + ':'	
-			for(i in players) {
-				var pl = players[i]
-				text += pl.id 		+ ',' 
-				text += pl.tid 		+ ',' 
-				text += pl.num 		+ ',' 
-				text += pl.morale 	+ ',' 
-				text += pl.form 	+ ',' 
-				text += pl.mchange 	+ ',' 
-				text += pl.fchange 	+ ',' 
-				text += pl.value 	+ ',' 
-				text += pl.valuech 	
-				text += '.'
-			}
-			globalStorage[location.hostname]['players'] = text
-			debug('SaveDataPl ok(GS)')
-		}else{
-			debug('SaveDataPl go(DB)')
-			db.transaction(function(tx) {
-				tx.executeSql("DROP TABLE IF EXISTS players",[],
-					function(tx, result){debug('drop pltable ok')},
-					function(tx, error) {debug('drop pltable error' + error.message)}
-				);                                           
-				tx.executeSql("CREATE TABLE IF NOT EXISTS players (id INT, tid INT, num INT, form INT, morale INT, fchange, mchange, value INT, valuech INT)", [],
-					function(tx, result){debug('create pltable ok')},
-					function(tx, error) {debug('create pltable error'+error.message)}
-				);
-				for(var j in players) {
-					var pl = players[j]
-	//				debug(pl.id + ':' + pl.form+'/'+pl.fchange)
-					tx.executeSql("INSERT INTO players (id, tid, num, form, morale, fchange, mchange, value, valuech) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-						[pl.id, pl.tid, pl.num, pl.form, pl.morale, pl.fchange, pl.mchange, pl.value, pl.valuech],
-						function(result){debug('insert pldata ok')},
-						function(tx, error) {debug('insert pldata error:'	+error.message)
-					});
-				}
-			});
-		}
-	}else{
-		debug('SaveDataPl false, cid:' + cid)
-	}
-}
-
-function GetDataPl() {
-	if(ff){
-		// Info for players
-		var text1 = globalStorage[location.hostname]['players']
-		if (text1 != undefined){
-			var pltext = String(text1).split(':',2)[1].split('.')
-			for (i in pltext) {
-				var plsk = pltext[i].split(',')
-				var plx = []
-				plx.id 		= parseInt(plsk[0])
-				plx.tid 	= parseInt(plsk[1])
-				plx.num 	= parseInt(plsk[2])
-				plx.morale 	= parseInt(plsk[3])
-				plx.form 	= parseInt(plsk[4])
-				plx.mchange = parseInt(plsk[5])
-				plx.fchange = parseInt(plsk[6])
-				plx.value 	= parseInt(plsk[7])
-				plx.valuech = parseInt(plsk[8])
-				players2[plx.id] = []
-				players2[plx.id] = plx
-			}
-			debug('GetDataPl ok(GS)')
-			GetFinish('get_pl', true)
-		} else {
-			debug('GetDataPl fail(GS)')
-			GetFinish('get_pl', false)
-		}			
-	}else{
-		debug('GetDataPl go(DB)')
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-//			tx.executeSql("DROP TABLE IF EXISTS team99999pl")
-//			tx.executeSql("DROP TABLE IF EXISTS team1432pl")
-			tx.executeSql("SELECT * FROM players", [], 
-				function(tx, result){
-					debug('Select players ok:')
-					for(var i = 0; i < result.rows.length; i++) {
-						var plid = result.rows.item(i)['id']
-    					players2[plid] = []
-						players2[plid] = result.rows.item(i)
-//						debug(result.rows.item(i)['id'] + ':' +result.rows.item(i)['form'] + '/' + result.rows.item(i)['fchange'])
-					}
-					GetFinish('get_pl',true)
-				}, 
-				function(tx, error){
-					debug(error.message)
-					GetFinish('get_pl', false)
+					GetFinish('get_'+dataname, false)
 				}
 			)
 		})
@@ -407,15 +320,11 @@ function GetInfoPagePl(){
 			GetPl(pn);
 		})
 	})
-	debug('GetInfoPagePl ok')
+	debug('players:GetInfoPagePl ok')
 }
 
-//
-//////////////// PLAYERS Section(finish) //////////////
-//
-
 function ModifyPlayers(){
-	debug('ModifyPlayers go')
+	debug('players:ModifyPlayers go')
 	// Check for update
 	for(i in players) {
 		var pl = players[i]
@@ -423,7 +332,7 @@ function ModifyPlayers(){
 			var pl2 = players2[pl.id]
 			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
 				remember = 1
-				debug('Need pl save '+pl.id+':'+pl.morale +'/'+pl2.morale+':'+pl.form+'/'+pl2.form)
+				debug('players:Need save '+pl.id+':'+pl.morale +'/'+pl2.morale+':'+pl.form+'/'+pl2.form)
 				break;
 			}
 		}
@@ -444,7 +353,7 @@ function ModifyPlayers(){
 		}
 	}
 	// Update page
-	debug('Update players ')
+	debug('players:Update ')
 	for(i in players) {
 		var pl = players[i]
 		$('table#tblRoster tr#tblRosterTr'		+ i + ' td:eq(4)').append(ShowChange(pl['mchange']))
@@ -453,7 +362,7 @@ function ModifyPlayers(){
 		$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(5)').append(ShowChange(pl['fchange']))
 	}
 	// Save if not team21
-	if (UrlValue('h')!=1 && remember==1) SaveDataPl()
+	if (UrlValue('h')!=1 && remember==1) SaveData('players')
 }
 
 function ClearTasks(club_id, club_zad){
@@ -505,9 +414,14 @@ function GetPl(pn){
 }
 function PrintRightInfo(){
 	debug('PrintRightInfo go')
+	if(UrlValue('h')==1) return false
+
 	// print link to skills page
 	if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
-		$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')}
+		$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')
+	}else{
+		$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))">Скиллы игроков</a><br><br>')
+	}
 
 	// print to right menu
 	var thtml = ''
@@ -532,7 +446,7 @@ function PrintRightInfo(){
 function Ready(){
 	countSostav++
 	if(countSostav==countSostavMax){
-		GetFinish('pg_pl', true)
+		GetFinish('pg_players', true)
 /**
 		if(team.wage > 0){ // if VIP
 
@@ -737,14 +651,14 @@ function ShowSkills(param){
 			.attr('cellspacing','1')
 			.attr('cellpadding','1')
 			.after('<div id="filter">&nbsp;</div>')
-			.before('<a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a>')
+			.before('<a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a><br>')
 			.html(filter)
 		$('span#tskills').html('Ростер команды')
 		$('a#tskills').attr('href','')
 		ShowFilter()
 //		ShowSkills(2)
 		
-		var sumpl = '<table id="SumPl" width=50%>'
+		var sumpl = '<table id="SumPl" width=50% align=right>'
 		sumpl += '<tr><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
 		sumpl += '</table>'
 		$('table#tblRostSkillsFilter').after(sumpl)
