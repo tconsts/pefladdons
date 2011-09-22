@@ -435,7 +435,7 @@ function Ready(){
 			if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
 				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')
 			}else{
-				$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))"><span>Скиллы игроков</span></a><br><br>')
+				$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))">Скиллы игроков</a><br><br>')
 			}
 
 			var sumvaluechange = 0
