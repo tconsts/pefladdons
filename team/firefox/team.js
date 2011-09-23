@@ -15,6 +15,7 @@ if(typeof (deb) == 'undefined') deb = false
 var debnum = 0
 var type 	= 'num'
 
+var sumP = 0
 var countSostav = 0
 var players = []
 var pls = []
@@ -185,7 +186,8 @@ function HidePl(num,fl){
 	ShowSumPlayer()	
 }
 
-function ShowSumPlayer(){
+function ShowSumPlayer(p){
+	if(p!=undefined) sumP = p
 	var ld = {'sum':0,'mx':0,'mn':0,'num':0}
 	var head = []
 	sumplarr = {}
@@ -205,18 +207,18 @@ function ShowSumPlayer(){
 		})
 	})
 
-	$('table#SumPl tr:gt(0)').remove()
+	$('table#SumPl tr#sumsk').remove()
 	var tr = true
 	var sumpl = ''
 	for(i in sumplarr){
 		var param = sumplarr[i]
-		var text = (param.num==0 ? ' ' : (param.sum/param.num).toFixed(1) + (param.num>1 && param.mn!=param.mx ? ' ('+param.mn+'-'+param.mx+')' : ''))
-		sumpl += (tr ? '<tr bgcolor=#a3de8f>' : '')
+		var text = (param.num==0 ? ' ' : (param.sum/param.num).toFixed(sumP) + (param.num>1 && param.mn!=param.mx ? ' ('+param.mn+'-'+param.mx+')' : ''))
+		sumpl += (tr ? '<tr id="sumsk" bgcolor=#a3de8f>' : '')
 		sumpl += '<td width=30%>'+skills[i]+'</td><td width=20%>'+text+'</td>'
 		sumpl += (tr ? '' : '</tr>')
 		tr = (tr ? false : true)
 	}   
-	$('table#SumPl').append(sumpl)
+	$('table#SumPl tr#sumhead').after(sumpl)
 }
 
 function CountSkills(tdid){
@@ -284,7 +286,8 @@ function ShowSkills(param){
 		ShowFilter()
 
 		var sumpl = '<table id="SumPl" width=50%>'
-		sumpl += '<tr><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
+		sumpl += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
+		sumpl += '<tr id="sumlast"><td colspan=4 align=right id="sumlast"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></tr>'
 		sumpl += '</table>'
 		$('table#tblRostSkillsFilter').after(sumpl)
 		$('table#SumPl').hide()
@@ -435,7 +438,7 @@ function Ready(){
 			if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
 				$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')
 			}else{
-				$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))">Скиллы игроков</a><br><br>')
+				$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a><br><br>')
 			}
 
 			var sumvaluechange = 0
