@@ -702,7 +702,7 @@ function EditFinance(){
 			else if (fin >= 6000000) 	{txt = 'отличное';				txt2 = '6$м - 15$м'}
 			else if (fin >= 3000000) 	{txt = 'благополучное';			txt2 = '3$м - 6$м'}
 			else if (fin >= 1000000) 	{txt = 'нормальное';			txt2 = '1$м - 3$м'}
-			else if (fin >= 500000) 	{txt = 'среднее';				txt2 = '500$т - 1$т'}
+			else if (fin >= 500000) 	{txt = 'среднее';				txt2 = '500$т - 1$м'}
 			else if (fin >= 200000) 	{txt = 'бедное';				txt2 = '200$т - 500$т'}
 			else if (fin >=0) 			{txt = 'жалкое';				txt2 = '1$т - 200$т'}
 			else if (fin < 0) 			{txt = 'банкрот';				txt2 = 'меньше 0'}
