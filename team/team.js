@@ -23,6 +23,9 @@ var list = {
 	'teams':	'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace,scbud,screit,tfin',
 	'divs':		'did,dname,dnum,dprize'
 }
+var sumP = 0
+var sumH = false
+
 var countSostav = 0
 var countSk = [0]
 var nom = 0
@@ -526,7 +529,7 @@ function EditFinance(){
 			else if (fin >=  6000000) 	{txt = 'отличное';				txt2 = '6$м-15$м'}
 			else if (fin >=  3000000) 	{txt = 'благополучное';			txt2 = '3$м-6$м'}
 			else if (fin >=  1000000) 	{txt = 'нормальное';			txt2 = '1$м-3$м'}
-			else if (fin >=   500000) 	{txt = 'среднее';				txt2 = '500$т-1$т'}
+			else if (fin >=   500000) 	{txt = 'среднее';				txt2 = '500$т-1$м'}
 			else if (fin >=   200000) 	{txt = 'бедное';				txt2 = '200$т-500$т'}
 			else if (fin >=		   0)	{txt = 'жалкое';				txt2 = '1$т-200$т'}
 			else if (fin < 		   0)	{txt = 'банкрот';				txt2 = 'меньше 0'}
@@ -670,7 +673,9 @@ function ShowSkills(param){
 //		ShowSkills(2)
 		
 		var sumpl = '<table id="SumPl" width=50% align=right>'
-		sumpl += '<tr><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
+		sumpl += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
+		sumpl += '<tr id="sumlast1"><td colspan=4 align=right id="sumlast1"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></td></tr>'
+		sumpl += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
 		sumpl += '</table>'
 		$('table#tblRostSkillsFilter').after(sumpl)
 		$('table#SumPl').hide()
@@ -696,7 +701,7 @@ function ShowSkills(param){
 		if(pf[i]!=undefined){
 			var tr ='<tr height=20 id="'+pf[i].position+'">'
 			for(j in hd2) {
-				var tdcolor = (countSk[j] == 1 ? ' bgcolor=white' : '')
+				var tdcolor = (countSk[j] == 1 ? ' id=colw bgcolor=white' : '')
 				var skn = hd2[j]
 				var key1 = pf[i][skills[skn.split('<br>')[0]]]
 				var key2 = pf[i][skills[skn.split('<br>')[1]]]
@@ -716,8 +721,6 @@ function ShowSkills(param){
 
 	// Run filter
 	Filter(3,'')
-	$('table#tblRostSkills tr:even').attr('bgcolor','a3de8f')
-	$('table#tblRostSkills tr:odd').attr('bgcolor','C9F8B7')
 }
 
 function HidePl(num,fl){
@@ -732,10 +735,16 @@ function HidePl(num,fl){
 			$(this).removeAttr('style')
 		})
 	}
-	ShowSumPlayer()	
+	ShowSumPlayer()
 }
 
-function ShowSumPlayer(){
+function ShowHols(p){
+	sumH = (sumH ? false : true)
+	ShowSumPlayer()
+}
+
+function ShowSumPlayer(p){
+	if(p!=undefined) sumP = p
 	debug('ShowSumPlayer go')
 	var ld = {'sum':0,'mx':0,'mn':0,'num':0}
 	var head = []
@@ -756,18 +765,34 @@ function ShowSumPlayer(){
 		})
 	})
 
-	$('table#SumPl tr:gt(0)').remove()
+	$('table#SumPl tr#sumsk').remove()
 	var tr = true
 	var sumpl = ''
 	for(i in sumplarr){
 		var param = sumplarr[i]
-		var text = (param.num==0 ? ' ' : (param.sum/param.num).toFixed(2) + (param.num>1 ? ' ('+param.mn+':'+param.mx+')' : ''))
-		sumpl += (tr ? '<tr bgcolor=#a3de8f>' : '')
+		var text = (param.num==0 ? ' ' : (param.sum/param.num).toFixed(sumP) + (param.num>1 ? ' ('+param.mn+':'+param.mx+')' : ''))
+		sumpl += (tr ? '<tr id="sumsk" bgcolor=#a3de8f>' : '')
 		sumpl += '<td width=30%>'+skills[i]+'</td><td width=20%>'+text+'</td>'
 		sumpl += (tr ? '' : '</tr>')
 		tr = (tr ? false : true)
 	}   
-	$('table#SumPl').append(sumpl)
+	$('table#SumPl tr#sumhead').after(sumpl)
+	if(sumH){
+		$('table#tblRostSkills tr:gt(0):visible').each(function(){
+
+			$(this).find('td#colw').each(function(i, val){
+				$(val).attr('id','colwy').attr('bgcolor', '#E9B96E')
+			})
+			$(this).find('td:[id!=colwy]').each(function(i, val){
+				$(val).attr('id','coly').attr('bgcolor', '#FCE94F')
+			})
+		})
+	}else {
+		$('table#tblRostSkills tr:visible').each(function(){
+			$(this).find('td#colwy').attr('bgcolor','white').attr('id','colw')
+			$(this).find('td#coly').removeAttr('bgcolor').removeAttr('id')
+		})
+	}
 }
 
 function ShowFilter(){
@@ -826,6 +851,8 @@ function Filter(num,p){
 		for (l in pos2) if(sumpos2==0 || (position.indexOf(l)>-1 && pos2[l]==1)) lmark=1
 		if((kmark==1 && lmark==1) || sumpos == 0) $(val).show()
 	})
+	$('table#tblRostSkills tr:visible:even').attr('bgcolor','a3de8f')
+	$('table#tblRostSkills tr:visible:odd').attr('bgcolor','C9F8B7')
 	ShowSumPlayer()
 }
 
