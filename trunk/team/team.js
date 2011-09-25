@@ -20,11 +20,12 @@ var remember = 0
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
-	'teams':	'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace,scbud,screit,tfin',
-	'divs':		'did,dname,dnum,dprize'
+	'teams':	'tid,my,tdate,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,mname,tss,pnum,tplace,scbud,screit,tfin',
+	'divs':		'did,my,dname,dnum,dprize'
 }
 var sumP = 0
 var sumH = false
+var MyNick = ''
 
 var countSostav = 0
 var countSk = [0]
@@ -44,6 +45,8 @@ $().ready(function() {
 	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	cid = parseInt($('td.back4 table:first table td:first').text())
 	teams[cid] = {}
+	var srch='Вы вошли как '
+	MyNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 
 	today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
@@ -71,13 +74,13 @@ $().ready(function() {
 		preparedhtml += '</table><br>'
 		preparedhtml += '<a id="players" href="javascript:void(Print(\'players\'))">Игроки</a><br>'
 		preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">Команды</a><br>'
-		preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">Дивизионы</a><br>'
+//		preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">Дивизионы</a><br>'
 		$("#crabright").html(preparedhtml)
 		EditFinance();
 
 		GetData('teams')
 		GetData('players')
-		GetData('divs')
+//		GetData('divs')
 
 		countSostavMax  = $('tr[id^=tblRosterTr]').length
 		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
@@ -130,10 +133,6 @@ function GetFinish(type, res){
 /**/
 }
 
-function PrintDivs(){
-	debug('divs:PrintDivs')
-}
-
 function ModifyTeams(){
 	debug('teams:Modify')
 	//teams and team_cur
@@ -169,6 +168,7 @@ function GetInfoPageTm(){
 	team_cur.pnum	= countSostavMax
 	team_cur.scbud	= $('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0]
 	team_cur.screit	= $('table.layer1 td.l2:eq(1)').text().split(': ',2)[1].split(' (')[0]
+	team_cur.my		= (team_cur.mname == MyNick ? true : false)
 	GetFinish('pg_teams', true)
 }
 
@@ -196,7 +196,7 @@ function Print(dataname){
 
 function SaveData(dataname){
 	debug(dataname+':SaveData')
-	if(UrlValue('h')==1 || (dataname=='teams' && UrlValue('j')==99999)) return false
+	if(UrlValue('h')==1 || (dataname=='players' && UrlValue('j')==99999)) return false
 
 	var data = []
 	var head = list[dataname].split(',')
@@ -237,7 +237,7 @@ function SaveData(dataname){
 					x2.push('?')
 					x3.push(dti[head[j]])
 				}
-//				debug(dataname+':s'+x3[head[0]])
+//				debug(dataname+':s'+x3['0']+'_'+x3['1'])
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
 					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
@@ -290,7 +290,7 @@ function GetData(dataname){
 						var id = row[head[0]]
 						data[id] = {}
 						for(j in row) data[id][j] = row[j]
-//						debug(dataname+':g'+id+':'+data[id]['num'])
+						debug(dataname+':g'+id+':'+data[id].my)
 					}
 					GetFinish('get_'+dataname,true)
 				},
