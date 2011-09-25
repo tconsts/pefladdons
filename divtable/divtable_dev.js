@@ -13,7 +13,11 @@ var teams = []
 var divs = []
 var div_cur = {}
 var m = []
-var list = 'tid,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,tdate,mname,mid,tss,pnum,tplace,scbud,screit,tfin'
+var list = {
+	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
+	'teams':	'tid,my,tdate,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,mname,tss,pnum,tplace,scbud,screit,tfin',
+	'divs':		'did,my,dname,dnum,dprize'
+}
 
 var diap = []
 var url = {}
@@ -41,7 +45,8 @@ $().ready(function() {
 	text += '<div id="showtasks"><a href="javascript:void(SetTasks(1))">Показать задачи</a>&nbsp;</div>'
 	text += '<div id="showstadio"><a href="javascript:void(SetTasks(2))">Показать стадионы</a>&nbsp;</div>'
 	text += '<div id="showfinance"><a href="javascript:void(SetFin())">Показать финансы</a>&nbsp;</div>'
-	text += '<br><br><a id="teams" href="javascript:void(PrintTeams())">Команды</a><br>'
+	text += '<br><br><a id="teams" href="javascript:void(Print(\'teams\'))">Команды</a><br>'
+	text += '<a id="teams" href="javascript:void(Print(\'divs\'))">Дивизионы</a><br>'
 
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
@@ -53,7 +58,8 @@ $().ready(function() {
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text)
 
-	if(!UrlValue('h')) GetDataTm()
+	GetData('teams')
+//	GetData('divs')
 
 }, false);
 
@@ -61,119 +67,138 @@ $().ready(function() {
 function GetFinish(type, res){
 	debug(type + ' ' + res + ' ')
 	m[type] = res;
-	if(m.get_tm!=undefined){
+	if(m.get_teams!=undefined){
 		CountryInfoGet()
 	}
 
 	//PrintRightInfo()
 }
 
-function GetDataTm(){
-	if(ff) {
-//		delete globalStorage[location.hostname]['playersvalue']
-//		delete globalStorage[location.hostname]['tasks']
-		var text1 = globalStorage[location.hostname]['teams']
-		if (text1 != undefined){
-			var ttext = String(text1).split(',')
-			for (i in ttext) {
-				var zag = list.split(',')
-				var x = ttext[i].split(':')
-				var curt = []
-				var num = 0
-				for(j in zag){
-					curt[zag[j]] = (x[num]!=undefined ? x[num] : '')
-					num++
-				}
-				if(curt.id!=undefined) teams[curt.id] = curt
-			}
-			debug('GetDataTm ok(GS)')
-			GetFinish('get_tm', true)
-		} else {
-			debug('GetDataTm fail(GS)')
-			GetFinish('get_tm', false)
-		}			
+function SaveData(dataname){
+	debug(dataname+':SaveData')
+	if(UrlValue('h')==1 || (dataname=='teams' && UrlValue('j')==99999)) return false
 
-		debug('GetDataTm empty(GS)')
-		GetFinish('get_tm',true)
-	}else{
-		if(!db) DBConnect()
-		debug('GetDataTm go(DB)')
-		db.transaction(function(tx) {
-//			tx.executeSql("DROP TABLE IF EXISTS teams")
-			tx.executeSql("SELECT * FROM teams", [],
-				function(tx, result){
-					debug('Select teams ok')
-					for(var i = 0; i < result.rows.length; i++) {
-						var row = result.rows.item(i)
-						var id = row.tid
-						teams[id] = {}
-						for(j in row) teams[id][j] = row[j]
-					}
-//					for(var i in teams) debug('g'+teams[i].tid+ '_' + teams[i].tdate + '_' + teams[i].did)
-					GetFinish('get_tm',true)
-				},
-				function(tx, error){
-					debug(error.message)
-					GetFinish('get_tm', false)
-				}
-			)
-		})
+	var data = []
+	var head = list[dataname].split(',')
+	switch (dataname){
+		case 'players':	data = players;	break
+		case 'teams': 	data = teams;	break
+		case 'divs': 	data = divs;	break
+		default: 		return false
 	}
-}
-
-function SaveDataTm(){
 	if(ff) {
 		var text = ''
-		for (var i in teams) {
-			if(typeof(teams[i])!='undefined') {
-				var tmi = teams[i]
-				var zag = list.split(',')
-				text += tmi.tid
-				for(var j in zag) text += ':' + (tmi[zag[j]]==undefined ? '' : tmi[zag[j]])
+		for (var i in data) {
+			if(typeof(data[i])!='undefined') {
+				var dti = data[i]
+				text += dti[head[0]]
+				for(var j in head) text += ':' + (dti[head[j]]==undefined ? '' : dti[head[j]])
 				text += ','
 			}
 		}
-		globalStorage[location.hostname]['teams'] = text
-		debug('SaveDataTM ok(GS)')
+		globalStorage[location.hostname][dataname] = text
 	}else{
-		debug('SaveDataTM go(DB)')
 		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS teams",[],
+			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
 				function(tx, result){},
-				function(tx, error) {debug('drop tmtable error' + error.message)}
+				function(tx, error) {debug(dataname+':drop error:' + error.message)}
 			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS teams ("+list+")", [],
-				function(tx, result){debug('create tmtable ok')},
-				function(tx, error) {debug('create tmtable error'	+error.message)}
+			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+list[dataname]+")", [],
+				function(tx, result){debug(dataname+':create ok')},
+				function(tx, error) {debug(error.message)}
 			);
-			for(var i in teams) {
-				var tmi = teams[i]
-				var zag1 = []
-				var zag2 = []
-				var zag3 = []
-				for(var j in tmi){
-					zag1.push(j)
-					zag2.push('?')
-					zag3.push(tmi[j])
+			for(var i in data) {
+				var dti = data[i]
+				var x1 = []
+				var x2 = []
+				var x3 = []
+				for(var j in head){
+					x1.push(head[j])
+					x2.push('?')
+					x3.push(dti[head[j]])
 				}
-				tx.executeSql("INSERT INTO teams ("+zag1+") values("+zag2+")", zag3,
+//				debug(dataname+':s'+x3[0]+'_'+x3[1])
+				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
-					function(tx, error) {debug('insert tmdata error:'+error.message)
+					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
 				});
 			}
 		});
 	}
 }
 
-function PrintTeams(){
-	var zag = list.split(',')
+function GetData(dataname){
+	debug(dataname+':GetData')
+	var data = []
+	var head = list[dataname].split(',')
+	switch (dataname){
+		case 'players': data = players2;break
+		case 'teams': 	data = teams;	break
+		case 'divs'	: 	data = divs;	break
+		default: return false
+	}
+	if(ff) {
+		var text1 = globalStorage[location.hostname][dataname]
+		if (text1 != undefined){
+			var ttext = String(text1).split(',')
+			for (i in ttext) {
+				var x = ttext[i].split(':')
+				var curt = []
+				var num = 0
+				for(j in head){
+					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
+					num++
+				}
+				data[curt[head[0]]] = []
+				if(curt[head[0]]!=undefined) data[curt.id] = curt
+			}
+			GetFinish('get_'+dataname, true)
+		} else {
+			GetFinish('get_'+dataname, false)
+		}			
+	}else{
+		if(!db) DBConnect()
+		db.transaction(function(tx) {
+//			tx.executeSql("DROP TABLE IF EXISTS players")
+//			tx.executeSql("DROP TABLE IF EXISTS teams")
+//			tx.executeSql("DROP TABLE IF EXISTS divs")
+			tx.executeSql("SELECT * FROM "+dataname, [],
+				function(tx, result){
+					debug(dataname+':Select ok')
+					for(var i = 0; i < result.rows.length; i++) {
+						var row = result.rows.item(i)
+						var id = row[head[0]]
+						data[id] = {}
+						for(j in row) data[id][j] = row[j]
+//						debug(dataname+':g'+id+':'+data[id].my)
+					}
+					GetFinish('get_'+dataname,true)
+				},
+				function(tx, error){
+					debug(error.message)
+					GetFinish('get_'+dataname, false)
+				}
+			)
+		})
+	}
+}
+
+function Print(dataname){
+	var head = list[dataname].split(',')
+	var data = []
+	switch (dataname){
+		case 'players': data = players;	break
+		case 'teams': 	data = teams;	break
+		case 'divs'	: 	data = divs;	break
+		default: return false
+	}
 	var text = '<table width=100% border=1>'
 	text+= '<tr>'
-	for(j in zag) text += '<th>'+zag[j]+'</th>'
+	for(j in head) text += '<th>'+head[j]+'</th>'
 	text+= '</tr>'
-	for(i in teams){
+	for(i in data){
 		text += '<tr>'
-		for(j in zag) text += '<td>' + (teams[i][zag[j]]!=undefined ? teams[i][zag[j]] : '_')  + '</td>'
+		for(j in head) text += '<td>' + (data[i][head[j]]!=undefined ? data[i][head[j]] : '_')  + '</td>'
 		text += '</tr>'
 	}
 	text += '</table>'
@@ -193,23 +218,8 @@ function DBConnect(){
 	else 	{debug('Open DB PEFL ok.')}
 }
 
-function CountryInfoGet(){
-	debug('CountryInfoGet')
-
-	div_cur.dpriz = ''
-	div_cur.nname = $('td.back4 td.back1').text().split(', ')[0]
-	div_cur.dname = $('td.back4 td.back1').text().split(', ')[1]
-	$('a[href*="p=refl&t=s&k=0&"]').each(function(i, val){
-		if($(val).text() == div_cur.dname) {
-			div_cur.dnum = i+1
-			div_cur.did = UrlValue('j',$(val).attr('href'))
-		}
-	})
-	debug(div_cur.dname)
-	debug(div_cur.nname)
-	debug('div_cur.did:'+div_cur.did)
-	debug('div_cur.dnum:'+div_cur.dnum)
-
+function ModifyTeams(){
+	debug('ModifyTeams')
 	$('td.back4 table:first table:first tr:gt(0)').each(function(i, val){
 		var id = parseInt(UrlValue('n',$(val).find('a:has(u)').attr('href')))
 		if(typeof(teams[id])=='undefined') {
@@ -219,12 +229,42 @@ function CountryInfoGet(){
 		}
 		teams[id].tplace = i+1
 		teams[id].did = div_cur.did
-//		debug('p'+id+'_'+teams[id].did +'_'+ div_cur.did)
+//		debug('p'+id+'_'+teams[id].my +'_'+ div_cur.did)
 	})
-//	for (var i in teams) debug('p'+i+'_'+teams[i].did)
+	SaveData('teams')
+}
 
-	SaveDataTm()
+function ModifyDivs(){
+	debug('ModifyDivs')
+	var divt = []
+	for(var i in div_cur){
+		divt[i] = (div_cur[i] != '' ? div_cur[i] : (divs[did][i]!=undefined ? divs[did][i] : ''))
+	}
+	divs[did] = dvt
+//	SaveData('divs')
+}
 
+function GetInfoPageDiv(){
+	debug('GetInfoDivs')
+	div_cur.dpriz = ''
+	div_cur.nname = $('td.back4 td.back1').text().split(', ')[0]
+	div_cur.dname = $('td.back4 td.back1').text().split(', ')[1]
+	$('a[href*="p=refl&t=s&k=0&"]').each(function(i, val){
+		if($(val).text() == div_cur.dname) {
+			div_cur.dnum = i+1
+			div_cur.did = UrlValue('j',$(val).attr('href'))
+		}
+	})
+	div_cur.my = false
+
+	debug(div_cur.dname)
+	debug(div_cur.nname)
+	debug('div_cur.did:'+div_cur.did)
+	debug('div_cur.dnum:'+div_cur.dnum)
+}
+
+function CountryInfoGet(){
+	debug('CountryInfoGet')
 /**
 	var tDiv = ''
 	var tPos = 0
