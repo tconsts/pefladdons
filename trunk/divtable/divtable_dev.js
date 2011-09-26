@@ -16,7 +16,7 @@ var m = []
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
 	'teams':	'tid,my,tdate,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,mname,tss,pnum,tplace,scbud,screit,tfin',
-	'divs':		'did,my,dname,dnum,dprize'
+	'divs':		'did,my,nname,dname,dnum,drotate,dprize'
 }
 
 var diap = []
@@ -58,17 +58,24 @@ $().ready(function() {
 	$('#crabrighttable').addClass('border') 
 	$("#crabright").html(text)
 
+	GetInfoPageDiv()
 	GetData('teams')
-//	GetData('divs')
+	GetData('divs')
 
 }, false);
 
 
 function GetFinish(type, res){
-	debug(type + ' ' + res + ' ')
+	debug(type + '(' + res + ')')
 	m[type] = res;
-	if(m.get_teams!=undefined){
-		CountryInfoGet()
+
+	if(m.teams==undefined && m.get_teams!=undefined && m.get_pgdivs){
+		m.teams = true
+		ModifyTeams()
+	}
+	if(m.divs==undefined && m.get_divs!=undefined && m.get_pgdivs){
+		m.divs = true
+		ModifyDivs()
 	}
 
 	//PrintRightInfo()
@@ -237,59 +244,34 @@ function ModifyTeams(){
 function ModifyDivs(){
 	debug('ModifyDivs')
 	var divt = []
+	var id = div_cur.did
+	if(typeof(divs[id])=='undefined') divs[id] = {}
 	for(var i in div_cur){
-		divt[i] = (div_cur[i] != '' ? div_cur[i] : (divs[did][i]!=undefined ? divs[did][i] : ''))
+		divt[i] = (div_cur[i] != '' ? div_cur[i] : (divs[id][i]!=undefined ? divs[id][i] : ''))
 	}
-	divs[did] = dvt
-//	SaveData('divs')
+	divs[id] = divt
+	SaveData('divs')
 }
 
 function GetInfoPageDiv(){
 	debug('GetInfoDivs')
-	div_cur.dpriz = ''
 	div_cur.nname = $('td.back4 td.back1').text().split(', ')[0]
 	div_cur.dname = $('td.back4 td.back1').text().split(', ')[1]
+	div_cur.my = false
 	$('a[href*="p=refl&t=s&k=0&"]').each(function(i, val){
 		if($(val).text() == div_cur.dname) {
 			div_cur.dnum = i+1
 			div_cur.did = UrlValue('j',$(val).attr('href'))
 		}
 	})
-	div_cur.my = false
+	div_cur.dprize = ''
+	div_cur.drotate = ''
 
-	debug(div_cur.dname)
-	debug(div_cur.nname)
-	debug('div_cur.did:'+div_cur.did)
-	debug('div_cur.dnum:'+div_cur.dnum)
+	for(i in div_cur) debug('d'+i+':'+div_cur[i])
+
+	GetFinish('get_pgdivs',true)
 }
 
-function CountryInfoGet(){
-	debug('CountryInfoGet')
-/**
-	var tDiv = ''
-	var tPos = 0
-
-	var tdiv = getCookie('teamdiv');
-//	$('td.back4').prepend(tdiv)
-	var tdivarr = []
-	if(tdiv != false) {
-		tdivarr = tdiv.split('!')
-		var tplace = parseInt($('a[href*="&n='+tdivarr[0]+'&"]:has(u)').text())
-		if(tplace!= '' && !isNaN(tplace)){
-			tdivarr[2] = $('td.back4 td.back1').text().split(', ')[1]
-			tdivarr[3] = tplace
-			var ck = ''
-			ck = tdivarr.join('!')
-
-			setCookie('teamdiv',ck);
-
-			if(tdivarr[4]!=undefined && tdivarr[4]!=''){
-				$("#crabright").append('<div id="showpriz"><a href="javascript:void(ShowPriz(\''+tdivarr[4]+'\'))">Показать призовые</a>&nbsp;</div>')
-			}
-    	}
-	}
-/**/
-}
 function ShowPriz(x){
 	var y = x.split('-')
 	$('td.back1 span.text2b').append(' (призовые)')
