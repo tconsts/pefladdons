@@ -16,7 +16,7 @@ var m = []
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
 	'teams':	'tid,my,tdate,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,mname,tss,pnum,tplace,scbud,screit,tfin',
-	'divs':		'did,my,nname,dname,dnum,drotate,dprize'
+	'divs':		'did,my,nname,dname,dnum,drotate,drotcom,dprize'
 }
 
 var diap = []
@@ -250,6 +250,8 @@ function ModifyDivs(){
 		divt[i] = (div_cur[i] != '' ? div_cur[i] : (divs[id][i]!=undefined ? divs[id][i] : ''))
 	}
 	divs[id] = divt
+
+	if(divs[id].drotcom!='') $('td.back4 table:eq(1)').after('<br><i><b>Выдержка из правил о переходах команд между дивизионами</b>:<br>*'+divs[id].drotcom+'</i><br>')
 	SaveData('divs')
 }
 
@@ -264,8 +266,9 @@ function GetInfoPageDiv(){
 			div_cur.did = UrlValue('j',$(val).attr('href'))
 		}
 	})
-	div_cur.dprize = ''
+	div_cur.dprize  = ''
 	div_cur.drotate = ''
+	div_cur.drotcom = ''
 
 	for(i in div_cur) debug('d'+i+':'+div_cur[i])
 

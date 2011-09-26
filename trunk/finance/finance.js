@@ -15,7 +15,7 @@ var debnum = 0
 var db = false
 var divs = []
 var list = {
-	'divs':	'did,my,nname,dname,dnum,drotate,dprize'
+	'divs':	'did,my,nname,dname,dnum,drotate,drotcom,dprize'
 }
 var m = []
 
@@ -49,31 +49,50 @@ function ModifyDivs(){
 		var divt = divs[i]
 		GetDivInfo(divt.did,divt.nname,divt.dnum)
 	}
+	SaveData('divs')
 }
 
 function GetDivInfo(did,nname,dnum){
-	var div_cur = {}
+//	var div_cur = {}
 
 	$('td.back4 table:eq(1) tr').each(function(i,val){
-		var cur_nname = $(val).find('td:first').text()
-		if(cur_nname == nname){
-			$(val).find('td:first').attr('bgcolor', 'white')
+		if(nname == $(val).find('td:first').text()){
+			$(val).find('td:first').attr('bgcolor', 'yellow')
 			$('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(2)').attr('bgcolor', 'white')
 			$('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(3)').attr('bgcolor', 'white')
 
-   			up 	= parseInt($('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(2)').html())
-			down= parseInt($('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(3)').html())
-			div_cur.drotate = (isNaN(up) ? 0 : up) + ',' + (isNaN(down) ? 0 : down)
+   			var up 	= parseInt($('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(2)').html())
+			var upc = parseInt($('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(2) sup').text())
 
-			debug(did +':'+nname+':'+dnum+':'+ div_cur.drotate)
+			var down  = parseInt($('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(3)').html())
+			var downc = parseInt($('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(3) sup').text())
+
+			drotcomlink = '' 
+			if(!isNaN(upc) && !isNaN(downc)) drotcomlink = upc
+			else if (!isNaN(upc)) 		 	 drotcomlink = upc
+			else if (!isNaN(downc))			 drotcomlink = downc
+
+			drotcom = (drotcomlink!='' ? $('td.back4 table:eq(1) ~ b:has(sup:contains('+drotcomlink+'):first)').html() : '')
+//			drotcom = (drotcomlink!='' ? $('td.back4 table:eq(1) ~ b:first').text() : '')
+
+			debug(did+':'+drotcom)
+
+			divs[did].drotate = (isNaN(up) ? 0 : up) + ',' + (isNaN(down) ? 0 : down)
+			divs[did].drotcom = drotcom
+//			debug(did +':'+nname+':'+dnum+':'+ div_cur.drotate)
 		}
 	})
 	$('td.back4 table:eq(2) tr:gt(0)').each(function(i,val){
-		var cur_nname = $(val).find('td:first b').text()
-		if(cur_nname == nname){
-			div_cur.dprize = $('td.back4 table:eq(2) tr:eq('+(i+dnum)+')').text()
+		if(nname == $(val).find('td:first b').text()){
+			$('td.back4 table:eq(2) tr:eq('+(i+1)+')').attr('bgcolor', 'yellow')
+			$('td.back4 table:eq(2) tr:eq('+(i+dnum+1)+')').attr('bgcolor', 'white')
 
-			debug(did+':'+div_cur.dprize)
+			var dprize = []
+			$('td.back4 table:eq(2) tr:eq('+(i+dnum+1)+') td').each(function(){
+				dprize.push(parseInt($(this).text()))
+			})
+			divs[did].dprize = dprize.join(',')
+//			debug(did+':'+div_cur.dprize)
 		}
 	})
 }
