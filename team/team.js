@@ -30,8 +30,9 @@ var MyNick = ''
 var countSostav = 0
 var countSk = [0]
 var nom = 0
-var zp = 0
-var sk = 0
+var zp  = 0
+var sk  = 0
+var age = 0
 var pos1 = {'C' :0}
 var pos2 = {'GK':0}
 var skills = {
@@ -157,6 +158,7 @@ function GetInfoPageTm(){
 	team_cur.twage	= 0
 	team_cur.tvalue	= 0
 	team_cur.tss	= 0
+	team_cur.age	= 0
 	team_cur.tplace	= ''
 	team_cur.sname	= $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
 	team_cur.ssize	= $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
@@ -422,6 +424,7 @@ function GetPl(pn){
 
 	team_cur.tvalue	+= players[pn].value/1000
 	team_cur.tss	+= players[pn].sumskills
+	team_cur.age	+= players[pn].age
 	$('table#pl'+pn).remove()
 	//debug('GetPl ok: '+pn+' '+players[pn].id)
 	Ready()
@@ -451,9 +454,13 @@ function PrintRightInfo(){
 	thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
 	thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
 	thtml += '</th></tr>'
-	thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
 	thtml += (team_cur.tss/countSostavMax).toFixed(2) + '&nbsp;'
 	thtml += '</th><td></td></tr>'
+	thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += (team_cur.age/countSostavMax).toFixed(2) + '&nbsp;'
+	thtml += '</th><td></td></tr>'
+
 	$('#crabright table:first').append(thtml)
 }
 
@@ -606,6 +613,25 @@ function ShowPlayersZp(){
 	} else {
 		zp = 0
 		$('tr#zp').remove()
+	}
+}
+
+function ShowPlayersAge(){
+	if(age==0) {
+		age = 1
+		var text = ''
+		var pls = players.sort(sAge)
+		for(i in pls) {
+			text += '<tr id="age">'
+			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td align=right>' + (pls[i].age+'&nbsp;').fontsize(1) + '</td>'
+			text += '<td>&nbsp;</td>'
+			text += '</tr>'
+		}
+		$('#osage').after(text + '<tr id="age"><td>&nbsp;</td></tr>')
+	} else {
+		age = 0
+		$('tr#age').remove()
 	}
 }
 
@@ -910,6 +936,11 @@ function sValue(i, ii) { // По value (убыванию)
 function sZp(i, ii) { // По zp (убыванию)
     if 		(i.wage < ii.wage)	return  1
     else if	(i.wage > ii.wage)	return -1
+    else						return  0
+}
+function sAge(i, ii) { // По zp (убыванию)
+    if 		(i.age < ii.age)	return  1
+    else if	(i.age > ii.age)	return -1
     else						return  0
 }
 
