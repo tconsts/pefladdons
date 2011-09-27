@@ -2,12 +2,7 @@
 // @name           peflteam
 // @namespace      pefl
 // @description    roster team page modification
-// @include        http://www.pefl.ru/plug.php?p=refl&t=k&j=*
-// @include        http://pefl.ru/plug.php?p=refl&t=k&j=*
-// @include        http://www.pefl.net/plug.php?p=refl&t=k&j=*
-// @include        http://pefl.net/plug.php?p=refl&t=k&j=*
-// @include        http://www.pefl.org/plug.php?p=refl&t=k&j=*
-// @include        http://pefl.org/plug.php?p=refl&t=k&j=*
+// @include        http://*pefl.*/plug.php?p=refl&t=k&j=*
 // @version			1.1
 // ==/UserScript==
 
@@ -21,8 +16,9 @@ var players = []
 var pls = []
 var countSk = [0]
 var nom = 0
-var zp = 0
-var sk = 0
+var zp  = 0
+var sk  = 0
+var age = 0
 var team = {
 	'wage'	: 0,
 	'wage2'	: 0,
@@ -32,7 +28,11 @@ var team = {
 	'value3': 0,
 	'ss'	: 0,
 	'ss2'	: 0,
-	'ss3'	: 0
+	'ss3'	: 0,
+	'age'	: 0,
+	'age2'	: 0,
+	'age3'	: 0
+
 }
 var skills = {
 	'N'	  : 'pn',
@@ -352,6 +352,11 @@ function sZp(i, ii) { // По zp (убыванию)
     else if	(i.wage > ii.wage)	return -1
     else						return  0
 }
+function sAge(i, ii) { // По age (убыванию)
+    if 		(i.age < ii.age)	return  1
+    else if	(i.age > ii.age)	return -1
+    else						return  0
+}
 
 function PlayersInfoGet(){
 	$('tr[id^=tblRosterTr]').each(function(i,val){
@@ -426,6 +431,7 @@ function GetPl(pn){
 	team.wage	+= players[pn].wage
 	team.value	+= players[pn].value/1000
 	team.ss		+= players[pn].sumskills
+	team.age	+= players[pn].age
 	$('table#pl'+pn).remove()
 	Ready()
 }
@@ -508,6 +514,9 @@ function Ready(){
 			thtml += '</th></tr>'
 			thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
 			thtml += (team.ss/countSostavMax).toFixed(2) + '&nbsp;'
+			thtml += '</th><td></td></tr>'
+			thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
+			thtml += (team.age/countSostavMax).toFixed(2) + '&nbsp;'
 			thtml += '</th><td></td></tr>'
 
 
@@ -625,6 +634,24 @@ function ShowPlayersZp(){
 	} else {
 		zp = 0
 		$('tr#zp').remove()
+	}
+}
+function ShowPlayersAge(){
+	if(age==0) {
+		age = 1
+		var text = ''
+		var pls = players.sort(sAge)
+		for(i in pls) {
+			text += '<tr id="age">'
+			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td align=right>' + (pls[i].age + '&nbsp;').fontsize(1) + '</td>'
+			text += '<td>&nbsp;</td>'
+			text += '</tr>'
+		}
+		$('#osage').after(text + '<tr id="age"><td>&nbsp;</td></tr>')
+	} else {
+		age = 0
+		$('tr#age').remove()
 	}
 }
 
