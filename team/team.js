@@ -584,10 +584,13 @@ function ShowPlayersValue(){
 		var nomtext = ''
 		var pls = players.sort(sValue)
 		for(i in pls) {
-			nomtext += '<tr id="nom">'
+			var bgcolor = ''
+			if(i<16) bgcolor = ' bgcolor=#A3DE8F'
+			if(i<5)  bgcolor = ' bgcolor=white'
+			nomtext += '<tr id="nom"'+bgcolor+'>'
 			nomtext += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
 			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
-			nomtext += '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>'
+			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
 			nomtext += '</tr>'
 		}
 		$('#osnom').after(nomtext + '<tr id="nom"><td>&nbsp;</td></tr>')
@@ -603,10 +606,14 @@ function ShowPlayersZp(){
 		var text = ''
 		var pls = players.sort(sZp)
 		for(i in pls) {
+			var bgcolor = ''
+			if(pls[i].contract==1) bgcolor = ' bgcolor=#FF9966' //red
+			if(pls[i].contract==2) bgcolor = ' bgcolor=#FCE93B' //yellow
+			if(pls[i].contract==5) bgcolor = ' bgcolor=#A3DE8F' //green
 			text += '<tr id="zp">'
 			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
 			text += '<td align=right>' + (ShowValueFormat(pls[i].wage) + '&nbsp;').fontsize(1) + '</td>'
-			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
+			text += '<td'+bgcolor+'>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
 			text += '</tr>'
 		}
 		$('#oszp').after(text + '<tr id="zp"><td>&nbsp;</td></tr>')
