@@ -413,6 +413,7 @@ function GetPl(pn){
 	// get player header info
 	$('td#pl'+pn+' table').remove()
 	var head = $('td#pl'+pn+' b:first').html()
+	players[pn].rent		= (head.indexOf('в аренде из клуба') != -1 ? true : false)
 	players[pn].natfull 	= head.split(' (матчей')[0].split(', ')[1]
 	players[pn].value		= parseInt(head.split('Номинал: ')[1].split(',000$')[0].replace(/,/g,''))*1000
 	players[pn].valuech		= 0
@@ -588,7 +589,7 @@ function ShowPlayersValue(){
 			if(i<16) bgcolor = ' bgcolor=#A3DE8F'
 			if(i<5)  bgcolor = ' bgcolor=white'
 			nomtext += '<tr id="nom"'+bgcolor+'>'
-			nomtext += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
 			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
 			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
 			nomtext += '</tr>'
@@ -611,7 +612,7 @@ function ShowPlayersZp(){
 			if(pls[i].contract==2) bgcolor = ' bgcolor=#FCE93B' //yellow
 			if(pls[i].contract==5) bgcolor = ' bgcolor=#A3DE8F' //green
 			text += '<tr id="zp">'
-			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
 			text += '<td align=right>' + (ShowValueFormat(pls[i].wage) + '&nbsp;').fontsize(1) + '</td>'
 			text += '<td'+bgcolor+'>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
 			text += '</tr>'
@@ -630,7 +631,7 @@ function ShowPlayersAge(){
 		var pls = players.sort(sAge)
 		for(i in pls) {
 			text += '<tr id="age"'+(pls[i].age<30 && pls[i].age>21 ? '' : ' bgcolor=#A3DE8F')+'>'
-			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
 			text += '<td align=right>' + (pls[i].age+'&nbsp;').fontsize(1) + '</td>'
 			text += '</tr>'
 		}
@@ -648,7 +649,7 @@ function ShowPlayersSkillChange(){
 		var pls = players.sort(sSkills)
 		for(i in pls) {
 			text += '<tr id="skills">'
-			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
 			text += '<td align=right>' + (pls[i].sumskills + '&nbsp;').fontsize(1) + '</td>'
 //			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
 			if(pls[i].skchange != '') {
