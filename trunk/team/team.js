@@ -622,10 +622,9 @@ function ShowPlayersAge(){
 		var text = ''
 		var pls = players.sort(sAge)
 		for(i in pls) {
-			text += '<tr id="age">'
+			text += '<tr id="age"'+(pls[i].age<30 && pls[i].age>21 ? '' : ' bgcolor=#A3DE8F')+'>'
 			text += '<td>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
 			text += '<td align=right>' + (pls[i].age+'&nbsp;').fontsize(1) + '</td>'
-			text += '<td>&nbsp;</td>'
 			text += '</tr>'
 		}
 		$('#osage').after(text + '<tr id="age"><td>&nbsp;</td></tr>')
