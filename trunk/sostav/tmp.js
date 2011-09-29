@@ -434,8 +434,8 @@ function getData(){
 }
 
 function saveData(){
-	deleteCookie('pefltraining')
 	showData()
+	return false
 	if(ff){
 		var save = ''
 		for (var f=0;f<4;f++){
