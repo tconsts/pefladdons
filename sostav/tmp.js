@@ -85,7 +85,7 @@ $().ready(function() {
 			var tmpvalue = tmparr[1];
 			data_assoc[tmpkey] = tmpvalue;
 
-			if (tmpkey.indexOf('trn') != -1) trn[0].push(tmpvalue)
+			if (tmpkey.indexOf('trn') != -1) trn[0].push(parseFloat(String(tmpvalue).replace(',','.')))
 			i++;
 		}
 		debug(trn[0])
@@ -398,12 +398,12 @@ function getData(){
 					for(var i = 0; i < result.rows.length; i++) {
 						if(trnnum>0) trn[trnnum] = []
 						var num = 0
-						if(i==0 && trn[0][1]==result.rows.item(0)['t1'] && trn[0][2]==result.rows.item(0)['t2']) {
+						if(i==0 && trn[0][1]==parseFloat(String(result.rows.item(0)['t1']).replace(',','.')) && trn[0][2]==parseFloat(String(result.rows.item(0)['t2']).replace(',','.'))) {
 							trnnum=0
 							debug('Not need update')
 						}
 						for(var j in result.rows.item(i)) {
-							trn[trnnum][num] = result.rows.item(i)[j]
+							trn[trnnum][num] = parseFloat(String(result.rows.item(i)[j]).replace(',','.'))
 							num++
 						}
 						trnnum++
