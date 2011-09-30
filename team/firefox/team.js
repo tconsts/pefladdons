@@ -809,8 +809,8 @@ function PlayersChange(){
 		});
 
 		// Get info fom Global or Session Storage (info of team players)
-		var text1 = GetStorageData('team')
-		if (text1 != undefined){
+		var text1 = String(GetStorageData('team'))
+		if (text1 != "undefined"){
 			var pltext = String(text1).split(':',2)[1].split('.')
 			for (i in pltext) {
 				var plsk = pltext[i].split(',')
