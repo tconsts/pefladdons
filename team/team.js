@@ -292,7 +292,7 @@ function GetData(dataname){
 						var id = row[head[0]]
 						data[id] = {}
 						for(j in row) data[id][j] = row[j]
-						debug(dataname+':g'+id+':'+data[id].my)
+//						debug(dataname+':g'+id+':'+data[id].my)
 					}
 					GetFinish('get_'+dataname,true)
 				},

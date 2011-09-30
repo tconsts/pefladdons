@@ -18,6 +18,7 @@ var list = {
 	'teams':	'tid,my,tdate,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,mname,tss,pnum,tplace,scbud,screit,tfin',
 	'divs':		'did,my,nname,dname,dnum,drotate,drotcom,dprize'
 }
+var showfl = false
 
 var diap = []
 var url = {}
@@ -38,16 +39,6 @@ $().ready(function() {
 	if( UrlValue('k') && UrlValue('k')!=0) SelectTeam(UrlValue('k'))
 
 	// Draw CrabVIP panel
-	var text = ''
-	text += '<div id="color"><a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">Расскрасить</a></div>'
-	text += '<div id="CodeTableForForum"><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</div>'
-	text += '<br>'
-	text += '<div id="showtasks"><a href="javascript:void(SetTasks(1))">Показать задачи</a>&nbsp;</div>'
-	text += '<div id="showstadio"><a href="javascript:void(SetTasks(2))">Показать стадионы</a>&nbsp;</div>'
-	text += '<div id="showfinance"><a href="javascript:void(SetFin())">Показать финансы</a>&nbsp;</div>'
-	text += '<br><br><a id="teams" href="javascript:void(Print(\'teams\'))">Команды</a><br>'
-	text += '<a id="teams" href="javascript:void(Print(\'divs\'))">Дивизионы</a><br>'
-
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
@@ -56,6 +47,14 @@ $().ready(function() {
 	$('td.back4 script').remove()
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 	$('#crabrighttable').addClass('border') 
+
+	var text = '<table width=100%>'
+	text += '<tr id="color"><td colspan=2><a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">Расскрасить</a></td></tr>'
+	text += '<tr id="CodeTableForForum"><td colspan=2><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
+	text += '<tr id="empty" colspan=2><td> </td></tr>'
+	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\'))">Сравнить команды</a> </td><td>| <a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">фильтр</a></td></tr>'
+//	text += '<br><div><a id="divs" href="javascript:void(Print(\'divs\'))">Дивизионы</a><br></div>'
+	text += '</table>'
 	$("#crabright").html(text)
 
 	GetInfoPageDiv()
@@ -64,6 +63,21 @@ $().ready(function() {
 
 }, false);
 
+function SetFilter(dataname){
+	debug('SetFilter go: '+ showfl)
+	if(showfl){
+		showfl = false
+		$('tr#fl').remove()
+	}else{
+		showfl = true
+		var head = list[dataname].split(',')
+		var text = ''
+		for(i in head){
+			text += '<tr id="fl"><td align=right>1</td><td>'+head[i]+'</td></tr>'
+		}
+		$('tr#showteams').after(text)
+	}
+}
 
 function GetFinish(type, res){
 	debug(type + '(' + res + ')')
@@ -190,7 +204,7 @@ function GetData(dataname){
 	}
 }
 
-function Print(dataname){
+function Print(dataname, name, value){
 	var head = list[dataname].split(',')
 	var data = []
 	switch (dataname){
@@ -204,9 +218,13 @@ function Print(dataname){
 	for(j in head) text += '<th>'+head[j]+'</th>'
 	text+= '</tr>'
 	for(i in data){
-		text += '<tr>'
-		for(j in head) text += '<td>' + (data[i][head[j]]!=undefined ? data[i][head[j]] : '_')  + '</td>'
-		text += '</tr>'
+		var show = true
+		if(name!=undefined && value!=undefined && data[i][name]!=value) show = false
+		if(show){
+			text += '<tr>'
+			for(j in head) text += '<td>' + (data[i][head[j]]!=undefined ? data[i][head[j]] : '_')  + '</td>'
+			text += '</tr>'
+		}
 	}
 	text += '</table>'
 	$('td.back4').prepend(text)
@@ -252,6 +270,7 @@ function ModifyDivs(){
 	divs[id] = divt
 
 	if(divs[id].drotcom!='') $('td.back4 table:eq(1)').after('<br><i><b>Выдержка из правил о переходах команд между дивизионами</b>:<br>*'+divs[id].drotcom+'</i><br>')
+
 	SaveData('divs')
 }
 
