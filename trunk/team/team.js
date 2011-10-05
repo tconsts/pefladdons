@@ -198,7 +198,7 @@ function Print(dataname){
 
 function SaveData(dataname){
 	debug(dataname+':SaveData')
-	if(UrlValue('h')==1 || (dataname=='players' && UrlValue('j')==99999)) return false
+	if(UrlValue('h')==1 || (dataname=='players' && UrlValue('j')!=99999)) return false
 
 	var data = []
 	var head = list[dataname].split(',')
@@ -310,30 +310,31 @@ function GetInfoPagePl(){
 		var purl= $(val).find('a[trp="1"]').attr('href')
 		var pid = UrlValue('id',purl)
 		var pn	= parseInt($(val).find('td:first').text())
-		players[pn] = {}
-		players[pn].pn 		= pn
-		players[pn].id 		= pid
-		players[pn].tid 	= cid
-		players[pn].num 	= i
-		players[pn].hash	= UrlValue('z',$(val).find('td:eq(1) a:first').attr('href'))
-		players[pn].name	= $(val).find('td:eq(1) a').html()
+		players[pid] = {}
+		players[pid].pn 	= pn
+		players[pid].id 	= pid
+		players[pid].tid 	= cid
+		players[pid].num 	= i
+		players[pid].hash	= UrlValue('z',$(val).find('td:eq(1) a:first').attr('href'))
+		players[pid].name	= $(val).find('td:eq(1) a').html()
 								.split('<img')[0]
 								.replace('(*)','')
 								.replace('<i>','')
 								.replace('</i>','')
-		players[pn].nid		= $(val).find('td:eq(2) img').attr('src')
+		players[pid].nid	= $(val).find('td:eq(2) img').attr('src')
 								.split('/')[4]
 								.split('.')[0]
-		players[pn].age		= parseInt($(val).find('td:eq(3)').html())
-		players[pn].morale	= parseInt($(val).find('td:eq(4)').html())
-		players[pn].mchange = 0
-		players[pn].form	= parseInt($(val).find('td:eq(5)').html())
-		players[pn].fchange	= 0
-		players[pn].position= $(val).find('td:eq(11)').html()
+		players[pid].age	= parseInt($(val).find('td:eq(3)').html())
+		players[pid].morale	= parseInt($(val).find('td:eq(4)').html())
+		players[pid].mchange= 0
+		players[pid].form	= parseInt($(val).find('td:eq(5)').html())
+		debug(players[pid].id+':'+players[pid].form)
+		players[pid].fchange= 0
+		players[pid].position= $(val).find('td:eq(11)').html()
 
-		$('td.back4').append('<table id=pl'+pn+' style="display: none;"><tr><td id=pl'+pn+'></td></tr></table>')
-		$('td#pl'+pn).load(purl+' center:first', function(){
-			GetPl(pn);
+		$('td.back4').append('<table id=pl'+pid+' style="display: none;"><tr><td id=pl'+pid+'></td></tr></table>')
+		$('td#pl'+pid).load(purl+' center:first', function(){
+			GetPl(pid);
 		})
 	})
 	debug('players:GetPage ok')
@@ -344,7 +345,8 @@ function ModifyPlayers(){
 	// Check for update
 	for(i in players) {
 		var pl = players[i]
-		if(players2[pl.id] !=undefined){
+//		debug(pl.id)//+':'+players2[pl.id].id)
+		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
 			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
 				remember = 1
@@ -356,7 +358,7 @@ function ModifyPlayers(){
 	// Calculate
 	for(i in players) {
 		var pl = players[i]
-		if(players2[pl.id]){
+		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
 			if (remember == 1){
 				players[i]['mchange'] = pl.morale - pl2.morale
@@ -372,10 +374,10 @@ function ModifyPlayers(){
 	debug('players:UpdatePage ')
 	for(i in players) {
 		var pl = players[i]
-		$('table#tblRoster tr#tblRosterTr'		+ i + ' td:eq(4)').append(ShowChange(pl['mchange']))
-		$('table#tblRoster tr#tblRosterTr'		+ i + ' td:eq(5)').append(ShowChange(pl['fchange']))
-		$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(4)').append(ShowChange(pl['mchange']))
-		$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(5)').append(ShowChange(pl['fchange']))
+		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(4)').append(ShowChange(pl['mchange']))
+		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(5)').append(ShowChange(pl['fchange']))
+		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(4)').append(ShowChange(pl['mchange']))
+		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(5)').append(ShowChange(pl['fchange']))
 	}
 	// Save if not team21
 	if (remember==1) SaveData('players')
@@ -390,11 +392,11 @@ function ClearTasks(club_id, club_zad){
 	}
 }
 
-function GetPl(pn){
-	// get player skills with number pn
+function GetPl(pid){
+	// get player skills with number pid
 	var skillsum = 0
 	var skillchange = []
-	$('td#pl'+pn+' table:first td:even').each(function(){
+	$('td#pl'+pid+' table:first td:even').each(function(){
 		var skillarrow = ''
 		var skillname = $(this).html();
 		var skillvalue = parseInt($(this).next().html().replace('<b>',''));
@@ -402,32 +404,32 @@ function GetPl(pn){
 			skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
 		}
 		skillsum += skillvalue;
-		players[pn][skillname] = skillvalue + skillarrow
+		players[pid][skillname] = skillvalue + skillarrow
 
 		if($(this).next().html().indexOf('*') != -1) skillchange.push(skillname)
 	})
-	players[pn].sumskills	= skillsum
-	players[pn].sorting		= skillsum
-	players[pn].skchange	= (skillchange[0] != undefined ? skillchange.join(',') : '')
+	players[pid].sumskills	= skillsum
+	players[pid].sorting	= skillsum
+	players[pid].skchange	= (skillchange[0] != undefined ? skillchange.join(',') : '')
 
 	// get player header info
-	$('td#pl'+pn+' table').remove()
-	var head = $('td#pl'+pn+' b:first').html()
-	players[pn].rent		= (head.indexOf('в аренде из клуба') != -1 ? true : false)
-	players[pn].natfull 	= head.split(' (матчей')[0].split(', ')[1]
-	players[pn].value		= parseInt(head.split('Номинал: ')[1].split(',000$')[0].replace(/,/g,''))*1000
-	players[pn].valuech		= 0
-	players[pn].contract 	= parseInt(head.split('Контракт: ')[1])
-	players[pn].wage 		= parseInt(head.split('г., ')[1].split('$')[0].replace(/,/g,''))
+	$('td#pl'+pid+' table').remove()
+	var head = $('td#pl'+pid+' b:first').html()
+	players[pid].rent		= (head.indexOf('в аренде из клуба') != -1 ? true : false)
+	players[pid].natfull 	= head.split(' (матчей')[0].split(', ')[1]
+	players[pid].value		= parseInt(head.split('Номинал: ')[1].split(',000$')[0].replace(/,/g,''))*1000
+	players[pid].valuech	= 0
+	players[pid].contract 	= parseInt(head.split('Контракт: ')[1])
+	players[pid].wage 		= parseInt(head.split('г., ')[1].split('$')[0].replace(/,/g,''))
 
-	team_cur.twage	+= players[pn].wage
+	team_cur.twage	+= players[pid].wage
 //	debug('twage:'+team_cur.twage)
 
-	team_cur.tvalue	+= players[pn].value/1000
-	team_cur.tss	+= players[pn].sumskills
-	team_cur.age	+= players[pn].age
-	$('table#pl'+pn).remove()
-	//debug('GetPl ok: '+pn+' '+players[pn].id)
+	team_cur.tvalue	+= players[pid].value/1000
+	team_cur.tss	+= players[pid].sumskills
+	team_cur.age	+= players[pid].age
+	$('table#pl'+pid).remove()
+	//debug('GetPl ok: '+pid+' '+players[pid].id)
 	Ready()
 }
 function PrintRightInfo(){
@@ -438,7 +440,7 @@ function PrintRightInfo(){
 	if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
 		$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')
 	}else{
-		$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))">Скиллы игроков</a><br><br>')
+		$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a><br><br>')
 	}
 
 	// print to right menu
