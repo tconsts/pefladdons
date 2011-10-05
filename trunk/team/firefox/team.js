@@ -764,7 +764,7 @@ function TeamHeaderInfoGet(){
 	var zad = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
 
 	// Delete all task if we have new task - it's new season!
-	if (teams[cid] != undefined && teams[cid].ttask != undefined && teams[cid].ttask != zad) for (i in teams) teams[i].ttask = null
+//	if (teams[cid] != undefined && teams[cid].ttask != undefined && teams[cid].ttask != zad) for (i in teams) teams[i].ttask = null
 	if (teams[cid] == undefined) teams[cid] = {}
 	teams[cid].ttask = zad
 	teams[cid].ttown = $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
