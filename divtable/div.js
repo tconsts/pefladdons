@@ -13,12 +13,14 @@ var teams = []
 var divs = []
 var div_cur = {}
 var m = []
+var save = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
 	'teams':	'tid,my,tdate,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,mname,tss,pnum,tplace,scbud,screit,tfin',
 	'divs':		'did,my,nname,dname,dnum,drotate,drotcom,dprize'
 }
 var showfl = false
+var filt = {}
 
 var diap = []
 var url = {}
@@ -28,6 +30,8 @@ var tbid = -1;
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
    	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+	rseason = UrlValue('f',$('td.back4 a[href^="plug.php?p=refl&t=s&v=y&h=0&j="]:last').attr('href'))
+	dseason = UrlValue('f')
 
 	// add column with goals +/- (will be include to code for forum)
 	PlusMinus();
@@ -53,7 +57,10 @@ $().ready(function() {
 	text += '<tr id="CodeTableForForum"><td colspan=2><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
 	text += '<tr id="empty" colspan=2><td> </td></tr>'
 	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\'))">Сравнить команды</a> </td><td>| <a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">фильтр</a></td></tr>'
-//	text += '<br><div><a id="divs" href="javascript:void(Print(\'divs\'))">Дивизионы</a><br></div>'
+	if(deb){
+		text += '<tr id="empty" colspan=2><td> </td></tr>'
+		text += '<tr id="showdivs"><td colspan=2><a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a></td></tr>'
+	}
 	text += '</table>'
 	$("#crabright").html(text)
 
@@ -73,10 +80,22 @@ function SetFilter(dataname){
 		var head = list[dataname].split(',')
 		var text = ''
 		for(i in head){
-			text += '<tr id="fl"><td align=right>1</td><td>'+head[i]+'</td></tr>'
+			text += '<tr id="fl"><td id='+head[i]+' align=right>'+(filt[head[i]]!=undefined ? filt[head[i]] : 'true')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i]+'\'))">'+head[i]+'</a></td></tr>'
 		}
 		$('tr#showteams').after(text)
 	}
+}
+
+function SetHead(dataname, name){
+	if(filt[name] || filt[name]==undefined) {
+		filt[name] = false
+		$('td#'+name).html('false')
+	}
+	else {
+		filt[name] = true
+		$('td#'+name).html('true')
+	}
+	for(i in filt) debug('filt:'+i+'='+filt[i])
 }
 
 function GetFinish(type, res){
@@ -85,6 +104,7 @@ function GetFinish(type, res){
 
 	if(m.teams==undefined && m.get_teams!=undefined && m.get_pgdivs){
 		m.teams = true
+		CheckMy()
 		ModifyTeams()
 	}
 	if(m.divs==undefined && m.get_divs!=undefined && m.get_pgdivs){
@@ -95,10 +115,18 @@ function GetFinish(type, res){
 	//PrintRightInfo()
 }
 
+function CheckMy(){
+	for(i in teams){
+		if(teams[i].nname==div_cur.nname) save = true
+	}
+}
+
 function SaveData(dataname){
 	debug(dataname+':SaveData')
-	if(UrlValue('h')==1 || (dataname=='teams' && UrlValue('j')==99999)) return false
-
+	if(!save || (rseason!=dseason) || parseInt(UrlValue('h'))>=0) {
+		debug(dataname+':SaveData false')
+		return false
+	}
 	var data = []
 	var head = list[dataname].split(',')
 	switch (dataname){
@@ -215,14 +243,14 @@ function Print(dataname, name, value){
 	}
 	var text = '<table width=100% border=1>'
 	text+= '<tr>'
-	for(j in head) text += '<th>'+head[j]+'</th>'
+	for(j in head) if(filt[head[j]]!=false) text += '<th>'+head[j]+'</th>'
 	text+= '</tr>'
 	for(i in data){
 		var show = true
 		if(name!=undefined && value!=undefined && data[i][name]!=value) show = false
 		if(show){
 			text += '<tr>'
-			for(j in head) text += '<td>' + (data[i][head[j]]!=undefined ? data[i][head[j]] : '_')  + '</td>'
+			for(j in head) if(filt[head[j]]!=false) text += '<td>' + (data[i][head[j]]!=undefined ? data[i][head[j]] : '_')  + '</td>'
 			text += '</tr>'
 		}
 	}
@@ -254,6 +282,7 @@ function ModifyTeams(){
 		}
 		teams[id].tplace = i+1
 		teams[id].did = div_cur.did
+		teams[id].nname = div_cur.nname
 //		debug('p'+id+'_'+teams[id].my +'_'+ div_cur.did)
 	})
 	SaveData('teams')

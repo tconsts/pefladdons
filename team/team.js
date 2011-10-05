@@ -17,6 +17,7 @@ var team_cur = {}
 var divs = []
 var m = []
 var remember = 0
+var save = false
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
@@ -105,6 +106,7 @@ function GetFinish(type, res){
 	//pg_teams: true
 	if(m.savedatatm==undefined && m.get_teams!=undefined && m.pg_teams && m.pg_players){
 		m.savedatatm = true
+		CheckMy()
 		ModifyTeams()
 	}
 	if(m.savedatapl==undefined && m.get_players==false && m.pg_players){
@@ -132,6 +134,17 @@ function GetFinish(type, res){
 		ClearTasks(cid, team_cur.ttask)
 	}
 /**/
+}
+
+function CheckMy(){
+	debug('CheckMy go')
+	if(team_cur.my){
+		save = true
+	}else{
+		for(i in teams){
+			if(teams[i].my && teams[i].nname == team_cur.nname) save = true
+		}
+	}
 }
 
 function ModifyTeams(){
@@ -198,7 +211,10 @@ function Print(dataname){
 
 function SaveData(dataname){
 	debug(dataname+':SaveData')
-	if(UrlValue('h')==1 || (dataname=='players' && UrlValue('j')!=99999)) return false
+	if(!save || UrlValue('h')==1 || (dataname=='players' && UrlValue('j')!=99999)){
+		debug(dataname+':SaveData false')
+		return false
+	}
 
 	var data = []
 	var head = list[dataname].split(',')
@@ -328,7 +344,7 @@ function GetInfoPagePl(){
 		players[pid].morale	= parseInt($(val).find('td:eq(4)').html())
 		players[pid].mchange= 0
 		players[pid].form	= parseInt($(val).find('td:eq(5)').html())
-		debug(players[pid].id+':'+players[pid].form)
+//		debug(players[pid].id+':'+players[pid].form)
 		players[pid].fchange= 0
 		players[pid].position= $(val).find('td:eq(11)').html()
 
