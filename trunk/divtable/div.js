@@ -42,6 +42,8 @@ $().ready(function() {
 	// Select as bold self team in my table with id=0
 	if( UrlValue('k') && UrlValue('k')!=0) SelectTeam(UrlValue('k'))
 
+	GetInfoPageDiv()
+
 	// Draw CrabVIP panel
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
@@ -56,7 +58,7 @@ $().ready(function() {
 	text += '<tr id="color"><td colspan=2><a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">Расскрасить</a></td></tr>'
 	text += '<tr id="CodeTableForForum"><td colspan=2><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
 	text += '<tr id="empty" colspan=2><td> </td></tr>'
-	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\'))">Сравнить команды</a> </td><td>| <a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">фильтр</a></td></tr>'
+	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\',\'did\',\''+div_cur.did+'\'))">Сравнить команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
 	if(deb){
 		text += '<tr id="empty" colspan=2><td> </td></tr>'
 		text += '<tr id="showdivs"><td colspan=2><a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a></td></tr>'
@@ -64,7 +66,6 @@ $().ready(function() {
 	text += '</table>'
 	$("#crabright").html(text)
 
-	GetInfoPageDiv()
 	GetData('teams')
 	GetData('divs')
 
@@ -72,6 +73,7 @@ $().ready(function() {
 
 function SetFilter(dataname){
 	debug('SetFilter go: '+ showfl)
+	var imgok = '<img height=8 src="system/img/g/tick.gif">'
 	if(showfl){
 		showfl = false
 		$('tr#fl').remove()
@@ -80,20 +82,21 @@ function SetFilter(dataname){
 		var head = list[dataname].split(',')
 		var text = ''
 		for(i in head){
-			text += '<tr id="fl"><td id='+head[i]+' align=right>'+(filt[head[i]]!=undefined ? filt[head[i]] : 'true')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i]+'\'))">'+head[i]+'</a></td></tr>'
+			text += '<tr id="fl"><td id='+head[i]+' align=right>'+(filt[head[i]] || filt[head[i]]==undefined ? imgok : '')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i]+'\'))">'+head[i]+'</a></td></tr>'
 		}
 		$('tr#showteams').after(text)
 	}
 }
 
 function SetHead(dataname, name){
+	var imgok = '<img height=8 src="system/img/g/tick.gif">'
 	if(filt[name] || filt[name]==undefined) {
 		filt[name] = false
-		$('td#'+name).html('false')
+		$('td#'+name).html('')
 	}
 	else {
 		filt[name] = true
-		$('td#'+name).html('true')
+		$('td#'+name).html(imgok)
 	}
 	for(i in filt) debug('filt:'+i+'='+filt[i])
 }
@@ -232,7 +235,14 @@ function GetData(dataname){
 	}
 }
 
+function ClosePrint(){
+	$('table#svod, div#svod').remove()
+	$('table#orig').show()	
+}
+
 function Print(dataname, name, value){
+	$('td.back4 table table').attr('id','orig').hide()
+
 	var head = list[dataname].split(',')
 	var data = []
 	switch (dataname){
@@ -241,21 +251,26 @@ function Print(dataname, name, value){
 		case 'divs'	: 	data = divs;	break
 		default: return false
 	}
-	var text = '<table width=100% border=1>'
-	text+= '<tr>'
+	var text = '<div align=right id="svod"><a href="javascript:void(ClosePrint())">(Закрыть)&nbsp;</a></div>'
+	text += '<table width=100% id="svod">'
+	text+= '<tr><th>№</th>'
 	for(j in head) if(filt[head[j]]!=false) text += '<th>'+head[j]+'</th>'
 	text+= '</tr>'
+	var num=1
 	for(i in data){
 		var show = true
 		if(name!=undefined && value!=undefined && data[i][name]!=value) show = false
 		if(show){
-			text += '<tr>'
+			text += '<tr height=10>'
+			text += '<td>'+num+'</td>'
 			for(j in head) if(filt[head[j]]!=false) text += '<td>' + (data[i][head[j]]!=undefined ? data[i][head[j]] : '_')  + '</td>'
 			text += '</tr>'
+			num++
 		}
 	}
 	text += '</table>'
-	$('td.back4').prepend(text)
+	$('table#orig').before(text)
+	$('table#svod tr:odd').attr('bgcolor','#A3DE8F')
 }
 
 function PrintRightInfo(){
