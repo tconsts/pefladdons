@@ -21,7 +21,7 @@ var save = false
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
-	'teams':	'tid,my,tdate,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,mname,tss,pnum,tplace,scbud,screit,tfin',
+	'teams':	'my,ncode,nname,did,tid,tdate,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,tplace',
 	'divs':		'did,my,dname,dnum,dprize'
 }
 var sumP = 0
@@ -74,9 +74,13 @@ $().ready(function() {
 		preparedhtml  =	'<table width=100%><tr><th colspan=3>Финансовое положение</th></tr>'
 		preparedhtml += '<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
 		preparedhtml += '</table><br>'
-		preparedhtml += '<a id="players" href="javascript:void(Print(\'players\'))">Игроки</a><br>'
-		preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">Команды</a><br>'
-//		preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">Дивизионы</a><br>'
+
+		if(deb){
+			preparedhtml += '<a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
+			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
+			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
+		}
+
 		$("#crabright").html(preparedhtml)
 		EditFinance();
 
@@ -150,6 +154,9 @@ function CheckMy(){
 function ModifyTeams(){
 	debug('teams:Modify')
 	//teams and team_cur
+	team_cur.tss = (team_cur.tss/team_cur.pnum).toFixed(2)
+	team_cur.age = (team_cur.age/team_cur.pnum).toFixed(2)
+
 	var tmt = []
 	for(var i in team_cur){
 		tmt[i] = (team_cur[i] != '' ? team_cur[i] : (teams[cid][i]!=undefined ? teams[cid][i] : ''))
@@ -174,14 +181,14 @@ function GetInfoPageTm(){
 	team_cur.age	= 0
 	team_cur.tplace	= ''
 	team_cur.sname	= $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
-	team_cur.ssize	= $('table.layer1 td.l4:eq(2)').text().split(': ',2)[1]
+	team_cur.ssize	= parseInt($('table.layer1 td.l4:eq(2)').text().split(': ',2)[1])
 	team_cur.ncode	= parseInt(UrlValue('j',$('td.back4 table:first table td:eq(1) a').attr('href')))
 	team_cur.nname	= $('td.back4 table:first table td:eq(3) font').text().split(', ')[1].split(')')[0]
 	team_cur.did	= ''
 	team_cur.mname	= $('td.back4 table table:eq(1) table:first td:first span').text()
 	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href')))
 	team_cur.pnum	= countSostavMax
-	team_cur.scbud	= $('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0]
+	team_cur.scbud	= parseInt($('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0])
 	team_cur.screit	= $('table.layer1 td.l2:eq(1)').text().split(': ',2)[1].split(' (')[0]
 	team_cur.my		= (team_cur.mname == MyNick ? true : false)
 	GetFinish('pg_teams', true)
@@ -474,10 +481,10 @@ function PrintRightInfo(){
 	thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
 	thtml += '</th></tr>'
 	thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
-	thtml += (team_cur.tss/countSostavMax).toFixed(2) + '&nbsp;'
+	thtml += team_cur.tss + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 	thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
-	thtml += (team_cur.age/countSostavMax).toFixed(2) + '&nbsp;'
+	thtml += team_cur.age + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 
 	$('#crabright table:first').append(thtml)

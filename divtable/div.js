@@ -16,11 +16,12 @@ var m = []
 var save = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
-	'teams':	'tid,my,tdate,tname,ttask,ttown,sname,ssize,ncode,nname,did,twage,tvalue,mname,tss,pnum,tplace,scbud,screit,tfin',
+	'teams':	'my,ncode,nname,did,tid,tdate,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,tplace',
 	'divs':		'did,my,nname,dname,dnum,drotate,drotcom,dprize'
 }
 var showfl = false
 var filt = {}
+var srt = 'tplace'
 
 var diap = []
 var url = {}
@@ -73,7 +74,7 @@ $().ready(function() {
 
 function SetFilter(dataname){
 	debug('SetFilter go: '+ showfl)
-	var imgok = '<img height=8 src="system/img/g/tick.gif">'
+	var imgok = '<img height=10 src="system/img/g/tick.gif">'
 	if(showfl){
 		showfl = false
 		$('tr#fl').remove()
@@ -88,8 +89,91 @@ function SetFilter(dataname){
 	}
 }
 
+function ClosePrint(){
+	$('table#svod, div#svod').remove()
+	$('table#orig').show()	
+}
+
+function sSort(i, ii) { 
+    if 		(i[srt] < ii[srt])	return  1
+    else if	(i[srt] > ii[srt])	return -1
+    else						return  0
+}
+
+function sSortR(i, ii) { 
+    if 		(i[srt] > ii[srt])	return  1
+    else if	(i[srt] < ii[srt])	return -1
+    else						return  0
+}
+
+
+function Print(dataname, name, value, sr){
+	ClosePrint()
+	$('td.back4 table table').attr('id','orig').hide()
+
+	var head = list[dataname].split(',')
+	var data = []
+	switch (dataname){
+		case 'players': data = players;	break
+		case 'teams': 	data = teams;	break
+		case 'divs'	: 	data = divs;	break
+		default: return false
+	}
+	if(sr==srt)	{
+		data = data.sort(sSortR)
+	}else{
+		srt=sr
+		data = data.sort(sSort)
+	}
+	  
+	var text = ''
+	text += '<table width=100% id="svod">'
+	text+= '<tr height=20><td><b>№</b></td>'
+	for(j in head) if(filt[head[j]]!=false) text += '<td><b>'+head[j]+'</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j]+'\'))"><img height=8 src="system/img/a-down.gif"></a></td>'
+	text+= '</tr>'
+	var num=1
+	for(i in data){
+		var show = true
+		if(name!=undefined && value!=undefined && data[i][name]!=value) show = false
+		if(show){
+			text += '<tr height=22>'
+			text += '<td><u>'+num+'</u></td>'
+			for(j in head) if(filt[head[j]]!=false) {
+				var tt = data[i][head[j]]
+				var al = ''
+				if(tt == undefined){
+					tt = '&nbsp;' 
+				}else{
+					switch (head[j]){
+						case 'tname':	tt = '<b>' + tt + '</b>';		break;
+						case 'tvalue':	tt = ShowValueFormat(tt)+'т';al = ' align=right';break;
+						case 'twage':	tt = ShowValueFormat(tt);al = ' align=right';break;
+						case 'tss':		al = ' align=right';break;
+						case 'ssize':	al = ' align=right';break;
+						case 'scbud':	al = ' align=right';break;
+						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
+						default:
+					}
+				}
+				text += '<td'+al+'>'+tt+'</td>'
+			}
+			text += '</tr>'
+			num++
+		}
+	}
+	text += '</table>'
+	text += '<div align=right id="svod"><a href="javascript:void(ClosePrint())">(Закрыть)&nbsp;</a></div>'
+	$('table#orig').before(text)
+	$('table#svod tr:odd').attr('bgcolor','#A3DE8F')
+}
+
+function ShowValueFormat(value){
+	if (value > 1000)	return (value/1000).toFixed(3).replace(/\./g,',') + '$'
+	else				return (value) + '$'
+}
+
 function SetHead(dataname, name){
-	var imgok = '<img height=8 src="system/img/g/tick.gif">'
+	var imgok = '<img height=10 src="system/img/g/tick.gif">'
 	if(filt[name] || filt[name]==undefined) {
 		filt[name] = false
 		$('td#'+name).html('')
@@ -233,44 +317,6 @@ function GetData(dataname){
 			)
 		})
 	}
-}
-
-function ClosePrint(){
-	$('table#svod, div#svod').remove()
-	$('table#orig').show()	
-}
-
-function Print(dataname, name, value){
-	$('td.back4 table table').attr('id','orig').hide()
-
-	var head = list[dataname].split(',')
-	var data = []
-	switch (dataname){
-		case 'players': data = players;	break
-		case 'teams': 	data = teams;	break
-		case 'divs'	: 	data = divs;	break
-		default: return false
-	}
-	var text = '<div align=right id="svod"><a href="javascript:void(ClosePrint())">(Закрыть)&nbsp;</a></div>'
-	text += '<table width=100% id="svod">'
-	text+= '<tr><th>№</th>'
-	for(j in head) if(filt[head[j]]!=false) text += '<th>'+head[j]+'</th>'
-	text+= '</tr>'
-	var num=1
-	for(i in data){
-		var show = true
-		if(name!=undefined && value!=undefined && data[i][name]!=value) show = false
-		if(show){
-			text += '<tr height=10>'
-			text += '<td>'+num+'</td>'
-			for(j in head) if(filt[head[j]]!=false) text += '<td>' + (data[i][head[j]]!=undefined ? data[i][head[j]] : '_')  + '</td>'
-			text += '</tr>'
-			num++
-		}
-	}
-	text += '</table>'
-	$('table#orig').before(text)
-	$('table#svod tr:odd').attr('bgcolor','#A3DE8F')
 }
 
 function PrintRightInfo(){
@@ -634,6 +680,7 @@ function TableCodeForForum(){
 	$('td.back4 table table th[width=7%]').removeAttr('width')
 	$('td.back4 table table th[width=6%]').removeAttr('width')
 	$('td.back4 table table th[width=5%]').removeAttr('width')
+	$('td.back4 table table a#f').remove()
 
 	// generate code for forum
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
