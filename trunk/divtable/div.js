@@ -21,37 +21,58 @@ var list = {
 }
 
 var list2 = {
+	'players':{
+		'id':	{'num':1},
+		'tid':	{'num':2},
+		'num':	{'num':3},
+		'form':	{'num':4},
+		'morale': {'num':5},
+		'fchange':{'num':6},
+		'mchange':{'num':7},
+		'value':  {'num':8},
+		'valuech':{'num':9}
+	},
 	'teams': {
 		'tid':	{'num':1, 'nshow':true},
 		'my':	{'num':2, 'nshow':true},
-		'did':	{'num':5, 'nshow':true},
-		'tdate':{'num':6, 'nshow':true},
-		'ncode':{'num':3, 'name':' '},
-		'nname':{'num':4, 'name':'Страна','al':'left'},
-		'tname':{'num':7, 'name':'Команда','al':'left'},
-		'mname':{'num':8, 'name':'Мен','al':'left'},
-		'ttask':{'num':9, 'name':' ','al':'left'},
-		'tvalue':{'num':10,'name':'Ном'},
-		'twage':{'num':11, 'name':'ЗП'},
-		'tss':	{'num':12, 'name':'СС'},
-		'age':	{'num':13, 'name':'Возр'},
-		'pnum':	{'num':14, 'name':'кл'},
-		'tfin':	{'num':15, 'name':'Фин','al':'left'},
-		'screit':{'num':16,'name':'ШкРейт','al':'left'},
-		'scbud':{'num':17, 'name':'ШкБюд'},
-		'ttown':{'num':18, 'name':'Город','al':'left'},
-		'sname':{'num':19, 'name':'Стадион','al':'left'},
-		'ssize':{'num':20, 'name':' '},
-		'tplace':{'num':21,'name':'Мс'},
+		'did':	{'num':3, 'nshow':true},
+		'tdate':{'num':4, 'nshow':true},
+		'tplace':{'num':5,'name':'Мс'},
+		'ncode':{'num':6, 'name':'стр'},
+		'nname':{'num':7, 'name':'Страна','al':'left'},
+		'tname':{'num':8, 'name':'Команда','al':'left'},
+		'mname':{'num':9, 'name':'Мен','al':'left'},
+		'ttask':{'num':10, 'name':'Задача','al':'left'},
+		'tvalue':{'num':11,'name':'Ном'},
+		'twage':{'num':12, 'name':'ЗП'},
+		'tss':	{'num':13, 'name':'СС'},
+		'age':	{'num':14, 'name':'Возр'},
+		'pnum':	{'num':15, 'name':'кол'},
+		'tfin':	{'num':16, 'name':'Фин','al':'left'},
+		'screit':{'num':17,'name':'ШкРейт','al':'left'},
+		'scbud':{'num':18, 'name':'ШкБюд'},
+		'ttown':{'num':19, 'name':'Город','al':'left'},
+		'sname':{'num':20, 'name':'Стадион','al':'left'},
+		'ssize':{'num':21, 'name':'Разм'},
 
-		'games'	:{'num':22,'name':'И','nsave':true},
-		'wins'	:{'num':23,'name':'В','nsave':true},
-		'draws'	:{'num':24,'name':'Н','nsave':true},
-		'loses'	:{'num':25,'name':'П','nsave':true},
-		'gup'	:{'num':25,'name':'ГЗ','nsave':true},
-		'gdown'	:{'num':25,'name':'ГП','nsave':true},
-		'gpm'	:{'num':25,'name':'+/-','nsave':true},
-		'score'	:{'num':25,'name':'О','nsave':true},
+		'games'	:{'num':22,'name':'И ','nsave':true},
+		'wins'	:{'num':23,'name':'В ','nsave':true},
+		'draws'	:{'num':24,'name':'Н ','nsave':true},
+		'loses'	:{'num':25,'name':'П ','nsave':true},
+		'gup'	:{'num':26,'name':'ГЗ','nsave':true},
+		'gdown'	:{'num':27,'name':'ГП','nsave':true},
+		'gpm'	:{'num':28,'name':'+-','nsave':true},
+		'score'	:{'num':29,'name':'О ','nsave':true},
+	},
+	'divs':{
+		'did':	{'num':1, 'nshow':true},
+		'my':	{'num':2, 'nshow':true},
+		'nname':{'num':3, 'name':'Страна'},
+		'dname':{'num':4, 'name':'Див'},
+		'dnum':	{'num':5, 'nshow':true},
+		'drotate':{'num':6, 'name':'+-'},
+		'drotcom':{'num':7, 'name':'Комент'},
+		'dprize': {'num':8, 'name':'Прзовые'}
 	}
 }
 
@@ -117,10 +138,18 @@ function SetFilter(dataname){
 		$('tr#fl').remove()
 	}else{
 		showfl = true
-		var head = list[dataname].split(',')
+//		var head = list[dataname].split(',')
+		var head = []
+		for (i in list2[dataname]) {
+			if(!list2[dataname][i].nshow) {
+				head[list2[dataname][i].num] = {'key':i,'name':list2[dataname][i].name}
+			}
+		}
+//		for (i in head2) debug(dataname+':t3:'+i+':'+head2[i])
+
 		var text = ''
 		for(i in head){
-			text += '<tr id="fl"><td id='+head[i]+' align=right>'+(filt[head[i]] || filt[head[i]]==undefined ? imgok : '')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i]+'\'))">'+head[i]+'</a></td></tr>'
+			text += '<tr id="fl"><td align=right id='+head[i].key+'>'+(filt[head[i].key] || filt[head[i].key]==undefined ? imgok : '')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+head[i].name+'</a></td></tr>'
 		}
 		$('tr#showteams').after(text)
 	}
@@ -147,7 +176,16 @@ function Print(dataname, name, value, sr){
 	ClosePrint()
 	$('td.back4 table table').attr('id','orig').hide()
 
-	var head = list[dataname].split(',')
+//	var head = list[dataname].split(',')
+	var head = []
+	for (i in list2[dataname]) {
+		var lsti = list2[dataname][i]
+		if(!lsti.nshow) {
+			head[lsti.num] = {'key':i,'name':lsti.name,'al':(lsti.al!=undefined ? ' align='+lsti.al : '')}
+		}
+	}
+//	for (i in head2) debug(dataname+':t2:'+i+':'+head2[i])
+
 	var data = []
 	switch (dataname){
 		case 'players': data = players;	break
@@ -163,11 +201,9 @@ function Print(dataname, name, value, sr){
 	data = (srtn ? data.sort(sSort) : data.sort(sSortR))
 	  
 	var text = ''
-	text += '<table width=100% id="svod">'
+	text += '<table width=100% id="svod" border="0" cellpadding="4" cellspacing="2">'
 	text+= '<tr height=20><td><b>№</b></td>'
-	for(j in head) if(filt[head[j]]!=false) text += '<td><b>'+head[j]+'</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j]+'\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
-//	text+= '<td><b>И</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\'И\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
-//	text+= '<td><b>О</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\'О\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
+	for(j in head) if(filt[head[j].key]!=false) text += '<td><b>'+head[j].name+'</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j].key+'\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
 	text+= '</tr>'
 	var num=1
 	for(i in data){
@@ -175,14 +211,14 @@ function Print(dataname, name, value, sr){
 		var dti = data[i]
 		if(name!=undefined && value!=undefined && dti[name]!=value) show = false
 		if(show){
-			text += '<tr height=22 align=right>'
+			text += '<tr align=right>'
 			text += '<td><u>'+num+'</u></td>'
-			for(j in head) if(filt[head[j]]!=false) {
-				var tt = dti[head[j]]
+			for(j in head) if(filt[head[j].key]!=false) {
+				var tt = dti[head[j].key]
 				var al = ''
 				if(tt == undefined) tt = '&nbsp;'
 				else{
-					switch (head[j]){
+					switch (head[j].key){
 						case 'tname':
 							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>':'<b>' + tt + '</b>')
 							break;
@@ -192,7 +228,7 @@ function Print(dataname, name, value, sr){
 						default:
 					}
 				}
-				text += '<td'+al+'>'+tt+'</td>'
+				text += '<td'+head[j].al+'>'+tt+'</td>'
 			}
 //			text += '<td>'+data[i]['games']+'</td>'
 //			text += '<td>'+data[i]['score']+'</td>'
@@ -203,7 +239,7 @@ function Print(dataname, name, value, sr){
 	text += '</table>'
 	text += '<div align=right id="svod"><a href="javascript:void(ClosePrint())">(Закрыть)&nbsp;</a></div>'
 	$('table#orig').before(text)
-	$('table#svod tr:odd').attr('bgcolor','#A3DE8F')
+	$('table#svod tr:even:gt(0)').attr('bgcolor','#A3DE8F')
 	ColorIt()
 }
 
@@ -258,7 +294,12 @@ function SaveData(dataname){
 	}
 	var data = []
 	var idname = 'id'
-	var head = list[dataname].split(',')
+//	var head = list[dataname].split(',')
+	var head = []
+	for (i in list2[dataname]) {
+		if(!list2[dataname][i].nsave) head[list2[dataname][i].num] = i	
+	}
+
 	switch (dataname){
 		case 'players':	data = players;				break
 		case 'teams': 	data = teams;idname='tid';	break
@@ -310,14 +351,11 @@ function GetData(dataname){
 	debug(dataname+':GetData')
 	var data = []
 	var idname = 'id'
-
-	var head2 = []
+//	var head = list[dataname].split(',')
+	var head = []
 	for (i in list2[dataname]) {
-		if(!list2[dataname][i].nsave) head2[list2[dataname][i].num] = i	
+		if(!list2[dataname][i].nsave) head[list2[dataname][i].num] = i	
 	}
-	for (i in head2) debug(dataname+':t1:'+i+':'+head2[i])
-
-	var head = list[dataname].split(',')
 	switch (dataname){
 		case 'players': data = players2;			break
 		case 'teams': 	data = teams;idname='tid';	break
