@@ -16,12 +16,49 @@ var m = []
 var save = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
-	'teams':	'my,ncode,nname,did,tid,tdate,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,tplace',
+	'teams':	'tid,my,ncode,nname,did,tdate,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,tplace',
 	'divs':		'did,my,nname,dname,dnum,drotate,drotcom,dprize'
 }
+
+var list2 = {
+	'teams': {
+		'tid':	{'num':1, 'nshow':true},
+		'my':	{'num':2, 'nshow':true},
+		'did':	{'num':5, 'nshow':true},
+		'tdate':{'num':6, 'nshow':true},
+		'ncode':{'num':3, 'name':' '},
+		'nname':{'num':4, 'name':'Страна','al':'left'},
+		'tname':{'num':7, 'name':'Команда','al':'left'},
+		'mname':{'num':8, 'name':'Мен','al':'left'},
+		'ttask':{'num':9, 'name':' ','al':'left'},
+		'tvalue':{'num':10,'name':'Ном'},
+		'twage':{'num':11, 'name':'ЗП'},
+		'tss':	{'num':12, 'name':'СС'},
+		'age':	{'num':13, 'name':'Возр'},
+		'pnum':	{'num':14, 'name':'кл'},
+		'tfin':	{'num':15, 'name':'Фин','al':'left'},
+		'screit':{'num':16,'name':'ШкРейт','al':'left'},
+		'scbud':{'num':17, 'name':'ШкБюд'},
+		'ttown':{'num':18, 'name':'Город','al':'left'},
+		'sname':{'num':19, 'name':'Стадион','al':'left'},
+		'ssize':{'num':20, 'name':' '},
+		'tplace':{'num':21,'name':'Мс'},
+
+		'games'	:{'num':22,'name':'И','nsave':true},
+		'wins'	:{'num':23,'name':'В','nsave':true},
+		'draws'	:{'num':24,'name':'Н','nsave':true},
+		'loses'	:{'num':25,'name':'П','nsave':true},
+		'gup'	:{'num':25,'name':'ГЗ','nsave':true},
+		'gdown'	:{'num':25,'name':'ГП','nsave':true},
+		'gpm'	:{'num':25,'name':'+/-','nsave':true},
+		'score'	:{'num':25,'name':'О','nsave':true},
+	}
+}
+
 var showfl = false
 var filt = {}
 var srt = 'tplace'
+var srtn = true
 
 var diap = []
 var url = {}
@@ -59,7 +96,7 @@ $().ready(function() {
 	text += '<tr id="color"><td colspan=2><a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">Расскрасить</a></td></tr>'
 	text += '<tr id="CodeTableForForum"><td colspan=2><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
 	text += '<tr id="empty" colspan=2><td> </td></tr>'
-	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\',\'did\',\''+div_cur.did+'\'))">Сравнить команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
+	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\',\'did\',\''+div_cur.did+'\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
 	if(deb){
 		text += '<tr id="empty" colspan=2><td> </td></tr>'
 		text += '<tr id="showdivs"><td colspan=2><a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a></td></tr>'
@@ -94,18 +131,17 @@ function ClosePrint(){
 	$('table#orig').show()	
 }
 
-function sSort(i, ii) { 
+function sSort(i, ii) { //от большего к меньшему
     if 		(i[srt] < ii[srt])	return  1
     else if	(i[srt] > ii[srt])	return -1
     else						return  0
 }
 
-function sSortR(i, ii) { 
+function sSortR(i, ii) { //реверт, от меньшего к большему
     if 		(i[srt] > ii[srt])	return  1
     else if	(i[srt] < ii[srt])	return -1
     else						return  0
 }
-
 
 function Print(dataname, name, value, sr){
 	ClosePrint()
@@ -120,43 +156,46 @@ function Print(dataname, name, value, sr){
 		default: return false
 	}
 	if(sr==srt)	{
-		data = data.sort(sSortR)
+		srtn = (srtn ? false : true)
 	}else{
 		srt=sr
-		data = data.sort(sSort)
 	}
+	data = (srtn ? data.sort(sSort) : data.sort(sSortR))
 	  
 	var text = ''
 	text += '<table width=100% id="svod">'
 	text+= '<tr height=20><td><b>№</b></td>'
-	for(j in head) if(filt[head[j]]!=false) text += '<td><b>'+head[j]+'</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j]+'\'))"><img height=8 src="system/img/a-down.gif"></a></td>'
+	for(j in head) if(filt[head[j]]!=false) text += '<td><b>'+head[j]+'</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j]+'\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
+//	text+= '<td><b>И</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\'И\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
+//	text+= '<td><b>О</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\'О\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
 	text+= '</tr>'
 	var num=1
 	for(i in data){
 		var show = true
-		if(name!=undefined && value!=undefined && data[i][name]!=value) show = false
+		var dti = data[i]
+		if(name!=undefined && value!=undefined && dti[name]!=value) show = false
 		if(show){
-			text += '<tr height=22>'
+			text += '<tr height=22 align=right>'
 			text += '<td><u>'+num+'</u></td>'
 			for(j in head) if(filt[head[j]]!=false) {
-				var tt = data[i][head[j]]
+				var tt = dti[head[j]]
 				var al = ''
-				if(tt == undefined){
-					tt = '&nbsp;' 
-				}else{
+				if(tt == undefined) tt = '&nbsp;'
+				else{
 					switch (head[j]){
-						case 'tname':	tt = '<b>' + tt + '</b>';		break;
-						case 'tvalue':	tt = ShowValueFormat(tt)+'т';al = ' align=right';break;
-						case 'twage':	tt = ShowValueFormat(tt);al = ' align=right';break;
-						case 'tss':		al = ' align=right';break;
-						case 'ssize':	al = ' align=right';break;
-						case 'scbud':	al = ' align=right';break;
+						case 'tname':
+							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>':'<b>' + tt + '</b>')
+							break;
+						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
+						case 'twage':	tt = ShowValueFormat(tt);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						default:
 					}
 				}
 				text += '<td'+al+'>'+tt+'</td>'
 			}
+//			text += '<td>'+data[i]['games']+'</td>'
+//			text += '<td>'+data[i]['score']+'</td>'
 			text += '</tr>'
 			num++
 		}
@@ -165,6 +204,7 @@ function Print(dataname, name, value, sr){
 	text += '<div align=right id="svod"><a href="javascript:void(ClosePrint())">(Закрыть)&nbsp;</a></div>'
 	$('table#orig').before(text)
 	$('table#svod tr:odd').attr('bgcolor','#A3DE8F')
+	ColorIt()
 }
 
 function ShowValueFormat(value){
@@ -198,8 +238,10 @@ function GetFinish(type, res){
 		m.divs = true
 		ModifyDivs()
 	}
-
-	//PrintRightInfo()
+	if(m.shdel==undefined && m.get_divs!=undefined && m.get_teams!=undefined){
+		m.shdel = true
+		ShowDelete()
+	}
 }
 
 function CheckMy(){
@@ -215,11 +257,12 @@ function SaveData(dataname){
 		return false
 	}
 	var data = []
+	var idname = 'id'
 	var head = list[dataname].split(',')
 	switch (dataname){
-		case 'players':	data = players;	break
-		case 'teams': 	data = teams;	break
-		case 'divs': 	data = divs;	break
+		case 'players':	data = players;				break
+		case 'teams': 	data = teams;idname='tid';	break
+		case 'divs': 	data = divs; idname='did';	break
 		default: 		return false
 	}
 	if(ff) {
@@ -227,7 +270,7 @@ function SaveData(dataname){
 		for (var i in data) {
 			if(typeof(data[i])!='undefined') {
 				var dti = data[i]
-				text += dti[head[0]]
+				text += dti[idname]
 				for(var j in head) text += ':' + (dti[head[j]]==undefined ? '' : dti[head[j]])
 				text += ','
 			}
@@ -266,11 +309,19 @@ function SaveData(dataname){
 function GetData(dataname){
 	debug(dataname+':GetData')
 	var data = []
+	var idname = 'id'
+
+	var head2 = []
+	for (i in list2[dataname]) {
+		if(!list2[dataname][i].nsave) head2[list2[dataname][i].num] = i	
+	}
+	for (i in head2) debug(dataname+':t1:'+i+':'+head2[i])
+
 	var head = list[dataname].split(',')
 	switch (dataname){
-		case 'players': data = players2;break
-		case 'teams': 	data = teams;	break
-		case 'divs'	: 	data = divs;	break
+		case 'players': data = players2;			break
+		case 'teams': 	data = teams;idname='tid';	break
+		case 'divs'	: 	data = divs; idname='did';	break
 		default: return false
 	}
 	if(ff) {
@@ -285,8 +336,8 @@ function GetData(dataname){
 					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 					num++
 				}
-				data[curt[head[0]]] = []
-				if(curt[head[0]]!=undefined) data[curt.id] = curt
+				data[curt[idname]] = []
+				if(curt[idname]!=undefined) data[curt.id] = curt
 			}
 			GetFinish('get_'+dataname, true)
 		} else {
@@ -295,15 +346,12 @@ function GetData(dataname){
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-//			tx.executeSql("DROP TABLE IF EXISTS players")
-//			tx.executeSql("DROP TABLE IF EXISTS teams")
-//			tx.executeSql("DROP TABLE IF EXISTS divs")
 			tx.executeSql("SELECT * FROM "+dataname, [],
 				function(tx, result){
 					debug(dataname+':Select ok')
 					for(var i = 0; i < result.rows.length; i++) {
 						var row = result.rows.item(i)
-						var id = row[head[0]]
+						var id = row[idname]
 						data[id] = {}
 						for(j in row) data[id][j] = row[j]
 //						debug(dataname+':g'+id+':'+data[id].my)
@@ -319,11 +367,32 @@ function GetData(dataname){
 	}
 }
 
-function PrintRightInfo(){
-	debug('PrintRightInfo')
-	if(div_cur.dpriz!=undefined && div_cur.dpriz!=''){
-		$("#crabright").append('<div id="showpriz"><a href="javascript:void(ShowPriz(\''+div_cur.dpriz+'\'))">Показать призовые</a>&nbsp;</div>')
+function Delete(){
+	debug('DeleteData go')
+	if(ff) {
+		/**
+		var storage = globalStorage[location.hostname];
+		storage.removeItem ('x');
+		// или так
+		localStorage.removeItem ('x')
+		/**/
+		delete GlobalStorage('players')
+		delete GlobalStorage('teams')
+		delete GlobalStorage('divs')
+	}else{
+		if(!db) DBConnect()
+		db.transaction(function(tx) {
+			tx.executeSql("DROP TABLE IF EXISTS players",[],function(tx, result){debug('players:deleted')},function(tx, error){debug(error.message)})
+			tx.executeSql("DROP TABLE IF EXISTS teams",[],function(tx, result){debug('teams:deleted')},function(tx, error){debug(error.message)})
+			tx.executeSql("DROP TABLE IF EXISTS divs",[],function(tx, result){debug('divs:deleted')},function(tx, error){debug(error.message)})
+		})
 	}
+	$('div#del').remove()
+}
+
+function ShowDelete(){
+	debug('ShowDelete')
+	$("#crabright").append('<br><div align=right id="del"><a id="del" href="javascript:void(Delete())">'+('Удалить данные').fontsize(1)+'</a></div>')
 }
 
 function DBConnect(){
@@ -334,6 +403,11 @@ function DBConnect(){
 
 function ModifyTeams(){
 	debug('ModifyTeams')
+	var zag = {}
+	$('td.back4 table:first table:first tr:eq(0) th').each(function(i, val){
+		zag[$(val).text().split('\n')[0]] = i
+	})
+	for (i in zag) debug(i+':'+zag[i])
 	$('td.back4 table:first table:first tr:gt(0)').each(function(i, val){
 		var id = parseInt(UrlValue('n',$(val).find('a:has(u)').attr('href')))
 		if(typeof(teams[id])=='undefined') {
@@ -341,6 +415,15 @@ function ModifyTeams(){
 			teams[id].tid = id
 			teams[id].tname = $(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]').text()
 		}
+		teams[id].games = $(val).find('td:eq('+zag['И']+')').text()
+		teams[id].wins 	= $(val).find('td:eq('+zag['В']+')').text()
+		teams[id].draws	= $(val).find('td:eq('+zag['Н']+')').html()
+		teams[id].loses	= $(val).find('td:eq('+zag['П']+')').html()
+		teams[id].gup	= $(val).find('td:eq('+zag['ГЗ']+')').html()
+		teams[id].gdown	= $(val).find('td:eq('+zag['ГП']+')').html()
+		teams[id].gpm	= $(val).find('td:eq('+zag['+/-']+')').html()
+		teams[id].score	= $(val).find('td:eq('+zag['О']+')').html()
+		teams[id].thash = UrlValue('z',$(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]').attr('href'))
 		teams[id].tplace = i+1
 		teams[id].did = div_cur.did
 		teams[id].nname = div_cur.nname
@@ -439,58 +522,6 @@ function SetFin(){
 
 		$(this).parent().before(td_data1).html(td_data)
 	})
-	$('div[id^="show"] a').removeAttr('href')
-}
-
-function SetTasks(x){
-	// task for club
-	var team = []
-
-	// Get info fom Global or Session Storage
-	var text1 = ''
-	if (navigator.userAgent.indexOf('Firefox') != -1)	text1 = String(globalStorage[location.hostname].tasks)
-	else 												text1 = String(sessionStorage.tasks)
-
-//	$('td.back4').prepend('<br>'+text1+'<br>')
-	if (text1 != 'undefined'){
-		var t1 = text1.split(',')
-		for (i in t1) {
-			var t2 = t1[i].split(':')
-			team[t2[0]] = {}
-			if(t2[1] != undefined) team[t2[0]].ttask = t2[1]
-			if(t2[2] != undefined) team[t2[0]].ttown = t2[2]
-			if(t2[3] != undefined) team[t2[0]].sname = t2[3]
-			if(t2[4] != undefined) team[t2[0]].ssize = t2[4]
-		}
-	}
-	if (x==1){
-		$('td.back1 span.text2b').append(' (задачи)')
-		$('td.back4 table table th[width=13%]').attr('width','26%')
-		$("td.back4 table table tr td a[href*='plug.php?p=refl&t=s_graph']").each(function(){
-			var tid = UrlValue('n',$(this).attr('href'))
-			$(this).parent().find('img').remove() 
-			var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
-
-			if (team[tid] != undefined && team[tid].ttask != undefined) td_data += ' <small>'+team[tid].ttask+'</small>'
-			$(this).parent().html(td_data)
-		})
-	} else if (x==2) {
-		$('td.back1 span.text2b').append(' (стадионы)')
-		$('td.back4 table table th[width=13%]').attr('width','5%').before('<th width=30% colspan=2>Стадионы\n\t')
-		$('td.back4 table table th[width=7%]').attr('width','5%')
-		$('td.back4 table table th[width=6%]').attr('width','5%')
-		$("td.back4 table table tr td a[href*='plug.php?p=refl&t=s_graph']").each(function(){
-			var tid = UrlValue('n',$(this).attr('href'))
-			$(this).parent().find('img').remove() 
-			var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
-			var td_data1 = '<td> </td><td> </td>'
-
-			if (team[tid] != undefined && team[tid].sname != undefined) td_data1 = '<td><small>'+team[tid].sname+ '</small> </td><td><small>' +team[tid].ssize+'</small> </td>'
-
-			$(this).parent().before(td_data1).html(td_data)
-//			$(this).parent().before(td_data1)
-		})
-	}
 	$('div[id^="show"] a').removeAttr('href')
 }
 
