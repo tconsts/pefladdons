@@ -21,9 +21,10 @@ var save = false
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
-	'teams':	'my,ncode,nname,did,tid,tdate,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,tplace',
+	'teams':	'tid,my,ncode,nname,did,tdate,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,tplace',
 	'divs':		'did,my,dname,dnum,dprize'
 }
+
 var sumP = 0
 var sumH = false
 var MyNick = ''
@@ -46,7 +47,7 @@ var skills = {
 $().ready(function() {
 	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	cid = parseInt($('td.back4 table:first table td:first').text())
-	teams[cid] = {}
+	teams[cid] = {'tid':cid}
 	var srch='Вы вошли как '
 	MyNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 
@@ -71,27 +72,28 @@ $().ready(function() {
 		$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 		$('#crabrighttable').addClass('border') 
 
-		preparedhtml  =	'<table width=100%><tr><th colspan=3>Финансовое положение</th></tr>'
+		preparedhtml  =	'<table width=100% id="rg"><tr><th colspan=3>Финансовое положение</th></tr>'
 		preparedhtml += '<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
 		preparedhtml += '</table><br>'
-
-		if(deb){
-			preparedhtml += '<a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
-			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
-			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
-		}
-
 		$("#crabright").html(preparedhtml)
+
 		EditFinance();
 
 		GetData('teams')
 		GetData('players')
 //		GetData('divs')
-
 		countSostavMax  = $('tr[id^=tblRosterTr]').length
 		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
 		GetInfoPagePl()
 		GetInfoPageTm()
+
+		if(deb){
+			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
+			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
+			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
+			$("#rg").after(preparedhtml)
+		}
+
 	}
 }, false);
 
@@ -123,14 +125,6 @@ function GetFinish(type, res){
 		ModifyPlayers()
 		PrintRightInfo()
 	}
-	if(m.savedatadv==undefined && m.pg_teams && !m.get_divs){
-		m.savedatadv = true
-	}
-	if(m.savedatadv==undefined && m.pg_teams && m.get_divs){
-		m.savedatadv = true
-		PrintDivs()
-	}
-
 
 /**
 	if(m.cleartasks==undefined && m.pg_tm!=undefined && (m.db_tm!=undefined || m.gs_tm!=undefined)) {
@@ -144,26 +138,32 @@ function CheckMy(){
 	debug('CheckMy go')
 	if(team_cur.my){
 		save = true
+		debug('teams:Need Save(cur)')
 	}else{
 		for(i in teams){
-			if(teams[i].my && teams[i].nname == team_cur.nname) save = true
+			if(teams[i].my && teams[i].nname == team_cur.nname) {
+				save = true
+				debug('teams:Need Save(list):'+team_cur.nname)
+			}
 		}
 	}
 }
 
 function ModifyTeams(){
 	debug('teams:Modify')
+//	for(var i in teams) debug('m1:'+i+':'+teams[i].tid + ':' + teams[i].tname)
 	//teams and team_cur
 	team_cur.tss = (team_cur.tss/team_cur.pnum).toFixed(2)
 	team_cur.age = (team_cur.age/team_cur.pnum).toFixed(2)
 
-	var tmt = []
+	var tmt = {}
 	for(var i in team_cur){
-		tmt[i] = (team_cur[i] != '' ? team_cur[i] : (teams[cid][i]!=undefined ? teams[cid][i] : ''))
+		tmt[i] = (team_cur[i] != '' ? team_cur[i] : (typeof(teams[cid][i])!='undefined' ? teams[cid][i] : ''))
 	}
 	teams[cid] = tmt
 //	debug('tname:'+teams[cid]['tname']+'='+team_cur['tname'])
 //	if(teams[cid].tplace>0) $('table.layer1 td.l2:eq(5)').append((' ('+teams[cid].tplace+')').fontsize(1))
+//	for(var i in teams) debug('m2:'+i+':'+teams[i].tid + ':' + teams[i].tname)
 	SaveData('teams')
 }
 
@@ -304,9 +304,6 @@ function GetData(dataname){
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-//			tx.executeSql("DROP TABLE IF EXISTS players")
-//			tx.executeSql("DROP TABLE IF EXISTS teams")
-//			tx.executeSql("DROP TABLE IF EXISTS divs")
 			tx.executeSql("SELECT * FROM "+dataname, [],
 				function(tx, result){
 					debug(dataname+':Select ok')
@@ -486,7 +483,6 @@ function PrintRightInfo(){
 	thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
 	thtml += team_cur.age + '&nbsp;'
 	thtml += '</th><td></td></tr>'
-
 	$('#crabright table:first').append(thtml)
 }
 
@@ -494,50 +490,6 @@ function Ready(){
 	countSostav++
 	if(countSostav==countSostavMax){
 		GetFinish('pg_players', true)
-/**
-		if(team.wage > 0){ // if VIP
-
-			var sumvaluechange = 0
-
-			if(UrlValue('j')==99999){
-				// Players value
-				var text2 = '' //GetStorageData('playersvalue')
-				if(ff)	text2 = String(globalStorage[location.hostname]['playersvalue'])
-				else	text2 = sessionStorage['playersvalue']
-
-				if (text2 != undefined){
-					var t1 = text2.split(',')
-					var sumvalueold = 0
-					for(j in t1){
-						var t2 = t1[j].split(':')
-						pls[t2[0]] = {}
-						pls[t2[0]].value = parseInt(t2[1])*1000
-						pls[t2[0]].valuech = parseInt(t2[2])*1000
-						sumvalueold += (isNaN(parseInt(t2[1])) ? 0 : parseInt(t2[1]))
-					}
-					// Update current
-					var sumvaluenew = 0
-					for (i in players) {
-						var pid = players[i].id
-						if(pls[pid] != undefined){
-							if(players[i].value != pls[pid].value){
-								players[i].valuech = players[i].value - pls[pid].value
-							}else{
-								players[i].valuech = pls[pid].valuech
-							}
-						} else {
-							players[i].valuech = 0
-						}
-						sumvaluechange += players[i].valuech/1000
-						sumvaluenew += players[i].value/1000
-					}
-					if(sumvaluenew != sumvalueold){
-						sumvaluechange = sumvaluenew - sumvalueold
-					}
-				}
-			}
-
-		/**/
 	}
 }
 
@@ -546,15 +498,15 @@ function EditFinance(){
 	var txt = $('table.layer1 td.l4:eq(1)').text().split(': ')[1]
 	var txt2 = ''
 	switch (txt){
-		case 'банкрот': 				 txt2 += 'меньше 0'		;break;
-		case 'жалкое': 					 txt2 += '1$т-200$т'	;break;
-		case 'бедное': 					 txt2 += '200$т-500$т';break;
-		case 'среднее': 				 txt2 += '500$т-1$м'	;break;
-		case 'нормальное': 				 txt2 += '1$м-3$м'	;break;
-		case 'благополучное': 			 txt2 += '3$м-6$м'	;break;
-		case 'отличное': 				 txt2 += '6$м-15$м'	;break;
-		case 'богатое': 				 txt2 += '15$м-40$м'	;break;
-		case 'некуда деньги девать :-)': txt2 += 'больше 40$м'	;break;
+		case 'банкрот': 				 txt2 += 'меньше 0';	break;
+		case 'жалкое': 					 txt2 += '1$т-200$т';	break;
+		case 'бедное': 					 txt2 += '200$т-500$т';	break;
+		case 'среднее': 				 txt2 += '500$т-1$м';	break;
+		case 'нормальное': 				 txt2 += '1$м-3$м';		break;
+		case 'благополучное': 			 txt2 += '3$м-6$м';		break;
+		case 'отличное': 				 txt2 += '6$м-15$м';	break;
+		case 'богатое': 				 txt2 += '15$м-40$м';	break;
+		case 'некуда деньги девать :-)': txt2 += 'больше 40$м';	break;
 		default:
 			var fin = parseInt(txt.replace(/,/g,'').replace('$',''))
 			if 		(fin >  40000000)	{txt = 'некуда деньги девать';	txt2 = 'больше 40$м'}
@@ -993,21 +945,6 @@ function check(d) {return (d<10 ? "0"+d : d)}
 function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
 /**
-
-function CountryInfoGet(){
-	var srch="Вы вошли как "
-	var ManagerNickCur  = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
-	var ManagerNickTeam = $('td.back4 table:first table:eq(1) table td:first span').text()
-	if(ManagerNickCur == ManagerNickTeam){
-		var tdivarr = []
-		var tdiv = getCookie('teamdiv');
-		if(tdiv != false) tdivarr = tdiv.split('!')
-		// format: club_id, country_name, div, <list of div prizes>
-		tdivarr[0] = cid
-		tdivarr[1] = $('td.back4 table:first table td:eq(3)').text().split(', ')[1].replace(')','')
-		setCookie('teamdiv',tdivarr.join('!'));
-	} 
-}
 
 function ForgotPlValueCh(){
 	var text = ''
