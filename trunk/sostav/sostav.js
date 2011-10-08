@@ -226,7 +226,7 @@ $().ready(function() {
 	}
 	$('.back4').html('<table border="0" cellspacing="0" cellpadding="10" width="100%" height="100%"><tr><td valign="top" class="contentframer"></td></tr></table>')
 
-	$.get('fieldnew.php', {}, function(data){
+	$.get('fieldnew3.php', {}, function(data){
 		var dataarray = data.split('&');
 		var pid = [];		// id игроков заявленых в состав
 		var p0 = [];		// тактика1, всего 5 тактик.
