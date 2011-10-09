@@ -14,11 +14,6 @@ var divs = []
 var div_cur = {}
 var m = []
 var save = false
-var list = {
-	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
-	'teams':	'tid,my,ncode,nname,did,tdate,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,tplace',
-	'divs':		'did,my,nname,dname,dnum,drotate,drotcom,dprize'
-}
 
 var list2 = {
 	'players':{
@@ -30,8 +25,7 @@ var list2 = {
 		'fchange':{'num':6},
 		'mchange':{'num':7},
 		'value':  {'num':8},
-		'valuech':{'num':9}
-	},
+		'valuech':{'num':9}},
 	'teams': {
 		'tid':	{'num':1, 'nshow':true},
 		'my':	{'num':2, 'nshow':true},
@@ -54,7 +48,6 @@ var list2 = {
 		'ttown':{'num':19, 'name':'Город','al':'left'},
 		'sname':{'num':20, 'name':'Стадион','al':'left'},
 		'ssize':{'num':21, 'name':'Разм'},
-
 		'games'	:{'num':22,'name':'И ','nsave':true},
 		'wins'	:{'num':23,'name':'В ','nsave':true},
 		'draws'	:{'num':24,'name':'Н ','nsave':true},
@@ -62,18 +55,17 @@ var list2 = {
 		'gup'	:{'num':26,'name':'ГЗ','nsave':true},
 		'gdown'	:{'num':27,'name':'ГП','nsave':true},
 		'gpm'	:{'num':28,'name':'+-','nsave':true},
-		'score'	:{'num':29,'name':'О ','nsave':true},
-	},
+		'score'	:{'num':29,'name':'О ','nsave':true}},
 	'divs':{
 		'did':	{'num':1, 'nshow':true},
 		'my':	{'num':2, 'nshow':true},
-		'nname':{'num':3, 'name':'Страна'},
-		'dname':{'num':4, 'name':'Див'},
-		'dnum':	{'num':5, 'nshow':true},
+		'dnum':	{'num':3, 'nshow':true},
+		'nname':{'num':4, 'name':'Страна'},
+		'dname':{'num':5, 'name':'Див'},
 		'drotate':{'num':6, 'name':'+-'},
 		'drotcom':{'num':7, 'name':'Комент'},
-		'dprize': {'num':8, 'name':'Прзовые'}
-	}
+		'dprize': {'num':8, 'name':'Призовые'},
+		'color':  {'num':9, 'name':'Расскрас'}}
 }
 
 var showfl = false
@@ -94,9 +86,6 @@ $().ready(function() {
 
 	// add column with goals +/- (will be include to code for forum)
 	PlusMinus();
-
-	// Colorize table if need
-	ColorIt()
 
 	// Select as bold self team in my table with id=0
 	if( UrlValue('k') && UrlValue('k')!=0) SelectTeam(UrlValue('k'))
@@ -188,7 +177,7 @@ function Print(dataname, name, value, sr){
 
 	var data = []
 	switch (dataname){
-		case 'players': data = players;	break
+//		case 'players': data = players;	break
 		case 'teams': 	data = teams;	break
 		case 'divs'	: 	data = divs;	break
 		default: return false
@@ -273,6 +262,7 @@ function GetFinish(type, res){
 	if(m.divs==undefined && m.get_divs!=undefined && m.get_pgdivs){
 		m.divs = true
 		ModifyDivs()
+		ColorIt()
 	}
 	if(m.shdel==undefined && m.get_divs!=undefined && m.get_teams!=undefined){
 		m.shdel = true
@@ -297,9 +287,8 @@ function SaveData(dataname){
 //	var head = list[dataname].split(',')
 	var head = []
 	for (i in list2[dataname]) {
-		if(!list2[dataname][i].nsave) head[list2[dataname][i].num] = i	
+		if(!list2[dataname][i].nsave) head[list2[dataname][i].num-1] = i
 	}
-
 	switch (dataname){
 		case 'players':	data = players;				break
 		case 'teams': 	data = teams;idname='tid';	break
@@ -323,7 +312,7 @@ function SaveData(dataname){
 				function(tx, result){},
 				function(tx, error) {debug(dataname+':drop error:' + error.message)}
 			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+list[dataname]+")", [],
+			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head+")", [],
 				function(tx, result){debug(dataname+':create ok')},
 				function(tx, error) {debug(error.message)}
 			);
@@ -354,7 +343,7 @@ function GetData(dataname){
 //	var head = list[dataname].split(',')
 	var head = []
 	for (i in list2[dataname]) {
-		if(!list2[dataname][i].nsave) head[list2[dataname][i].num] = i	
+		if(!list2[dataname][i].nsave) head[list2[dataname][i].num-1] = i	
 	}
 	switch (dataname){
 		case 'players': data = players2;			break
@@ -499,6 +488,7 @@ function GetInfoPageDiv(){
 	div_cur.dprize  = ''
 	div_cur.drotate = ''
 	div_cur.drotcom = ''
+	div_cur.color = ''
 
 	for(i in div_cur) debug('d'+i+':'+div_cur[i])
 
@@ -574,10 +564,24 @@ function PlusMinus(){
 }
 
 function ColorIt(){
-	if ( UrlValue('j') ) tbid = UrlValue('j');
 
+	debug('ColorIt:'+div_cur.did)
+//	debug('ColorIt:'+divs[div_cur.did].color)
+
+	var dr = (divs[div_cur.did].drotate!='' ? divs[div_cur.did]['drotate'].split(',') : false)
+	debug('ColorIt:'+dr)
+	if(dr!=false && dr[0]==0) {
+		debug('champ')
+//		diap[div_cur.did]
+	} else{
+		debug(dr[0])
+	}
+
+	// '43*1-2!white*3-6!FCE94F*15-26!BABDB6.44*1-2!white*18-22!BABDB6'
+
+/**/
+	if ( UrlValue('j') ) tbid = UrlValue('j');
 	if (tbid == 0){
-		var divname = 
 		$("td.back4 a").each(function(){
 			if ($(this).text() == $('td.back1 span').text().split(', ',2)[1]) {
 				tbid = UrlValue('j',$(this).attr('href'))
@@ -588,15 +592,19 @@ function ColorIt(){
 	if (getCookie('pefltables') && tbid >= 0) {
 		var dp = getCookie('pefltables').split('.')
 		for (var p in dp) {
+			//debug(dp[p])
 			var name = dp[p].split('*',1)[0] 
 			var key = dp[p].split('*')
 			key.shift()
 			diap[name] = key
 		}
 		ColorTable(tbid);
+		for(i in diap) debug(i+':'+diap[i])
 	}
+/**/
 }
 
+/**/
 function ColorTable(tableid){
 	if (diap[tableid]){
 //		$('th:contains(№)').parent().parent().find('tr').each(function(i,val){
@@ -610,6 +618,7 @@ function ColorTable(tableid){
 		})
 	}
 }
+/**/
 
 function SelectTeam(teamid){
 	var maxturs = (parseInt($('td.back4 table table tr:last td:first').text())-1)*2

@@ -14,7 +14,6 @@ var players  = []
 var players2 = []
 var teams = []
 var team_cur = {}
-var divs = []
 var m = []
 var remember = 0
 var save = false
@@ -22,7 +21,7 @@ var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
 	'teams':	'tid,my,ncode,nname,did,tdate,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,tplace',
-	'divs':		'did,my,dname,dnum,dprize'
+//	'divs':		'did,my,dnum,dname,drotate,drotcom,dprize,color'
 }
 
 var sumP = 0
@@ -90,7 +89,7 @@ $().ready(function() {
 		if(deb){
 			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
 			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
-			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
+//			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
 			$("#rg").after(preparedhtml)
 		}
 
@@ -200,7 +199,7 @@ function Print(dataname){
 	switch (dataname){
 		case 'players': data = players;	break
 		case 'teams': 	data = teams;	break
-		case 'divs'	: 	data = divs;	break
+//		case 'divs'	: 	data = divs;	break
 		default: return false
 	}
 	var text = '<table width=100% border=1>'
@@ -279,7 +278,7 @@ function GetData(dataname){
 	switch (dataname){
 		case 'players': data = players2;break
 		case 'teams': 	data = teams;	break
-		case 'divs'	: 	data = divs;	break
+//		case 'divs'	: 	data = divs;	break
 		default: return false
 	}
 	if(ff) {
