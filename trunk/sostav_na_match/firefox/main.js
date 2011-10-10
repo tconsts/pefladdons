@@ -241,7 +241,7 @@ if (gk_cookie_value) {
 $().ready(function() {
 
 	$('.back4').html('<table border="0" cellspacing="0" cellpadding="10" width="100%" height="100%"><tr><td valign="top" class="contentframer"></td></tr></table>');
-	$.get('fieldnew.php', {}, function(data){
+	$.get('fieldnew3.php', {}, function(data){
 		var dataarray = data.split('&');
 		
 		// бежим по всему массиву dataarray
