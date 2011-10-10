@@ -76,7 +76,6 @@ var srtn = true
 var diap = []
 var url = {}
 var def = '1-1!FCE94F,2-2!white,3-3!E9B96E'
-var tbid = -1;
 
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
@@ -103,13 +102,13 @@ $().ready(function() {
 	$('#crabrighttable').addClass('border') 
 
 	var text = '<table width=100%>'
-	text += '<tr id="color"><td colspan=2><a href="javascript:void(getValue(\'' + tbid + '\',\''+ (diap[tbid] ? diap[tbid].join() : def) +'\'))">Расскрасить</a></td></tr>'
+	text += '<tr id="color"><td colspan=2><a id="colorit" href="">Расскрасить</a>&nbsp(<a href="javascript:void(ColorDel())">x</a>)</td></tr>'
 	text += '<tr id="CodeTableForForum"><td colspan=2><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
 	text += '<tr id="empty" colspan=2><td> </td></tr>'
 	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\',\'did\',\''+div_cur.did+'\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
 	if(deb){
 		text += '<tr id="empty" colspan=2><td> </td></tr>'
-		text += '<tr id="showdivs"><td colspan=2><a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a></td></tr>'
+		text += '<tr id="showdivs"><td colspan=2><a id="divs" href="javascript:void(Print(\'divs\',\'nname\',\''+div_cur.nname+'\'))">debug:Дивизионы</a></td></tr>'
 	}
 	text += '</table>'
 	$("#crabright").html(text)
@@ -162,7 +161,7 @@ function sSortR(i, ii) { //реверт, от меньшего к большем
 }
 
 function Print(dataname, name, value, sr){
-	debug('!'+div_cur.did)
+	debug('Print:'+div_cur.did)
 	ClosePrint()
 	$('td.back4 table table').attr('id','orig').hide()
 
@@ -466,7 +465,7 @@ function ModifyDivs(){
 	var id = div_cur.did
 	if(typeof(divs[id])=='undefined') divs[id] = {}
 	for(var i in div_cur){
-		divt[i] = (div_cur[i] != '' ? div_cur[i] : (divs[id][i]!=undefined ? divs[id][i] : ''))
+		divt[i] = (div_cur[i] != '' ? div_cur[i] : (typeof(divs[id][i])!='undefined' ? divs[id][i] : ''))
 	}
 	divs[id] = divt
 
@@ -483,7 +482,7 @@ function GetInfoPageDiv(){
 	$('a[href*="p=refl&t=s&k=0&"]').each(function(i, val){
 		if($(val).text() == div_cur.dname) {
 			div_cur.dnum = i+1
-			div_cur.did = UrlValue('j',$(val).attr('href'))
+			div_cur.did = parseInt(UrlValue('j',$(val).attr('href')))
 		}
 	})
 	div_cur.dprize  = ''
@@ -577,13 +576,12 @@ function DeleteCookie(name) {
 
 function ColorIt(){
 	debug('ColorIt:'+div_cur.did)
-	var tbid = div_cur.did
-	debug(tbid)
-	debug(divs[tbid].nname)
-	diap[tbid] = []	
+	debug('ColorIt:'+divs[div_cur.did].nname)
+//	for( i in divs) debug('ColorIt:'+divs[i].did+':'+divs[i].nname)
+	diap[div_cur.did] = []	
 
-	if(divs[tbid].color == ''){
-		debug('empty'+divs[tbid].color)
+	if(divs[div_cur.did].color == '' || divs[div_cur.did].color==null){
+		debug('empty'+divs[div_cur.did].color)
 		if (getCookie('pefltables')) {
 			var dp = getCookie('pefltables').replace(/\!/g,'=').split('.')	// '43*1-2!white*3-6!FCE94F*15-26!BABDB6.44*1-2!white*18-22!BABDB6'
 			for (var p in dp) {
@@ -599,30 +597,32 @@ function ColorIt(){
 		}
 	}
 
-	if(divs[tbid].color == ''){
-		var dr = (divs[tbid].drotate!='' ? divs[tbid]['drotate'].split(',') : false)
+	if(divs[div_cur.did].color == '' || divs[div_cur.did].color==null){
+		var dr = (divs[div_cur.did].drotate!='' ? divs[div_cur.did]['drotate'].split(',') : false)
 		debug('ColorIt:'+dr)
-		if(dr!=false && dr[0]==0) {
-			debug('champ')
-			diap[tbid].push('1-1=FCE94F')
-			diap[tbid].push('2-2=white')
-			diap[tbid].push('3-3=E9B96E')
-		} else{
-			diap[tbid].push('1-'+dr[0]+'=white')
+		if(dr!=false){
+			if(dr[0]==0) {
+				debug('ColorIt:'+'champ')
+				diap[div_cur.did].push('1-1=FCE94F')
+				diap[div_cur.did].push('2-2=white')
+				diap[div_cur.did].push('3-3=E9B96E')
+			}else{
+				diap[div_cur.did].push('1-'+dr[0]+'=white')
+			}
 		}
 	}else{
-		var str = String(divs[tbid].color).split(',')
-		for( i in str) diap[tbid].push(str[i])
+		var str = String(divs[div_cur.did].color).split(',')
+		for( i in str) diap[div_cur.did].push(str[i])
 	}
-	ColorTable(tbid);
+	ColorTable(div_cur.did);
 }
 
 /**/
 function ColorTable(tableid){
-	debug('ColorTable go')
+	debug('ColorTable:'+tableid)
 	if (diap[tableid]){
-//		$('th:contains(№)').parent().parent().find('tr').each(function(i,val){
-		$('td.back4 table table tr').each(function(i,val){
+		$('td.back4 table table:first tr').each(function(i,val){
+			debug('ColorTable:'+i+':'+diap[tableid])
 			for (var j in diap[tableid]) {
 				var d = diap[tableid][j]
 				if (i>= +d.split('=')[0].split('-')[0] && i <= +d.split('=')[0].split('-')[1]) {
@@ -631,17 +631,28 @@ function ColorTable(tableid){
 			}
 		})
 	}
+	$('a#colorit').attr('href','javascript:void(ColorGet(\'' + tableid + '\',\''+ (diap[tableid]!='' ? diap[tableid].join() : def) +'\'))')
 }
 /**/
 
-function getValue(tableid,curVal){
+function ColorGet(tableid,curVal){
 	var retVal = prompt('Задайте цвет таблицы', curVal);
 	if (retVal != null) {
-		diap[tableid] = divs[div_cur.did] = retVal.split(',');
+		divs[tableid].color = retVal
+		diap[tableid] = retVal.split(',');
 		ColorTable(tableid);
 		SaveData('divs')
 	}
 	return true
+}
+
+function ColorDel(){
+	debug('ColorDel go')
+	divs[div_cur.did].color = ''
+	diap[div_cur.did] = ''
+	ColorTable(div_cur.did);
+	SaveData('divs')
+	return true	
 }
 
 function SelectTeam(teamid){
