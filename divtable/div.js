@@ -162,6 +162,7 @@ function sSortR(i, ii) { //реверт, от меньшего к большем
 }
 
 function Print(dataname, name, value, sr){
+	debug('!'+div_cur.did)
 	ClosePrint()
 	$('td.back4 table table').attr('id','orig').hide()
 
@@ -563,62 +564,85 @@ function PlusMinus(){
 	})
 }
 
+function DeleteCookie(name) {
+	debug('DeleteCookie: '+name)
+/**
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() - 356); // -1 year
+	if (!name) return false;
+	document.cookie = name + '=; expires='+ exdate.toUTCString() + '; path=/'
+/**/
+	return true
+}
+
 function ColorIt(){
-
 	debug('ColorIt:'+div_cur.did)
-//	debug('ColorIt:'+divs[div_cur.did].color)
+	var tbid = div_cur.did
+	debug(tbid)
+	debug(divs[tbid].nname)
+	diap[tbid] = []	
 
-	var dr = (divs[div_cur.did].drotate!='' ? divs[div_cur.did]['drotate'].split(',') : false)
-	debug('ColorIt:'+dr)
-	if(dr!=false && dr[0]==0) {
-		debug('champ')
-//		diap[div_cur.did]
-	} else{
-		debug(dr[0])
-	}
-
-	// '43*1-2!white*3-6!FCE94F*15-26!BABDB6.44*1-2!white*18-22!BABDB6'
-
-/**/
-	if ( UrlValue('j') ) tbid = UrlValue('j');
-	if (tbid == 0){
-		$("td.back4 a").each(function(){
-			if ($(this).text() == $('td.back1 span').text().split(', ',2)[1]) {
-				tbid = UrlValue('j',$(this).attr('href'))
+	if(divs[tbid].color == ''){
+		debug('empty'+divs[tbid].color)
+		if (getCookie('pefltables')) {
+			var dp = getCookie('pefltables').replace(/\!/g,'=').split('.')	// '43*1-2!white*3-6!FCE94F*15-26!BABDB6.44*1-2!white*18-22!BABDB6'
+			for (var p in dp) {
+				//debug(dp[p])
+				var name = parseInt(dp[p].split('*',1)[0])
+				var key = dp[p].split('*')
+				key.shift()
+				if(typeof(divs[name])=='undefined') divs[name] = {}
+				divs[name].color = key.join(',')
 			}
-		})
+			SaveData('divs')
+			DeleteCookie('pefltables')
+		}
 	}
 
-	if (getCookie('pefltables') && tbid >= 0) {
-		var dp = getCookie('pefltables').split('.')
-		for (var p in dp) {
-			//debug(dp[p])
-			var name = dp[p].split('*',1)[0] 
-			var key = dp[p].split('*')
-			key.shift()
-			diap[name] = key
+	if(divs[tbid].color == ''){
+		var dr = (divs[tbid].drotate!='' ? divs[tbid]['drotate'].split(',') : false)
+		debug('ColorIt:'+dr)
+		if(dr!=false && dr[0]==0) {
+			debug('champ')
+			diap[tbid].push('1-1=FCE94F')
+			diap[tbid].push('2-2=white')
+			diap[tbid].push('3-3=E9B96E')
+		} else{
+			diap[tbid].push('1-'+dr[0]+'=white')
 		}
-		ColorTable(tbid);
-		for(i in diap) debug(i+':'+diap[i])
+	}else{
+		var str = String(divs[tbid].color).split(',')
+		for( i in str) diap[tbid].push(str[i])
 	}
-/**/
+	ColorTable(tbid);
 }
 
 /**/
 function ColorTable(tableid){
+	debug('ColorTable go')
 	if (diap[tableid]){
 //		$('th:contains(№)').parent().parent().find('tr').each(function(i,val){
 		$('td.back4 table table tr').each(function(i,val){
 			for (var j in diap[tableid]) {
 				var d = diap[tableid][j]
-				if (i>= +d.split('!')[0].split('-')[0] && i <= +d.split('!')[0].split('-')[1]) {
-					$(val).attr("bgcolor", d.split('!')[1])
+				if (i>= +d.split('=')[0].split('-')[0] && i <= +d.split('=')[0].split('-')[1]) {
+					$(val).attr("bgcolor", d.split('=')[1])
 				}
 			}
 		})
 	}
 }
 /**/
+
+function getValue(tableid,curVal){
+	var retVal = prompt('Задайте цвет таблицы', curVal);
+	if (retVal != null) {
+		diap[tableid] = divs[div_cur.did] = retVal.split(',');
+		ColorTable(tableid);
+		SaveData('divs')
+	}
+	return true
+}
 
 function SelectTeam(teamid){
 	var maxturs = (parseInt($('td.back4 table table tr:last td:first').text())-1)*2
@@ -646,17 +670,6 @@ function SelectTeam(teamid){
 	$("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().html('<b>' + td_data + '</b>')
 }
 
-function getValue(tableid,curVal){
-	var retVal = prompt('Задайте цвет таблицы', curVal.replace(/!/g,'='));
-	if (retVal != null) {
-		var cookie = ''
-		diap[tableid] = retVal.replace(/=/g,'!').split(',');
-		ColorTable(tableid);
-		for (var i in diap) if(i!=0 && diap[i].join('*')!='') cookie += '.' + i +'*' + diap[i].join('*');
-		setCookie('pefltables',cookie.replace('.',''))
-	}
-	return true
-}
 function TableCodeForForum(){
 
 	// change big flags for eurocups in table
