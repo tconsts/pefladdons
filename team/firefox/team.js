@@ -853,9 +853,9 @@ function PlayersChange(){
 			// Update page
 			for(i in plChange) {
 				$('table#tblRoster tr#tblRosterTr'		+ i + ' td:eq(4)').append(ShowChange(plChange[i]['mchange']))
-				$('table#tblRoster tr#tblRosterTr'		+ i + ' td:eq(5)').append(ShowChange(plChange[i]['fchange']))
+//				$('table#tblRoster tr#tblRosterTr'		+ i + ' td:eq(5)').append(ShowChange(plChange[i]['fchange']))
 				$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(4)').append(ShowChange(plChange[i]['mchange']))
-				$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(5)').append(ShowChange(plChange[i]['fchange']))
+//				$('table#tblRoster tr#tblRosterRentTr'	+ i + ' td:eq(5)').append(ShowChange(plChange[i]['fchange']))
 			}
 		} else {
 			remember = 1
