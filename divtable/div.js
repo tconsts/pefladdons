@@ -13,7 +13,8 @@ var teams = []
 var divs = []
 var div_cur = {}
 var m = []
-var save = false
+var save  = false
+var save2 = false
 
 var list2 = {
 	'players':{
@@ -30,7 +31,7 @@ var list2 = {
 		'tid':	{'num':1, 'nshow':true},
 		'my':	{'num':2, 'nshow':true},
 		'did':	{'num':3, 'nshow':true},
-		'tdate':{'num':4, 'nshow':true},
+		'tdate':{'num':4, 'name':'дата'},
 		'tplace':{'num':5,'name':'Мс'},
 		'ncode':{'num':6, 'name':'стр'},
 		'nname':{'num':7, 'name':'Страна','al':'left'},
@@ -75,7 +76,7 @@ var srtn = true
 
 var diap = []
 var url = {}
-var def = '1-1!FCE94F,2-2!white,3-3!E9B96E'
+var def = '1-1=FCE94F,2-2=white,3-3=E9B96E'
 
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
@@ -89,8 +90,6 @@ $().ready(function() {
 	// Select as bold self team in my table with id=0
 	if( UrlValue('k') && UrlValue('k')!=0) SelectTeam(UrlValue('k'))
 
-	GetInfoPageDiv()
-
 	// Draw CrabVIP panel
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
@@ -101,6 +100,7 @@ $().ready(function() {
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 	$('#crabrighttable').addClass('border') 
 
+	GetInfoPageDiv()
 	var text = '<table width=100%>'
 	text += '<tr id="color"><td colspan=2><a id="colorit" href="">Расскрасить</a>&nbsp(<a href="javascript:void(ColorDel())">x</a>)</td></tr>'
 	text += '<tr id="CodeTableForForum"><td colspan=2><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
@@ -230,6 +230,10 @@ function Print(dataname, name, value, sr){
 	$('table#orig').before(text)
 	$('table#svod tr:even:gt(0)').attr('bgcolor','#A3DE8F')
 	ColorIt()
+	if(save2){
+		save2 = false
+		SaveData('divs')
+	}
 }
 
 function ShowValueFormat(value){
@@ -248,6 +252,7 @@ function SetHead(dataname, name){
 		$('td#'+name).html(imgok)
 	}
 	for(i in filt) debug('filt:'+i+'='+filt[i])
+	save2 = true
 }
 
 function GetFinish(type, res){
@@ -266,7 +271,7 @@ function GetFinish(type, res){
 	}
 	if(m.shdel==undefined && m.get_divs!=undefined && m.get_teams!=undefined){
 		m.shdel = true
-		ShowDelete()
+		$("#crabright").append('<br><div align=right id="del"><a id="del" href="javascript:void(Delete())">'+('Удалить данные').fontsize(1)+'</a></div>')
 	}
 }
 
@@ -417,11 +422,6 @@ function Delete(){
 	$('div#del').remove()
 }
 
-function ShowDelete(){
-	debug('ShowDelete')
-	$("#crabright").append('<br><div align=right id="del"><a id="del" href="javascript:void(Delete())">'+('Удалить данные').fontsize(1)+'</a></div>')
-}
-
 function DBConnect(){
 	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
 	if(!db) {debug('Open DB PEFL fail.');return false;} 
@@ -454,7 +454,6 @@ function ModifyTeams(){
 		teams[id].tplace = i+1
 		teams[id].did = div_cur.did
 		teams[id].nname = div_cur.nname
-//		debug('p'+id+'_'+teams[id].my +'_'+ div_cur.did)
 	})
 	SaveData('teams')
 }
@@ -479,6 +478,8 @@ function GetInfoPageDiv(){
 	div_cur.nname = $('td.back4 td.back1').text().split(', ')[0]
 	div_cur.dname = $('td.back4 td.back1').text().split(', ')[1]
 	div_cur.my = false
+	div_cur.nt = parseInt($('td.back4 table:first table:first tr:last u').html())
+	debug('nt='+div_cur.nt)
 	$('a[href*="p=refl&t=s&k=0&"]').each(function(i, val){
 		if($(val).text() == div_cur.dname) {
 			div_cur.dnum = i+1
@@ -508,13 +509,6 @@ function ShowPriz(x){
 	$('div[id^="show"] a').removeAttr('href')
 }
 
-function setCookie(name, value) {
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() + 356); // +1 year
-	if (!name || !value) return false;
-	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
-	return true
-}
 function getCookie(name) {
     var pattern = "(?:; )?" + name + "=([^;]*);?"
     var regexp  = new RegExp(pattern)
@@ -609,6 +603,7 @@ function ColorIt(){
 			}else{
 				diap[div_cur.did].push('1-'+dr[0]+'=white')
 			}
+			diap[div_cur.did].push((div_cur.nt-dr[1])+'-'+dr[1]+'=BABDB6')			
 		}
 	}else{
 		var str = String(divs[div_cur.did].color).split(',')
@@ -622,7 +617,7 @@ function ColorTable(tableid){
 	debug('ColorTable:'+tableid)
 	if (diap[tableid]){
 		$('td.back4 table table:first tr').each(function(i,val){
-			debug('ColorTable:'+i+':'+diap[tableid])
+//			debug('ColorTable:'+i+':'+diap[tableid])
 			for (var j in diap[tableid]) {
 				var d = diap[tableid][j]
 				if (i>= +d.split('=')[0].split('-')[0] && i <= +d.split('=')[0].split('-')[1]) {
@@ -631,26 +626,31 @@ function ColorTable(tableid){
 			}
 		})
 	}
-	$('a#colorit').attr('href','javascript:void(ColorGet(\'' + tableid + '\',\''+ (diap[tableid]!='' ? diap[tableid].join() : def) +'\'))')
+	$('a#colorit').attr('href','javascript:void(ColorGet(\''+ (diap[tableid]!='' ? diap[tableid].join() : def) +'\'))')
 }
 /**/
 
-function ColorGet(tableid,curVal){
+function ColorGet(curVal){
+	debug('ColorGet:'+div_cur.did)
 	var retVal = prompt('Задайте цвет таблицы', curVal);
 	if (retVal != null) {
-		divs[tableid].color = retVal
-		diap[tableid] = retVal.split(',');
-		ColorTable(tableid);
+		divs[div_cur.did].color = retVal
+		diap[div_cur.did] = retVal.split(',');
+		$('td.back4 table table:first tr').removeAttr('bgcolor')
+		$('td.back4 table table:first tr:odd').attr('bgcolor','#a3de8f')
+   		ColorIt()
 		SaveData('divs')
 	}
 	return true
 }
 
 function ColorDel(){
-	debug('ColorDel go')
+	debug('ColorDel:'+div_cur.did)
+	$('td.back4 table table:first tr').removeAttr('bgcolor')
+	$('td.back4 table table:first tr:odd').attr('bgcolor','#a3de8f')
 	divs[div_cur.did].color = ''
 	diap[div_cur.did] = ''
-	ColorTable(div_cur.did);
+	ColorIt()
 	SaveData('divs')
 	return true	
 }
