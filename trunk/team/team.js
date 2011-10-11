@@ -395,7 +395,7 @@ function ModifyPlayers(){
 		var pl = players[i]
 		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(4)').append(ShowChange(pl['mchange']))
 //		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(5)').append(ShowChange(pl['fchange']))
-//		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(4)').append(ShowChange(pl['mchange']))
+		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(4)').append(ShowChange(pl['mchange']))
 //		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(5)').append(ShowChange(pl['fchange']))
 	}
 	// Save if not team21
