@@ -26,6 +26,7 @@ $().ready(function() {
 	if( urltype== 'rules'){
 		GetData('divs')
 	} else if(urltype == 'fin'){
+		GetData2()
 		$('td.back4').prepend('<div id=debug style="display: none;"></div>')
 		$('#debug').load($('a:contains("изменить финансирование")').attr('href') + ' span.text2b',function(){
 			var school = parseInt($('#debug').html().split(' ')[3])
@@ -102,6 +103,39 @@ function DBConnect(){
 	if(!db) {debug('Open DB PEFL fail.');return false;} 
 	else 	{debug('Open DB PEFL ok.')}
 }
+
+function GetData2(){
+	debug('GetData2')
+	if(ff) {
+		debug('ff='+true)
+	}else{
+		if(!db) DBConnect()
+		db.transaction(function(tx) {
+			tx.executeSql("SELECT dprize,my FROM divs", [],
+				function(tx, result){
+					for(var i = 0; i < result.rows.length; i++) {
+	//					var row = result.rows.item(i)
+						debug('dprize='+result.rows.item(i)['dprize']+':'+result.rows.item(i)['my'])
+					}
+
+				},
+				function(tx, error){debug(error.message)}
+			)
+		})
+		db.transaction(function(tx) {
+			tx.executeSql("SELECT tplace,my FROM teams WHERE my='true'", [],
+				function(tx, result){
+					for(var i = 0; i < result.rows.length; i++) {
+						debug('tplace='+result.rows.item(i)['tplace']+':'+result.rows.item(i)['my'])
+					}
+
+				},
+				function(tx, error){debug(error.message)}
+			)
+		})
+	}
+}
+
 
 function SaveData(dataname){
 	debug(dataname+':SaveData')
