@@ -32,7 +32,7 @@ function TrimString(sInString){
 var select = ''
 
 function SelPl(name){
-	select = name
+	select = name = name.replace(/!/g,' ')
 //	alert(select)
 	$('p[id^=matchMoment]').each(function(){
 		var momText = $(this).html()
@@ -123,16 +123,19 @@ $().ready(function() {
 		// Set selector for players
 		$('td.back4 table:first td:has(small)').each(function(){
 			var text = TrimString($(this).find('small').html()).split('.',2)
-			var name = (text[1]!=undefined ? text[1] : text[0])
+			var name = (text[1]!=undefined ? text[1] : text[0]).replace(/ /g,'!')
 			$(this).html('<a href=javascript:void(SelPl("'+name+'"))>'+$(this).html()+'</a>')
 		})
+
+
 		$('td.back4 table:eq(6) tr').each(function(){
 			$(this).find('td:eq(1), td:eq(6)').each(function(i, val){
 				var text = TrimString($(val).text()).split('(')[0].split('.',2)
-				var name = (text[1]!=undefined ? text[1] : text[0])
+				var name = (text[1]!=undefined ? text[1] : text[0]).replace(/ /g,'!')
 				$(val).html('<a href=javascript:void(SelPl("'+name+'"))>'+$(val).html()+'</a>')
 			})
 		})
+
 
 	}
 }, false);
