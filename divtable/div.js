@@ -31,32 +31,33 @@ var list2 = {
 		'tid':	{'num':1, 'nshow':true},
 		'my':	{'num':2, 'nshow':true},
 		'did':	{'num':3, 'nshow':true},
-		'tdate':{'num':4, 'name':'дата'},
-		'tplace':{'num':5,'name':'Мс'},
-		'ncode':{'num':6, 'name':'стр'},
-		'nname':{'num':7, 'name':'Страна','al':'left'},
-		'tname':{'num':8, 'name':'Команда','al':'left'},
-		'mname':{'num':9, 'name':'Мен','al':'left'},
-		'ttask':{'num':10, 'name':'Задача','al':'left'},
-		'tvalue':{'num':11,'name':'Ном'},
-		'twage':{'num':12, 'name':'ЗП'},
-		'tss':	{'num':13, 'name':'СС'},
-		'age':	{'num':14, 'name':'Возр'},
-		'pnum':	{'num':15, 'name':'кол'},
-		'tfin':	{'num':16, 'name':'Фин','al':'left'},
-		'screit':{'num':17,'name':'ШкРейт','al':'left'},
-		'scbud':{'num':18, 'name':'ШкБюд'},
-		'ttown':{'num':19, 'name':'Город','al':'left'},
-		'sname':{'num':20, 'name':'Стадион','al':'left'},
-		'ssize':{'num':21, 'name':'Разм'},
-		'games'	:{'num':22,'name':'И ','nsave':true},
-		'wins'	:{'num':23,'name':'В ','nsave':true},
-		'draws'	:{'num':24,'name':'Н ','nsave':true},
-		'loses'	:{'num':25,'name':'П ','nsave':true},
-		'gup'	:{'num':26,'name':'ГЗ','nsave':true},
-		'gdown'	:{'num':27,'name':'ГП','nsave':true},
-		'gpm'	:{'num':28,'name':'+-','nsave':true},
-		'score'	:{'num':29,'name':'О ','nsave':true}},
+		'n':	{'num':4, 'nshow':true},
+		'tdate':{'num':5, 'name':'дата','nsel':true},
+		'tplace':{'num':6,'name':'№','al':'left'},
+		'ncode':{'num':7, 'name':'стр','nsel':true},
+		'nname':{'num':8, 'name':'Страна','nsel':true,'al':'left'},
+		'tname':{'num':9, 'name':'Команда','al':'left'},
+		'mname':{'num':10, 'name':'Мен','nsel':true,'al':'left'},
+		'ttask':{'num':11, 'name':'Задача','nsel':true,'al':'left'},
+		'tvalue':{'num':12,'name':'Ном','nsel':true},
+		'twage':{'num':13, 'name':'ЗП','nsel':true},
+		'tss':	{'num':14, 'name':'СС','nsel':true},
+		'age':	{'num':15, 'name':'Возр','nsel':true},
+		'pnum':	{'num':16, 'name':'кол','nsel':true},
+		'tfin':	{'num':17, 'name':'Фин','nsel':true,'al':'left'},
+		'screit':{'num':18,'name':'ШкРейт','nsel':true,'al':'left'},
+		'scbud':{'num':19, 'name':'ШкБюд','nsel':true},
+		'ttown':{'num':20, 'name':'Город','nsel':true,'al':'left'},
+		'sname':{'num':21, 'name':'Стадион','nsel':true,'al':'left'},
+		'ssize':{'num':22, 'name':'Размр','nsel':true},
+		'games'	:{'num':23,'name':'И ','nsave':true},
+		'wins'	:{'num':24,'name':'В ','nsave':true},
+		'draws'	:{'num':25,'name':'Н ','nsave':true},
+		'loses'	:{'num':26,'name':'П ','nsave':true},
+		'gup'	:{'num':27,'name':'ГЗ','nsave':true},
+		'gdown'	:{'num':28,'name':'ГП','nsave':true},
+		'gpm'	:{'num':29,'name':'+-','nsave':true},
+		'score'	:{'num':30,'name':'О ','nsave':true}},
 	'divs':{
 		'did':	{'num':1, 'nshow':true},
 		'my':	{'num':2, 'nshow':true},
@@ -70,8 +71,8 @@ var list2 = {
 }
 
 var showfl = false
-var filt = {}
-var srt = 'tplace'
+//var filt = {}
+var srt = ''
 var srtn = true
 
 var diap = []
@@ -81,6 +82,8 @@ var def = '1-1=FCE94F,2-2=white,3-3=E9B96E'
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
    	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+	today = new Date()
+	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 	rseason = UrlValue('f',$('td.back4 a[href^="plug.php?p=refl&t=s&v=y&h=0&j="]:last').attr('href'))
 	dseason = UrlValue('f')
 
@@ -137,7 +140,9 @@ function SetFilter(dataname){
 
 		var text = ''
 		for(i in head){
-			text += '<tr id="fl"><td align=right id='+head[i].key+'>'+(filt[head[i].key] || filt[head[i].key]==undefined ? imgok : '')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+head[i].name+'</a></td></tr>'
+//			text += '<tr id="fl"><td align=right id='+head[i].key+'>'+(filt[head[i].key] || filt[head[i].key]==undefined ? imgok : '')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+head[i].name+'</a></td></tr>'
+			text += '<tr id="fl"><td align=right id='+head[i].key+'>'+(!list2[dataname][head[i].key].nsel || list2[dataname][head[i].key].nsel==undefined ? imgok : '')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+head[i].name+'</a></td></tr>'
+//			debug(head[i].key+':'+list2[dataname][head[i].key].nsel)
 		}
 		$('tr#showteams').after(text)
 	}
@@ -182,17 +187,24 @@ function Print(dataname, name, value, sr){
 		case 'divs'	: 	data = divs;	break
 		default: return false
 	}
-	if(sr==srt)	{
-		srtn = (srtn ? false : true)
-	}else{
-		srt=sr
-	}
+	if(sr==srt)	srtn = (srtn ? false : true)
+	else srt = (srt =='' ? 'tplace' : sr)
+
 	data = (srtn ? data.sort(sSort) : data.sort(sSortR))
 	  
 	var text = ''
-	text += '<table width=100% id="svod" border="0" cellpadding="4" cellspacing="2">'
-	text+= '<tr height=20><td><b>№</b></td>'
-	for(j in head) if(filt[head[j].key]!=false) text += '<td><b>'+head[j].name+'</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j].key+'\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
+	text += '<table width=100% id="svod" border="0" cellpadding="4" cellspacing="2"><tr>'
+//	text += '<td width=1%></td>'
+//	text += '<td><b>№</b></td>'
+//	for(j in head) if(filt[head[j].key]!=false) text += '<td><b>'+head[j].name+'</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j].key+'\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
+	for(j in head) {
+		if(list2[dataname][head[j].key].nsel!=true) {
+			text += '<td>'
+			text += '<a class="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j].key+'\'))">'
+			text += '<b>'+head[j].name+'</b>'
+			text += '</a></td>'
+		}
+	}
 	text+= '</tr>'
 	var num=1
 	for(i in data){
@@ -201,8 +213,10 @@ function Print(dataname, name, value, sr){
 		if(name!=undefined && value!=undefined && dti[name]!=value) show = false
 		if(show){
 			text += '<tr align=right>'
-			text += '<td><u>'+num+'</u></td>'
-			for(j in head) if(filt[head[j].key]!=false) {
+//			text += '<td'+(dti['tdate']!=today ? ' bgcolor=yellow' : '')+'></td>'
+//			text += '<td align=left><u>'+num+'</u></td>'
+//			for(j in head) if(filt[head[j].key]!=false) {
+			for(j in head) if(list2[dataname][head[j].key].nsel!=true) {
 				var tt = dti[head[j].key]
 				var al = ''
 				if(tt == undefined) tt = '&nbsp;'
@@ -214,6 +228,8 @@ function Print(dataname, name, value, sr){
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
+						case 'tplace':	tt = '<font color=3465A4><u>'+(100 - tt)+'</u></font>';break;
+						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						default:
 					}
 				}
@@ -241,17 +257,17 @@ function ShowValueFormat(value){
 	else				return (value) + '$'
 }
 
-function SetHead(dataname, name){
+function SetHead(dataname, name){ // teams, nname
 	var imgok = '<img height=10 src="system/img/g/tick.gif">'
-	if(filt[name] || filt[name]==undefined) {
-		filt[name] = false
+
+	if(!list2[dataname][name].nsel || list2[dataname][name].nsel==undefined) {
+		list2[dataname][name].nsel = true
 		$('td#'+name).html('')
 	}
 	else {
-		filt[name] = true
+		list2[dataname][name].nsel = false
 		$('td#'+name).html(imgok)
 	}
-	for(i in filt) debug('filt:'+i+'='+filt[i])
 	save2 = true
 }
 
@@ -264,7 +280,7 @@ function GetFinish(type, res){
 		CheckMy()
 		ModifyTeams()
 	}
-	if(m.divs==undefined && m.get_divs!=undefined && m.get_pgdivs){
+	if(m.divs==undefined && m.get_divs!=undefined && m.get_pgdivs && m.checkmy){
 		m.divs = true
 		ModifyDivs()
 		ColorIt()
@@ -277,8 +293,13 @@ function GetFinish(type, res){
 
 function CheckMy(){
 	for(i in teams){
-		if(teams[i].nname==div_cur.nname) save = true
+		if(teams[i].nname==div_cur.nname) {
+			save = true
+			div_cur.my = true
+			divs[div_cur.did] = true
+		}
 	}
+	GetFinish('checkmy', true)
 }
 
 function SaveData(dataname){
@@ -451,7 +472,7 @@ function ModifyTeams(){
 		teams[id].gpm	= $(val).find('td:eq('+zag['+/-']+')').html()
 		teams[id].score	= $(val).find('td:eq('+zag['О']+')').html()
 		teams[id].thash = UrlValue('z',$(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]').attr('href'))
-		teams[id].tplace = i+1
+		teams[id].tplace = 100-i-1
 		teams[id].did = div_cur.did
 		teams[id].nname = div_cur.nname
 	})
@@ -548,6 +569,9 @@ function SetFin(){
 }
 
 function PlusMinus(){
+	$('td.back4 table table th[width="7%"]').attr('width','6%')
+	$('td.back4 table table th[width="13%"]').attr('width','11%')
+	$('td.back4 table table th[width="44%"]').attr('width','41%')
 	$('th:last').before('<th width="6%">+/-\n\t').append('\n')
 	$('th:contains(№)').parent().parent().find('tr').each(function(){
 		var gz = +$(this).find('td:last').prev().prev().text()
@@ -782,7 +806,7 @@ function TableCodeForForum(){
 	$('td.back4 table table th[width=7%]').removeAttr('width')
 	$('td.back4 table table th[width=6%]').removeAttr('width')
 	$('td.back4 table table th[width=5%]').removeAttr('width')
-	$('td.back4 table table a#f').remove()
+	//$('td.back4 table table a#f').remove()
 
 	// generate code for forum
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
@@ -793,19 +817,23 @@ function TableCodeForForum(){
 	x += $('td.back4 table:eq(1)')
 		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 		.find('img').removeAttr('height').end()
+		.find('a.f').removeAttr('href').end()
 		.html()
 		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
 		.replace(/<\/tbody>/g,'')
 		.replace(/<small>/g,'')
 		.replace(/<\/small>/g,'')
+		.replace(/font color/g,'color')
+		.replace(/\/font/g,'/color')
+		.replace(/<a class="f">(.*)<\/a>/g,'$1')
 		.replace(/<\/th>/g,'')
 		.replace(/\t<th(.*)>(.*)\n/g,'<td$1><b>$2</b></td>')
 		.replace(/\th/g,'td')
 		.replace(/\/td><tr/g,'/td></tr><tr')
-		.replace(/\</g,'[')
-		.replace(/\>/g,']')
 		.replace(/a href=\"/g,'url=')
 		.replace(/\/a/g,'/url')
+		.replace(/\</g,'[')
+		.replace(/\>/g,']')
 		.replace(/\&amp\;/g,'&')
 		.replace(/img src="/g,'img]')
 		.replace(/.gif/g,'.gif[/img')
@@ -829,5 +857,7 @@ function UrlValue(key,url){
 	}
 	return false
 }
+
+function check(d) {return (d<10 ? "0"+d : d)}
 
 function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;\''+text+'\'<br>');}}
