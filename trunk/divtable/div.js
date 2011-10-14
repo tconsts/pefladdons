@@ -60,7 +60,7 @@ var list2 = {
 		'score'	:{'num':30,'name':'О ','nsave':true}},
 	'divs':{
 		'did':	{'num':1, 'nshow':true},
-		'my':	{'num':2, 'nshow':true},
+		'my':	{'num':2, 'name':'my'},
 		'dnum':	{'num':3, 'nshow':true},
 		'nname':{'num':4, 'name':'Страна'},
 		'dname':{'num':5, 'name':'Див'},
@@ -295,6 +295,8 @@ function CheckMy(){
 	for(i in teams){
 		if(teams[i].nname==div_cur.nname) {
 			save = true
+		}
+		if(teams[i].did==div_cur.did && teams[i].my) {
 			div_cur.my = true
 			divs[div_cur.did] = true
 		}
