@@ -117,7 +117,6 @@ function GetData2(){
 	//					var row = result.rows.item(i)
 						debug('dprize='+result.rows.item(i)['dprize']+':'+result.rows.item(i)['my'])
 					}
-
 				},
 				function(tx, error){debug(error.message)}
 			)
@@ -128,7 +127,6 @@ function GetData2(){
 					for(var i = 0; i < result.rows.length; i++) {
 						debug('tplace='+result.rows.item(i)['tplace']+':'+result.rows.item(i)['my'])
 					}
-
 				},
 				function(tx, error){debug(error.message)}
 			)
