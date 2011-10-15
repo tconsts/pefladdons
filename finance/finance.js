@@ -18,20 +18,23 @@ var list = {
 	'divs':	'did,my,nname,dname,dnum,drotate,drotcom,dprize'
 }
 var m = []
+var dprize = 0
+var tplace = 0
+var school = 0
 
-var tdivarr = []
 $().ready(function() {
+	DeleteCookie('teamdiv')
    	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	var urltype = UrlValue('p')
-	if( urltype== 'rules'){
+	if(urltype== 'rules'){
 		GetData('divs')
-	} else if(urltype == 'fin'){
+	}else if(urltype == 'fin'){
 		GetData2()
 		$('td.back4').prepend('<div id=debug style="display: none;"></div>')
 		$('#debug').load($('a:contains("изменить финансирование")').attr('href') + ' span.text2b',function(){
-			var school = parseInt($('#debug').html().split(' ')[3])
+			school = parseInt($('#debug').html().split(' ')[3])
 			if(!isNaN(school)) $('a:contains("изменить финансирование")').before(' ' + format(school) + ' в ИД | ')
-			EditFinance(school)
+			GetFinish('school',true)
 		})
 	}
 }, false)
@@ -43,6 +46,13 @@ function GetFinish(type, res){
 		m.divs = true
 		ModifyDivs()
 	}
+
+	if(m.dprize!=undefined && m.tplace!=undefined) {
+		debug('both='+dprize[tplace-1]+':'+tplace+':'+dprize)
+		if(m.school!=undefined){
+			EditFinance(school,(dprize[tplace-1]==undefined ? 0 : parseInt(dprize[tplace-1]))*1000)
+		}
+	}	
 }
 
 function ModifyDivs(){
@@ -108,27 +118,36 @@ function GetData2(){
 	debug('GetData2')
 	if(ff) {
 		debug('ff='+true)
+		GetFinish('dprize',false)
+		GetFinish('tplace', false)
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			tx.executeSql("SELECT dprize,my FROM divs", [],
+			tx.executeSql("SELECT dprize,my FROM divs WHERE my='true'", [],
 				function(tx, result){
 					for(var i = 0; i < result.rows.length; i++) {
-	//					var row = result.rows.item(i)
-						debug('dprize='+result.rows.item(i)['dprize']+':'+result.rows.item(i)['my'])
+						dprize = result.rows.item(i)['dprize'].split(',')
+						GetFinish('dprize',true)
 					}
 				},
-				function(tx, error){debug(error.message)}
+				function(tx, error){
+					debug(error.message)
+					GetFinish('dprize',false)
+				}
 			)
 		})
 		db.transaction(function(tx) {
 			tx.executeSql("SELECT tplace,my FROM teams WHERE my='true'", [],
 				function(tx, result){
 					for(var i = 0; i < result.rows.length; i++) {
-						debug('tplace='+result.rows.item(i)['tplace']+':'+result.rows.item(i)['my'])
+						tplace = 100-result.rows.item(i)['tplace']
+						GetFinish('tplace', true)
 					}
 				},
-				function(tx, error){debug(error.message)}
+				function(tx, error){
+					debug(error.message)
+					GetFinish('tplace', false)
+				}
 			)
 		})
 	}
@@ -220,9 +239,6 @@ function GetData(dataname){
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-//			tx.executeSql("DROP TABLE IF EXISTS players")
-//			tx.executeSql("DROP TABLE IF EXISTS teams")
-//			tx.executeSql("DROP TABLE IF EXISTS divs")
 			tx.executeSql("SELECT * FROM "+dataname, [],
 				function(tx, result){
 					debug(dataname+':Select ok')
@@ -244,7 +260,7 @@ function GetData(dataname){
 	}
 }
 
-function EditFinance(school){
+function EditFinance(school,divpriz){
 		var fin = {}
 		var finance = []
 		var cur = {}
@@ -292,13 +308,12 @@ function EditFinance(school){
 		if(cur.fid>fin.fid) fin.fid = cur.fid
 
 		// set div prizes
-		var divpriz = 0
+//		var divpriz = 0
 		var divprizmark =	(('<i>*1</i>').fontcolor('red')).fontsize(1)
 		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
-		if(tdivarr[4]!=undefined && tdivarr[4]!='' && cur.fid > 1){
-			divpriz = 		parseInt(tdivarr[4].split('-')[parseInt(tdivarr[3])-1])*1000
+		if(divpriz!=0){
 			divprizmark = 	(('<i>*1</i>').fontcolor('green')).fontsize(1)
-			divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tdivarr[3]+' место ('+tdivarr[1]+', '+tdivarr[2]+').</i>').fontcolor('green').fontsize(1)
+			divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tplace+' место.</i>').fontcolor('green').fontsize(1)
 		}
 
 		// Count finish finance
@@ -387,18 +402,15 @@ function format(num) {
 	else 									return (num/1000000).toFixed(3).replace(/\./g,',') + (num==0 ? '' : ',000') + '$'
 }
 
-function setCookie(name, value) {
+function DeleteCookie(name) {
+	debug('DeleteCookie')
+/**
 	var exdate=new Date();
-	exdate.setDate(exdate.getDate() + 356); // +1 year
+	exdate.setDate(exdate.getDate() - 356); // -1 year
 	if (!name || !value) return false;
-	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
+	document.cookie = name + '=; expires='+ exdate.toUTCString() + '; path=/'
+/**/
 	return true
-}
-function getCookie(name) {
-    var pattern = "(?:; )?" + name + "=([^;]*);?"
-    var regexp  = new RegExp(pattern)
-    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
-    return false
 }
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
