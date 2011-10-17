@@ -74,7 +74,7 @@ $().ready(function() {
 
 		// даем возможность скрыть отчет
 		$('td.back4 table:eq(2)').before('<br><a id="treport" href="javascript:void(ShowTable(2))">&ndash;</a>')
-
+/**
 		// запоминаем таблицу оценок
 		var wimg = '[img]' + $('img[src^="system/img/w"]').attr('src') + '[/img]'
 		var ref = ' [b]Главный арбитр:[/b] ' + $('td.back4 table:eq(2)').html().split('Главный арбитр:')[1].split(').')[0] + ').'
