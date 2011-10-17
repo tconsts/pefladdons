@@ -105,6 +105,7 @@ $().ready(function() {
 			+ wimg + ref 
 		$('td.back4 table:eq(6) tr:odd').attr('bgcolor','#a3de8f') //#a3de8f #c9f8b7
 
+/**
 		// работаем с отчетом
 		var x = $('td.back4 table:eq(2) td:first center:first')
 			.find('script').remove().end()
@@ -135,7 +136,7 @@ $().ready(function() {
 				$(val).html('<a href=javascript:void(SelPl("'+name+'"))>'+$(val).html()+'</a>')
 			})
 		})
-
+/**/
 
 	}
 }, false);
