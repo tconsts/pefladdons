@@ -23,32 +23,16 @@ function ShowTable(n){
 	}
 }
 
-
 function TrimString(sInString){
 	sInString = sInString.replace(/\&nbsp\;/g,' ');
 	return sInString.replace(/(^\s+)|(\s+$)/g, '');
 }
 
-var select = ''
-
-function SelPl(name){
-	select = name = name.replace(/!/g,' ')
-//	alert(select)
-	$('p[id^=matchMoment]').each(function(){
-		var momText = $(this).html()
-		$(this).removeAttr('style')
-			.find('font').removeAttr('color')
-
-		if(momText.indexOf(name)!= -1) {
-			$(this).css({'background-color' : 'a3de8f', 'font-weight' : 'bolder'}); 
-			$(this).html(momText.replace(new RegExp(name,'g'), '<font color=red>'+name+'</font>'))
-		}
-	})
-}
+function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
 if(typeof (deb) == 'undefined') deb = false
 var debnum = 0
-function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+
 
 $().ready(function() {
 //	$('td.back4 table:first').attr('border','5')	// расстановка
@@ -74,69 +58,39 @@ $().ready(function() {
 
 		// даем возможность скрыть отчет
 		$('td.back4 table:eq(2)').before('<br><a id="treport" href="javascript:void(ShowTable(2))">&ndash;</a>')
-/**
+/**/
 		// запоминаем таблицу оценок
 		var wimg = '[img]' + $('img[src^="system/img/w"]').attr('src') + '[/img]'
 		var ref = ' [b]Главный арбитр:[/b] ' + $('td.back4 table:eq(2)').html().split('Главный арбитр:')[1].split(').')[0] + ').'
 		var schet = $('td.back4 table:eq(3) td:eq(1)').text()
-		var finschet = ''
 		var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
-		debug((finschetarr[finschetarr.length-1].split('<br>')[0]).trim())
-		debug(schet)
-		if (finschetarr[1]!=undefined && (finschetarr[finschetarr.length-1].split('<br>')[0]).trim() != schet){
-			finschet = ' [center]По пенальти [b][color=red]'+(finschetarr[finschetarr.length-1].split('<br>')[0]).trim() + '[/color][/b][/center]'
-		}
-		sessionStorage[mid] = finschet + $('td.back4 table:eq(6)')
-			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+		var finschet = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
+		debug(finschet+'='+schet)
+
+		finschet = (finschetarr[1]!=undefined && finschet!=schet ? ' [center]По пенальти [b][color=red]'+ finschet + '[/color][/b][/center]' : '')
+
+		$('td.back4 table:eq(6)')
 			.find('td').removeAttr('width').end()
 			.find('td').removeAttr('bgcolor').end()
+			.find('tr:odd').attr('bgcolor','#a3de8f').end() //#a3de8f #c9f8b7
+			.find('tr:eq(10)').after('<tr bgcolor=white><td colspan=10> </td></tr>')
+
+		sessionStorage[mid] = finschet + $('td.back4 table:eq(6)')
+//		var x = finschet + $('td.back4 table:eq(6)')
+			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 			.prepend('<tr><td colspan=5 width=50%> </td><td colspan=5 width=50%> </td></tr>')
 			.html()
 			.replace(/<tbody>/g,'<table width=100% bgcolor=c9f8b7>')
 			.replace(/tbody/g,'table')
+			.replace(/\<a href=\"javascript\:void\(ShowPlayer\(\'(.*)\'\)\)\"\>(.*)/g,'$2')
+			.replace(/\<\/a\>/g,'')
 			.replace(/img src="/g,'img]')
 			.replace(/.gif/g,'.gif[/img')
-			.replace(/a href=\"/g,'url=')
 			.replace(/"/g,'')
 			.replace(/font /g,'')
 			.replace(/font/g,'color')
 			.replace(/\</g,'[')
 			.replace(/\>/g,']')
 			+ wimg + ref 
-		$('td.back4 table:eq(6) tr:odd').attr('bgcolor','#a3de8f') //#a3de8f #c9f8b7
-
-/**
-		// работаем с отчетом
-		var x = $('td.back4 table:eq(2) td:first center:first')
-			.find('script').remove().end()
-			//.find('a').remove().end()
-			//.find('img').remove().end()
-			.html().split('<br><br>')
-
-		var content = "";
-		for (i=0;i<x.length;i++){
-		    x[i] = "<p id='matchMoment"+i+"'>"+x[i]+"</p>"
-		    content+=x[i] //+'<br>';
-		}
-		$('td.back4 table:eq(2) td:first center:first').html(content);
-
-
-		// Set selector for players
-		$('td.back4 table:first td:has(small)').each(function(){
-			var text = TrimString($(this).find('small').html()).split('.',2)
-			var name = (text[1]!=undefined ? text[1] : text[0]).replace(/ /g,'!')
-			$(this).html('<a href=javascript:void(SelPl("'+name+'"))>'+$(this).html()+'</a>')
-		})
-
-
-		$('td.back4 table:eq(6) tr').each(function(){
-			$(this).find('td:eq(1), td:eq(6)').each(function(i, val){
-				var text = TrimString($(val).text()).split('(')[0].split('.',2)
-				var name = (text[1]!=undefined ? text[1] : text[0]).replace(/ /g,'!')
-				$(val).html('<a href=javascript:void(SelPl("'+name+'"))>'+$(val).html()+'</a>')
-			})
-		})
-/**/
-
 	}
 }, false);
