@@ -50,8 +50,8 @@ var list2 = {
 		'ttown':{'num':20, 'name':'Город','nsel':true,'al':'left'},
 		'sname':{'num':21, 'name':'Стадион','nsel':true,'al':'left'},
 		'ssize':{'num':22, 'name':'Размр','nsel':true},
-		'dname':{'num':23,'name':'Див','nsave':true}
-		'tprize':{'num':24,'name':'Призовые','nsave':true}
+		'dname':{'num':23,'name':'Див','nsave':true},
+		'tprize':{'num':24,'name':'Призовые','nsave':true},
 		'games':{'num':25,'name':'И ','nsave':true},
 		'wins':	{'num':26,'name':'В ','nsave':true},
 		'draws':{'num':27,'name':'Н ','nsave':true},
