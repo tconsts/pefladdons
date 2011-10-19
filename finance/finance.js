@@ -119,11 +119,11 @@ function GetData2(){
 	if(ff) {
 		debug('ff='+true)
 		var head = list['divs'].split(',')
-		var text1 = globalStorage[location.hostname]['divs']
-		if (text1 != undefined){
-			var text1 = String(text1).split('#')
-			for (i in text1) {
-				var x = text1[i].split('|')
+		var text1 = String(globalStorage[location.hostname]['divs'])
+		if (text1 != 'undefined'){
+			var text = text1.split('#')
+			for (i in text) {
+				var x = text[i].split('|')
 				var curt = {}
 				var num = 0
 				for(j in head){
@@ -131,18 +131,18 @@ function GetData2(){
 					num++
 				}
 				if(curt['my']) dprize = (curt['dprize']!=undefined ? curt['dprize'] : 0)
-				GetFinish('dprize',true)
 			}
+			GetFinish('dprize',true)
 		} else {
 			GetFinish('dprize',false)
 		}			
 
 		head = list['teams'].split(',')
-		var text1 = globalStorage[location.hostname]['teams']
-		if (text1 != undefined){
-			var text1 = String(text1).split('#')
-			for (i in text1) {
-				var x = text1[i].split('!')
+		var text2 = String(globalStorage[location.hostname]['teams'])
+		if (text2 != 'undefined'){
+			var text = text2.split('#')
+			for (i in text) {
+				var x = text[i].split('!')
 				var curt = {}
 				var num = 0
 				for(j in head){
@@ -150,8 +150,8 @@ function GetData2(){
 					num++
 				}
 				if(curt['my']) dprize = (curt['tplace']!=undefined ? curt['tplace'] : 0)
-				GetFinish('tplace',true)
 			}
+			GetFinish('tplace',true)
 		} else {
 			GetFinish('tplace',false)
 		}			
@@ -256,11 +256,11 @@ function GetData(dataname){
 		default: return false
 	}
 	if(ff) {
-		var text1 = globalStorage[location.hostname][dataname]
-		if (text1 != undefined){
-			var text1 = String(text1).split('#')
-			for (i in text1) {
-				var x = text1[i].split('|')
+		var text1 = String(globalStorage[location.hostname][dataname])
+		if (text1 != 'undefined'){
+			var text = text1.split('#')
+			for (i in text) {
+				var x = text[i].split('|')
 				var curt = {}
 				var num = 0
 				for(j in head){
