@@ -123,7 +123,7 @@ function GetData2(){
 		if (text1 != undefined){
 			var text1 = String(text1).split('#')
 			for (i in text1) {
-				var x = text1[i].split('!')
+				var x = text1[i].split('|')
 				var curt = {}
 				var num = 0
 				for(j in head){
@@ -260,7 +260,7 @@ function GetData(dataname){
 		if (text1 != undefined){
 			var text1 = String(text1).split('#')
 			for (i in text1) {
-				var x = text1[i].split('!')
+				var x = text1[i].split('|')
 				var curt = {}
 				var num = 0
 				for(j in head){

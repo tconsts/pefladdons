@@ -50,8 +50,8 @@ var list2 = {
 		'ttown':{'num':20, 'name':'Город','nsel':true,'al':'left'},
 		'sname':{'num':21, 'name':'Стадион','nsel':true,'al':'left'},
 		'ssize':{'num':22, 'name':'Размр','nsel':true},
-		'dname':{'num':23,'name':'Див','nsave':true},
-		'tprize':{'num':24,'name':'Призовые','nsave':true},
+		'dname':{'num':23,'name':'Див','nsave':true,'nsel':true},
+		'tprize':{'num':24,'name':'Призовые','nsave':true,'nsel':true},
 		'games':{'num':25,'name':'И ','nsave':true},
 		'wins':	{'num':26,'name':'В ','nsave':true},
 		'draws':{'num':27,'name':'Н ','nsave':true},
@@ -389,7 +389,7 @@ function GetData(dataname){
 		if (text1 != undefined){
 			var text1 = String(text1).split('#')
 			for (i in text1) {
-				var x = text1[i].split('!')
+				var x = text1[i].split('|')
 				var curt = {}
 				var num = 0
 				for(j in head){
