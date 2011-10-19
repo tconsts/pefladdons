@@ -385,18 +385,18 @@ function GetData(dataname){
 		default: return false
 	}
 	if(ff) {
-		var text1 = globalStorage[location.hostname][dataname]
-		if (text1 != undefined){
-			var text1 = String(text1).split('#')
-			for (i in text1) {
-				var x = text1[i].split('|')
+		var text1 = String(globalStorage[location.hostname][dataname])
+		if (text1 != 'undefined'){
+			var text = text1.split('#')
+			for (i in text) {
+				var x = text[i].split('|')
 				var curt = {}
 				var num = 0
 				for(j in head){
 					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 					num++
 				}
-				data[curt[head[0]]] = []
+				data[curt[head[0]]] = {}
 				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 			}
 			GetFinish('get_'+dataname, true)
