@@ -20,7 +20,7 @@ var save = false
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
-	'teams':	'tid,my,ncode,nname,did,tdate,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,tplace',
+	'teams':	'tid,my,did,n,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize',
 //	'divs':		'did,my,dnum,dname,drotate,drotcom,dprize,color'
 }
 
@@ -233,14 +233,14 @@ function SaveData(dataname){
 	if(ff) {
 		var text = ''
 		for (var i in data) {
-			text += (text!='' ? ',' : '')
+			text += (text!='' ? '#' : '')
 			if(typeof(data[i])!='undefined') {
 				var dti = data[i]
 				var dtid = []
 				for(var j in head){
 					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
 				}
-				text += dtid.join(':')
+				text += dtid.join('|')
 			}
 		}
 		globalStorage[location.hostname][dataname] = text
@@ -279,7 +279,6 @@ function GetData(dataname){
 	var data = []
 	var data2 = []
 	var head = list[dataname].split(',')
-	debug('head='+head)
 	switch (dataname){
 		case 'players': data = players2;break
 		case 'teams': 	data = teams;	break
@@ -289,9 +288,9 @@ function GetData(dataname){
 	if(ff) {
 		var text1 = globalStorage[location.hostname][dataname]
 		if (text1 != undefined){
-			var text1 = String(text1).split(',')
+			var text1 = String(text1).split('#')
 			for (i in text1) {
-				var x = text1[i].split(':')
+				var x = text1[i].split('|')
 				var curt = {}
 				var num = 0
 				for(j in head){

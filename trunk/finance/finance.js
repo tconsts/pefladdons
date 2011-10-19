@@ -15,7 +15,7 @@ var debnum = 0
 var db = false
 var divs = []
 var list = {
-	'divs':	'did,my,nname,dname,dnum,drotate,drotcom,dprize'
+	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color'
 }
 var m = []
 var dprize = 0
@@ -118,8 +118,43 @@ function GetData2(){
 	debug('GetData2')
 	if(ff) {
 		debug('ff='+true)
-		GetFinish('dprize',false)
-		GetFinish('tplace', false)
+		var head = list['divs'].split(',')
+		var text1 = globalStorage[location.hostname]['divs']
+		if (text1 != undefined){
+			var text1 = String(text1).split('#')
+			for (i in text1) {
+				var x = text1[i].split('!')
+				var curt = {}
+				var num = 0
+				for(j in head){
+					curt[head[j]] = x[num]
+					num++
+				}
+				if(curt['my']) dprize = (curt['dprize']!=undefined ? curt['dprize'] : 0)
+				GetFinish('dprize',true)
+			}
+		} else {
+			GetFinish('dprize',false)
+		}			
+
+		head = list['teams'].split(',')
+		var text1 = globalStorage[location.hostname]['teams']
+		if (text1 != undefined){
+			var text1 = String(text1).split('#')
+			for (i in text1) {
+				var x = text1[i].split('!')
+				var curt = {}
+				var num = 0
+				for(j in head){
+					curt[head[j]] = x[num]
+					num++
+				}
+				if(curt['my']) dprize = (curt['tplace']!=undefined ? curt['tplace'] : 0)
+				GetFinish('tplace',true)
+			}
+		} else {
+			GetFinish('tplace',false)
+		}			
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
@@ -169,11 +204,14 @@ function SaveData(dataname){
 	if(ff) {
 		var text = ''
 		for (var i in data) {
+			text += (text!='' ? '#' : '')
 			if(typeof(data[i])!='undefined') {
 				var dti = data[i]
-				text += dti[head[0]]
-				for(var j in head) text += ':' + (dti[head[j]]==undefined ? '' : dti[head[j]])
-				text += ','
+				var dtid = []
+				for(var j in head){
+					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+				}
+				text += dtid.join('|')
 			}
 		}
 		globalStorage[location.hostname][dataname] = text
@@ -220,17 +258,17 @@ function GetData(dataname){
 	if(ff) {
 		var text1 = globalStorage[location.hostname][dataname]
 		if (text1 != undefined){
-			var ttext = String(text1).split(',')
-			for (i in ttext) {
-				var x = ttext[i].split(':')
-				var curt = []
+			var text1 = String(text1).split('#')
+			for (i in text1) {
+				var x = text1[i].split('!')
+				var curt = {}
 				var num = 0
 				for(j in head){
 					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 					num++
 				}
 				data[curt[head[0]]] = []
-				if(curt[head[0]]!=undefined) data[curt.id] = curt
+				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 			}
 			GetFinish('get_'+dataname, true)
 		} else {
