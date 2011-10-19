@@ -326,11 +326,14 @@ function SaveData(dataname){
 	if(ff) {
 		var text = ''
 		for (var i in data) {
+			text += (text!='' ? ',' : '')
 			if(typeof(data[i])!='undefined') {
 				var dti = data[i]
-				text += dti[idname]
-				for(var j in head) text += ':' + (dti[head[j]]==undefined ? '' : dti[head[j]])
-				text += ','
+				var dtid = []
+				for(var j in head){
+					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+				}
+				text += dtid.join(':')
 			}
 		}
 		globalStorage[location.hostname][dataname] = text
@@ -382,17 +385,17 @@ function GetData(dataname){
 	if(ff) {
 		var text1 = globalStorage[location.hostname][dataname]
 		if (text1 != undefined){
-			var ttext = String(text1).split(',')
-			for (i in ttext) {
-				var x = ttext[i].split(':')
-				var curt = []
+			var text1 = String(text1).split(',')
+			for (i in text1) {
+				var x = text1[i].split(':')
+				var curt = {}
 				var num = 0
 				for(j in head){
 					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 					num++
 				}
-				data[curt[idname]] = []
-				if(curt[idname]!=undefined) data[curt.id] = curt
+				data[curt[head[0]]] = []
+				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 			}
 			GetFinish('get_'+dataname, true)
 		} else {
