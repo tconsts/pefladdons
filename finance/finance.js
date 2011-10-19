@@ -15,8 +15,8 @@ var debnum = 0
 var db = false
 var divs = []
 var list = {
-	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color'
-}
+	'teams':	'tid,my,did,n,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize',
+	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color'}
 var m = []
 var dprize = 0
 var tplace = 0
