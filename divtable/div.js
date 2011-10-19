@@ -50,14 +50,16 @@ var list2 = {
 		'ttown':{'num':20, 'name':'Город','nsel':true,'al':'left'},
 		'sname':{'num':21, 'name':'Стадион','nsel':true,'al':'left'},
 		'ssize':{'num':22, 'name':'Размр','nsel':true},
-		'games'	:{'num':23,'name':'И ','nsave':true},
-		'wins'	:{'num':24,'name':'В ','nsave':true},
-		'draws'	:{'num':25,'name':'Н ','nsave':true},
-		'loses'	:{'num':26,'name':'П ','nsave':true},
-		'gup'	:{'num':27,'name':'ГЗ','nsave':true},
-		'gdown'	:{'num':28,'name':'ГП','nsave':true},
-		'gpm'	:{'num':29,'name':'+-','nsave':true},
-		'score'	:{'num':30,'name':'О ','nsave':true}},
+		'dname':{'num':23,'name':'Див','nsave':true}
+		'tprize':{'num':24,'name':'Призовые','nsave':true}
+		'games':{'num':25,'name':'И ','nsave':true},
+		'wins':	{'num':26,'name':'В ','nsave':true},
+		'draws':{'num':27,'name':'Н ','nsave':true},
+		'loses':{'num':28,'name':'П ','nsave':true},
+		'gup':	{'num':29,'name':'ГЗ','nsave':true},
+		'gdown':{'num':30,'name':'ГП','nsave':true},
+		'gpm':	{'num':31,'name':'+-','nsave':true},
+		'score':{'num':32,'name':'О ','nsave':true}},
 	'divs':{
 		'did':	{'num':1, 'nshow':true},
 		'my':	{'num':2, 'name':'my'},
@@ -326,14 +328,14 @@ function SaveData(dataname){
 	if(ff) {
 		var text = ''
 		for (var i in data) {
-			text += (text!='' ? ',' : '')
+			text += (text!='' ? '#' : '')
 			if(typeof(data[i])!='undefined') {
 				var dti = data[i]
 				var dtid = []
 				for(var j in head){
 					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
 				}
-				text += dtid.join(':')
+				text += dtid.join('|')
 			}
 		}
 		globalStorage[location.hostname][dataname] = text
@@ -385,9 +387,9 @@ function GetData(dataname){
 	if(ff) {
 		var text1 = globalStorage[location.hostname][dataname]
 		if (text1 != undefined){
-			var text1 = String(text1).split(',')
+			var text1 = String(text1).split('#')
 			for (i in text1) {
-				var x = text1[i].split(':')
+				var x = text1[i].split('!')
 				var curt = {}
 				var num = 0
 				for(j in head){
@@ -428,15 +430,9 @@ function GetData(dataname){
 function Delete(){
 	debug('DeleteData go')
 	if(ff) {
-		/**
-		var storage = globalStorage[location.hostname];
-		storage.removeItem ('x');
-		// или так
-		localStorage.removeItem ('x')
-		/**/
-		delete GlobalStorage('players')
-		delete GlobalStorage('teams')
-		delete GlobalStorage('divs')
+		delete globalStorage[location.hostname]['players']
+		delete globalStorage[location.hostname]['teams']
+		delete globalStorage[location.hostname]['divs']
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
