@@ -132,7 +132,6 @@ function SetFilter(dataname){
 		$('tr#fl').remove()
 	}else{
 		showfl = true
-//		var head = list[dataname].split(',')
 		var head = []
 		for (i in list2[dataname]) {
 			if(!list2[dataname][i].nshow) {
@@ -143,7 +142,6 @@ function SetFilter(dataname){
 
 		var text = ''
 		for(i in head){
-//			text += '<tr id="fl"><td align=right id='+head[i].key+'>'+(filt[head[i].key] || filt[head[i].key]==undefined ? imgok : '')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+head[i].name+'</a></td></tr>'
 			text += '<tr id="fl"><td align=right id='+head[i].key+'>'+(!list2[dataname][head[i].key].nsel || list2[dataname][head[i].key].nsel==undefined ? imgok : '')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+head[i].name+'</a></td></tr>'
 //			debug(head[i].key+':'+list2[dataname][head[i].key].nsel)
 		}
@@ -173,7 +171,6 @@ function Print(dataname, name, value, sr){
 	ClosePrint()
 	$('td.back4 table table').attr('id','orig').hide()
 
-//	var head = list[dataname].split(',')
 	var head = []
 	for (i in list2[dataname]) {
 		var lsti = list2[dataname][i]
@@ -197,15 +194,12 @@ function Print(dataname, name, value, sr){
 	  
 	var text = ''
 	text += '<table width=100% id="svod" border="0" cellpadding="4" cellspacing="2"><tr>'
-//	text += '<td width=1%></td>'
-//	text += '<td><b>№</b></td>'
-//	for(j in head) if(filt[head[j].key]!=false) text += '<td><b>'+head[j].name+'</b>&nbsp;<a id="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j].key+'\'))"><img height=10 src="system/img/a-down.gif"></a></td>'
 	for(j in head) {
 		if(list2[dataname][head[j].key].nsel!=true) {
-			text += '<td>'
+			text += '<th>'
 			text += '<a class="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j].key+'\'))">'
-			text += '<b>'+head[j].name+'</b>'
-			text += '</a></td>'
+			text += head[j].name
+			text += '</a></th>'
 		}
 	}
 	text+= '</tr>'
@@ -216,9 +210,6 @@ function Print(dataname, name, value, sr){
 		if(name!=undefined && value!=undefined && dti[name]!=value) show = false
 		if(show){
 			text += '<tr align=right>'
-//			text += '<td'+(dti['tdate']!=today ? ' bgcolor=yellow' : '')+'></td>'
-//			text += '<td align=left><u>'+num+'</u></td>'
-//			for(j in head) if(filt[head[j].key]!=false) {
 			for(j in head) if(list2[dataname][head[j].key].nsel!=true) {
 				var tt = dti[head[j].key]
 				var al = ''
@@ -232,15 +223,12 @@ function Print(dataname, name, value, sr){
 						case 'twage':	tt = ShowValueFormat(tt);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
-//						case 'tplace':	tt = '<font color=3465A4><u>'+tt+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						default:
 					}
 				}
 				text += '<td'+head[j].al+'>'+tt+'</td>'
 			}
-//			text += '<td>'+data[i]['games']+'</td>'
-//			text += '<td>'+data[i]['score']+'</td>'
 			text += '</tr>'
 			num++
 		}
@@ -372,6 +360,7 @@ function SaveData(dataname){
 }
 
 function GetData(dataname){
+	DeleteCookie('teamdiv')
 	debug(dataname+':GetData')
 	var data = []
 	var idname = 'id'
@@ -460,7 +449,7 @@ function ModifyTeams(){
 	$('td.back4 table:first table:first tr:eq(0) th').each(function(i, val){
 		zag[$(val).text().split('\n')[0]] = i
 	})
-	for (i in zag) debug(i+':'+zag[i])
+//	for (i in zag) debug(i+':'+zag[i])
 	$('td.back4 table:first table:first tr:gt(0)').each(function(i, val){
 		var id = parseInt(UrlValue('n',$(val).find('a:has(u)').attr('href')))
 		if(typeof(teams[id])=='undefined') {
@@ -474,7 +463,7 @@ function ModifyTeams(){
 		teams[id].loses	= $(val).find('td:eq('+zag['П']+')').html()
 		teams[id].gup	= $(val).find('td:eq('+zag['ГЗ']+')').html()
 		teams[id].gdown	= $(val).find('td:eq('+zag['ГП']+')').html()
-		teams[id].gpm	= $(val).find('td:eq('+zag['+/-']+')').html()
+		teams[id].gpm	= $(val).find('td:eq('+zag['+-']+')').html()
 		teams[id].score	= $(val).find('td:eq('+zag['О']+')').html()
 		teams[id].thash = UrlValue('z',$(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]').attr('href'))
 		teams[id].tplace= 1000-div_cur.dnum*100-i-1
@@ -546,42 +535,11 @@ function getCookie(name) {
     return false
 }
 
-function SetFin(){
-	var tfin = []
-	var text1 = sessionStorage.teamsfin
-	if (text1 != undefined){
-//		$('td.back4').prepend('l '+text1+'<br>')	
-		var t1 = text1.split(',')
-		for(j in t1){
-			var t2 = t1[j].split(':')
-			var tf = {}
-			tf.zp = ((t2[1])/1000).toFixed(3).replace(/\./g,',')+'$'
-			tf.nom = ((t2[2])/1000).toFixed(3).replace(/\./g,',')+',000$'
-			if(t2[0]) tfin[t2[0]] = tf
-		}
-	}
-	$('td.back1 span.text2b').append(' (финансы)')
-	$('td.back4 table table th[width=13%]').attr('width','5%').before('<th>Номиналы\n\t<th>Зарплаты\n\t')
-	$('td.back4 table table th[width=7%]').attr('width','5%')
-	$('td.back4 table table th[width=6%]').attr('width','5%')
-	$("td.back4 table table tr td a[href*='plug.php?p=refl&t=s_graph']").each(function(){
-		var tid = UrlValue('n',$(this).attr('href'))
-		$(this).parent().find('img').remove() 
-		var td_data = $(this).parent().html().replace(/\(\d*\)/g,'')
-		var td_data1 = '<td> </td><td> </td>'
-
-		if (tfin[tid] != undefined && tfin[tid].zp != undefined) td_data1 = '<td align=right><small>'+tfin[tid].nom+ '</small> </td><td align=right><small>' +tfin[tid].zp+'</small> </td>'
-
-		$(this).parent().before(td_data1).html(td_data)
-	})
-	$('div[id^="show"] a').removeAttr('href')
-}
-
 function PlusMinus(){
 	$('td.back4 table table th[width="7%"]').attr('width','6%')
 	$('td.back4 table table th[width="13%"]').attr('width','11%')
 	$('td.back4 table table th[width="44%"]').attr('width','41%')
-	$('th:last').before('<th width="6%">+/-\n\t').append('\n')
+	$('th:last').before('<th width="6%">+-\n\t').append('\n')
 	$('th:contains(№)').parent().parent().find('tr').each(function(){
 		var gz = +$(this).find('td:last').prev().prev().text()
 		var gp = +$(this).find('td:last').prev().text()
@@ -592,9 +550,9 @@ function PlusMinus(){
 
 function DeleteCookie(name) {
 	debug('DeleteCookie: '+name)
-/**
+/**/
 	var exdate=new Date();
-	exdate.setDate(exdate.getDate() - 356); // -1 year
+	exdate.setDate(exdate.getDate() - 1); // -1 d
 	if (!name) return false;
 	document.cookie = name + '=; expires='+ exdate.toUTCString() + '; path=/'
 /**/
@@ -826,7 +784,7 @@ function TableCodeForForum(){
 	x += $('td.back4 table:eq(1)')
 		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 		.find('img').removeAttr('height').end()
-		.find('a.f').removeAttr('href').end()
+		.find('a.f').removeAttr('href').removeAttr('class').end()
 		.html()
 		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
 		.replace(/<\/tbody>/g,'')
@@ -834,10 +792,11 @@ function TableCodeForForum(){
 		.replace(/<\/small>/g,'')
 		.replace(/font color/g,'color')
 		.replace(/\/font/g,'/color')
-		.replace(/<a class="f">(.*)<\/a>/g,'$1')
+		.replace(/<th><a>/g,'[td][b]')
+		.replace(/<\/a><\/th>/g,'[/b][/td]')
 		.replace(/<\/th>/g,'')
 		.replace(/\t<th(.*)>(.*)\n/g,'<td$1><b>$2</b></td>')
-		.replace(/\th/g,'td')
+//		.replace(/\th/g,'td')
 		.replace(/\/td><tr/g,'/td></tr><tr')
 		.replace(/a href=\"/g,'url=')
 		.replace(/\/a/g,'/url')

@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name           peflteam
+// @name           peflteam2
 // @namespace      pefl
 // @description    roster team page modification
 // @include        http://*pefl.*/*&t=k&j=*
