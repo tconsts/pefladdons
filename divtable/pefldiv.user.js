@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name           pefldiv
+// @name           pefldivtable
 // @namespace      pefl
 // @description    division table page modification
 // @include        http://*pefl.*/plug.php?p=refl&t=s&*
