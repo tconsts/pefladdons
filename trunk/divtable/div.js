@@ -53,14 +53,14 @@ var list2 = {
 		'dname':{'num':23,'name':'Див','nsave':true,'nsel':true},
 		'tprize':{'num':24,'name':'Призовые','nsave':true,'nsel':true},
 		'dnum': {'num':25,'nsave':true,'nshow':true},
-		'games':{'num':26,'name':'И ','nsave':true},
-		'wins':	{'num':27,'name':'В ','nsave':true},
-		'draws':{'num':28,'name':'Н ','nsave':true},
-		'loses':{'num':29,'name':'П ','nsave':true},
+		'games':{'num':26,'name':'И&nbsp;','nsave':true},
+		'wins':	{'num':27,'name':'В&nbsp;','nsave':true},
+		'draws':{'num':28,'name':'Н&nbsp;','nsave':true},
+		'loses':{'num':29,'name':'П&nbsp;','nsave':true},
 		'gup':	{'num':30,'name':'ГЗ','nsave':true},
 		'gdown':{'num':31,'name':'ГП','nsave':true},
 		'gpm':	{'num':32,'name':'+-','nsave':true},
-		'score':{'num':33,'name':'О ','nsave':true}},
+		'score':{'num':33,'name':'О&nbsp;','nsave':true}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -193,7 +193,7 @@ function Print(dataname, name, value, sr){
 	data = (srtn ? data.sort(sSort) : data.sort(sSortR))
 	  
 	var text = ''
-	text += '<table width=100% id="svod" border="0" cellpadding="4" cellspacing="2"><tr>'
+	text += '<table width=100% id="svod" border="0" cellpadding="4" cellspacing="2"><tr align=left>'
 	for(j in head) {
 		if(list2[dataname][head[j].key].nsel!=true) {
 			text += '<th>'
@@ -221,7 +221,7 @@ function Print(dataname, name, value, sr){
 							break;
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
-						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
+						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';debug(tt);break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						default:
