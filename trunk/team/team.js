@@ -690,7 +690,7 @@ function ShowSkills(param){
 		var sumpl = '<table id="SumPl" width=50% align=right>'
 		sumpl += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
 		sumpl += '<tr id="sumlast1"><td colspan=4 align=right id="sumlast1"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></td></tr>'
-		sumpl += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
+//		sumpl += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
 		sumpl += '</table>'
 		$('table#tblRostSkillsFilter').after(sumpl)
 		$('table#SumPl').hide()
