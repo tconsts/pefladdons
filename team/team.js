@@ -262,7 +262,7 @@ function SaveData(dataname){
 				for(var j in head){
 					x1.push(head[j])
 					x2.push('?')
-					x3.push(dti[head[j]])
+					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
 				}
 //				debug(dataname+':s'+x3['0']+'_'+x3['1'])
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
