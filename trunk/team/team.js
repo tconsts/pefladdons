@@ -89,7 +89,7 @@ $().ready(function() {
 		if(deb){
 			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
 			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
-//			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
+			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
 			$("#rg").after(preparedhtml)
 		}
 
@@ -285,6 +285,9 @@ function GetData(dataname){
 		default: return false
 	}
 	if(ff) {
+		delete globalStorage[location.hostname]['playersvalue']
+		delete globalStorage[location.hostname]['tasks']
+		delete globalStorage[location.hostname]['team']
 		var text1 = String(globalStorage[location.hostname][dataname])
 		if (text1 != 'undefined'){
 			var text = text1.split('#')
@@ -966,19 +969,4 @@ function ForgotPlValueCh(){
 	$('tr#nom').remove()
 	$('tr#osnom td:last').html('')
 }
-
-function setCookie(name, value) {
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() + 356); // +1 year
-	if (!name || !value) return false;
-	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
-	return true
-}
-function getCookie(name) {
-    var pattern = "(?:; )?" + name + "=([^;]*);?"
-    var regexp  = new RegExp(pattern)
-    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
-    return false
-}
-
 /**/
