@@ -675,7 +675,8 @@ function SelectTeam(teamid){
 function TableCodeForForum(){
 
 	// change big flags for eurocups in table
-	$('td.back4 td.back1').parent().next().find('table').find('img[src*=system/img/flags/]').each(function(){
+	$('td.back4 table table:first').find('img[src*=system/img/flags/]').each(function(){
+//	debug($(this).attr('src'))
 	// need fill base key=peflid, value=2 symbols tag: system/img/flags/155.gif -> system/img/flags/f-ru.gif
 		var f = []
 		f[1]='al';	//Албания
@@ -755,7 +756,8 @@ function TableCodeForForum(){
 		f[209]='yu';	//!!Сербия
 		f[214]='http://pefladdons.googlecode.com/svn/trunk/f-214.png';	//Черногория
 
-		var fid=$(this).attr('src').split('flags/')[1].split('.')[0]
+		var tarr = $(this).attr('src').split('.')[0].split('/')
+		var fid = tarr[tarr.length-1]
 		var img = '<img src="'
 		if (f[fid]) {
 			if (fid == 161 || fid ==214) img += f[fid]
