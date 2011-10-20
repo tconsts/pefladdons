@@ -779,7 +779,7 @@ function TableCodeForForum(){
 
 	// generate code for forum
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
-	x += '<br>Код для форума<br><br><textarea rows="20" cols="80" readonly="readonly" id="CodeTableForForum">'
+	x += '<br>Код для форума<br><br><textarea rows="20" cols="80" readonly="readonly" id="CodeTableForForum" selected>'
 	x += '[b][url=plug.php?' + location.search.substring(1) + ']#[/url] '
 	x += $('td.back4 td.back1').text()
 	x += '[/b]\n'
@@ -798,7 +798,6 @@ function TableCodeForForum(){
 		.replace(/<\/a><\/th>/g,'[/b][/td]')
 		.replace(/<\/th>/g,'')
 		.replace(/\t<th(.*)>(.*)\n/g,'<td$1><b>$2</b></td>')
-//		.replace(/\th/g,'td')
 		.replace(/\/td><tr/g,'/td></tr><tr')
 		.replace(/a href=\"/g,'url=')
 		.replace(/\/a/g,'/url')
@@ -813,9 +812,13 @@ function TableCodeForForum(){
 	x += '[/table]'
 
 	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
-	x += '</textarea>'
+	x += '</textarea><br>'
+	x += '<br>1. Ctrl+A: выделить весь текст в форме'
+	x += '<br>2. Ctrl+C: скопировать выделеное в буфер'
+	x += '<br>3. Ctrl+V: вставить из буфера в форум'
 
 	$('td.back4').html(x)
+	$('#CodeTableForForum').select()
 	$('td#crabglobalright').empty()
 	return true
 }
