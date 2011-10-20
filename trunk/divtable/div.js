@@ -33,37 +33,38 @@ var list2 = {
 		'did':	{'num':3, 'nshow':true},
 		'n':	{'num':4, 'nshow':true},
 		'tdate':{'num':5, 'name':'дата','nsel':true},
-		'tplace':{'num':6,'name':'№','al':'left'},
-		'ncode':{'num':7, 'name':'стр','nsel':true},
+		'tplace':{'num':6,'name':'№','al':'left','type':'int'},
+		'ncode':{'num':7, 'name':'стр','nsel':true,'type':'int'},
 		'nname':{'num':8, 'name':'Страна','nsel':true,'al':'left'},
 		'tname':{'num':9, 'name':'Команда','al':'left'},
 		'mname':{'num':10, 'name':'Мен','nsel':true,'al':'left'},
 		'ttask':{'num':11, 'name':'Задача','nsel':true,'al':'left'},
-		'tvalue':{'num':12,'name':'Ном','nsel':true},
-		'twage':{'num':13, 'name':'ЗП','nsel':true},
-		'tss':	{'num':14, 'name':'СС','nsel':true},
-		'age':	{'num':15, 'name':'Возр','nsel':true},
-		'pnum':	{'num':16, 'name':'кол','nsel':true},
+		'tvalue':{'num':12,'name':'Ном','nsel':true,'type':'int'},
+		'twage':{'num':13, 'name':'ЗП','nsel':true,'type':'int'},
+		'tss':	{'num':14, 'name':'СС','nsel':true,'type':'float'},
+		'age':	{'num':15, 'name':'Возр','nsel':true,'type':'float'},
+		'pnum':	{'num':16, 'name':'кол','nsel':true,'type':'int'},
 		'tfin':	{'num':17, 'name':'Фин','nsel':true,'al':'left'},
 		'screit':{'num':18,'name':'ШкРейт','nsel':true,'al':'left'},
-		'scbud':{'num':19, 'name':'ШкБюд','nsel':true},
+		'scbud':{'num':19, 'name':'ШкБюд','nsel':true,'type':'int'},
 		'ttown':{'num':20, 'name':'Город','nsel':true,'al':'left'},
 		'sname':{'num':21, 'name':'Стадион','nsel':true,'al':'left'},
-		'ssize':{'num':22, 'name':'Размр','nsel':true},
+		'ssize':{'num':22, 'name':'Размр','nsel':true,'type':'int'},
 		'dname':{'num':23,'name':'Див','nsave':true,'nsel':true},
 		'tprize':{'num':24,'name':'Призовые','nsave':true,'nsel':true},
-		'games':{'num':25,'name':'И ','nsave':true},
-		'wins':	{'num':26,'name':'В ','nsave':true},
-		'draws':{'num':27,'name':'Н ','nsave':true},
-		'loses':{'num':28,'name':'П ','nsave':true},
-		'gup':	{'num':29,'name':'ГЗ','nsave':true},
-		'gdown':{'num':30,'name':'ГП','nsave':true},
-		'gpm':	{'num':31,'name':'+-','nsave':true},
-		'score':{'num':32,'name':'О ','nsave':true}},
+		'dnum': {'num':25,'nsave':true,'nshow':true},
+		'games':{'num':26,'name':'И ','nsave':true},
+		'wins':	{'num':27,'name':'В ','nsave':true},
+		'draws':{'num':28,'name':'Н ','nsave':true},
+		'loses':{'num':29,'name':'П ','nsave':true},
+		'gup':	{'num':30,'name':'ГЗ','nsave':true},
+		'gdown':{'num':31,'name':'ГП','nsave':true},
+		'gpm':	{'num':32,'name':'+-','nsave':true},
+		'score':{'num':33,'name':'О ','nsave':true}},
 	'divs':{
-		'did':	{'num':1, 'nshow':true},
+		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
-		'dnum':	{'num':3, 'nshow':true},
+		'dnum':	{'num':3, 'name':'num'},
 		'nname':{'num':4, 'name':'Страна'},
 		'dname':{'num':5, 'name':'Див'},
 		'drotate':{'num':6, 'name':'+-'},
@@ -221,7 +222,7 @@ function Print(dataname, name, value, sr){
 			for(j in head) if(list2[dataname][head[j].key].nsel!=true) {
 				var tt = dti[head[j].key]
 				var al = ''
-				if(tt == undefined) tt = '&nbsp;'
+				if(tt == undefined || tt=='') tt = '&nbsp;'
 				else{
 					switch (head[j].key){
 						case 'tname':
@@ -230,7 +231,8 @@ function Print(dataname, name, value, sr){
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
-						case 'tplace':	tt = '<font color=3465A4><u>'+(100 - tt)+'</u></font>';break;
+						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
+//						case 'tplace':	tt = '<font color=3465A4><u>'+tt+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						default:
 					}
@@ -394,6 +396,8 @@ function GetData(dataname){
 				var num = 0
 				for(j in head){
 					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
+					if(head[j].type == 'int') curt[head[j]] = parseInt(curt[head[j]])
+					if(head[j].type == 'float') curt[head[j]] = parseFloat(curt[head[j]])
 					num++
 				}
 				data[curt[head[0]]] = {}
@@ -473,9 +477,12 @@ function ModifyTeams(){
 		teams[id].gpm	= $(val).find('td:eq('+zag['+/-']+')').html()
 		teams[id].score	= $(val).find('td:eq('+zag['О']+')').html()
 		teams[id].thash = UrlValue('z',$(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]').attr('href'))
-		teams[id].tplace = 100-i-1
-		teams[id].did = div_cur.did
+		teams[id].tplace= 1000-div_cur.dnum*100-i-1
+		teams[id].did   = div_cur.did
 		teams[id].nname = div_cur.nname
+		teams[id].dname = div_cur.dname
+		teams[id].dnum  = div_cur.dnum
+//		teams[id].tprize = (divs[div_cur.did].dprize!=undefined && divs[div_cur.did].dprize!='' ? divs[div_cur.did].dprize.split(',')[i+1] : '')
 	})
 	SaveData('teams')
 }
@@ -492,6 +499,7 @@ function ModifyDivs(){
 
 	if(divs[id].drotcom!='') $('td.back4 table:eq(1)').after('<br><i><b>Выдержка из правил о переходах команд между дивизионами</b>:<br>*'+divs[id].drotcom+'</i><br>')
 
+	GetFinish('md_divs',true)
 	SaveData('divs')
 }
 
@@ -501,7 +509,7 @@ function GetInfoPageDiv(){
 	div_cur.dname = $('td.back4 td.back1').text().split(', ')[1]
 	div_cur.my = false
 	div_cur.nt = parseInt($('td.back4 table:first table:first tr:last u').html())
-	debug('nt='+div_cur.nt)
+//	debug('nt='+div_cur.nt)
 	$('a[href*="p=refl&t=s&k=0&"]').each(function(i, val){
 		if($(val).text() == div_cur.dname) {
 			div_cur.dnum = i+1
@@ -513,7 +521,7 @@ function GetInfoPageDiv(){
 	div_cur.drotcom = ''
 	div_cur.color = ''
 
-	for(i in div_cur) debug('d'+i+':'+div_cur[i])
+//	for(i in div_cur) debug('d'+i+':'+div_cur[i])
 
 	GetFinish('get_pgdivs',true)
 }
