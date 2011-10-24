@@ -64,7 +64,7 @@ var list2 = {
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
-		'dnum':	{'num':3, 'name':'num'},
+		'dnum':	{'num':3, 'name':'dnum'},
 		'nname':{'num':4, 'name':'Страна'},
 		'dname':{'num':5, 'name':'Див'},
 		'drotate':{'num':6, 'name':'+-'},
@@ -221,7 +221,7 @@ function Print(dataname, name, value, sr){
 							break;
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
-						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';debug(tt);break;
+						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						default:

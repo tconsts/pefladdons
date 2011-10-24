@@ -19,25 +19,9 @@ var list = {
 	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color'}
 var m = []
 var dprize = 0
+var dnum2  = 0
 var tplace = 0
 var school = 0
-
-$().ready(function() {
-	DeleteCookie('teamdiv')
-   	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
-	var urltype = UrlValue('p')
-	if(urltype== 'rules'){
-		GetData('divs')
-	}else if(urltype == 'fin'){
-		GetData2()
-		$('td.back4').prepend('<div id=debug style="display: none;"></div>')
-		$('#debug').load($('a:contains("изменить финансирование")').attr('href') + ' span.text2b',function(){
-			school = parseInt($('#debug').html().split(' ')[3])
-			if(!isNaN(school)) $('a:contains("изменить финансирование")').before(' ' + format(school) + ' в ИД | ')
-			GetFinish('school',true)
-		})
-	}
-}, false)
 
 function GetFinish(type, res){
 	debug(type + '(' + res + ')')
@@ -48,9 +32,10 @@ function GetFinish(type, res){
 	}
 
 	if(m.dprize!=undefined && m.tplace!=undefined) {
-		debug('both='+dprize[tplace-1]+':'+tplace+':'+dprize)
+		var d = 1000-tplace-dnum2*100-1
+		debug(d+' both='+dprize[d]+':'+tplace+':'+dnum2+':'+dprize)
 		if(m.school!=undefined){
-			EditFinance(school,(dprize[tplace-1]==undefined ? 0 : parseInt(dprize[tplace-1]))*1000)
+			EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000)
 		}
 	}	
 }
@@ -58,13 +43,14 @@ function GetFinish(type, res){
 function ModifyDivs(){
 	for(i in divs){
 		var divt = divs[i]
-		GetDivInfo(divt.did,divt.nname,divt.dnum)
+		GetDivInfo(divt.did,divt.nname,parseInt(divt.dnum))
 	}
 	SaveData('divs')
 }
 
 function GetDivInfo(did,nname,dnum){
 //	var div_cur = {}
+	debug('GetDivInfo:'+did+':'+nname+':'+dnum)
 
 	$('td.back4 table:eq(1) tr').each(function(i,val){
 		if(nname == $(val).find('td:first').text()){
@@ -130,7 +116,10 @@ function GetData2(){
 					curt[head[j]] = x[num]
 					num++
 				}
-				if(curt['my']) dprize = (curt['dprize']!=undefined ? curt['dprize'] : 0)
+				if(curt['my']) {
+					dprize = (curt['dprize']!=undefined ? curt['dprize'].split(',') : 0)
+					dnum2  = (curt['dnum']  !=undefined ? parseInt(curt['dnum']) : 0)
+				}
 			}
 			GetFinish('dprize',true)
 		} else {
@@ -142,14 +131,17 @@ function GetData2(){
 		if (text2 != 'undefined'){
 			var text = text2.split('#')
 			for (i in text) {
-				var x = text[i].split('!')
+				var x = text[i].split('|')
 				var curt = {}
 				var num = 0
 				for(j in head){
 					curt[head[j]] = x[num]
+					//debug(head[j]+':'+curt[head[j]])
 					num++
 				}
-				if(curt['my']) dprize = (curt['tplace']!=undefined ? curt['tplace'] : 0)
+				if(curt['my']) {
+					tplace = (curt['tplace']!=undefined ? parseInt(curt['tplace']) : 0)
+				}
 			}
 			GetFinish('tplace',true)
 		} else {
@@ -158,10 +150,11 @@ function GetData2(){
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			tx.executeSql("SELECT dprize,my FROM divs WHERE my='true'", [],
+			tx.executeSql("SELECT dprize,dnum,my FROM divs WHERE my='true'", [],
 				function(tx, result){
 					for(var i = 0; i < result.rows.length; i++) {
 						dprize = result.rows.item(i)['dprize'].split(',')
+						dnum2  = result.rows.item(i)['dnum']
 						GetFinish('dprize',true)
 					}
 				},
@@ -175,7 +168,7 @@ function GetData2(){
 			tx.executeSql("SELECT tplace,my FROM teams WHERE my='true'", [],
 				function(tx, result){
 					for(var i = 0; i < result.rows.length; i++) {
-						tplace = 100-result.rows.item(i)['tplace']
+						tplace = result.rows.item(i)['tplace']
 						GetFinish('tplace', true)
 					}
 				},
@@ -441,7 +434,7 @@ function format(num) {
 }
 
 function DeleteCookie(name) {
-	debug('DeleteCookie')
+	debug('DeleteCookie:'+name)
 /**
 	var exdate=new Date();
 	exdate.setDate(exdate.getDate() - 356); // -1 year
@@ -456,3 +449,19 @@ function UrlValue(key,url){
 	return false
 }
 function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+$().ready(function() {
+	DeleteCookie('teamdiv')
+   	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+	var urltype = UrlValue('p')
+	if(urltype== 'rules'){
+		GetData('divs')
+	}else if(urltype == 'fin'){
+		GetData2()
+		$('td.back4').prepend('<div id=debug style="display: none;"></div>')
+		$('#debug').load($('a:contains("изменить финансирование")').attr('href') + ' span.text2b',function(){
+			school = parseInt($('#debug').html().split(' ')[3])
+			if(!isNaN(school)) $('a:contains("изменить финансирование")').before(' ' + format(school) + ' в ИД | ')
+			GetFinish('school',true)
+		})
+	}
+}, false)
