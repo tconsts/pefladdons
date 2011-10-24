@@ -267,7 +267,7 @@ function GetData(dataname){
 					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 					num++
 				}
-				data[curt[head[0]]] = []
+				data[curt[head[0]]] = {}
 				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 			}
 			GetFinish('get_'+dataname, true)
