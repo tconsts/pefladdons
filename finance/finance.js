@@ -344,7 +344,7 @@ function EditFinance(school,divpriz){
 		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
 		if(divpriz!=0){
 			divprizmark = 	(('<i>*1</i>').fontcolor('green')).fontsize(1)
-			divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+tplace+' место.</i>').fontcolor('green').fontsize(1)
+			divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
 		}
 
 		// Count finish finance
