@@ -500,11 +500,7 @@ function PrintRightInfo(){
 	if(UrlValue('h')==1) return false
 
 	// print link to skills page
-	if($('td.back4 table table:eq(1) tr:last td:last').html().indexOf('Скиллы')==-1){
-		$('td.back4 table table:eq(1) tr:last td:last').append('| <a id="tskills" href="javascript:void(ShowSkills(1))"><span id="tskills">Скиллы игроков</span></a>&nbsp;')
-	}else{
-		$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a><br><br>')
-	}
+	$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a><br><br>')
 
 	// print to right menu
 	var thtml = ''
@@ -744,6 +740,11 @@ function ShowSkills(param){
 		sumpl += '</table>'
 		$('table#tblRostSkillsFilter').after(sumpl)
 		$('table#SumPl').hide()
+
+		var text = '<br>'
+		text += '<br>* - <i>нажать на значение Сум чтобы отключить или включить показ скилов определенного игрока</i>'
+		text += '<br>* - <i>нажимать на заголовки столбцов чтоб сортировать по сумме выделеных скиллов</i><br>'
+		$('table#tblRostSkills').after(text)
 	}
 
 
@@ -776,7 +777,7 @@ function ShowSkills(param){
 				if(skn=='Имя')					tr += '<td'+tdcolor+'><a href="plug.php?p=refl&t=p&j='+pf[i].id+'&z='+pf[i].hash+'">'+sk+'</a></td>'
 				else if(skn=='N') 				tr += '<td'+tdcolor+'>'+sk+'</td>'
 				else if(skn=='Поз') 			tr += '<td'+tdcolor+trash+'>'+sk+'</td>'
-				else if(skn=='Сум') 			tr += '<td'+tdcolor+'><b><a id="x" href="javascript:void(HidePl('+(i+1)+',true))">'+parseInt(sk)+'</a></b></td>'
+				else if(skn=='Сум') 			tr += '<td'+tdcolor+'><b><a id="x" href="javascript:void(HidePl('+(i+1)+','+(pf[i].trash ? 'false' : 'true')+'))">'+parseInt(sk)+'</a></b></td>'
 				else if(!isNaN(parseInt(sk)) && type=='num')	tr += '<td'+tdcolor+trash+'>'+parseInt(sk)+'</td>'
 				else if(!isNaN(parseInt(sk)) && type=='img')	tr += '<td'+tdcolor+trash+'>'+String(sk).split('.')[0]+(String(sk).split('.')[1]!=undefined ? '&nbsp;<img height="10" src="system/img/g/'+String(sk).split('.')[1]+'.gif"></img>' : '')+'</td>'
 				else 							tr += '<td'+tdcolor+'> </td>'
@@ -787,6 +788,7 @@ function ShowSkills(param){
 //			debug(i+':'+pf[i].trash+':'+pf[i].name)
    		}
 	}
+
 	// Run filter
 	Filter(3,'')
 }
