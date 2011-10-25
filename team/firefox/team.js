@@ -286,7 +286,7 @@ function ShowSkills(param){
 		ShowFilter()
 
 		var sumpl = '<table id="SumPl" width=50%>'
-		sumpl += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
+		sumpl += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Суммарный игрок</th></tr>'
 		sumpl += '<tr id="sumlast"><td colspan=4 align=right id="sumlast"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></tr>'
 		sumpl += '</table>'
 		$('table#tblRostSkillsFilter').after(sumpl)
@@ -513,7 +513,7 @@ function Ready(){
 			thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
 			thtml += ShowValueFormat(team.wage)+'&nbsp;'
 			thtml += '</th></tr>'
-			thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
+			thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скиллы</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'
 			thtml += (team.ss/countSostavMax).toFixed(2) + '&nbsp;'
 			thtml += '</th><td></td></tr>'
 			thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд.)').fontsize(1)+'<b>:</b></td><th align=right>'

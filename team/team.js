@@ -517,7 +517,7 @@ function PrintRightInfo(){
 	thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
 	thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
 	thtml += '</th></tr>'
-	thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скилы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
 	thtml += team_cur.tss + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 	thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
@@ -735,7 +735,7 @@ function ShowSkills(param){
 //		ShowSkills(2)
 		
 		var sumpl = '<table id="SumPl" width=50% align=right>'
-		sumpl += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Сумарный игрок</th></tr>'
+		sumpl += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Суммарный игрок</th></tr>'
 		sumpl += '<tr id="sumlast1"><td colspan=4 align=right id="sumlast1"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></td></tr>'
 //		sumpl += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
 		sumpl += '</table>'
