@@ -30,10 +30,10 @@ var MyNick = ''
 
 var countSostav = 0
 var countSk = [0]
-var nom = 0
-var zp  = 0
-var sk  = 0
-var age = 0
+var nom = true
+var zp  = true
+var sk  = true
+var age = true
 var pos1 = {'C' :0}
 var pos2 = {'GK':0}
 var skills = {
@@ -116,12 +116,14 @@ function GetFinish(type, res){
 	}
 	if(m.savedatapl==undefined && m.get_players==false && m.pg_players){
 		m.savedatapl = true
+		CheckTrash()
 		PrintRightInfo()
 		SaveData('players')
 	}
 	if(m.savedatapl==undefined && m.get_players && m.pg_players){
 		m.savedatapl = true
-		ModifyPlayers()
+		ModifyPlayers()// and Save if need
+		CheckTrash()
 		PrintRightInfo()
 	}
 
@@ -131,6 +133,41 @@ function GetFinish(type, res){
 		ClearTasks(cid, team_cur.ttask)
 	}
 /**/
+}
+
+function CheckTrash(){
+	debug('CheckTrash go')
+
+	//count top11
+	var pls = players.sort(sSkills)
+	var num = 0
+	var ss = 0
+	for(i in players){
+		if(num<11) {
+			ss += players[i].sumskills
+//			debug(players[i].name + ':' + players[i].sumskills)
+		}
+		num++
+	}
+	ss = (ss/11)*0.8
+
+	var tss  = 0
+	var age  = 0
+	var pnum = 0
+	for(i in players){
+		var pli = players[i]
+		if(pli.sumskills<ss){
+			pli.trash = true
+		}else{
+			tss += pli.sumskills
+			age += pli.age
+			pnum++
+		}
+		team_cur.pnum = pnum
+		team_cur.tss = (tss/pnum).toFixed(2)
+		team_cur.age = (age/pnum).toFixed(2)
+	}
+//	debug('ss:'+ss)
 }
 
 function CheckMy(){
@@ -186,7 +223,7 @@ function GetInfoPageTm(){
 	team_cur.did	= ''
 	team_cur.mname	= $('td.back4 table table:eq(1) table:first td:first span').text()
 	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href')))
-	team_cur.pnum	= countSostavMax
+	team_cur.pnum	= 0
 	team_cur.scbud	= parseInt($('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0])
 	team_cur.screit	= $('table.layer1 td.l2:eq(1)').text().split(': ',2)[1].split(' (')[0]
 	team_cur.my		= (team_cur.mname == MyNick ? true : false)
@@ -367,10 +404,10 @@ function GetInfoPagePl(){
 
 function ModifyPlayers(){
 	debug('players:Modify go')
+
 	// Check for update
 	for(i in players) {
 		var pl = players[i]
-//		debug(pl.id)//+':'+players2[pl.id].id)
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
 			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
@@ -448,11 +485,9 @@ function GetPl(pid){
 	players[pid].wage 		= parseInt(head.split('г., ')[1].split('$')[0].replace(/,/g,''))
 
 	team_cur.twage	+= players[pid].wage
-//	debug('twage:'+team_cur.twage)
-
 	team_cur.tvalue	+= players[pid].value/1000
-	team_cur.tss	+= players[pid].sumskills
-	team_cur.age	+= players[pid].age
+//	team_cur.tss	+= players[pid].sumskills
+//	team_cur.age	+= players[pid].age
 	$('table#pl'+pid).remove()
 	//debug('GetPl ok: '+pid+' '+players[pid].id)
 	Ready()
@@ -562,83 +597,95 @@ function ShowSkillsY() {
 }
 
 function ShowPlayersValue(){
-	if(nom==0) {
-		nom = 1
+	if(nom) {
+		nom = false
 		var nomtext = ''
 		var pls = players.sort(sValue)
 		for(i in pls) {
 			var bgcolor = ''
-			if(i<16) bgcolor = ' bgcolor=#A3DE8F'
+			if(i<18) bgcolor = ' bgcolor=#A3DE8F'
 			if(i<5)  bgcolor = ' bgcolor=white'
+			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
+			var f2 = (pls[i].trash ? '</font>' : '')
 			nomtext += '<tr id="nom"'+bgcolor+'>'
-			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
 			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
 			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
 			nomtext += '</tr>'
 		}
 		$('#osnom').after(nomtext + '<tr id="nom"><td>&nbsp;</td></tr>')
 	} else {
-		nom = 0
+		nom = true
 		$('tr#nom').remove()
 	}
 }
 
 function ShowPlayersZp(){
-	if(zp==0) {
-		zp = 1
+	if(zp){
+		zp = false
 		var text = ''
 		var pls = players.sort(sZp)
 		for(i in pls) {
 			var bgcolor = ''
+			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
+			var f2 = (pls[i].trash ? '</font>' : '')
 			if(pls[i].contract==1) bgcolor = ' bgcolor=#FF9966' //red
 			if(pls[i].contract==2) bgcolor = ' bgcolor=#FCE93B' //yellow
 			if(pls[i].contract==5) bgcolor = ' bgcolor=#A3DE8F' //green
 			text += '<tr id="zp">'
-			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
+			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
 			text += '<td align=right>' + (ShowValueFormat(pls[i].wage) + '&nbsp;').fontsize(1) + '</td>'
 			text += '<td'+bgcolor+'>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
 			text += '</tr>'
 		}
 		$('#oszp').after(text + '<tr id="zp"><td>&nbsp;</td></tr>')
-	} else {
-		zp = 0
+	}else{
+		zp = true
 		$('tr#zp').remove()
 	}
 }
 
 function ShowPlayersAge(){
-	if(age==0) {
-		age = 1
+	if(age) {
+		age = false
 		var text = ''
 		var pls = players.sort(sAge)
 		for(i in pls) {
+			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
+			var f2 = (pls[i].trash ? '</font>' : '')
 			text += '<tr id="age"'+(pls[i].age<30 && pls[i].age>21 ? '' : ' bgcolor=#A3DE8F')+'>'
-			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
-			text += '<td align=right>' + (pls[i].age+'&nbsp;').fontsize(1) + '</td>'
+			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' 
+			text +=  f1 + ShowShortName(pls[i].name).fontsize(1) + f2
+			text += '</td>'
+			text += '<td align=right>'+f1 + (pls[i].age+'&nbsp;').fontsize(1) + f2+'</td>'
 			text += '</tr>'
 		}
 		$('#osage').after(text + '<tr id="age"><td>&nbsp;</td></tr>')
 	} else {
-		age = 0
+		age = true
 		$('tr#age').remove()
 	}
 }
 
 function ShowPlayersSkillChange(){
-	if(sk==0) {
-		sk = 1
+	if(sk) {
+		sk = false
 		var text = ''
 		var pls = players.sort(sSkills)
 		for(i in pls) {
+			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
+			var f2 = (pls[i].trash ? '</font>' : '')
 			text += '<tr id="skills">'
-			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' + ShowShortName(pls[i].name).fontsize(1) + '</td>'
-			text += '<td align=right>' + (pls[i].sumskills + '&nbsp;').fontsize(1) + '</td>'
+			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' 
+			text +=  f1 + ShowShortName(pls[i].name).fontsize(1) + f2
+			text += '</td>'
+			text += '<td align=right>'+f1 + (pls[i].sumskills + '&nbsp;').fontsize(1) + f2 +'</td>'
 //			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
 			if(pls[i].skchange != '') {
 				var skillchange = pls[i].skchange.split(',')
 				for(j in skillchange) {
-					text += '<tr id="skills"><td align=right colspan=2><i>'+(skillchange[j] + '&nbsp;').fontsize(1)
-					text += (pls[i][skillchange[j]].split('.')[0] + '&nbsp;').fontsize(1) +'</i></td>'
+					text += '<tr id="skills"><td align=right colspan=2><i>'+f1+(skillchange[j] + '&nbsp;').fontsize(1)
+					text += (pls[i][skillchange[j]].split('.')[0] + '&nbsp;').fontsize(1) +f2+'</i></td>'
 					if(pls[i][skillchange[j]].split('.')[1] != undefined) {
 						text += '<td><img height="10" src="system/img/g/'+pls[i][skillchange[j]].split('.')[1]+'.gif"></img></td>'
 					}
@@ -649,7 +696,7 @@ function ShowPlayersSkillChange(){
 		}
 		$('#osskills').after(text + '<tr id="skills"><td>&nbsp;</td></tr>')
 	} else {
-		sk = 0
+		sk = true
 		$('tr#skills').remove()
 	}
 }
@@ -715,30 +762,34 @@ function ShowSkills(param){
 	for(i=0;i<pf.length;i++) {
 		if(pf[i]!=undefined){
 			var tr ='<tr height=20 id="'+pf[i].position+'">'
+			var trash = (pf[i].trash ? ' style="display: none;"' : '')
 			for(j in hd2) {
 				var tdcolor = (countSk[j] == 1 ? ' id=colw bgcolor=white' : '')
 				var skn = hd2[j]
 				var key1 = pf[i][skills[skn.split('<br>')[0]]]
 				var key2 = pf[i][skills[skn.split('<br>')[1]]]
-					var sk = (key1!=undefined ? key1 : key2)
+				var sk = (key1!=undefined ? key1 : key2)
 //				if(skn=='x')					tr += '<td><a id="x" href="javascript:void(HidePl('+(i+1)+',true))">x</a></td>'
 				if(skn=='Имя')					tr += '<td'+tdcolor+'><a href="plug.php?p=refl&t=p&j='+pf[i].id+'&z='+pf[i].hash+'">'+sk+'</a></td>'
-				else if(skn=='Поз') 			tr += '<td'+tdcolor+'>'+sk+'</td>'
+				else if(skn=='N') 				tr += '<td'+tdcolor+'>'+sk+'</td>'
+				else if(skn=='Поз') 			tr += '<td'+tdcolor+trash+'>'+sk+'</td>'
 				else if(skn=='Сум') 			tr += '<td'+tdcolor+'><b><a id="x" href="javascript:void(HidePl('+(i+1)+',true))">'+parseInt(sk)+'</a></b></td>'
-				else if(!isNaN(parseInt(sk)) && type=='num')	tr += '<td'+tdcolor+'>'+parseInt(sk)+'</td>'
-				else if(!isNaN(parseInt(sk)) && type=='img')	tr += '<td'+tdcolor+'>'+String(sk).split('.')[0]+(String(sk).split('.')[1]!=undefined ? '&nbsp;<img height="10" src="system/img/g/'+String(sk).split('.')[1]+'.gif"></img>' : '')+'</td>'
+				else if(!isNaN(parseInt(sk)) && type=='num')	tr += '<td'+tdcolor+trash+'>'+parseInt(sk)+'</td>'
+				else if(!isNaN(parseInt(sk)) && type=='img')	tr += '<td'+tdcolor+trash+'>'+String(sk).split('.')[0]+(String(sk).split('.')[1]!=undefined ? '&nbsp;<img height="10" src="system/img/g/'+String(sk).split('.')[1]+'.gif"></img>' : '')+'</td>'
 				else 							tr += '<td'+tdcolor+'> </td>'
 			}
 			tr += '</tr>'
 			$('table#tblRostSkills').append(tr)
-		}
-	}
 
+//			debug(i+':'+pf[i].trash+':'+pf[i].name)
+   		}
+	}
 	// Run filter
 	Filter(3,'')
 }
 
 function HidePl(num,fl){
+	debug('HidePl('+num+','+fl+') go')
 	if(fl){
 		$('table#tblRostSkills tr:eq('+num+') a#x').attr('href','javascript:void(HidePl('+(num)+',false))')
 		$('table#tblRostSkills tr:eq('+num+') td:gt(2)').each(function(){
