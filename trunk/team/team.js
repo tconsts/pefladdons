@@ -109,21 +109,24 @@ function GetFinish(type, res){
 	//get_teams: true
 	//pg_players: true
 	//pg_teams: true
-	if(m.savedatatm==undefined && m.get_teams!=undefined && m.pg_teams && m.pg_players){
+
+	if(m.trash==undefined && m.pg_teams && m.pg_players){
+		m.trash = true
+		CheckTrash()
+	}
+	if(m.savedatatm==undefined && m.get_teams!=undefined && m.pg_teams && m.pg_players && m.trash){
 		m.savedatatm = true
 		CheckMy()
 		ModifyTeams()
 	}
-	if(m.savedatapl==undefined && m.get_players==false && m.pg_players){
+	if(m.savedatapl==undefined && m.get_players==false && m.pg_players && m.trash){
 		m.savedatapl = true
-		CheckTrash()
 		PrintRightInfo()
 		SaveData('players')
 	}
-	if(m.savedatapl==undefined && m.get_players && m.pg_players){
+	if(m.savedatapl==undefined && m.get_players && m.pg_players && m.trash){
 		m.savedatapl = true
 		ModifyPlayers()// and Save if need
-		CheckTrash()
 		PrintRightInfo()
 	}
 
@@ -167,7 +170,7 @@ function CheckTrash(){
 		team_cur.tss = (tss/pnum).toFixed(2)
 		team_cur.age = (age/pnum).toFixed(2)
 	}
-//	debug('ss:'+ss)
+	GetFinish('trash', true)
 }
 
 function CheckMy(){
@@ -189,8 +192,8 @@ function ModifyTeams(){
 	debug('teams:Modify')
 //	for(var i in teams) debug('m1:'+i+':'+teams[i].tid + ':' + teams[i].tname)
 	//teams and team_cur
-	team_cur.tss = (team_cur.tss/team_cur.pnum).toFixed(2)
-	team_cur.age = (team_cur.age/team_cur.pnum).toFixed(2)
+//	team_cur.tss = (team_cur.tss/team_cur.pnum).toFixed(2)
+//	team_cur.age = (team_cur.age/team_cur.pnum).toFixed(2)
 
 	var tmt = {}
 	for(var i in team_cur){
