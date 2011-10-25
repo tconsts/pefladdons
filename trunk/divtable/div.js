@@ -108,7 +108,7 @@ $().ready(function() {
 
 	GetInfoPageDiv()
 	var text = '<table width=100%>'
-	text += '<tr id="color"><td colspan=2><a id="colorit" href="">Расскрасить</a>&nbsp(<a href="javascript:void(ColorDel())">x</a>)</td></tr>'
+	text += '<tr id="color"><td colspan=2><a id="colorit" href="">Раскрасить</a>&nbsp(<a href="javascript:void(ColorDel())">x</a>)</td></tr>'
 	text += '<tr id="CodeTableForForum"><td colspan=2><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
 	text += '<tr id="empty" colspan=2><td> </td></tr>'
 	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\',\'did\',\''+div_cur.did+'\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
