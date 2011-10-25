@@ -742,8 +742,8 @@ function ShowSkills(param){
 		$('table#SumPl').hide()
 
 		var text = '<br>'
-		text += '<br>* - <i>нажать на значение Сум чтобы отключить или включить показ скилов определенного игрока</i>'
-		text += '<br>* - <i>нажимать на заголовки столбцов чтоб сортировать по сумме выделеных скиллов</i><br>'
+		text += '<br>* - <i>нажать на значение <b>Сум</b> чтобы отключить или включить показ скиллов определенного игрока</i>'
+		text += '<br>* - <i>нажимать на заголовки столбцов чтоб сортировать по сумме выделенных скиллов</i><br>'
 		$('table#tblRostSkills').after(text)
 	}
 
@@ -800,11 +800,13 @@ function HidePl(num,fl){
 		$('table#tblRostSkills tr:eq('+num+') td:gt(2)').each(function(){
 			$(this).hide()
 		})
+		players[num-1].trash = true
 	}else{
 		$('table#tblRostSkills tr:eq('+num+') a#x').attr('href','javascript:void(HidePl('+(num)+',true))')
 		$('table#tblRostSkills tr:eq('+num+') td:gt(2)').each(function(){
 			$(this).removeAttr('style')
 		})
+		players[num-1].trash = false
 	}
 	ShowSumPlayer()
 }
