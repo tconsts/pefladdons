@@ -2,17 +2,12 @@
 // @name           pefldivtable
 // @namespace      pefl
 // @description    division table page modification
-// @include        http://www.pefl.ru/plug.php?p=refl&t=s&*
-// @include        http://pefl.ru/plug.php?p=refl&t=s&*
-// @include        http://www.pefl.net/plug.php?p=refl&t=s&*
-// @include        http://pefl.net/plug.php?p=refl&t=s&*
-// @include        http://www.pefl.org/plug.php?p=refl&t=s&*
-// @include        http://pefl.org/plug.php?p=refl&t=s&*
-// @version			1.1
+// @include        http://*pefl.*/plug.php?p=refl&t=s&*
+// @version        2.0
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
 var newScript2 = document.createElement('script');
 newScript2.type = 'text/javascript';
-newScript2.src = 'http://pefladdons.googlecode.com/svn/trunk/divtable/divtable.js';
+newScript2.src = 'http://pefladdons.googlecode.com/svn/trunk/divtable/div.js';
 headID.appendChild(newScript2);

@@ -7,15 +7,12 @@
 // @version		    2.0
 // ==/UserScript==
 
-//document.addEventListener('DOMContentLoaded', function(){
-//(function(){ 		// for ie
-
 if(typeof (deb) == 'undefined') deb = false
 var debnum = 0
 var db = false
 var divs = []
 var list = {
-	'teams':	'tid,my,did,n,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize',
+	'teams':'tid,my,did,n,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize',
 	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color'}
 var m = []
 var dprize = 0
@@ -30,10 +27,8 @@ function GetFinish(type, res){
 		m.divs = true
 		ModifyDivs()
 	}
-
 	if(m.dprize!=undefined && m.tplace!=undefined) {
 		var d = 1000-tplace-dnum2*100-1
-		debug(d+' both='+dprize[d]+':'+tplace+':'+dnum2+':'+dprize)
 		if(m.school!=undefined){
 			EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000)
 		}
@@ -49,7 +44,6 @@ function ModifyDivs(){
 }
 
 function GetDivInfo(did,nname,dnum){
-//	var div_cur = {}
 	debug('GetDivInfo:'+did+':'+nname+':'+dnum)
 
 	$('td.back4 table:eq(1) tr').each(function(i,val){
@@ -70,13 +64,9 @@ function GetDivInfo(did,nname,dnum){
 			else if (!isNaN(downc))			 drotcomlink = downc
 
 			drotcom = (drotcomlink!='' ? $('td.back4 table:eq(1) ~ b:has(sup:contains('+drotcomlink+'):first)').html() : '')
-//			drotcom = (drotcomlink!='' ? $('td.back4 table:eq(1) ~ b:first').text() : '')
-
-			debug(did+':'+drotcom)
 
 			divs[did].drotate = (isNaN(up) ? 0 : up) + ',' + (isNaN(down) ? 0 : down)
 			divs[did].drotcom = drotcom
-//			debug(did +':'+nname+':'+dnum+':'+ div_cur.drotate)
 		}
 	})
 	$('td.back4 table:eq(2) tr:gt(0)').each(function(i,val){
@@ -89,7 +79,6 @@ function GetDivInfo(did,nname,dnum){
 				dprize.push(parseInt($(this).text()))
 			})
 			divs[did].dprize = dprize.join(',')
-//			debug(did+':'+div_cur.dprize)
 		}
 	})
 }
@@ -136,12 +125,9 @@ function GetData2(){
 				var num = 0
 				for(j in head){
 					curt[head[j]] = x[num]
-					//debug(head[j]+':'+curt[head[j]])
 					num++
 				}
-				if(curt['my']) {
-					tplace = (curt['tplace']!=undefined ? parseInt(curt['tplace']) : 0)
-				}
+				if(curt['my']) tplace = (curt['tplace']!=undefined ? parseInt(curt['tplace']) : 0)
 			}
 			GetFinish('tplace',true)
 		} else {
@@ -212,7 +198,7 @@ function SaveData(dataname){
 		db.transaction(function(tx) {
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
 				function(tx, result){},
-				function(tx, error) {debug(dataname+':drop error:' + error.message)}
+				function(tx, error) {debug(error.message)}
 			);                                           
 			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+list[dataname]+")", [],
 				function(tx, result){debug(dataname+':create ok')},
@@ -228,7 +214,6 @@ function SaveData(dataname){
 					x2.push('?')
 					x3.push(dti[head[j]])
 				}
-//				debug(dataname+':s'+x3[0]+'_'+x3[1])
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
 					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
@@ -278,7 +263,6 @@ function GetData(dataname){
 						var id = row[head[0]]
 						data[id] = {}
 						for(j in row) data[id][j] = row[j]
-//						debug(dataname+':g'+id+':'+data[id].my)
 					}
 					GetFinish('get_'+dataname,true)
 				},
@@ -363,7 +347,6 @@ function EditFinance(school,divpriz){
 		fin.plusminus = fin.allup - fin.alldown
 		fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
 
-/**/
 		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>')
 		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>')
 
@@ -378,14 +361,12 @@ function EditFinance(school,divpriz){
 		preparedhtml += '<td width=15% align=right>' + (format(cur.plusminus)).bold() + '</td><td></td>'
 
 		if(fin.fid != cur.fid) preparedhtml += '<td width=15% align=right>' + (format(fin.plusminus)).bold() + '</td><td></td>'
-//		else if(finance[0]['Спонсоры'] == 0 && cur.sponsors > fin.fid*4000) preparedhtml += '<td width=15% align=right>сссс</td><td></td>'
 		else preparedhtml += '<td width=15%></td><td></td>'
 
 		preparedhtml += '</tr>'
 		preparedhtml += '<tr><td><b>На счету</b></td>'
 		preparedhtml += '<td align=right>' + (format(cur.bablo)).bold() + '</td><td></td>'
 		if(fin.fid != cur.fid) preparedhtml += '<td align=right>'+(format(fin.bablo)).bold() + '</td><td></td>'
-//		else if(finance[0]['Спонсоры'] == 0 && cur.sponsors > fin.fid*4000) preparedhtml += '<td align=right>выаываыва</td><td></td>'
 		preparedhtml += '</tr>'
 		preparedhtml += '</table>'
 		$('td.back4 table#3').after(preparedhtml)
@@ -418,12 +399,10 @@ function EditFinance(school,divpriz){
 			var sp_text = ('Спонсорские контракты:<br><font color="red">'+prev_sp+',000$ в ИД / ушедший</font>')
 			$('td.back4 > table td:eq(1)').html(nhtml.replace('Спонсорские контракты:', sp_text))
 
-//			$('td[id=fin]:eq(0)').next().append(' ('+spraz+'т$ в ИД)')
 			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
 			$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())			
 		}
 		$('table#4').after('<hr>')
-/**/		
 
 		return false
 }
@@ -433,16 +412,6 @@ function format(num) {
 	else 									return (num/1000000).toFixed(3).replace(/\./g,',') + (num==0 ? '' : ',000') + '$'
 }
 
-function DeleteCookie(name) {
-	debug('DeleteCookie:'+name)
-/**
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() - 356); // -1 year
-	if (!name || !value) return false;
-	document.cookie = name + '=; expires='+ exdate.toUTCString() + '; path=/'
-/**/
-	return true
-}
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
@@ -450,7 +419,6 @@ function UrlValue(key,url){
 }
 function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 $().ready(function() {
-	DeleteCookie('teamdiv')
    	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	var urltype = UrlValue('p')
 	if(urltype== 'rules'){

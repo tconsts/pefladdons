@@ -108,6 +108,11 @@ $().ready(function() {
 			CountryInfoGet();
 		}
 	}
+
+	text = '<font color=red><b>ВНИМАНИЕ!!!</b></font><br>'
+	text += '<i>На данной странице работает устаревший КрабВИП скрипт который требуется <a href="http://pefladdons.googlecode.com/svn/trunk/team/peflteam.user.js">обновить</a>!'
+	$('td.back4').prepend(text)
+
 }, false);
 
 function ShowFilter(){
