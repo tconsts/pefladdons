@@ -201,7 +201,8 @@ function fillTextarea(pt) {
 		preparedhtml += '[table]';
 		preparedhtml += '[tr]';
 		
-		for(j=12;j<=16;j++) {
+		for(j=12;j<=18;j++) {
+			if(j==17) preparedhtml += '[/tr][tr]'
 			if ( pids[j] ) {
 				switch(pt) {
 					case 3: preparedhtml += printCard2(pids[j],0);break;
@@ -258,7 +259,7 @@ $().ready(function() {
 		}
 		
 		// теперь мы собираем id всех игроков, заявленных в состав
-		for(i=1;i<=16;i++) {
+		for(i=1;i<=18;i++) {
 			pids[i] = data_assoc["pid" + i];
 			var position = data_assoc["p0_" + i];
 			sostav[position] = pids[i]; // сохраняем позиции на поле
