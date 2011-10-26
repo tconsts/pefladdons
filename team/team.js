@@ -153,7 +153,7 @@ function CheckTrash(){
 		num++
 	}
 	ss = (ss/11)*0.8
-
+	debug('ss:'+ss)
 	var tss  = 0
 	var age  = 0
 	var pnum = 0
@@ -167,7 +167,7 @@ function CheckTrash(){
 			pnum++
 		}
 		team_cur.pnum = pnum
-		team_cur.tss = (tss/pnum).toFixed(2)
+		team_cur.tss = (isNaN(tss) ? 0 : (tss/pnum).toFixed(2))
 		team_cur.age = (age/pnum).toFixed(2)
 	}
 	GetFinish('trash', true)
@@ -372,8 +372,8 @@ function GetData(dataname){
 
 function GetInfoPagePl(){
 	$('tr[id^=tblRosterTr]').each(function(i,val){
-		var purl= $(val).find('a[trp="1"]').attr('href')
-		var pid = UrlValue('id',purl)
+		var eurl= $(val).find('a[trp="1"]').attr('href')
+		var pid = UrlValue('j',$(val).find('td:eq(1) a').attr('href'))
 		var pn	= parseInt($(val).find('td:first').text())
 		players[pid] = {}
 		players[pid].pn 	= pn
@@ -393,14 +393,16 @@ function GetInfoPagePl(){
 		players[pid].morale	= parseInt($(val).find('td:eq(4)').html())
 		players[pid].mchange= 0
 		players[pid].form	= parseInt($(val).find('td:eq(5)').html())
-//		debug(players[pid].id+':'+players[pid].form)
 		players[pid].fchange= 0
 		players[pid].position= $(val).find('td:eq(11)').html()
 
-		$('td.back4').append('<table id=pl'+pid+' style="display: none;"><tr><td id=pl'+pid+'></td></tr></table>')
-		$('td#pl'+pid).load(purl+' center:first', function(){
-			GetPl(pid);
-		})
+		debug(pid+':'+eurl)
+		if(eurl!=undefined){
+			$('td.back4').append('<table id=pl'+pid+' style="display: none;"><tr><td id=pl'+pid+'></td></tr></table>')
+			$('td#pl'+pid).load(eurl+' center:first', function(){GetPl(pid);})
+		}else{
+			Ready()
+		}
 	})
 	debug('players:GetPage ok')
 }
@@ -500,7 +502,9 @@ function PrintRightInfo(){
 	if(UrlValue('h')==1) return false
 
 	// print link to skills page
-	$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a><br><br>')
+	if(team_cur.tss!=0){
+		$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a><br><br>')
+	}
 
 	// print to right menu
 	var thtml = ''
@@ -508,17 +512,23 @@ function PrintRightInfo(){
 //	if(sumvaluechange != 0) 
 	thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
 	thtml += '</td></tr>'
-	thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</th><th align=right>'
-	thtml += ShowValueFormat(team_cur.tvalue)+'т'
-	thtml += '</th><td width=10%>'
-//	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
-	thtml += '</td></tr>'
-	thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
-	thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
-	thtml += '</th></tr>'
-	thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
-	thtml += team_cur.tss + '&nbsp;'
-	thtml += '</th><td></td></tr>'
+	if(team_cur.tvalue!=0){
+		thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</th><th align=right>'
+		thtml += ShowValueFormat(team_cur.tvalue)+'т'
+		thtml += '</th><td width=10%>'
+//		if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
+		thtml += '</td></tr>'
+	}
+	if(team_cur.twage!=0){
+		thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
+		thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
+		thtml += '</th></tr>'
+	}
+	if(team_cur.tss!=0){
+		thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+		thtml += team_cur.tss + '&nbsp;'
+		thtml += '</th><td></td></tr>'
+	}
 	thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
 	thtml += team_cur.age + '&nbsp;'
 	thtml += '</th><td></td></tr>'
