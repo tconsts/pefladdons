@@ -89,7 +89,7 @@ $().ready(function() {
 		if(deb){
 			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
 			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
-			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
+//			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
 			$("#rg").after(preparedhtml)
 		}
 
@@ -105,10 +105,6 @@ function DBConnect(){
 function GetFinish(type, res){
 	debug(type + ' ' + res + ' ')
 	m[type] = res;
-	//get_players: true
-	//get_teams: true
-	//pg_players: true
-	//pg_teams: true
 
 	if(m.trash==undefined && m.pg_teams && m.pg_players){
 		m.trash = true
@@ -129,13 +125,6 @@ function GetFinish(type, res){
 		ModifyPlayers()// and Save if need
 		PrintRightInfo()
 	}
-
-/**
-	if(m.cleartasks==undefined && m.pg_tm!=undefined && (m.db_tm!=undefined || m.gs_tm!=undefined)) {
-		m.cleartasks = true
-		ClearTasks(cid, team_cur.ttask)
-	}
-/**/
 }
 
 function CheckTrash(){
@@ -146,10 +135,7 @@ function CheckTrash(){
 	var num = 0
 	var ss = 0
 	for(i in players){
-		if(num<11) {
-			ss += players[i].sumskills
-//			debug(players[i].name + ':' + players[i].sumskills)
-		}
+		if(num<11) ss += players[i].sumskills
 		num++
 	}
 	ss = (ss/11)*0.8
@@ -190,11 +176,6 @@ function CheckMy(){
 
 function ModifyTeams(){
 	debug('teams:Modify')
-//	for(var i in teams) debug('m1:'+i+':'+teams[i].tid + ':' + teams[i].tname)
-	//teams and team_cur
-//	team_cur.tss = (team_cur.tss/team_cur.pnum).toFixed(2)
-//	team_cur.age = (team_cur.age/team_cur.pnum).toFixed(2)
-
 	var tmt = {}
 	for(var i in team_cur){
 		tmt[i] = (team_cur[i] != '' ? team_cur[i] : (typeof(teams[cid][i])!='undefined' ? teams[cid][i] : ''))
@@ -396,7 +377,6 @@ function GetInfoPagePl(){
 		players[pid].fchange= 0
 		players[pid].position= $(val).find('td:eq(11)').html()
 
-		debug(pid+':'+eurl)
 		if(eurl!=undefined){
 			$('td.back4').append('<table id=pl'+pid+' style="display: none;"><tr><td id=pl'+pid+'></td></tr></table>')
 			$('td#pl'+pid).load(eurl+' center:first', function(){GetPl(pid);})
@@ -450,15 +430,6 @@ function ModifyPlayers(){
 	if (remember==1) SaveData('players')
 }
 
-function ClearTasks(club_id, club_zad){
-    // Delete all task if we have new task - it's new season!
-	debug('ClearTasks ok')
-	if (teams[club_id] != undefined && teams[club_id].ttask != undefined && teams[club_id].ttask != club_zad){
-		for (i in teams) teams[i].ttask = null
-		debug('Задачи очищены.')
-	}
-}
-
 function GetPl(pid){
 	// get player skills with number pid
 	var skillsum = 0
@@ -491,10 +462,8 @@ function GetPl(pid){
 
 	team_cur.twage	+= players[pid].wage
 	team_cur.tvalue	+= players[pid].value/1000
-//	team_cur.tss	+= players[pid].sumskills
-//	team_cur.age	+= players[pid].age
 	$('table#pl'+pid).remove()
-	//debug('GetPl ok: '+pid+' '+players[pid].id)
+
 	Ready()
 }
 function PrintRightInfo(){
