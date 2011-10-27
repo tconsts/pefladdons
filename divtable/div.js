@@ -391,7 +391,7 @@ function GetData(dataname){
 				for(j in head){
 					if(x[num]!=undefined){
 						if(list2[dataname][head[j]].type == 'int')	curt[head[j]] = (isNaN(parseInt(x[num])) ? '' : parseInt(x[num]))
-						else if(list2[dataname][head[j]].type == 'float') 	curt[head[j]] = (isNaN(parseFloat(x[num])) ? '' : parseFloat(x[num]))
+						else if(list2[dataname][head[j]].type == 'float') 	curt[head[j]] = (isNaN(parseFloat(x[num])) ? '' : parseFloat(x[num]).toFixed(2))
 						else curt[head[j]] = x[num]
 					} else {
 						curt[head[j]] = ''
