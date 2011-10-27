@@ -391,7 +391,9 @@ function GetData(dataname){
 						if(head[j].type == 'int')			curt[head[j]] = parseInt(x[num])
 						else if(head[j].type == 'float') 	curt[head[j]] = parseFloat(x[num])
 						else								curt[head[j]] = x[num]
-					} curt[head[j]] = ''
+					} else {
+						curt[head[j]] = ''
+					}
 					num++
 				}
 				data[curt[head[0]]] = {}
