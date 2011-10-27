@@ -393,8 +393,8 @@ function GetData(dataname){
 				for(j in head){
 					if(x[num]!=undefined){
 						switch (list2[dataname][head[j]].type){
-							case 'int':		curt[head[j]] = (isNaN(parseInt(x[num])) ? '' : parseInt(x[num]))
-							case 'float':	curt[head[j]] = (isNaN(parseFloat(x[num])) ? '' : parseFloat(x[num]).toFixed(2))
+							case 'int':		curt[head[j]] = (isNaN(parseInt(x[num])) ? '' : parseInt(x[num]));break;
+							case 'float':	curt[head[j]] = (isNaN(parseFloat(x[num])) ? '' : parseFloat(x[num]).toFixed(2));break;
 							default: 		curt[head[j]] = x[num]
 						}
 					} else {
