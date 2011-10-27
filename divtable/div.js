@@ -372,6 +372,8 @@ function GetData(dataname){
 	for (i in list2[dataname]) {
 		if(!list2[dataname][i].nsave) head[list2[dataname][i].num-1] = i	
 	}
+	for (i in head) debug(i+':'+head[i]+':'+list2[dataname][head[i]].type)
+
 	switch (dataname){
 		case 'players': data = players2;			break
 		case 'teams': 	data = teams;idname='tid';	break
@@ -388,9 +390,9 @@ function GetData(dataname){
 				var num = 0
 				for(j in head){
 					if(x[num]!=undefined){
-						if(head[j].type == 'int')			curt[head[j]] = parseInt(x[num])
-						else if(head[j].type == 'float') 	curt[head[j]] = parseFloat(x[num])
-						else								curt[head[j]] = x[num]
+						if(list2[dataname][head[j]].type == 'int')	curt[head[j]] = parseInt(x[num])
+						else if(list2[dataname][head[j]].type == 'float') 	curt[head[j]] = parseFloat(x[num])
+						else curt[head[j]] = x[num]
 					} else {
 						curt[head[j]] = ''
 					}
