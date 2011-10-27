@@ -387,9 +387,10 @@ function GetData(dataname){
 				var curt = {}
 				var num = 0
 				for(j in head){
-					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
-					if(head[j].type == 'int') curt[head[j]] = parseInt(curt[head[j]])
-					if(head[j].type == 'float') curt[head[j]] = parseFloat(curt[head[j]])
+					if(x[num]!=undefined){
+						if(head[j].type == 'int')	curt[head[j]] = parseInt(x[num])
+						if(head[j].type == 'float') curt[head[j]] = parseFloat(x[num])
+					} curt[head[j]] = ''
 					num++
 				}
 				data[curt[head[0]]] = {}
