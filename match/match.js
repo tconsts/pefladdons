@@ -6,6 +6,8 @@
 // @include        http://*pefl.*/*&t=code&*
 // ==/UserScript==
 
+// 10й сезон, матч с которго считается сыгранность и СвУс: http://www.pefl.ru/plug.php?p=refl&t=if&j=602078&z=a72e875256e6b57eb52e95dbd2d1b152
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];

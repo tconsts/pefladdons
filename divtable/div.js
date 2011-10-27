@@ -38,7 +38,7 @@ var list2 = {
 		'nname':{'num':8, 'name':'Страна','nsel':true,'al':'left'},
 		'tname':{'num':9, 'name':'Команда','al':'left'},
 		'mname':{'num':10, 'name':'Мен','nsel':true,'al':'left'},
-		'ttask':{'num':11, 'name':'Задача','nsel':true,'al':'left'},
+		'ttask':{'num':11, 'name':'Задача','nsel':true,'al':'left','type':'int'},
 		'tvalue':{'num':12,'name':'Ном','nsel':true,'type':'int'},
 		'twage':{'num':13, 'name':'ЗП','nsel':true,'type':'int'},
 		'tss':	{'num':14, 'name':'СС','nsel':true,'type':'float'},
@@ -72,6 +72,8 @@ var list2 = {
 		'dprize': {'num':8, 'name':'Призовые'},
 		'color':  {'num':9, 'name':'Расскрас'}}
 }
+
+var tasks = ['','Чемпионство','Выйти в высший Д.','Медали','Зона Судамерикана','Зона УЕФА','Попасть в 3А','Попасть в пятерку','Попасть в десятку','15 место','Не вылететь']
 
 var showfl = false
 //var filt = {}
@@ -224,6 +226,7 @@ function Print(dataname, name, value, sr){
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
+						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						default:
 					}
 				}

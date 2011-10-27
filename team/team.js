@@ -24,6 +24,18 @@ var list = {
 //	'divs':		'did,my,dnum,dname,drotate,drotcom,dprize,color'
 }
 
+var rtasks = {
+	'Чемпионство':1,
+	'Выйти в высший Д.':2,
+	'Медали':3,
+	'Зона Судамерикана':4,
+	'Зона УЕФА':5,
+	'Попасть в 3А':6,
+	'Попасть в пятерку':7,
+	'Попасть в десятку':8,
+	'15 место':9,
+	'Не вылететь':10}
+
 var sumP = 0
 var sumH = false
 var MyNick = ''
@@ -190,11 +202,12 @@ function ModifyTeams(){
 function GetInfoPageTm(){
 	debug('teams:GetInfoPage ok')
 	// Get current club data
+	var task_name = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
 	team_cur.tid	= cid
 	team_cur.tdate	= today
 	team_cur.tname	= $('td.back4 table table:first td:last').text().split(' (')[0]
 	team_cur.ttown	= $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
-	team_cur.ttask	= $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
+	team_cur.ttask	= (rtasks[task_name]!=undefined ? rtasks[task_name] : task_name)
 	team_cur.twage	= 0
 	team_cur.tvalue	= 0
 	team_cur.tss	= 0
