@@ -20,7 +20,7 @@ var save = false
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
-	'teams':	'tid,my,did,n,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize',
+	'teams':	'tid,my,did,n,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
 //	'divs':		'did,my,dnum,dname,drotate,drotcom,dprize,color'
 }
 
@@ -218,6 +218,7 @@ function GetInfoPageTm(){
 	team_cur.ncode	= parseInt(UrlValue('j',$('td.back4 table:first table td:eq(1) a').attr('href')))
 	team_cur.nname	= $('td.back4 table:first table td:eq(3) font').text().split(', ')[1].split(')')[0]
 	team_cur.did	= ''
+	team_cur.mid	= UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href'))
 	team_cur.mname	= $('td.back4 table table:eq(1) table:first td:first span').text()
 	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href')))
 	team_cur.pnum	= 0

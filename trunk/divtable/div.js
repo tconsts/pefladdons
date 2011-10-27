@@ -28,11 +28,11 @@ var list2 = {
 		'value':  {'num':8},
 		'valuech':{'num':9}},
 	'teams': {
-		'tid':	{'num':1, 'nshow':true},
+		'tid':	{'num':1, 'nshow':true,'type':'int'},
 		'my':	{'num':2, 'nshow':true},
-		'did':	{'num':3, 'nshow':true},
+		'did':	{'num':3, 'nshow':true,'type':'int'},
 		'n':	{'num':4, 'nshow':true},
-		'tdate':{'num':5, 'name':'дата','nsel':true},
+		'tdate':{'num':5, 'name':'дата','nsel':true,'type':'float'},
 		'tplace':{'num':6,'name':'№','al':'left','type':'int'},
 		'ncode':{'num':7, 'name':'стр','nsel':true,'type':'int'},
 		'nname':{'num':8, 'name':'Страна','nsel':true,'al':'left'},
@@ -50,17 +50,18 @@ var list2 = {
 		'ttown':{'num':20, 'name':'Город','nsel':true,'al':'left'},
 		'sname':{'num':21, 'name':'Стадион','nsel':true,'al':'left'},
 		'ssize':{'num':22, 'name':'Размр','nsel':true,'type':'int'},
-		'dname':{'num':23,'name':'Див','nsave':true,'nsel':true},
-		'tprize':{'num':24,'name':'Призовые','nsave':true,'nsel':true},
-		'dnum': {'num':25,'nsave':true,'nshow':true},
-		'games':{'num':26,'name':'И&nbsp;','nsave':true},
-		'wins':	{'num':27,'name':'В&nbsp;','nsave':true},
-		'draws':{'num':28,'name':'Н&nbsp;','nsave':true},
-		'loses':{'num':29,'name':'П&nbsp;','nsave':true},
-		'gup':	{'num':30,'name':'ГЗ','nsave':true},
-		'gdown':{'num':31,'name':'ГП','nsave':true},
-		'gpm':	{'num':32,'name':'+-','nsave':true},
-		'score':{'num':33,'name':'О&nbsp;','nsave':true}},
+		'mid':  {'num':23, 'nshow':true,'type':'int'},
+		'dname':{'num':24,'name':'Див','nsave':true,'nsel':true},
+		'tprize':{'num':25,'name':'Призовые','nsave':true,'nsel':true},
+		'dnum': {'num':26,'nsave':true,'nshow':true},
+		'games':{'num':27,'name':'И&nbsp;','nsave':true},
+		'wins':	{'num':28,'name':'В&nbsp;','nsave':true},
+		'draws':{'num':29,'name':'Н&nbsp;','nsave':true},
+		'loses':{'num':30,'name':'П&nbsp;','nsave':true},
+		'gup':	{'num':31,'name':'ГЗ','nsave':true},
+		'gdown':{'num':32,'name':'ГП','nsave':true},
+		'gpm':	{'num':33,'name':'+-','nsave':true},
+		'score':{'num':34,'name':'О&nbsp;','nsave':true}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -221,6 +222,9 @@ function Print(dataname, name, value, sr){
 						case 'tname':
 							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>':'<b>' + tt + '</b>')
 							break;
+						case 'mname':
+							tt = (dti['mid']==undefined || dti['mid']=='' ? tt : '<a href="users.php?m=details&id='+dti['mid']+'">'+tt+'</a>')
+							break;
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
@@ -372,8 +376,6 @@ function GetData(dataname){
 	for (i in list2[dataname]) {
 		if(!list2[dataname][i].nsave) head[list2[dataname][i].num-1] = i	
 	}
-	for (i in head) debug(i+':'+head[i]+':'+list2[dataname][head[i]].type)
-
 	switch (dataname){
 		case 'players': data = players2;			break
 		case 'teams': 	data = teams;idname='tid';	break
@@ -390,9 +392,11 @@ function GetData(dataname){
 				var num = 0
 				for(j in head){
 					if(x[num]!=undefined){
-						if(list2[dataname][head[j]].type == 'int')	curt[head[j]] = (isNaN(parseInt(x[num])) ? '' : parseInt(x[num]))
-						else if(list2[dataname][head[j]].type == 'float') 	curt[head[j]] = (isNaN(parseFloat(x[num])) ? '' : parseFloat(x[num]).toFixed(2))
-						else curt[head[j]] = x[num]
+						switch (list2[dataname][head[j]].type){
+							case 'int':		curt[head[j]] = (isNaN(parseInt(x[num])) ? '' : parseInt(x[num]))
+							case 'float':	curt[head[j]] = (isNaN(parseFloat(x[num])) ? '' : parseFloat(x[num]).toFixed(2))
+							default: 		curt[head[j]] = x[num]
+						}
 					} else {
 						curt[head[j]] = ''
 					}
