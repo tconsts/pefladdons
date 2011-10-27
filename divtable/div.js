@@ -74,7 +74,8 @@ var list2 = {
 		'color':  {'num':9, 'name':'Расскрас'}}
 }
 
-var tasks = ['','Чемпионство','Выйти в высший Д.','Медали','Зона Судамерикана','Зона УЕФА','Попасть в 3А','Попасть в пятерку','Попасть в десятку','15 место','Не вылететь']
+var tasks	= ['','Чемпионство','Выйти в высший Д.','Медали','Зона Судамерикана','Зона УЕФА','Попасть в 3А','Попасть в пятерку','Попасть в десятку','15 место','Не вылететь']
+var schools	= ['','очень слабая','слабая','средняя','хорошая','отличная','мирового уровня','одна из лучших в мире']
 
 var showfl = false
 //var filt = {}
@@ -231,6 +232,7 @@ function Print(dataname, name, value, sr){
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
+						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
 						default:
 					}
 				}

@@ -36,6 +36,15 @@ var rtasks = {
 	'15 место':9,
 	'Не вылететь':10}
 
+var rschools= {
+	'очень слабая':1,
+	'слабая':2,
+	'средняя':3,
+	'хорошая':4,
+	'отличная':5,
+	'мирового уровня':6,
+	'одна из лучших в мире':7}
+
 var sumP = 0
 var sumH = false
 var MyNick = ''
@@ -202,7 +211,9 @@ function ModifyTeams(){
 function GetInfoPageTm(){
 	debug('teams:GetInfoPage ok')
 	// Get current club data
-	var task_name = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
+	var task_name   = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
+	var screit_name = $('table.layer1 td.l2:eq(1)').text().split(': ',2)[1].split(' (')[0]
+
 	team_cur.tid	= cid
 	team_cur.tdate	= today
 	team_cur.tname	= $('td.back4 table table:first td:last').text().split(' (')[0]
@@ -223,7 +234,7 @@ function GetInfoPageTm(){
 	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href')))
 	team_cur.pnum	= 0
 	team_cur.scbud	= parseInt($('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0])
-	team_cur.screit	= $('table.layer1 td.l2:eq(1)').text().split(': ',2)[1].split(' (')[0]
+	team_cur.screit	= (rschools[screit_name]!=undefined ? rschools[screit_name] : screit_name)
 	team_cur.my		= (team_cur.mname == MyNick ? true : false)
 	GetFinish('pg_teams', true)
 }
