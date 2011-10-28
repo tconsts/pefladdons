@@ -12,7 +12,7 @@ var debnum = 0
 var db = false
 var divs = []
 var list = {
-	'teams':'tid,my,did,n,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize',
+//	'teams':'tid,my,did,n,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
 	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color'}
 var m = []
 var dprize = 0
@@ -27,15 +27,17 @@ function GetFinish(type, res){
 		m.divs = true
 		ModifyDivs()
 	}
-	if(m.dprize!=undefined && m.tplace!=undefined) {
+	if((m.dprize && m.tplace) || m.dprize!=undefined || m.tplace!=undefined) {
 		var d = 1000-tplace-dnum2*100-1
 		if(m.school!=undefined){
+			debug(tplace+':'+dnum2+':'+dprize)
 			EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000)
 		}
 	}	
 }
 
 function ModifyDivs(){
+	debug('ModifyDivs go')
 	for(i in divs){
 		var divt = divs[i]
 		GetDivInfo(divt.did,divt.nname,parseInt(divt.dnum))
@@ -136,13 +138,13 @@ function GetData2(){
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			tx.executeSql("SELECT dprize,dnum,my FROM divs WHERE my='true'", [],
+			tx.executeSql("SELECT dprize,dnum FROM divs WHERE my='true'", [],
 				function(tx, result){
 					for(var i = 0; i < result.rows.length; i++) {
 						dprize = result.rows.item(i)['dprize'].split(',')
 						dnum2  = result.rows.item(i)['dnum']
-						GetFinish('dprize',true)
 					}
+					GetFinish('dprize',true)
 				},
 				function(tx, error){
 					debug(error.message)
@@ -150,7 +152,7 @@ function GetData2(){
 				}
 			)
 		})
-		db.transaction(function(tx) {
+/**/		db.transaction(function(tx) {
 			tx.executeSql("SELECT tplace,my FROM teams WHERE my='true'", [],
 				function(tx, result){
 					for(var i = 0; i < result.rows.length; i++) {
@@ -164,6 +166,7 @@ function GetData2(){
 				}
 			)
 		})
+/**/
 	}
 }
 
@@ -276,6 +279,7 @@ function GetData(dataname){
 }
 
 function EditFinance(school,divpriz){
+	debug('EditFinance('+school+','+divpriz+')')
 		var fin = {}
 		var finance = []
 		var cur = {}
@@ -325,7 +329,7 @@ function EditFinance(school,divpriz){
 		// set div prizes
 //		var divpriz = 0
 		var divprizmark =	(('<i>*1</i>').fontcolor('red')).fontsize(1)
-		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в "Правила".</i>').fontcolor('red').fontsize(1)
+		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в команду, див и "Правила".</i>').fontcolor('red').fontsize(1)
 		if(divpriz!=0){
 			divprizmark = 	(('<i>*1</i>').fontcolor('green')).fontsize(1)
 			divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
@@ -429,6 +433,7 @@ $().ready(function() {
 		$('#debug').load($('a:contains("изменить финансирование")').attr('href') + ' span.text2b',function(){
 			school = parseInt($('#debug').html().split(' ')[3])
 			if(!isNaN(school)) $('a:contains("изменить финансирование")').before(' ' + format(school) + ' в ИД | ')
+			else school = 0
 			GetFinish('school',true)
 		})
 	}
