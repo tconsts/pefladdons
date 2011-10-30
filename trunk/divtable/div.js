@@ -54,14 +54,15 @@ var list2 = {
 		'dname':{'num':24,'name':'Див','nsave':true,'nsel':true},
 		'tprize':{'num':25,'name':'Призовые','nsave':true,'nsel':true},
 		'dnum': {'num':26,'nsave':true,'nshow':true},
-		'games':{'num':27,'name':'И&nbsp;','nsave':true},
-		'wins':	{'num':28,'name':'В&nbsp;','nsave':true},
-		'draws':{'num':29,'name':'Н&nbsp;','nsave':true},
-		'loses':{'num':30,'name':'П&nbsp;','nsave':true},
-		'gup':	{'num':31,'name':'ГЗ','nsave':true},
-		'gdown':{'num':32,'name':'ГП','nsave':true},
-		'gpm':	{'num':33,'name':'+-','nsave':true},
-		'score':{'num':34,'name':'О&nbsp;','nsave':true}},
+		'nomzp':{'num':27,'name':'Ном/ЗП','nsave':true,'nsel':true},
+		'games':{'num':28,'name':'И&nbsp;','nsave':true},
+		'wins':	{'num':29,'name':'В&nbsp;','nsave':true},
+		'draws':{'num':30,'name':'Н&nbsp;','nsave':true},
+		'loses':{'num':31,'name':'П&nbsp;','nsave':true},
+		'gup':	{'num':32,'name':'ГЗ','nsave':true},
+		'gdown':{'num':33,'name':'ГП','nsave':true},
+		'gpm':	{'num':34,'name':'+-','nsave':true},
+		'score':{'num':35,'name':'О&nbsp;','nsave':true}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -233,6 +234,7 @@ function Print(dataname, name, value, sr){
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
+						case 'nomzp':	tt = (dti['wage']==0 || dti['wage']=='' ? '' : dti['tvalue']/dti['wage']).toFixed(2);break;
 						default:
 					}
 				}
@@ -486,6 +488,7 @@ function ModifyTeams(){
 		teams[id].nname = div_cur.nname
 		teams[id].dname = div_cur.dname
 		teams[id].dnum  = div_cur.dnum
+		teams[id].nomzp = 0
 //		teams[id].tprize = (divs[div_cur.did].dprize!=undefined && divs[div_cur.did].dprize!='' ? divs[div_cur.did].dprize.split(',')[i+1] : '')
 	})
 	SaveData('teams')
