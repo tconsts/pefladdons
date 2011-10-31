@@ -194,8 +194,10 @@ function Print(dataname, name, value, sr){
 	if(sr==srt)	srtn = (srtn ? false : true)
 	else srt = (srt =='' ? 'tplace' : sr)
 
+	for(i in data) debug('d1'+typeof(data[i]['nomzp'])+data[i]['nomzp'])
 	data = (srtn ? data.sort(sSort) : data.sort(sSortR))
-	  
+	for(i in data) debug('d2'+typeof(data[i]['nomzp'])+data[i]['nomzp'])	  
+
 	var text = ''
 	text += '<table width=100% id="svod" border="0" cellpadding="4" cellspacing="2"><tr align=left>'
 	for(j in head) {
@@ -232,11 +234,7 @@ function Print(dataname, name, value, sr){
 							break;
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
-//						case 'nomzp':	
-//							debug('tw:'+dti['twage']);
-//							debug('tv:'+dti['tvalue']);
-//							tt = 
-//							break;
+						case 'nomzp':	tt = (tt/100).toFixed(2);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
@@ -495,7 +493,8 @@ function ModifyTeams(){
 		teams[id].nname = div_cur.nname
 		teams[id].dname = div_cur.dname
 		teams[id].dnum  = div_cur.dnum
-		teams[id].nomzp = (teams[id]['twage']==0 || teams[id]['twage']=='' ? '' : (teams[id]['tvalue']/teams[id]['twage']).toFixed(2));
+		teams[id].nomzp = (teams[id]['twage']==0 || teams[id]['twage']=='' ? '' : parseInt((teams[id]['tvalue']/teams[id]['twage'])*100));
+//		debug(typeof(teams[id].nomzp)+teams[id].nomzp)
 //		teams[id].tprize = (divs[div_cur.did].dprize!=undefined && divs[div_cur.did].dprize!='' ? divs[div_cur.did].dprize.split(',')[i+1] : '')
 	})
 	GetFinish('md_teams',true)
