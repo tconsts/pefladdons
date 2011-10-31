@@ -229,12 +229,12 @@ function Print(dataname, name, value, sr){
 							break;
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
+						case 'nomzp':	tt = (dti['twage']==0 || dti['twage']=='' ? '' : dti['tvalue']/dti['twage']).toFixed(2);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
-						case 'nomzp':	tt = (dti['twage']==0 || dti['twage']=='' ? '' : dti['tvalue']/dti['twage']).toFixed(2);break;
 						default:
 					}
 				}
@@ -461,7 +461,7 @@ function DBConnect(){
 }
 
 function ModifyTeams(){
-	debug('ModifyTeams')
+	debug('teams: ModifyTeams go')
 	var zag = {}
 	$('td.back4 table:first table:first tr:eq(0) th').each(function(i, val){
 		zag[$(val).text().split('\n')[0]] = i
@@ -491,11 +491,12 @@ function ModifyTeams(){
 		teams[id].nomzp = 0
 //		teams[id].tprize = (divs[div_cur.did].dprize!=undefined && divs[div_cur.did].dprize!='' ? divs[div_cur.did].dprize.split(',')[i+1] : '')
 	})
+	GetFinish('md_teams',true)
 	SaveData('teams')
 }
 
 function ModifyDivs(){
-	debug('ModifyDivs')
+	debug('divs: ModifyDivs go')
 	var divt = []
 	var id = div_cur.did
 	if(typeof(divs[id])=='undefined') divs[id] = {}
