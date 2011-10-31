@@ -234,7 +234,7 @@ function Print(dataname, name, value, sr){
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
-						case 'nomzp':	tt = (dti['wage']==0 || dti['wage']=='' ? '' : dti['tvalue']/dti['wage']).toFixed(2);break;
+						case 'nomzp':	tt = (dti['twage']==0 || dti['twage']=='' ? '' : dti['tvalue']/dti['twage']).toFixed(2);break;
 						default:
 					}
 				}
