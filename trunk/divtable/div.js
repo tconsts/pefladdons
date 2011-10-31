@@ -183,7 +183,6 @@ function Print(dataname, name, value, sr){
 			head[lsti.num] = {'key':i,'name':lsti.name,'al':(lsti.al!=undefined ? ' align='+lsti.al : '')}
 		}
 	}
-//	for (i in head2) debug(dataname+':t2:'+i+':'+head2[i])
 
 	var data = []
 	switch (dataname){
@@ -218,8 +217,12 @@ function Print(dataname, name, value, sr){
 			for(j in head) if(list2[dataname][head[j].key].nsel!=true) {
 				var tt = dti[head[j].key]
 				var al = ''
-				if(tt == undefined || tt=='') tt = '&nbsp;'
-				else{
+//				debug(head[j].key+':'+tt)
+				if(tt == undefined || tt==''){
+//					debug(head[j].key+':'+tt)
+					tt = '&nbsp;'
+				}else{
+//					debug(head[j].key+':'+tt)
 					switch (head[j].key){
 						case 'tname':
 							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>':'<b>' + tt + '</b>')
@@ -229,7 +232,11 @@ function Print(dataname, name, value, sr){
 							break;
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
-						case 'nomzp':	tt = (dti['twage']==0 || dti['twage']=='' ? '' : dti['tvalue']/dti['twage']).toFixed(2);break;
+//						case 'nomzp':	
+//							debug('tw:'+dti['twage']);
+//							debug('tv:'+dti['tvalue']);
+//							tt = 
+//							break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
@@ -488,7 +495,7 @@ function ModifyTeams(){
 		teams[id].nname = div_cur.nname
 		teams[id].dname = div_cur.dname
 		teams[id].dnum  = div_cur.dnum
-		teams[id].nomzp = 0
+		teams[id].nomzp = (teams[id]['twage']==0 || teams[id]['twage']=='' ? '' : (teams[id]['tvalue']/teams[id]['twage']).toFixed(2));
 //		teams[id].tprize = (divs[div_cur.did].dprize!=undefined && divs[div_cur.did].dprize!='' ? divs[div_cur.did].dprize.split(',')[i+1] : '')
 	})
 	GetFinish('md_teams',true)
