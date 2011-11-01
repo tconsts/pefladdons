@@ -265,7 +265,7 @@ function showData(){
 		var tn = [0,8,9,10,2,11,13,14]
 
 		$('td.back4 table table:eq(1)')
-			.before('<div align=right><b>ДАННЫЙ ФУНКЦИОНАЛ ОТКЛЮЧЕН!</b> <a id="end" href="javascript:void(ShowEnd())">Показать -20%</a>&nbsp;</div>')
+			.before('<div align=right><a id="end" href="javascript:void(ShowEnd())">Показать -20%</a>&nbsp;</div>')
 			.attr('width',"100%")
 			.attr("bgcolor","A3DE8F")
 			.prepend('<tr bgcolor=white><th>На '+ num_players +' игроков</th><th>' + ($('img[src="system/img/g/ball1.gif"]').length-1) + ' мч</th></tr>')
@@ -302,13 +302,13 @@ function showData(){
 				if(trnt!=0){
 					var colr = 'green'
 					var pref = '+'
-					raz = (trn[j][i]-trnt).toFixed(4)
+					raz = (trn[j][i]-trnt).toFixed(2)
 					if (raz<0) {colr = 'red';pref=''}
 					raz = '<sup>'+(pref+raz).fontcolor(colr)+'</sup>'
 				}
 				if (j<3){
 					if(i==0) ht = '<td id="sum'+j+'"><b>'+trn[j][i]+'</b></td>' + ht
-					else	 ht = '<td>'+(trn[j][i] + raz).fontsize(1)+'</td>' + ht
+					else	 ht = '<td>'+((trn[j][i]).toFixed(2) + raz).fontsize(1)+'</td>' + ht
 				}
 				trnt = trn[j][i]
 			}
@@ -320,7 +320,7 @@ function showData(){
 			for(j in trn[i]){
 				if(j>0) rz += parseFloat(trn[i][j])
 			}
-			if(i!=trn.length-1) $('td#sum'+i).append('<sup>'+(rz>rzp?'+':'')+(rz-rzp).toFixed(4)+'</sup>')
+			if(i!=trn.length-1) $('td#sum'+i).append('<sup>'+(rz>rzp?'+':'')+(rz-rzp).toFixed(2)+'</sup>')
 			rzp = rz
 		}
 
@@ -435,7 +435,6 @@ function getData(){
 
 function saveData(){
 	showData()
-	return false
 	if(ff){
 		var save = ''
 		for (var f=0;f<4;f++){
@@ -505,12 +504,12 @@ function ShowEnd(){
 	$('td.back4 table table:eq(1) tr:first td:eq(3)').remove()
 	$('td.back4 table table:eq(1) tr').find('td:eq(4)').each(function(i,val){
 		var newtrn = (trn[0][i+1]-1)*0.8+1
-		var newraz = (newtrn-trn[0][i+1]).toFixed(4)
+		var newraz = (newtrn-trn[0][i+1]).toFixed(2)
 		sumraz += parseFloat(newraz)
-		$(val).after('<td>'+(newtrn).toFixed(4).fontsize(1)+('<sup>'+newraz+'</sup>').fontcolor('red')+'</td>')
+		$(val).after('<td>'+(newtrn).toFixed(2).fontsize(1)+('<sup>'+newraz+'</sup>').fontcolor('red')+'</td>')
 		$(val).parent().find('td:eq(8)').remove()
 	})
-	$('td#end').append('<sup>'+sumraz.toFixed(4)+'</sup>')
+	$('td#end').append('<sup>'+sumraz.toFixed(2)+'</sup>')
 	$('a#end ').remove()
 }
 
