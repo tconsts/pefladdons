@@ -308,7 +308,7 @@ function showData(){
 				}
 				if (j<3){
 					if(i==0) ht = '<td id="sum'+j+'"><b>'+trn[j][i]+'</b></td>' + ht
-					else	 ht = '<td>'+((trn[j][i]).toFixed(2) + raz).fontsize(1)+'</td>' + ht
+					else	 ht = '<td>'+((parseFloat(trn[j][i])).toFixed(2) + raz).fontsize(1)+'</td>' + ht
 				}
 				trnt = trn[j][i]
 			}
