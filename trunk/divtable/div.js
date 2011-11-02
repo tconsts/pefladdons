@@ -194,9 +194,11 @@ function Print(dataname, name, value, sr){
 	if(sr==srt)	srtn = (srtn ? false : true)
 	else srt = (srt =='' ? 'tplace' : sr)
 
-	for(i in data) debug('d1'+typeof(data[i]['nomzp'])+data[i]['nomzp'])
+	for(i in data) for(j in head) if(data[i][head[j].key]==undefined) data[i][head[j].key] = ''
+
+//	for(i in data) debug('d1'+typeof(data[i]['nomzp'])+data[i]['nomzp'])
 	data = (srtn ? data.sort(sSort) : data.sort(sSortR))
-	for(i in data) debug('d2'+typeof(data[i]['nomzp'])+data[i]['nomzp'])	  
+//	for(i in data) debug('d2'+typeof(data[i]['nomzp'])+data[i]['nomzp'])	  
 
 	var text = ''
 	text += '<table width=100% id="svod" border="0" cellpadding="4" cellspacing="2"><tr align=left>'
