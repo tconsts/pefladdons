@@ -116,10 +116,10 @@ $().ready(function() {
 	text += '<tr id="color"><td colspan=2><a id="colorit" href="">Раскрасить</a>&nbsp(<a href="javascript:void(ColorDel())">x</a>)</td></tr>'
 	text += '<tr id="CodeTableForForum"><td colspan=2><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
 	text += '<tr id="empty" colspan=2><td> </td></tr>'
-	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\',\'did\',\''+div_cur.did+'\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
+	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
 	if(deb){
 		text += '<tr id="empty" colspan=2><td> </td></tr>'
-		text += '<tr id="showdivs"><td colspan=2><a id="divs" href="javascript:void(Print(\'divs\',\'nname\',\''+div_cur.nname+'\'))">debug:Дивизионы</a></td></tr>'
+		text += '<tr id="showdivs"><td colspan=2><a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a></td></tr>'
 	}
 	text += '</table>'
 	$("#crabright").html(text)
@@ -171,7 +171,13 @@ function sSortR(i, ii) { //реверт, от меньшего к большем
     else						return  0
 }
 
-function Print(dataname, name, value, sr){
+function Print(dataname, sr){
+	var name = 'did'
+	var value = []
+	value.push(div_cur.did)
+
+	for(p in value) debug('p'+value[p])
+
 	debug('Print:'+div_cur.did)
 	ClosePrint()
 	$('td.back4 table table').attr('id','orig').hide()
@@ -209,7 +215,7 @@ function Print(dataname, name, value, sr){
 	for(j in head) {
 		if(list2[dataname][head[j].key].nsel!=true) {
 			text += '<th>'
-			text += '<a class="f" href="javascript:void(Print(\''+dataname+'\',\''+name+'\',\''+value+'\',\''+head[j].key+'\'))">'
+			text += '<a class="f" href="javascript:void(Print(\''+dataname+'\',\''+head[j].key+'\'))">'
 			text += head[j].name
 			text += '</a></th>'
 		}
@@ -219,7 +225,9 @@ function Print(dataname, name, value, sr){
 	for(i in data){
 		var show = true
 		var dti = data[i]
-		if(name!=undefined && value!=undefined && dti[name]!=value) show = false
+		var shownum = 0
+		if(name!=undefined && value!=undefined) for(p in value) if(dti[name]==value[p]) shownum++
+		if(shownum==0) show = false
 		if(show){
 			text += '<tr align=right>'
 			for(j in head) if(list2[dataname][head[j].key].nsel!=true) {
@@ -496,15 +504,13 @@ function ModifyTeams(){
 		teams[id].nname = div_cur.nname
 		teams[id].dname = div_cur.dname
 		teams[id].dnum  = div_cur.dnum
-		teams[id].nomzp = (teams[id]['twage']==0 || teams[id]['twage']=='' ? '' : parseInt((teams[id]['tvalue']/teams[id]['twage'])*100));
 	})
 	for (i in teams){
+		teams[i].nomzp = (teams[i]['twage']==0 || teams[i]['twage']=='' ? '' : parseInt((teams[i]['tvalue']/teams[i]['twage'])*100));
 		var tmi = teams[i]
 		tmi.tprize = ''
-//		debug(i+':'+tmi.tplace+':'+tmi.did+'|'+typeof(divs[tmi.did]))
 		if(tmi.did!='' && typeof(divs[tmi.did])!='undefined' && typeof(divs[tmi.did]['dprize'])!='undefined' && divs[tmi.did]['dprize']!='') {
 			tmi.tprize = parseInt((divs[tmi.did].dprize).split(',')[1000-divs[tmi.did].dnum*100-tmi.tplace-1])
-//			debug('-----------'+tmi.tprize)
 			if(isNaN(tmi.tprize)) tmi.tprize = 0
 		}
 	}
