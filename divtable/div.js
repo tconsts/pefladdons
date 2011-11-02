@@ -500,11 +500,12 @@ function ModifyTeams(){
 	})
 	for (i in teams){
 		var tmi = teams[i]
-		debug(i+':'+tmi.tplace+':'+tmi.did+'|'+typeof(divs[tmi.did]))
+		tmi.tprize = ''
+//		debug(i+':'+tmi.tplace+':'+tmi.did+'|'+typeof(divs[tmi.did]))
 		if(tmi.did!='' && typeof(divs[tmi.did])!='undefined' && typeof(divs[tmi.did]['dprize'])!='undefined' && divs[tmi.did]['dprize']!='') {
-			tmi.tprize = (divs[tmi.did].dprize).split(',')[1000-divs[tmi.did].dnum*100-tmi.tplace-1]
-			debug('-----------'+tmi.tprize)
-			if(tmi.tprize==0) tmi.tprize = ''
+			tmi.tprize = parseInt((divs[tmi.did].dprize).split(',')[1000-divs[tmi.did].dnum*100-tmi.tplace-1])
+//			debug('-----------'+tmi.tprize)
+			if(isNaN(tmi.tprize)) tmi.tprize = 0
 		}
 	}
 	GetFinish('md_teams',true)
