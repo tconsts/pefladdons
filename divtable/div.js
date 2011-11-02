@@ -32,7 +32,7 @@ var list2 = {
 		'my':	{'num':2, 'nshow':true},
 		'did':	{'num':3, 'nshow':true,'type':'int'},
 		'n':	{'num':4, 'nshow':true},
-		'tdate':{'num':5, 'name':'дата','nsel':true,'type':'float'},
+		'tdate':{'num':5, 'name':'дата','nsel':true},
 		'tplace':{'num':6,'name':'№','al':'left','type':'int'},
 		'ncode':{'num':7, 'name':'стр','nsel':true,'type':'int'},
 		'nname':{'num':8, 'name':'Страна','nsel':true,'al':'left'},
@@ -180,7 +180,7 @@ function Print(dataname, name, value, sr){
 	for (i in list2[dataname]) {
 		var lsti = list2[dataname][i]
 		if(!lsti.nshow) {
-			head[lsti.num] = {'key':i,'name':lsti.name,'al':(lsti.al!=undefined ? ' align='+lsti.al : '')}
+			head[lsti.num] = {'key':i,'name':lsti.name,'al':(lsti.al!=undefined ? ' align='+lsti.al : ''),'type':(lsti.type!=undefined ? lsti.type : '')}
 		}
 	}
 
@@ -194,7 +194,10 @@ function Print(dataname, name, value, sr){
 	if(sr==srt)	srtn = (srtn ? false : true)
 	else srt = (srt =='' ? 'tplace' : sr)
 
-	for(i in data) for(j in head) if(data[i][head[j].key]==undefined) data[i][head[j].key] = ''
+	for(i in data) for(j in head) {
+		if(data[i][head[j].key]==undefined) data[i][head[j].key] = ''
+		if(head[j].type=='float') data[i][head[j].key] = (!isNaN(parseFloat(data[i][head[j].key])) ? parseFloat(data[i][head[j].key]) : '')
+	}
 
 //	for(i in data) debug('d1'+typeof(data[i]['nomzp'])+data[i]['nomzp'])
 	data = (srtn ? data.sort(sSort) : data.sort(sSortR))
@@ -239,10 +242,11 @@ function Print(dataname, name, value, sr){
 						case 'nomzp':	tt = (tt/100).toFixed(2);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
-						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
+//						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
 						default:
+							if(head[j].type=='float') tt = tt.toFixed(2)
 					}
 				}
 				text += '<td'+head[j].al+'>'+tt+'</td>'
@@ -402,15 +406,7 @@ function GetData(dataname){
 				var curt = {}
 				var num = 0
 				for(j in head){
-					if(x[num]!=undefined){
-						switch (list2[dataname][head[j]].type){
-							case 'int':		curt[head[j]] = (isNaN(parseInt(x[num])) ? '' : parseInt(x[num]));break;
-							case 'float':	curt[head[j]] = (isNaN(parseFloat(x[num])) ? '' : parseFloat(x[num]).toFixed(2));break;
-							default: 		curt[head[j]] = x[num]
-						}
-					} else {
-						curt[head[j]] = ''
-					}
+					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 					num++
 				}
 				data[curt[head[0]]] = {}
