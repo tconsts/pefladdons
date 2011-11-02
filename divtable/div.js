@@ -239,6 +239,7 @@ function Print(dataname, name, value, sr){
 							tt = (dti['mid']==undefined || dti['mid']=='' ? tt : '<a href="users.php?m=details&id='+dti['mid']+'">'+tt+'</a>')
 							break;
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
+						case 'tprize':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
 						case 'nomzp':	tt = (tt/100).toFixed(2);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
@@ -290,15 +291,18 @@ function GetFinish(type, res){
 	debug(type + '(' + res + ')')
 	m[type] = res;
 
-	if(m.teams==undefined && m.get_teams!=undefined && m.get_pgdivs){
-		m.teams = true
+	if(m.cm==undefined && m.get_teams!=undefined && m.get_pgdivs){
+		m.cm = true
 		CheckMy()
-		ModifyTeams()
 	}
 	if(m.divs==undefined && m.get_divs!=undefined && m.get_pgdivs && m.checkmy){
 		m.divs = true
 		ModifyDivs()
 		ColorIt()
+	}
+	if(m.teams==undefined && m.get_teams!=undefined && m.get_pgdivs && m.md_divs){
+		m.teams = true
+		ModifyTeams()
 	}
 	if(m.shdel==undefined && m.get_divs!=undefined && m.get_teams!=undefined){
 		m.shdel = true
@@ -493,9 +497,16 @@ function ModifyTeams(){
 		teams[id].dname = div_cur.dname
 		teams[id].dnum  = div_cur.dnum
 		teams[id].nomzp = (teams[id]['twage']==0 || teams[id]['twage']=='' ? '' : parseInt((teams[id]['tvalue']/teams[id]['twage'])*100));
-//		debug(typeof(teams[id].nomzp)+teams[id].nomzp)
-//		teams[id].tprize = (divs[div_cur.did].dprize!=undefined && divs[div_cur.did].dprize!='' ? divs[div_cur.did].dprize.split(',')[i+1] : '')
 	})
+	for (i in teams){
+		var tmi = teams[i]
+		debug(i+':'+tmi.tplace+':'+tmi.did+'|'+typeof(divs[tmi.did]))
+		if(tmi.did!='' && typeof(divs[tmi.did])!='undefined' && typeof(divs[tmi.did]['dprize'])!='undefined' && divs[tmi.did]['dprize']!='') {
+			tmi.tprize = (divs[tmi.did].dprize).split(',')[1000-divs[tmi.did].dnum*100-tmi.tplace-1]
+			debug('-----------'+tmi.tprize)
+			if(tmi.tprize==0) tmi.tprize = ''
+		}
+	}
 	GetFinish('md_teams',true)
 	SaveData('teams')
 }
