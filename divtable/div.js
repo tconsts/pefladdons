@@ -196,7 +196,8 @@ function Print(dataname, name, value, sr){
 
 	for(i in data) for(j in head) {
 		if(data[i][head[j].key]==undefined) data[i][head[j].key] = ''
-		if(head[j].type=='float') data[i][head[j].key] = (!isNaN(parseFloat(data[i][head[j].key])) ? parseFloat(data[i][head[j].key]) : '')
+		if(head[j].type=='float')	data[i][head[j].key] = (!isNaN(parseFloat(data[i][head[j].key])) ? parseFloat(data[i][head[j].key]) : '')
+		if(head[j].type=='int')		data[i][head[j].key] = (!isNaN(parseInt(data[i][head[j].key])) ? parseInt(data[i][head[j].key]) : '')
 	}
 
 //	for(i in data) debug('d1'+typeof(data[i]['nomzp'])+data[i]['nomzp'])
@@ -242,7 +243,7 @@ function Print(dataname, name, value, sr){
 						case 'nomzp':	tt = (tt/100).toFixed(2);break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
-//						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
+						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
 						default:
