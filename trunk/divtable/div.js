@@ -249,7 +249,7 @@ function Print(dataname, sr){
 						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
 						case 'tprize':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
-						case 'nomzp':	tt = (tt/100).toFixed(2);break;
+						case 'nomzp':	tt = (isNaN(tt) ? '' : (tt/100).toFixed(2));break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
