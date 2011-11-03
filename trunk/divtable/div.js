@@ -217,7 +217,9 @@ function Print(dataname, sr){
 			text += '<th>'
 			text += '<a class="f" href="javascript:void(Print(\''+dataname+'\',\''+head[j].key+'\'))">'
 			text += head[j].name
-			text += '</a></th>'
+			text += (head[j].key==srt ? '*' : '')
+			text += '</a>'
+			text += '</th>'
 		}
 	}
 	text+= '</tr>'
@@ -608,7 +610,7 @@ function ColorIt(){
 	diap[div_cur.did] = []	
 
 	if(divs[div_cur.did].color == '' || divs[div_cur.did].color==null){
-		debug('empty'+divs[div_cur.did].color)
+//		debug('empty'+divs[div_cur.did].color)
 		if (getCookie('pefltables')) {
 			var dp = getCookie('pefltables').replace(/\!/g,'=').split('.')	// '43*1-2!white*3-6!FCE94F*15-26!BABDB6.44*1-2!white*18-22!BABDB6'
 			for (var p in dp) {
@@ -629,14 +631,15 @@ function ColorIt(){
 		debug('ColorIt:'+dr)
 		if(dr!=false){
 			if(dr[0]==0) {
-				debug('ColorIt:'+'champ')
+//				debug('ColorIt:'+'champ')
 				diap[div_cur.did].push('1-1=FCE94F')
 				diap[div_cur.did].push('2-2=white')
 				diap[div_cur.did].push('3-3=E9B96E')
 			}else{
 				diap[div_cur.did].push('1-'+dr[0]+'=white')
 			}
-			diap[div_cur.did].push((div_cur.nt-dr[1])+'-'+dr[1]+'=BABDB6')			
+			diap[div_cur.did].push((div_cur.nt-dr[1]+1)+'-'+div_cur.nt+'=BABDB6')
+//			debug('dr[1]='+dr[1]+':'+div_cur.nt+':'+diap[div_cur.did][diap[div_cur.did].length-1])
 		}
 	}else{
 		var str = String(divs[div_cur.did].color).split(',')
