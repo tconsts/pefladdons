@@ -8,6 +8,9 @@
 
 // 10й сезон, матч с которго считается сыгранность и СвУс: http://www.pefl.ru/plug.php?p=refl&t=if&j=602078&z=a72e875256e6b57eb52e95dbd2d1b152
 
+if(typeof (deb) == 'undefined') deb = false
+var debnum = 0
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
@@ -32,9 +35,33 @@ function TrimString(sInString){
 
 function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
-if(typeof (deb) == 'undefined') deb = false
-var debnum = 0
+function PlayerTime(mid,mt,t1,t2){
+	debug(mt+':'+t1+':'+t2)
+	ttime[t1]= {}
+	ttime[t2]= {}
 
+	var m = false
+	var uni = 1
+	$('td.back4 table:eq(6) td:has(a[href^=javascript])').each(function(){
+		m = (m ? false : true)
+		var tid = (m ? t1 : t2)
+		var p = TrimString($(this).find('a[href^=javascript]').text())
+		if(ttime[tid][p]==undefined){
+			pname = p
+		}else{
+			uni++;pname = p+uni
+		}
+		var pnum = parseInt($(this).prev().html())
+		var pmin = $(this).next().html()
+		pmin = (pmin.indexOf('(')==-1 ? (pnum<12 ? mt : 0) : (pnum<12 ? parseInt(pmin.split('(')[1]) : mt-parseInt(pmin.split('(')[1])))
+
+		ttime[tid][pname]={'ptime':pmin}
+//		debug(pname+':'+pmin)
+	})
+	for(i in ttime) for(j in ttime[i]) debug(mid+':'+i+':'+j+':'+ttime[i][j].ptime)
+}
+
+var ttime = []
 
 $().ready(function() {
 //	$('td.back4 table:first').attr('border','5')	// расстановка
@@ -44,12 +71,15 @@ $().ready(function() {
 //	$('td.back4 table:eq(4)').attr('border','5')	// голы\лого
 //	$('td.back4 table:eq(5)').attr('border','5')	// стата
 //	$('td.back4 table:eq(6)').attr('border','5')	// оценки
-
-	var mid = 'match' + UrlValue('j')
+	var mid = UrlValue('j')
+	var matchtime = parseInt($('p.key:last').text().split(' ')[0])
+	var tid1 = parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])
+	var tid2 = parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])
+	PlayerTime(mid,matchtime,tid1,tid2)
 
 	//дорисовываем оценки в код для форума(t=code) и редактируем страницу матча (t=if)
 	if(UrlValue('t') == 'code') {
-		var res = sessionStorage[mid]
+		var res = sessionStorage['match'+mid]
 		if(res != undefined){
 			var text = ' <font color=555753>'+res+'</font>[/spoiler]'
 			$('td.back4 table td:last').html(
@@ -77,7 +107,7 @@ $().ready(function() {
 			.find('tr:odd').attr('bgcolor','#a3de8f').end() //#a3de8f #c9f8b7
 			.find('tr:eq(10)').after('<tr bgcolor=white><td colspan=10> </td></tr>')
 
-		sessionStorage[mid] = finschet + $('td.back4 table:eq(6)')
+		sessionStorage['match'+mid] = finschet + $('td.back4 table:eq(6)')
 //		var x = finschet + $('td.back4 table:eq(6)')
 			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 			.prepend('<tr><td colspan=5 width=50%> </td><td colspan=5 width=50%> </td></tr>')
