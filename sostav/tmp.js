@@ -303,8 +303,8 @@ function showData(){
 					var colr = 'green'
 					var pref = '+'
 					raz = (trn[j][i]-trnt).toFixed(2)
-					if (raz<0) {colr = 'red';pref=''}
-					raz = '<sup>'+(pref+raz).fontcolor(colr)+'</sup>'
+					if(raz<0) {colr = 'red';	pref=''}
+					raz = (raz==0 ? '' : '<sup>'+(pref+raz).fontcolor(colr)+'</sup>')
 				}
 				if (j<3){
 					if(i==0) ht = '<td id="sum'+j+'"><b>'+trn[j][i]+'</b></td>' + ht
