@@ -32,7 +32,7 @@ var list2 = {
 		'tid':	{'num':1, 'nshow':true,'type':'int'},
 		'my':	{'num':2, 'nshow':true},
 		'did':	{'num':3, 'nshow':true,'type':'int'},
-		'n':	{'num':4, 'nshow':true},
+		'num':	{'num':4, 'name':'М','nsel':true},
 		'tdate':{'num':5, 'name':'дата','nsel':true},
 		'tplace':{'num':6,'name':'№','al':'left','type':'int'},
 		'ncode':{'num':7, 'name':'стр','nsel':true,'type':'int'},
@@ -271,6 +271,7 @@ function Print(dataname, sr){
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
+						case 'num':		tt = num
 						default:
 							if(head[j].type=='float') tt = tt.toFixed(2)
 					}
@@ -531,6 +532,7 @@ function ModifyTeams(){
 		teams[id].dnum  = div_cur.dnum
 	})
 	for (i in teams){
+		teams[i].num = i
 		teams[i].nomzp = (teams[i]['twage']==0 || teams[i]['twage']=='' ? '' : parseInt((teams[i]['tvalue']/teams[i]['twage'])*100));
 		var tmi = teams[i]
 		tmi.tprize = ''
