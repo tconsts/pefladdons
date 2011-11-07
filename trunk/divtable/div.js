@@ -626,15 +626,20 @@ function ModifyTeams(){
 						break;
 					case 'tvalue':
 					case 'twage':
-					case 'tss':
-					case 'age':
 					case 'tprize':
 					case 'ssize':
 					case 'pnum':
 					case 'nomzp':
-						tmd[p] = (tmd[p]==undefined ? tmi[p] : tmd[p] + tmi[p]);
+						tmd[p] = (tmd[p]==undefined ? parseInt(tmi[p]) : tmd[p] + parseInt(tmi[p]));
 						tms[p] = (tmd[p]/tms.div).toFixed(2)
 						break;
+					case 'tss':
+					case 'age':
+					case 'nomzp':
+						tmd[p] = (tmd[p]==undefined ? parseFloat(tmi[p]) : tmd[p] + parseFloat(tmi[p]));
+						tms[p] = (tmd[p]/tms.div).toFixed(2)
+						break;
+
 					default: //tmd[p] = ''
 				}
 			}
