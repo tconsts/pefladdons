@@ -19,6 +19,10 @@ var save2 = false
 var mon = false
 var mon_mark = '<img height=10 src="system/img/g/tick.gif">'
 var imgok = '<img height=10 src="system/img/g/tick.gif">'
+var sh = {} 
+	sh.teams = true
+	sh.sum = false
+	sh.srd = false
 var list2 = {
 	'players':{
 		'id':	{'num':1},
@@ -40,11 +44,11 @@ var list2 = {
 		'ncode':{'num':7, 'name':'стр','nsel':true,'type':'int'},
 		'nname':{'num':8, 'name':'Страна','nsel':true,'al':'left'},
 		'tname':{'num':9, 'name':'Команда','al':'left'},
-		'mname':{'num':10, 'name':'Менеджер','nsel':true,'al':'left'},
-		'ttask':{'num':11, 'name':'Задача','nsel':true,'al':'left','type':'int'},
-		'tvalue':{'num':12,'name':'Ном','nsel':true,'type':'int'},
+		'mname':{'num':10, 'name':'Менеджер','al':'left'},
+		'ttask':{'num':11, 'name':'Задача','al':'left','type':'int'},
+		'tvalue':{'num':12,'name':'Ном','type':'int'},
 		'twage':{'num':13, 'name':'ЗП','nsel':true,'type':'int'},
-		'tss':	{'num':14, 'name':'СС','nsel':true,'type':'float'},
+		'tss':	{'num':14, 'name':'СС','type':'float'},
 		'age':	{'num':15, 'name':'Возр','nsel':true,'type':'float'},
 		'pnum':	{'num':16, 'name':'кол','nsel':true,'type':'int'},
 		'tfin':	{'num':17, 'name':'Фин','nsel':true,'al':'left'},
@@ -52,20 +56,20 @@ var list2 = {
 		'scbud':{'num':19, 'name':'ШкБюд','nsel':true,'type':'int'},
 		'ttown':{'num':20, 'name':'Город','nsel':true,'al':'left'},
 		'sname':{'num':21, 'name':'Стадион','nsel':true,'al':'left'},
-		'ssize':{'num':22, 'name':'Размр','nsel':true,'type':'int'},
+		'ssize':{'num':22, 'name':'СтРазм','nsel':true,'type':'int'},
 		'mid':  {'num':23, 'nshow':true,'type':'int'},
 		'dname':{'num':24,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
 		'tprize':{'num':25,'name':'Приз','nsave':true,'nsel':true},
 		'dnum': {'num':26,'nsave':true,'nshow':true},
 		'nomzp':{'num':27,'name':'Ном/ЗП','nsave':true,'nsel':true},
-		'games':{'num':28,'name':'И&nbsp;','nsave':true},
-		'wins':	{'num':29,'name':'В&nbsp;','nsave':true},
-		'draws':{'num':30,'name':'Н&nbsp;','nsave':true},
-		'loses':{'num':31,'name':'П&nbsp;','nsave':true},
-		'gup':	{'num':32,'name':'ГЗ','nsave':true},
-		'gdown':{'num':33,'name':'ГП','nsave':true},
-		'gpm':	{'num':34,'name':'+-','nsave':true},
-		'score':{'num':35,'name':'О&nbsp;','nsave':true}},
+		'games':{'num':28,'name':'И&nbsp;','nsave':true,'nsel':true},
+		'wins':	{'num':29,'name':'В&nbsp;','nsave':true,'nsel':true},
+		'draws':{'num':30,'name':'Н&nbsp;','nsave':true,'nsel':true},
+		'loses':{'num':31,'name':'П&nbsp;','nsave':true,'nsel':true},
+		'gup':	{'num':32,'name':'ГЗ','nsave':true,'nsel':true},
+		'gdown':{'num':33,'name':'ГП','nsave':true,'nsel':true},
+		'gpm':	{'num':34,'name':'+-','nsave':true,'nsel':true},
+		'score':{'num':35,'name':'О&nbsp;','nsave':true,'nsel':true}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -161,6 +165,15 @@ function checkDiv(mdid){
 	for(p in value) if(mdid==value[p]) return p
 	return ''
 }
+function ShowType(type){
+	if(sh[type]) {
+		sh[type] = false
+		$('td#'+type).html('')
+	}else {
+		sh[type] = true
+		$('td#'+type).html(imgok)
+	}
+}
 function SetFilter(dataname){
 	debug('SetFilter go: '+ showfl)
 	if(showfl){
@@ -192,6 +205,10 @@ function SetFilter(dataname){
 				text += '</tr>'
 			}
 		}
+		text += '<tr class="fl"><td width=10%></td><td colspan=4 width=white><hr></td></tr>'
+		text += '<tr class="fl"><td></td><td align=right id=teams>'+(sh['teams']? imgok :'')+'</td><td colspan=3><a href="javascript:void(ShowType(\'teams\'))">'+('команды').fontsize(1)+'</a></td></tr>'
+		text += '<tr class="fl"><td></td><td align=right id=sum>'+(sh['sum']? imgok :'')+'</td><td colspan=3><a href="javascript:void(ShowType(\'sum\'))">'+('сумма по диву').fontsize(1)+'</a></td></tr>'
+		text += '<tr class="fl"><td></td><td align=right id=srd>'+(sh['srd']? imgok :'')+'</td><td colspan=3><a href="javascript:void(ShowType(\'srd\'))">'+('среднее по диву').fontsize(1)+'</a></td></tr>'
 		text += '<tr class="fl"><td width=10%></td><td colspan=4 width=white><hr></td></tr>'
 		var p = 0
 		for(i in head){
@@ -279,7 +296,7 @@ function Print(dataname, sr){
 		var dti = data[i]
 		var shownum = 0
 		if(name!=undefined && value!=undefined) for(p in value) if(dti[name]==value[p]) shownum++
-		if(shownum==0) show = false
+		if(shownum==0 || (dti.divsum==undefined && dti.divsrd==undefined && !sh.teams) || (dti.divsum!=undefined && !sh.sum) || (dti.divsrd!=undefined && !sh.srd))  show = false
 		if(show){
 			text += '<tr align=right>'
 			for(j in head) if(list2[dataname][head[j].key].nsel!=true) {
@@ -293,7 +310,7 @@ function Print(dataname, sr){
 //					debug(head[j].key+':'+tt)
 					switch (head[j].key){
 						case 'tname':
-							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>':'<font color=3465A4>' + tt + '</font>')
+							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>' : (dti['div']==undefined ? '<font color=3465A4>' + tt + '</font>': tt))
 							break;
 						case 'mname':
 							tt = (dti['mid']==undefined || dti['mid']=='' ? tt : '<a href="users.php?m=details&id='+dti['mid']+'">'+tt+'</a>')
@@ -581,6 +598,49 @@ function ModifyTeams(){
 			tmi.dnum = divs[tmi.did].dnum
 		}
 	}
+	for (i in teams){
+		var tmi = teams[i]
+		if(tmi.did!=''){
+			debug('sumdiv.tss:'+tmi.tss)
+			if(typeof(teams[parseInt(tmi.did)+10000])=='undefined') teams[parseInt(tmi.did)+10000] = {}
+			if(typeof(teams[parseInt(tmi.did)+20000])=='undefined') teams[parseInt(tmi.did)+20000] = {}
+			var tmd = teams[parseInt(tmi.did)+10000]
+			var tms = teams[parseInt(tmi.did)+20000]
+			tmd.div = (tmd.div==undefined ? 1 : tmd.div+1)
+			tms.div = tmd.div
+            tmd.divsum = true
+            tms.divsrd = true
+			for(p in tmi) {
+				switch(p){
+					case 'tname':
+						tmd[p] = '<b>Сумма</b> ('+tmd.div+')';
+						tms[p] = '<b>Среднее по </b>';
+						break;
+					case 'did':
+					case 'dname':
+					case 'nname':
+					case 'ncode':
+					case 'num':
+						tmd[p] = tmi[p];
+						tms[p] = tmi[p];
+						break;
+					case 'tvalue':
+					case 'twage':
+					case 'tss':
+					case 'age':
+					case 'tprize':
+					case 'ssize':
+					case 'pnum':
+					case 'nomzp':
+						tmd[p] = (tmd[p]==undefined ? tmi[p] : tmd[p] + tmi[p]);
+						tms[p] = (tmd[p]/tms.div).toFixed(2)
+						break;
+					default: //tmd[p] = ''
+				}
+			}
+		}
+	}
+
 	GetFinish('md_teams',true)
 	SaveData('teams')
 }
