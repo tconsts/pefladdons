@@ -13,10 +13,12 @@ var teams = []
 var divs = []
 var div_cur = {}
 var m = []
+var value = []
 var save  = false
 var save2 = false
 var mon = false
 var mon_mark = '<img height=10 src="system/img/g/tick.gif">'
+var imgok = '<img height=10 src="system/img/g/tick.gif">'
 var list2 = {
 	'players':{
 		'id':	{'num':1},
@@ -38,7 +40,7 @@ var list2 = {
 		'ncode':{'num':7, 'name':'стр','nsel':true,'type':'int'},
 		'nname':{'num':8, 'name':'Страна','nsel':true,'al':'left'},
 		'tname':{'num':9, 'name':'Команда','al':'left'},
-		'mname':{'num':10, 'name':'Мен','nsel':true,'al':'left'},
+		'mname':{'num':10, 'name':'Менеджер','nsel':true,'al':'left'},
 		'ttask':{'num':11, 'name':'Задача','nsel':true,'al':'left','type':'int'},
 		'tvalue':{'num':12,'name':'Ном','nsel':true,'type':'int'},
 		'twage':{'num':13, 'name':'ЗП','nsel':true,'type':'int'},
@@ -52,7 +54,7 @@ var list2 = {
 		'sname':{'num':21, 'name':'Стадион','nsel':true,'al':'left'},
 		'ssize':{'num':22, 'name':'Размр','nsel':true,'type':'int'},
 		'mid':  {'num':23, 'nshow':true,'type':'int'},
-		'dname':{'num':24,'name':'Див','nsave':true,'nsel':true},
+		'dname':{'num':24,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
 		'tprize':{'num':25,'name':'Приз','nsave':true,'nsel':true},
 		'dnum': {'num':26,'nsave':true,'nshow':true},
 		'nomzp':{'num':27,'name':'Ном/ЗП','nsave':true,'nsel':true},
@@ -114,17 +116,19 @@ $().ready(function() {
 
 	GetInfoPageDiv()
 	var text = '<table width=100%>'
-	text += '<tr id="color"><td colspan=2><a id="colorit" href="">Раскрасить</a>&nbsp(<a href="javascript:void(ColorDel())">x</a>)</td></tr>'
-	text += '<tr id="CodeTableForForum"><td colspan=2><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
-	text += '<tr id="empty"><td colspan=2> </td></tr>'
-	text += '<tr id="showteams"><td><a id="teams_cur" href="javascript:void(Print(\'teams\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
-	text += '<tr id="empty"><td colspan=2> </td></tr>'
-	text += '<tr id="monitor"><td align=right colspan=2 id="monitor"><a id="monitor" href="javascript:void(Monitor())">'+('Мониторить страну').fontsize(1)+'</a></td></tr>'
+	text += '<tr id="color"><td><a id="colorit" href="">Раскрасить</a>&nbsp(<a href="javascript:void(ColorDel())">x</a>)</td></tr>'
+	text += '<tr id="CodeTableForForum"><td><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
+	text += '<tr id="trmon"><td id="tdmon"><a id="amon" href="javascript:void(Monitor())">Мониторить страну</a></td></tr>'
+	text += '</table><br>'
+
+	text += '<table width=100%>'
+	text += '<tr id="showteams"><td colspan=4><a id="teams_cur" href="javascript:void(Print(\'teams\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
+	text += '</table><br>'
 	if(deb){
-		text += '<tr id="empty" colspan=2><td> </td></tr>'
-		text += '<tr id="showdivs"><td colspan=2><a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a></td></tr>'
+		text += '<table width=100% class="debug">'
+		text += '<tr id="showdivs"><td><a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a></td></tr>'
+		text += '</table>'
 	}
-	text += '</table>'
 	$("#crabright").html(text)
 
 	GetData('teams')
@@ -132,23 +136,36 @@ $().ready(function() {
 
 }, false);
 
+function MarkDiv(mdid) {
+	var dp = checkDiv(mdid)
+	if(dp==''){
+		value.push(mdid)
+		$('td#div'+mdid).html(imgok)
+	}else{
+		value[dp] = null
+		$('td#div'+mdid).html('')
+	}
+}
+
 function Monitor(){
 	debug('Monitor go')
 	if(!mon){
 		mon = true
 		save = true
-		$('td#monitor').prepend(mon_mark)
+		$('td#tdmon').append(' ('+mon_mark+')')
 		SaveData('divs')
 		SaveData('teams')
 	}
 }
-
+function checkDiv(mdid){
+	for(p in value) if(mdid==value[p]) return p
+	return ''
+}
 function SetFilter(dataname){
 	debug('SetFilter go: '+ showfl)
-	var imgok = '<img height=10 src="system/img/g/tick.gif">'
 	if(showfl){
 		showfl = false
-		$('tr#fl').remove()
+		$('tr.fl').remove()
 	}else{
 		showfl = true
 		var head = []
@@ -157,13 +174,34 @@ function SetFilter(dataname){
 				head[list2[dataname][i].num] = {'key':i,'name':list2[dataname][i].name}
 			}
 		}
-//		for (i in head2) debug(dataname+':t3:'+i+':'+head2[i])
 
 		var text = ''
-		for(i in head){
-			text += '<tr id="fl"><td align=right id='+head[i].key+'>'+(!list2[dataname][head[i].key].nsel || list2[dataname][head[i].key].nsel==undefined ? imgok : '')+'</td><td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+head[i].name+'</a></td></tr>'
-//			debug(head[i].key+':'+list2[dataname][head[i].key].nsel)
+		srt = 'nname'
+		divs = divs.sort(sSortR)
+		var dn = ''
+		for(i in divs) {
+			var dvi = divs[i]
+			if(dvi.dname!=''){
+				if(dn!=dvi.nname) {
+					text += '<tr class="fl"><td></td><td colspan=4>'+(dvi.nname).fontsize(1)+'</td></tr>'
+					dn = dvi.nname
+				}
+				text += '<tr class="fl"><td></td>'
+				text += '<td id="div'+dvi.did+'">'+(checkDiv(dvi.did)=='' ? '' : imgok)+'</td>'
+				text += '<td colspan=3><a href="javascript:void(MarkDiv(\''+dvi.did+'\'))">'+(dvi.dname).fontsize(1)+'</a></td>'
+				text += '</tr>'
+			}
 		}
+		text += '<tr class="fl"><td width=10%></td><td colspan=4 width=white><hr></td></tr>'
+		var p = 0
+		for(i in head){
+			text += (p%2 ? '' : '<tr class="fl"><td></td>')
+			text += '<td align=right id='+head[i].key+'>'+(!list2[dataname][head[i].key].nsel || list2[dataname][head[i].key].nsel==undefined ? imgok : '')+'</td>'
+			text += '<td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+(head[i].name).fontsize(1)+'</a></td>'
+			text += (p%2 ? '</tr>' : '')
+			p++
+		}
+		text += '<tr class="fl"><td width=10%></td><td colspan=4 width=white><hr></td></tr>'
 		$('tr#showteams').after(text)
 	}
 }
@@ -187,12 +225,10 @@ function sSortR(i, ii) { //реверт, от меньшего к большем
 
 function Print(dataname, sr){
 	var name = 'did'
-	var value = []
-	value.push(div_cur.did)
 
 	for(p in value) debug('p'+value[p])
 
-	debug('Print:'+div_cur.did)
+//	debug('Print:'+div_cur.did)
 	ClosePrint()
 	$('td.back4 table table').attr('id','orig').hide()
 
@@ -257,7 +293,7 @@ function Print(dataname, sr){
 //					debug(head[j].key+':'+tt)
 					switch (head[j].key){
 						case 'tname':
-							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>':'<b>' + tt + '</b>')
+							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>':'<font color=3465A4>' + tt + '</font>')
 							break;
 						case 'mname':
 							tt = (dti['mid']==undefined || dti['mid']=='' ? tt : '<a href="users.php?m=details&id='+dti['mid']+'">'+tt+'</a>')
@@ -332,7 +368,7 @@ function GetFinish(type, res){
 	if(m.shdel==undefined && m.get_divs!=undefined && m.get_teams!=undefined){
 		m.shdel = true
 		$("#crabright").append('<div align=right id="del"><a id="del" href="javascript:void(Delete())">'+('Удалить данные').fontsize(1)+'</a></div>')
-		if(mon) $('td#monitor').prepend(mon_mark)
+		if(mon) $('td#tdmon').append(' ('+mon_mark+')')
 	}
 }
 
@@ -528,8 +564,8 @@ function ModifyTeams(){
 		teams[id].tplace= 1000-div_cur.dnum*100-i-1
 		teams[id].did   = div_cur.did
 		teams[id].nname = div_cur.nname
-		teams[id].dname = div_cur.dname
-		teams[id].dnum  = div_cur.dnum
+//		teams[id].dname = div_cur.dname
+//		teams[id].dnum  = div_cur.dnum
 	})
 	for (i in teams){
 		teams[i].num = i
@@ -540,6 +576,10 @@ function ModifyTeams(){
 			tmi.tprize = parseInt((divs[tmi.did].dprize).split(',')[1000-divs[tmi.did].dnum*100-tmi.tplace-1])
 			if(isNaN(tmi.tprize)) tmi.tprize = 0
 		}
+		if(tmi.did!='' && divs[tmi.did]!=undefined) {
+			tmi.dname = divs[tmi.did].dname
+			tmi.dnum = divs[tmi.did].dnum
+		}
 	}
 	GetFinish('md_teams',true)
 	SaveData('teams')
@@ -547,6 +587,7 @@ function ModifyTeams(){
 
 function ModifyDivs(){
 	debug('divs: ModifyDivs go')
+	value.push(div_cur.did)
 	var divt = []
 	var id = div_cur.did
 	if(typeof(divs[id])=='undefined') divs[id] = {}
@@ -630,7 +671,7 @@ function DeleteCookie(name) {
 
 function ColorIt(){
 	debug('ColorIt:'+div_cur.did)
-	debug('ColorIt:'+divs[div_cur.did].nname)
+	debug('ColorIt:'+divs[div_cur.did].color)
 //	for( i in divs) debug('ColorIt:'+divs[i].did+':'+divs[i].nname)
 	diap[div_cur.did] = []	
 
