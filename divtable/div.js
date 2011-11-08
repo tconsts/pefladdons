@@ -351,7 +351,7 @@ function Print(dataname, sr){
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
 						case 'num':		tt = num;break;
-						case 'del':		tt = '<a href="javascript:void(DeleteTeam(\''+dti['tid']+'\'))">х</a>';break
+						case 'del':		tt = '<a class="del" href="javascript:void(DeleteTeam(\''+dti['tid']+'\'))">х</a> ';break
 						default:
 							if(head[j].type=='float') tt = tt.toFixed(2)
 					}
@@ -974,6 +974,7 @@ function TableCodeForForum(){
 		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 		.find('img').removeAttr('height').end()
 		.find('a.f').removeAttr('href').removeAttr('class').end()
+		.find('a.del').remove().end()
 		.html()
 		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
 		.replace(/<\/tbody>/g,'')

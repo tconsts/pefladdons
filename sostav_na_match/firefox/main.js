@@ -1,3 +1,16 @@
+// ==UserScript==
+// @name           peflsostavnamatch
+// @namespace      pefl
+// @description    Get team code for forum
+// @include        http://www.pefl.ru/?team
+// @include        http://pefl.ru/?team
+// @include        http://www.pefl.net/?team
+// @include        http://pefl.net/?team
+// @include        http://www.pefl.org/?team
+// @include        http://pefl.org/?team
+// @version			1.1
+// ==/UserScript==
+
 function setCookie(name, value) {
 	var exdate=new Date();
 	exdate.setDate(exdate.getDate() + 356); // +1 year
