@@ -600,8 +600,7 @@ function ModifyTeams(){
 	}
 	for (i in teams){
 		var tmi = teams[i]
-		if(tmi.did!=''){
-			debug('sumdiv.tss:'+tmi.tss)
+		if(tmi.did!='' && !isNaN(parseInt(tmi.tvalue))){
 			if(typeof(teams[parseInt(tmi.did)+10000])=='undefined') teams[parseInt(tmi.did)+10000] = {}
 			if(typeof(teams[parseInt(tmi.did)+20000])=='undefined') teams[parseInt(tmi.did)+20000] = {}
 			var tmd = teams[parseInt(tmi.did)+10000]
@@ -639,8 +638,7 @@ function ModifyTeams(){
 						tmd[p] = (tmd[p]==undefined ? parseFloat(tmi[p]) : tmd[p] + parseFloat(tmi[p]));
 						tms[p] = (tmd[p]/tms.div).toFixed(2)
 						break;
-
-					default: //tmd[p] = ''
+					default:
 				}
 			}
 		}
