@@ -141,6 +141,7 @@ $().ready(function() {
 }, false);
 
 function MarkDiv(mdid) {
+	debug('MarkDiv:'+mdid)
 	var dp = checkDiv(mdid)
 	if(dp==''){
 		value.push(mdid)
@@ -152,20 +153,35 @@ function MarkDiv(mdid) {
 }
 
 function Monitor(){
-	debug('Monitor go')
+	debug('Monitor:'+!mon+':'+div_cur.did+':'+div_cur.nname)
 	if(!mon){
 		mon = true
 		save = true
 		$('td#tdmon').append(' ('+mon_mark+')')
 		SaveData('divs')
 		SaveData('teams')
+	}else{
+		mon = false
+		save = true
+		$('td#tdmon').html($('td#tdmon').find('img').remove().end().html().replace(' ()',''))
+		var divs2 = []
+		for(i in divs) if(divs[i].nname!=div_cur.nname) divs2[i] = divs[i]
+		divs = divs2
+		SaveData('divs')
+
+		var teams2 = []
+		for(i in teams) if(teams[i].nname!=div_cur.nname) teams2[i]=teams[i]
+		teams = teams2
+		SaveData('teams')
 	}
 }
 function checkDiv(mdid){
+	debug('checkDiv:'+mdid)
 	for(p in value) if(mdid==value[p]) return p
 	return ''
 }
 function ShowType(type){
+	debug('ShowType:'+type)
 	if(sh[type]) {
 		sh[type] = false
 		$('td#'+type).html('')
@@ -224,6 +240,7 @@ function SetFilter(dataname){
 }
 
 function ClosePrint(){
+	debug('ClosePrint')
 	$('table#svod, div#svod').remove()
 	$('table#orig').show()	
 }
@@ -241,12 +258,10 @@ function sSortR(i, ii) { //реверт, от меньшего к большем
 }
 
 function Print(dataname, sr){
-	var name = 'did'
-
-	for(p in value) debug('p'+value[p])
-
-//	debug('Print:'+div_cur.did)
 	ClosePrint()
+	debug('Print:'+dataname+':'+sr)
+	var name = 'did'
+//	for(p in value) debug('p'+value[p])
 	$('td.back4 table table').attr('id','orig').hide()
 
 	var head = []
@@ -384,7 +399,6 @@ function GetFinish(type, res){
 	}
 	if(m.shdel==undefined && m.get_divs!=undefined && m.get_teams!=undefined){
 		m.shdel = true
-		$("#crabright").append('<div align=right id="del"><a id="del" href="javascript:void(Delete())">'+('Удалить данные').fontsize(1)+'</a></div>')
 		if(mon) $('td#tdmon').append(' ('+mon_mark+')')
 	}
 }
@@ -427,7 +441,7 @@ function SaveData(dataname){
 		case 'players':	data = players;				break
 		case 'teams': 	data = teams;idname='tid';	break
 		case 'divs': 	data = divs; idname='did';	break
-		default: 		return false
+		default: 		debug('dataname wrong'); return false
 	}
 	if(ff) {
 		var text = ''
@@ -532,23 +546,6 @@ function GetData(dataname){
 	}
 }
 
-function Delete(){
-	debug('DeleteData go')
-	if(ff) {
-		delete globalStorage[location.hostname]['players']
-		delete globalStorage[location.hostname]['teams']
-		delete globalStorage[location.hostname]['divs']
-	}else{
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS players",[],function(tx, result){debug('players:deleted')},function(tx, error){debug(error.message)})
-			tx.executeSql("DROP TABLE IF EXISTS teams",[],function(tx, result){debug('teams:deleted')},function(tx, error){debug(error.message)})
-			tx.executeSql("DROP TABLE IF EXISTS divs",[],function(tx, result){debug('divs:deleted')},function(tx, error){debug(error.message)})
-		})
-	}
-	$('div#del').remove()
-}
-
 function DBConnect(){
 	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
 	if(!db) {debug('Open DB PEFL fail.');return false;} 
@@ -581,8 +578,6 @@ function ModifyTeams(){
 		teams[id].tplace= 1000-div_cur.dnum*100-i-1
 		teams[id].did   = div_cur.did
 		teams[id].nname = div_cur.nname
-//		teams[id].dname = div_cur.dname
-//		teams[id].dnum  = div_cur.dnum
 	})
 	for (i in teams){
 		teams[i].num = i
@@ -601,6 +596,7 @@ function ModifyTeams(){
 	for (i in teams){
 		var tmi = teams[i]
 		if(tmi.did!='' && !isNaN(parseInt(tmi.tvalue))){
+//			debug('tid:'+i+' did:'+tmi.did)
 			if(typeof(teams[parseInt(tmi.did)+10000])=='undefined') teams[parseInt(tmi.did)+10000] = {}
 			if(typeof(teams[parseInt(tmi.did)+20000])=='undefined') teams[parseInt(tmi.did)+20000] = {}
 			var tmd = teams[parseInt(tmi.did)+10000]
@@ -954,9 +950,11 @@ function TableCodeForForum(){
 	// generate code for forum
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
 	x += '<br>Код для форума<br><br><textarea rows="20" cols="80" readonly="readonly" id="CodeTableForForum" selected>'
-	x += '[b][url=plug.php?' + location.search.substring(1) + ']#[/url] '
-	x += $('td.back4 td.back1').text()
-	x += '[/b]\n'
+	if(value.length==1){
+		x += '[b][url=plug.php?' + location.search.substring(1) + ']#[/url] '
+		x += $('td.back4 td.back1').text()
+		x += '[/b]\n'
+	}
 	x += $('td.back4 table:eq(1)')
 		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 		.find('img').removeAttr('height').end()
@@ -985,7 +983,7 @@ function TableCodeForForum(){
 		.replace(/ width=25/g,'')
 	x += '[/table]'
 
-	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
+	x += '\n\n[center]--------------- [url=forums.php?m=posts&q=173605]CrabVIP[/url] ---------------[/center]\n';
 	x += '</textarea><br>'
 	x += '<br>1. Ctrl+A: выделить весь текст в форме'
 	x += '<br>2. Ctrl+C: скопировать выделеное в буфер'
