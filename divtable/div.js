@@ -261,18 +261,9 @@ function sSortR(i, ii) { //реверт, от меньшего к большем
 function DeleteTeam(teamid){
 	debug('DeleteTeam('+teamid+'):'+typeof(teamid))
 	var teams2 = []
-	for (i in teams){
-		if(teams[i].tid==teamid) {
-			var delid = parseInt(i)+1
-			debug('del:'+delid+':'+teams[i].tname)
-			$('table#svod tr:eq('+delid+')').remove()
-		}else{
-			teams2[i] = teams[i]
-		}
-	}
-	$('table#svod tr').removeAttr('bgcolor')
-	$('table#svod tr:even:gt(0)').attr('bgcolor','#A3DE8F')
+	for (i in teams) if(teams[i].tid!=teamid) teams2[i] = teams[i]
 	teams = teams2
+	Print('teams')
 	SaveData('teams')
 }
 
