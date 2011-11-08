@@ -613,7 +613,7 @@ function ModifyTeams(){
 				switch(p){
 					case 'tname':
 						tmd[p] = '<b>Сумма</b> ('+tmd.div+')';
-						tms[p] = '<b>Среднее</b>';
+						tms[p] = '<b>Среднее</b> ('+tms.div+')';
 						break;
 					case 'did':
 					case 'dname':
