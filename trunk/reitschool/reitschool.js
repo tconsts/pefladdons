@@ -1,3 +1,11 @@
+// ==UserScript==
+// @name           peflreitschool
+// @namespace      pefl
+// @description    school reit page modification
+// @include        http://*pefl.*/plug.php?p=rating&t=s&n=*
+// @version	       2.0
+// ==/UserScript==
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) {
@@ -182,6 +190,13 @@ $().ready(function() {
 	} else if(!UrlValue('j') && UrlValue('n') == 1){
 //		alert('rep')
 		GetAllReit('rep');
+		repid = 1
+		$('td.back4 table table tr').each(function(i, val){
+			if(i>reputations[repid].fn) repid++
+			if(i==reputations[repid].st) $(val).attr('bgcolor','white')
+			$(val).find('td:eq(0)').append(' '+reputations[repid].name)
+		})
+//		for(i in reputations) $('td.back4 table table tr:gt(0):eq('+(reputations[i].st-1)+')').attr('bgcolor','white').find('td:first').append(' '+reputations[i].name)
 	}
 /**/
 }, false);
