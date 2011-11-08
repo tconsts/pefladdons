@@ -191,7 +191,7 @@ function ShowType(type){
 	}
 }
 function SetFilter(dataname){
-	debug('SetFilter go: '+ showfl)
+	debug('SetFilter go: '+ !showfl)
 	if(showfl){
 		showfl = false
 		$('tr.fl').remove()
@@ -311,7 +311,8 @@ function Print(dataname, sr){
 		var dti = data[i]
 		var shownum = 0
 		if(name!=undefined && value!=undefined) for(p in value) if(dti[name]==value[p]) shownum++
-		if(shownum==0 || (dti.divsum==undefined && dti.divsrd==undefined && !sh.teams) || (dti.divsum!=undefined && !sh.sum) || (dti.divsrd!=undefined && !sh.srd))  show = false
+		if(shownum==0 || (dti.divsum==undefined && dti.divsrd==undefined && !sh.teams) || (dti.divsum && !sh.sum) || (dti.divsrd && !sh.srd))  show = false
+		debug('p'+dti.tname+':'+dti.divsum+':'+dti.divsrd)
 		if(show){
 			text += '<tr align=right>'
 			for(j in head) if(list2[dataname][head[j].key].nsel!=true) {
@@ -447,7 +448,7 @@ function SaveData(dataname){
 		var text = ''
 		for (var i in data) {
 			text += (text!='' ? '#' : '')
-			if(typeof(data[i])!='undefined') {
+			if(typeof(data[i])!='undefined' && data[i].div==undefined) {
 				var dti = data[i]
 				var dtid = []
 				for(var j in head){
@@ -468,6 +469,7 @@ function SaveData(dataname){
 				function(tx, error) {debug(error.message)}
 			);
 			for(var i in data) {
+				if(data[i].div==undefined){
 				var dti = data[i]
 				var x1 = []
 				var x2 = []
@@ -482,6 +484,7 @@ function SaveData(dataname){
 					function(tx, result){},
 					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
 				});
+			}
 			}
 		});
 	}
