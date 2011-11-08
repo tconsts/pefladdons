@@ -380,7 +380,13 @@ function getData(){
 			xx = String(x).split(';')
 			for (var p in xx) {
 				var y = xx[p].split(',')
-				if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
+				if (y[1]==trn[0][1] && 
+					y[2]==trn[0][2] && 
+					y[3]==trn[0][3] && 
+					y[4]==trn[0][4] && 
+					y[5]==trn[0][5] && 
+					y[6]==trn[0][6] && 
+					y[7]==trn[0][7]) trnnum = 0
 				trn[trnnum] = y
 				trnnum++
 			}
@@ -398,7 +404,15 @@ function getData(){
 					for(var i = 0; i < result.rows.length; i++) {
 						if(trnnum>0) trn[trnnum] = []
 						var num = 0
-						if(i==0 && trn[0][1]==parseFloat(String(result.rows.item(0)['t1']).replace(',','.')) && trn[0][2]==parseFloat(String(result.rows.item(0)['t2']).replace(',','.'))) {
+						if(i==0 && 
+							trn[0][1]==parseFloat(String(result.rows.item(0)['t1']).replace(',','.')) && 
+							trn[0][2]==parseFloat(String(result.rows.item(0)['t2']).replace(',','.')) && 
+							trn[0][3]==parseFloat(String(result.rows.item(0)['t3']).replace(',','.')) && 
+							trn[0][4]==parseFloat(String(result.rows.item(0)['t4']).replace(',','.')) && 
+							trn[0][5]==parseFloat(String(result.rows.item(0)['t5']).replace(',','.')) && 
+							trn[0][6]==parseFloat(String(result.rows.item(0)['t6']).replace(',','.')) && 
+							trn[0][7]==parseFloat(String(result.rows.item(0)['t7']).replace(',','.'))
+						){
 							trnnum=0
 							debug('Not need update')
 						}
@@ -421,7 +435,13 @@ function getData(){
 						for (var p in xx) {
 							var y = xx[p].split(',')
 							debug('xx[p]: '+xx[p])
-							if (y[1]==trn[0][1] && y[2]==trn[0][2]) trnnum = 0
+							if (y[1]==trn[0][1] && 
+								y[2]==trn[0][2] && 
+								y[3]==trn[0][3] && 
+								y[4]==trn[0][4] && 
+								y[5]==trn[0][5] && 
+								y[6]==trn[0][6] && 
+								y[7]==trn[0][7]) trnnum = 0
 							trn[trnnum] = y
 							trnnum++
 						}
