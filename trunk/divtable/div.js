@@ -69,7 +69,8 @@ var list2 = {
 		'gup':	{'num':32,'name':'ГЗ','nsave':true,'nsel':true},
 		'gdown':{'num':33,'name':'ГП','nsave':true,'nsel':true},
 		'gpm':	{'num':34,'name':'+-','nsave':true,'nsel':true},
-		'score':{'num':35,'name':'О&nbsp;','nsave':true,'nsel':true}},
+		'score':{'num':35,'name':'О&nbsp;','nsave':true,'nsel':true},
+		'del':	{'num':36,'name':'Удл','nsave':true,'nsel':true,'al':'center'}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -257,6 +258,24 @@ function sSortR(i, ii) { //реверт, от меньшего к большем
     else						return  0
 }
 
+function DeleteTeam(teamid){
+	debug('DeleteTeam('+teamid+'):'+typeof(teamid))
+	var teams2 = []
+	for (i in teams){
+		if(teams[i].tid==teamid) {
+			var delid = parseInt(i)+1
+			debug('del:'+delid+':'+teams[i].tname)
+			$('table#svod tr:eq('+delid+')').remove()
+		}else{
+			teams2[i] = teams[i]
+		}
+	}
+	$('table#svod tr').removeAttr('bgcolor')
+	$('table#svod tr:even:gt(0)').attr('bgcolor','#A3DE8F')
+	teams = teams2
+	SaveData('teams')
+}
+
 function Print(dataname, sr){
 	ClosePrint()
 	debug('Print:'+dataname+':'+sr)
@@ -312,7 +331,7 @@ function Print(dataname, sr){
 		var shownum = 0
 		if(name!=undefined && value!=undefined) for(p in value) if(dti[name]==value[p]) shownum++
 		if(shownum==0 || (dti.divsum==undefined && dti.divsrd==undefined && !sh.teams) || (dti.divsum && !sh.sum) || (dti.divsrd && !sh.srd))  show = false
-		debug('p'+dti.tname+':'+dti.divsum+':'+dti.divsrd)
+//		debug('p'+dti.tname+':'+dti.divsum+':'+dti.divsrd)
 		if(show){
 			text += '<tr align=right>'
 			for(j in head) if(list2[dataname][head[j].key].nsel!=true) {
@@ -340,7 +359,8 @@ function Print(dataname, sr){
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
-						case 'num':		tt = num
+						case 'num':		tt = num;break;
+						case 'del':		tt = '<a href="javascript:void(DeleteTeam(\''+dti['tid']+'\'))">х</a>';break
 						default:
 							if(head[j].type=='float') tt = tt.toFixed(2)
 					}
@@ -584,6 +604,7 @@ function ModifyTeams(){
 	})
 	for (i in teams){
 		teams[i].num = i
+		teams[i].del = i
 		teams[i].nomzp = (teams[i]['twage']==0 || teams[i]['twage']=='' ? '' : parseInt((teams[i]['tvalue']/teams[i]['twage'])*100));
 		var tmi = teams[i]
 		tmi.tprize = ''
