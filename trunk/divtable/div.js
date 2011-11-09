@@ -61,16 +61,17 @@ var list2 = {
 		'dname':{'num':24,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
 		'tprize':{'num':25,'name':'Приз','nsave':true,'nsel':true},
 		'dnum': {'num':26,'nsave':true,'nshow':true},
-		'nomzp':{'num':27,'name':'Ном/ЗП','nsave':true,'nsel':true},
-		'games':{'num':28,'name':'И&nbsp;','nsave':true,'nsel':true},
-		'wins':	{'num':29,'name':'В&nbsp;','nsave':true,'nsel':true},
-		'draws':{'num':30,'name':'Н&nbsp;','nsave':true,'nsel':true},
-		'loses':{'num':31,'name':'П&nbsp;','nsave':true,'nsel':true},
-		'gup':	{'num':32,'name':'ГЗ','nsave':true,'nsel':true},
-		'gdown':{'num':33,'name':'ГП','nsave':true,'nsel':true},
-		'gpm':	{'num':34,'name':'+-','nsave':true,'nsel':true},
-		'score':{'num':35,'name':'О&nbsp;','nsave':true,'nsel':true},
-		'del':	{'num':36,'name':'Удл','nsave':true,'nsel':true,'al':'center'}},
+		'nomzp':{'num':27,'name':'Н/ЗП','nsave':true,'nsel':true},
+		'zpnom':{'num':28,'name':'ЗП/Н','nsave':true,'nsel':true},
+		'games':{'num':29,'name':'И&nbsp;','nsave':true,'nsel':true},
+		'wins':	{'num':30,'name':'В&nbsp;','nsave':true,'nsel':true},
+		'draws':{'num':31,'name':'Н&nbsp;','nsave':true,'nsel':true},
+		'loses':{'num':32,'name':'П&nbsp;','nsave':true,'nsel':true},
+		'gup':	{'num':33,'name':'ГЗ','nsave':true,'nsel':true},
+		'gdown':{'num':34,'name':'ГП','nsave':true,'nsel':true},
+		'gpm':	{'num':35,'name':'+-','nsave':true,'nsel':true},
+		'score':{'num':36,'name':'О&nbsp;','nsave':true,'nsel':true},
+		'del':	{'num':37,'name':'Удл','nsave':true,'nsel':true,'al':'center'}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -325,7 +326,7 @@ function Print(dataname, sr){
 //		debug('p'+dti.tname+':'+dti.divsum+':'+dti.divsrd)
 		if(show){
 			text += '<tr align=right>'
-			for(j in head) if(list2[dataname][head[j].key].nsel!=true) {
+			for(j in head) if(list2[dataname][head[j].key].nsel!=true && head[j].key!='timg') {
 				var tt = dti[head[j].key]
 				var al = ''
 //				debug(head[j].key+':'+tt)
@@ -336,15 +337,17 @@ function Print(dataname, sr){
 //					debug(head[j].key+':'+tt)
 					switch (head[j].key){
 						case 'tname':
-							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>' : (dti['div']==undefined ? '<font color=3465A4>' + tt + '</font>': tt))
+							var imgteam = ''//(list2[dataname]['timg'].nsel ? '' : '<img class="imgteam" src="system/img/club/'+dti['tid']+'.gif" height=11>&nbsp;')
+							tt = (dti['thash']!=undefined ? imgteam+'<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>' : (dti['div']==undefined ? '<font color=3465A4>' + tt + '</font>': tt))
 							break;
 						case 'mname':
 							tt = (dti['mid']==undefined || dti['mid']=='' ? tt : '<a href="users.php?m=details&id='+dti['mid']+'">'+tt+'</a>')
 							break;
-						case 'tvalue':	tt = ShowValueFormat(tt)+'т';break;
+						case 'tvalue':
 						case 'tprize':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
 						case 'nomzp':	tt = (isNaN(tt) ? '' : (tt/100).toFixed(2));break;
+						case 'zpnom':	tt = (isNaN(tt) ? '' : ShowValueFormat(tt*10));break;
 						case 'ncode':	tt = '<img height=12 src="system/img/flags/mod/'+tt+'.gif">';break;
 						case 'tplace':	tt = '<font color=3465A4><u>'+parseInt((1000 - tt - dti['dnum']*100))+'</u></font>';break;
 						case 'tdate':	tt = (tt==today ? ' ' : tt);break;
@@ -597,6 +600,7 @@ function ModifyTeams(){
 		teams[i].num = i
 		teams[i].del = i
 		teams[i].nomzp = (teams[i]['twage']==0 || teams[i]['twage']=='' ? '' : parseInt((teams[i]['tvalue']/teams[i]['twage'])*100));
+		teams[i].zpnom = (teams[i]['tvalue']==0 || teams[i]['tvalue']=='' ? '' : parseInt((teams[i]['twage']/teams[i]['tvalue'])*100));
 		var tmi = teams[i]
 		tmi.tprize = ''
 		if(tmi.did!='' && typeof(divs[tmi.did])!='undefined' && typeof(divs[tmi.did]['dprize'])!='undefined' && divs[tmi.did]['dprize']!='') {
@@ -639,12 +643,12 @@ function ModifyTeams(){
 					case 'tprize':
 					case 'ssize':
 					case 'pnum':
-					case 'nomzp':
 						tmd[p] = (tmd[p]==undefined ? parseInt(tmi[p]) : tmd[p] + parseInt(tmi[p]));
 						tms[p] = (tmd[p]/tms.div).toFixed(2)
 						break;
 					case 'tss':
 					case 'age':
+					case 'zpnom':
 					case 'nomzp':
 						tmd[p] = (tmd[p]==undefined ? parseFloat(tmi[p]) : tmd[p] + parseFloat(tmi[p]));
 						tms[p] = (tmd[p]/tms.div).toFixed(2)
@@ -971,10 +975,11 @@ function TableCodeForForum(){
 		x += '[/b]\n'
 	}
 	x += $('td.back4 table:eq(1)')
+		.find('a.del').remove().end()
+		.find('img.imgteam').remove().end()
 		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 		.find('img').removeAttr('height').end()
 		.find('a.f').removeAttr('href').removeAttr('class').end()
-		.find('a.del').remove().end()
 		.html()
 		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
 		.replace(/<\/tbody>/g,'')
