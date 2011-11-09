@@ -12,7 +12,7 @@ var debnum = 0
 var db = false
 var divs = []
 var list = {
-	'teams':'tid,my,did,n,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
+	'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
 	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color'}
 var m = []
 var dprize = 0

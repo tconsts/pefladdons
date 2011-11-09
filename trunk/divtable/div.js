@@ -24,16 +24,6 @@ var sh = {}
 	sh.sum = false
 	sh.srd = false
 var list2 = {
-	'players':{
-		'id':	{'num':1},
-		'tid':	{'num':2},
-		'num':	{'num':3},
-		'form':	{'num':4},
-		'morale': {'num':5},
-		'fchange':{'num':6},
-		'mchange':{'num':7},
-		'value':  {'num':8},
-		'valuech':{'num':9}},
 	'teams': {
 		'tid':	{'num':1, 'nshow':true,'type':'int'},
 		'my':	{'num':2, 'nshow':true},
@@ -178,12 +168,10 @@ function Monitor(){
 	}
 }
 function checkDiv(mdid){
-	debug('checkDiv:'+mdid)
 	for(p in value) if(mdid==value[p]) return p
 	return ''
 }
 function ShowType(type){
-	debug('ShowType:'+type)
 	if(sh[type]) {
 		sh[type] = false
 		$('td#'+type).html('')
@@ -242,7 +230,6 @@ function SetFilter(dataname){
 }
 
 function ClosePrint(){
-	debug('ClosePrint')
 	$('table#svod, div#svod').remove()
 	$('table#orig').show()	
 }
@@ -291,7 +278,7 @@ function Print(dataname, sr){
 		default: return false
 	}
 	if(sr==srt)	srtn = (srtn ? false : true)
-	else srt = (srt =='' ? 'tplace' : sr)
+	else srt = (srt =='' || srt =='nname'? 'tplace' : sr)
 
 	for(i in data) for(j in head) {
 		if(data[i][head[j].key]==undefined) data[i][head[j].key] = ''
@@ -369,7 +356,7 @@ function Print(dataname, sr){
 	text += '<div align=right id="svod"><a href="javascript:void(ClosePrint())">(Закрыть)&nbsp;</a></div>'
 	$('table#orig').before(text)
 	$('table#svod tr:even:gt(0)').attr('bgcolor','#A3DE8F')
-	ColorIt()
+//	ColorIt()
 	if(save2){
 		save2 = false
 		SaveData('divs')

@@ -1,3 +1,11 @@
+// ==UserScript==
+// @name           peflsostav
+// @namespace      pefl
+// @description    Display sostav
+// @include        http://*pefl.*/*?sostav
+// @version			1.1
+// ==/UserScript==
+
 function getPairValue(str,def,delim) {
 	def	= (def ? def : '')
 	delim	= (delim ? delim : '=')
