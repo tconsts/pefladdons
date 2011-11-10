@@ -53,15 +53,16 @@ var list2 = {
 		'dnum': {'num':26,'nsave':true,'nshow':true},
 		'nomzp':{'num':27,'name':'Н/ЗП','nsave':true,'nsel':true},
 		'zpnom':{'num':28,'name':'ЗП/Н','nsave':true,'nsel':true},
-		'games':{'num':29,'name':'И&nbsp;','nsave':true,'nsel':true},
-		'wins':	{'num':30,'name':'В&nbsp;','nsave':true,'nsel':true},
-		'draws':{'num':31,'name':'Н&nbsp;','nsave':true,'nsel':true},
-		'loses':{'num':32,'name':'П&nbsp;','nsave':true,'nsel':true},
-		'gup':	{'num':33,'name':'ГЗ','nsave':true,'nsel':true},
-		'gdown':{'num':34,'name':'ГП','nsave':true,'nsel':true},
-		'gpm':	{'num':35,'name':'+-','nsave':true,'nsel':true},
-		'score':{'num':36,'name':'О&nbsp;','nsave':true,'nsel':true},
-		'del':	{'num':37,'name':'Удл','nsave':true,'nsel':true,'al':'center'}},
+		'timg':	{'num':29,'name':'Лого','nsave':true,'nsel':true},
+		'games':{'num':30,'name':'И&nbsp;','nsave':true,'nsel':true},
+		'wins':	{'num':31,'name':'В&nbsp;','nsave':true,'nsel':true},
+		'draws':{'num':32,'name':'Н&nbsp;','nsave':true,'nsel':true},
+		'loses':{'num':33,'name':'П&nbsp;','nsave':true,'nsel':true},
+		'gup':	{'num':34,'name':'ГЗ','nsave':true,'nsel':true},
+		'gdown':{'num':35,'name':'ГП','nsave':true,'nsel':true},
+		'gpm':	{'num':36,'name':'+-','nsave':true,'nsel':true},
+		'score':{'num':37,'name':'О&nbsp;','nsave':true,'nsel':true},
+		'del':	{'num':38,'name':'Удл','nsave':true,'nsel':true,'al':'center'}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -293,7 +294,7 @@ function Print(dataname, sr){
 	var text = ''
 	text += '<table width=100% id="svod" border="0" cellpadding="4" cellspacing="2"><tr align=left>'
 	for(j in head) {
-		if(list2[dataname][head[j].key].nsel!=true) {
+		if(list2[dataname][head[j].key].nsel!=true && head[j].key!='timg') {
 			text += '<th>'
 			text += '<a class="f" href="javascript:void(Print(\''+dataname+'\',\''+head[j].key+'\'))">'
 			text += head[j].name
@@ -324,8 +325,8 @@ function Print(dataname, sr){
 //					debug(head[j].key+':'+tt)
 					switch (head[j].key){
 						case 'tname':
-							var imgteam = ''//(list2[dataname]['timg'].nsel ? '' : '<img class="imgteam" src="system/img/club/'+dti['tid']+'.gif" height=11>&nbsp;')
-							tt = (dti['thash']!=undefined ? imgteam+'<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>' : (dti['div']==undefined ? '<font color=3465A4>' + tt + '</font>': tt))
+							tt = (list2[dataname]['timg'].nsel ? '' : '<img class="imgteam" src="system/img/club/'+dti['tid']+'.gif" height=12>&nbsp;') + tt
+							tt = (dti['thash']!=undefined ? '<a href="plug.php?p=refl&t=k&j='+dti['tid']+'&z='+dti['thash']+'">'+tt+'</a>' : (dti['div']==undefined ? '<font color=3465A4>' + tt + '</font>': tt))
 							break;
 						case 'mname':
 							tt = (dti['mid']==undefined || dti['mid']=='' ? tt : '<a href="users.php?m=details&id='+dti['mid']+'">'+tt+'</a>')
@@ -586,6 +587,7 @@ function ModifyTeams(){
 	for (i in teams){
 		teams[i].num = i
 		teams[i].del = i
+		teams[i].timg = i
 		teams[i].nomzp = (teams[i]['twage']==0 || teams[i]['twage']=='' ? '' : parseInt((teams[i]['tvalue']/teams[i]['twage'])*100));
 		teams[i].zpnom = (teams[i]['tvalue']==0 || teams[i]['tvalue']=='' ? '' : parseInt((teams[i]['twage']/teams[i]['tvalue'])*100));
 		var tmi = teams[i]
