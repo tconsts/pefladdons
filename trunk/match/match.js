@@ -72,10 +72,6 @@ $().ready(function() {
 //	$('td.back4 table:eq(5)').attr('border','5')	// стата
 //	$('td.back4 table:eq(6)').attr('border','5')	// оценки
 	var mid = UrlValue('j')
-	var matchtime = parseInt($('p.key:last').text().split(' ')[0])
-	var tid1 = parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])
-	var tid2 = parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])
-	PlayerTime(mid,matchtime,tid1,tid2)
 
 	//дорисовываем оценки в код для форума(t=code) и редактируем страницу матча (t=if)
 	if(UrlValue('t') == 'code') {
@@ -87,6 +83,11 @@ $().ready(function() {
 			)
 		}
 	}else{
+
+		var matchtime = parseInt($('p.key:last').text().split(' ')[0])
+		var tid1 = parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])
+		var tid2 = parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])
+		PlayerTime(mid,matchtime,tid1,tid2)
 
 		// даем возможность скрыть отчет
 		$('td.back4 table:eq(2)').before('<br><a id="treport" href="javascript:void(ShowTable(2))">&ndash;</a>')
