@@ -90,7 +90,7 @@ function ShowPos(pfarr, psarr){
 		if (i==0) html += '<'+tr2+'><th colspan='+colspan+'><a href="javascript:void(getValue(\''+psarr[0]+'\',\''+psarr[1]+'\',\''+psarr[0]+','+psarr[4]+':'+psarr[5]+'\'))">' + psarr[0] + '</a></th></tr>'
 
 		for (var j in pf[0]){
-			var pf0j = pf[0][j]
+			var pf0j = String(pf[0][j])
 			var pfij = pf[i][j]
 			if (pf0j.replace(/!/g,'') == 's'){
 				switch (+pfij){
