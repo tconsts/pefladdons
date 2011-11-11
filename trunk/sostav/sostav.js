@@ -104,7 +104,7 @@ function ShowPos(pfarr, psarr){
 		if (cnum<=num && (isNaN(pfi0) || pfi0>-10000)) {
 			html += '<'+tr2f+'>';
 			for (var j=0;j<pf[i].length;j++) {
-				var pf0j = pf[0][j]
+				var pf0j = String(pf[0][j])
 				var pfij = pf[i][j]
 				if (pf0j.replace(/!/g,'') == 'f'){
 					switch (+pfij){
