@@ -403,11 +403,11 @@ function GetInfoPagePl(){
 		players[pid].fchange= 0
 		players[pid].position= $(val).find('td:eq(11)').html()
 
-		if(eurl!=undefined){
+		if(eurl==undefined || UrlValue('h')==1){
+			Ready()
+		}else{
 			$('td.back4').append('<table id=pl'+pid+' style="display: none;"><tr><td id=pl'+pid+'></td></tr></table>')
 			$('td#pl'+pid).load(eurl+' center:first', function(){GetPl(pid);})
-		}else{
-			Ready()
 		}
 	})
 	debug('players:GetPage ok')
