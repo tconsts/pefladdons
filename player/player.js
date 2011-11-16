@@ -273,7 +273,7 @@ function RememberPl(x){
 		}
 	}
 	if (navigator.userAgent.indexOf('Firefox') != -1) globalStorage[location.hostname].peflplayer = text
-	else sessionStorage.peflplayer = text
+	else localStorage.peflplayer = text
 	if (x==0)	PrintPlayers(0)
 	else 		PrintPlayers()
 }
@@ -1024,7 +1024,7 @@ $().ready(function() {
 	else 							$('td.back4 center:last').append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
 
 	// Get info fom Global or Session Storage
-	var text1 = String(navigator.userAgent.indexOf('Firefox') != -1 ? globalStorage[location.hostname].peflplayer : sessionStorage.peflplayer)
+	var text1 = String(navigator.userAgent.indexOf('Firefox') != -1 ? globalStorage[location.hostname].peflplayer : localStorage.peflplayer)
 	if (text1 != 'undefined'){
 		var pl = text1.split(',');
 		for (i in pl) {
