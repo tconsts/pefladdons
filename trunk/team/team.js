@@ -197,7 +197,10 @@ function CheckMy(){
 
 function ModifyTeams(){
 	debug('teams:Modify')
-	if(!save && typeof(teams[team_cur.tid])!='undefined') save = true
+	if(!save && typeof(teams[team_cur.tid].tname)!='undefined') {
+		save = true
+		debug('teams:Need Save(have)')
+	}
 	var tmt = {}
 	for(var i in team_cur){
 		tmt[i] = (team_cur[i] != '' ? team_cur[i] : (typeof(teams[cid][i])!='undefined' ? teams[cid][i] : ''))
