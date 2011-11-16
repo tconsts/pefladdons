@@ -1,4 +1,16 @@
-// version			1.2
+// ==UserScript==
+// @name           peflshedule
+// @namespace      pefl
+// @description    modification shedule page
+// @include        http://www.pefl.ru/plug.php?p=refl&t=last&j=*
+// @include        http://pefl.ru/plug.php?p=refl&t=last&j=*
+// @include        http://www.pefl.net/plug.php?p=refl&t=last&j=*
+// @include        http://pefl.net/plug.php?p=refl&t=last&j=*
+// @include        http://www.pefl.org/plug.php?p=refl&t=last&j=*
+// @include        http://pefl.org/plug.php?p=refl&t=last&j=*
+// @version        1.2
+
+// ==/UserScript==
 
 function filter(criteria){
 		$('.back4 tr').each(function(index,value){
@@ -14,7 +26,11 @@ function filter(criteria){
 
 $().ready(function() {
 
-	var excl = '02.05.11!04.05.11!'	
+	var imgecup = '<img height=12 src="system/img/g/e.gif">'
+	var imgcup = '<img height=12 src="plugins/s/topcontributors/img/cup-1.gif">'
+	var ecup = 	'16.11.11!25.11.11!02.12.11!14.12.11!19.12.11!26.12.11!13.01.12!18.01.12!25.01.12!03.02.12!13.02.12!20.02.12!27.02.12!12.03.12!19.03.12!02.04.12!09.04.12!23.04.12!07.05.12!18.05.12!25.05.12!01.06.12!'
+	var cup = 	'21.11.11!07.12.11!23.12.11!30.01.12!08.02.12!05.02.12!26.03.12!16.04.12!'
+	var excl = 	'30.12.11!02.01.12!04.01.12!06.01.12!09.01.12!02.05.12!04.05.12!'	
 	var competitions=[];
 	var i=0;
 	$('td.back4 td:contains("Предстоящие игры") table tr:not(:contains("Матч")) td:last-child').contents().each(function(index,value){
@@ -54,12 +70,20 @@ $().ready(function() {
 					var dd = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
 					var d = day[dd.getDay()]
 					if (d=='пнд' || d=='срд' || d=='птн') {
+						var img = ''
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000)
+						if(ecup.indexOf(str)!=-1){
+							img = imgecup
+						}
+						if(cup.indexOf(str)!=-1){
+							img = imgcup
+						}
+
 						if (excl.indexOf(str) == -1){
 							str += '&nbsp;' + d
-							$(val).parent().before('<tr class="freeId"><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
+							$(val).parent().before('<tr class="freeId"><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=2></td><td>'+img+'</td></tr>')
 						}
 					}
 					i++
