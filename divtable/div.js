@@ -421,7 +421,7 @@ function CheckMy(){
 		}
 		if(teams[i].did==div_cur.did && teams[i].my) {
 			div_cur.my = true
-			divs[div_cur.did] = true
+			divs[div_cur.did].my = true
 		}
 	}
 	GetFinish('checkmy', true)
@@ -595,6 +595,7 @@ function ModifyTeams(){
 		if(tmi.did!='' && typeof(divs[tmi.did])!='undefined' && typeof(divs[tmi.did]['dprize'])!='undefined' && divs[tmi.did]['dprize']!='') {
 			tmi.tprize = parseInt((divs[tmi.did].dprize).split(',')[1000-divs[tmi.did].dnum*100-tmi.tplace-1])
 			if(isNaN(tmi.tprize)) tmi.tprize = 0
+//			debug(tmi.tid+':'+tmi.tprize)
 		}
 		if(tmi.did!='' && divs[tmi.did]!=undefined) {
 			tmi.dname = divs[tmi.did].dname
@@ -657,7 +658,7 @@ function ModifyDivs(){
 	value.push(div_cur.did)
 	var divt = []
 	var id = div_cur.did
-	if(typeof(divs[id])=='undefined') divs[id] = {}
+	if(typeof(divs[id].did)=='undefined') divs[id] = {}
 	for(var i in div_cur){
 		divt[i] = (div_cur[i] != '' ? div_cur[i] : (typeof(divs[id][i])!='undefined' ? divs[id][i] : ''))
 	}
@@ -673,7 +674,7 @@ function GetInfoPageDiv(){
 	debug('GetInfoDivs')
 	div_cur.nname = $('td.back4 td.back1').text().split(', ')[0]
 	div_cur.dname = $('td.back4 td.back1').text().split(', ')[1]
-	div_cur.my = false
+	div_cur.my = ''
 	div_cur.nt = parseInt($('td.back4 table:first table:first tr:last u').html())
 //	debug('nt='+div_cur.nt)
 	$('a[href*="p=refl&t=s&k=0&"]').each(function(i, val){
