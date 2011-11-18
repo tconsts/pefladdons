@@ -23,7 +23,7 @@ $().ready(function(){
 		 + $('table.back3 li:eq(1)').html()
 			.replace('</b><br>','</b>')
 			.replace(/201[0-9]\-[0-9][0-9]\-[0-9][0-9]/g,'</td></tr><tr bgcolor=A3DE8F><td>')
-			.replace(/,/g,'')
+//			.replace(/,/g,'')
 		 + '</td></tr></table>'
 	$('table.back3 li:eq(1)').html(text)
 
