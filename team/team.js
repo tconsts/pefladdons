@@ -500,36 +500,40 @@ function PrintRightInfo(){
 	if(UrlValue('h')==1) return false
 
 	// print link to skills page
-	if(team_cur.tss!=0){
-		$('#crabright').append('<br><a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a><br><br>')
-	}
+	var text = (team_cur.tss!=0 ? '<a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a>' : '<b><a>Скиллы игроков</a> <font color=BABDB6>(для VIP)</font></b>')
+	$('#crabright').append('<br>'+text+'<br><br>')
 
 	// print to right menu
 	var thtml = ''
 	thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b>'
 //	if(sumvaluechange != 0) 
-	thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
+//	thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
 	thtml += '</td></tr>'
-	if(team_cur.tvalue!=0){
-		thtml += '<tr id="osnom"><th align=left width=50%><a href="javascript:void(ShowPlayersValue())">номиналы</a>:</th><th align=right>'
-		thtml += ShowValueFormat(team_cur.tvalue)+'т'
-		thtml += '</th><td width=10%>'
-//		if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
-		thtml += '</td></tr>'
-	}
-	if(team_cur.twage!=0){
-		thtml += '<tr id="oszp"><th align=left><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th><th align=right>'
-		thtml += ShowValueFormat(team_cur.twage)+'&nbsp;'
-		thtml += '</th></tr>'
-	}
-	if(team_cur.tss!=0){
-		thtml += '<tr id="osskills"><td><b><a href="javascript:void(ShowPlayersSkillChange())">скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
-		thtml += team_cur.tss + '&nbsp;'
-		thtml += '</th><td></td></tr>'
-	}
+	thtml += '<tr id="osnom"><th align=left width=50%><a'
+	thtml += (team_cur.tvalue!=0 ? ' href="javascript:void(ShowPlayersValue())"' : '')
+	thtml += '>номиналы</a>:</th><th align=right>'
+	thtml += (team_cur.tvalue!=0 ? ShowValueFormat(team_cur.tvalue)+'т' : '<font color=BABDB6>для VIP</font>')
+	thtml += '</th><td width=10%>'
+//	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
+	thtml += '</td></tr>'
+
+
+	thtml += '<tr id="oszp"><th align=left><a'
+	thtml += (team_cur.twage!=0 ? ' href="javascript:void(ShowPlayersZp())"' : '')
+	thtml += '>зарплаты</a>:</th><th align=right>'
+	thtml += (team_cur.twage!=0 ? ShowValueFormat(team_cur.twage)+'&nbsp;' : '<font color=BABDB6>для VIP</font>')
+	thtml += '</th></tr>'
+
+	thtml += '<tr id="osskills"><td><b><a'
+	thtml += (team_cur.tss!=0 ? ' href="javascript:void(ShowPlayersSkillChange())"' : '')
+	thtml += '>скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += (team_cur.tss!=0 ? team_cur.tss + '&nbsp;' :  '<font color=BABDB6>для VIP</font>')
+	thtml += '</th><td></td></tr>'
+
 	thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
 	thtml += team_cur.age + '&nbsp;'
 	thtml += '</th><td></td></tr>'
+
 	$('#crabright table:first').append(thtml)
 }
 
