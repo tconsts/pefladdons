@@ -287,7 +287,7 @@ $().ready(function() {
 			tmpplayer["firstname"] = data_assoc["firstname"+i];
 			tmpplayer["secondname"] = data_assoc["secondname"+i];
 			tmpplayer["position"] = data_assoc["position"+i];
-			tmpplayer["ratingav"] = data_assoc["ratingav"+i];
+			tmpplayer["ratingav"] = parseFloat(data_assoc["ratingav"+i]).toFixed(2);
 			tmpplayer["games"] = data_assoc["games"+i];
 			tmpplayer["mom"] = data_assoc["mom"+i];
 			tmpplayer["goals"] = data_assoc["goals"+i];
