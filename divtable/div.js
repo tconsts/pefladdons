@@ -51,9 +51,9 @@ var list2 = {
 		'dname':{'num':24,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
 		'tprize':{'num':25,'name':'Приз','nsave':true,'nsel':true},
 		'dnum': {'num':26,'nsave':true,'nshow':true},
-		'nomzp':{'num':27,'name':'Н/ЗП','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
-		'zpnom':{'num':28,'name':'ЗП/Н','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
-		'timg':	{'num':29,'name':'Лого','nsave':true,'nsel':true},
+		'timg':	{'num':27,'name':'Лого','nsave':true,'nsel':true},
+		'nomzp':{'num':28,'name':'Н/ЗП','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
+		'zpnom':{'num':29,'name':'ЗП/Н','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
 		'games':{'num':30,'name':'И&nbsp;','nsave':true,'nsel':true,'com':'(игр)'},
 		'wins':	{'num':31,'name':'В&nbsp;','nsave':true,'nsel':true,'com':'(поб)'},
 		'draws':{'num':32,'name':'Н&nbsp;','nsave':true,'nsel':true,'com':'(нич)'},
@@ -658,7 +658,7 @@ function ModifyDivs(){
 	value.push(div_cur.did)
 	var divt = []
 	var id = div_cur.did
-	if(typeof(divs[id].did)=='undefined') divs[id] = {}
+	if(typeof(divs[id])=='undefined') divs[id] = {}
 	for(var i in div_cur){
 		divt[i] = (div_cur[i] != '' ? div_cur[i] : (typeof(divs[id][i])!='undefined' ? divs[id][i] : ''))
 	}
