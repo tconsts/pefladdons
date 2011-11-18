@@ -25,22 +25,22 @@ var sh = {}
 	sh.srd = false
 var list2 = {
 	'teams': {
-		'tid':	{'num':1, 'nshow':true,'type':'int'},
-		'my':	{'num':2, 'nshow':true},
-		'did':	{'num':3, 'nshow':true,'type':'int'},
-		'num':	{'num':4, 'name':'М','nsel':true},
-		'tdate':{'num':5, 'name':'дата','nsel':true},
-		'tplace':{'num':6,'name':'№','al':'left','type':'int'},
-		'ncode':{'num':7, 'name':'стр','nsel':true,'type':'int'},
+		'tid':	{'num':1,'nshow':true,'type':'int'},
+		'my':	{'num':2,'nshow':true},
+		'did':	{'num':3,'nshow':true,'type':'int'},
+		'num':	{'num':4,'nsel':true,'name':'М','com':'(номер)'},
+		'tdate':{'num':5,'nsel':true,'name':'дата'},
+		'tplace':{'num':6,'name':'№','al':'left','type':'int','com':'(место)'},
+		'ncode':{'num':7, 'nsel':true,'name':'стр','type':'int'},
 		'nname':{'num':8, 'name':'Страна','nsel':true,'al':'left'},
-		'tname':{'num':9, 'name':'Команда','al':'left'},
+		'tname':{'num':9, 'name':'Команда',	'al':'left'},
 		'mname':{'num':10, 'name':'Менеджер','al':'left'},
-		'ttask':{'num':11, 'name':'Задача','al':'left','type':'int'},
-		'tvalue':{'num':12,'name':'Ном','type':'int'},
-		'twage':{'num':13, 'name':'ЗП','nsel':true,'type':'int'},
-		'tss':	{'num':14, 'name':'СС','type':'float'},
+		'ttask':{'num':11, 'name':'Задача',	'al':'left','type':'int'},
+		'tvalue':{'num':12,'name':'Ном', 'type':'int','com':'<sup><font color=red>vip</font></sup>'},
+		'twage':{'num':13, 'name':'ЗП',	'nsel':true, 'type':'int','com':'<sup><font color=red>vip</font></sup>'},
+		'tss':	{'num':14, 'name':'СС','type':'float','com':'<sup><font color=red>vip</font></sup>'},
 		'age':	{'num':15, 'name':'Возр','nsel':true,'type':'float'},
-		'pnum':	{'num':16, 'name':'кол','nsel':true,'type':'int'},
+		'pnum':	{'num':16, 'name':'кол','nsel':true,'type':'int','com':' (игроков)'},
 		'tfin':	{'num':17, 'name':'Фин','nsel':true,'al':'left'},
 		'screit':{'num':18,'name':'ШкРейт','nsel':true,'al':'left'},
 		'scbud':{'num':19, 'name':'ШкБюд','nsel':true,'type':'int'},
@@ -51,18 +51,18 @@ var list2 = {
 		'dname':{'num':24,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
 		'tprize':{'num':25,'name':'Приз','nsave':true,'nsel':true},
 		'dnum': {'num':26,'nsave':true,'nshow':true},
-		'nomzp':{'num':27,'name':'Н/ЗП','nsave':true,'nsel':true},
-		'zpnom':{'num':28,'name':'ЗП/Н','nsave':true,'nsel':true},
+		'nomzp':{'num':27,'name':'Н/ЗП','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
+		'zpnom':{'num':28,'name':'ЗП/Н','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
 		'timg':	{'num':29,'name':'Лого','nsave':true,'nsel':true},
-		'games':{'num':30,'name':'И&nbsp;','nsave':true,'nsel':true},
-		'wins':	{'num':31,'name':'В&nbsp;','nsave':true,'nsel':true},
-		'draws':{'num':32,'name':'Н&nbsp;','nsave':true,'nsel':true},
-		'loses':{'num':33,'name':'П&nbsp;','nsave':true,'nsel':true},
-		'gup':	{'num':34,'name':'ГЗ','nsave':true,'nsel':true},
-		'gdown':{'num':35,'name':'ГП','nsave':true,'nsel':true},
-		'gpm':	{'num':36,'name':'+-','nsave':true,'nsel':true},
-		'score':{'num':37,'name':'О&nbsp;','nsave':true,'nsel':true},
-		'del':	{'num':38,'name':'Удл','nsave':true,'nsel':true,'al':'center'}},
+		'games':{'num':30,'name':'И&nbsp;','nsave':true,'nsel':true,'com':'(игр)'},
+		'wins':	{'num':31,'name':'В&nbsp;','nsave':true,'nsel':true,'com':'(поб)'},
+		'draws':{'num':32,'name':'Н&nbsp;','nsave':true,'nsel':true,'com':'(нич)'},
+		'loses':{'num':33,'name':'П&nbsp;','nsave':true,'nsel':true,'com':'(пор)'},
+		'gup':	{'num':34,'name':'ГЗ','nsave':true,'nsel':true,'com':'(забито)'},
+		'gdown':{'num':35,'name':'ГП','nsave':true,'nsel':true,'com':'(проп)'},
+		'gpm':	{'num':36,'name':'+-','nsave':true,'nsel':true,'com':'(разн)'},
+		'score':{'num':37,'name':'О&nbsp;','nsave':true,'nsel':true,'com':'(очки)'},
+		'del':	{'num':38,'name':'Удл','nsave':true,'nsel':true,'al':'center','com':'(удалить)'}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -221,7 +221,7 @@ function SetFilter(dataname){
 		for(i in head){
 			text += (p%2 ? '' : '<tr class="fl"><td></td>')
 			text += '<td align=right id='+head[i].key+'>'+(!list2[dataname][head[i].key].nsel || list2[dataname][head[i].key].nsel==undefined ? imgok : '')+'</td>'
-			text += '<td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+(head[i].name).fontsize(1)+'</a></td>'
+			text += '<td><a href="javascript:void(SetHead(\''+dataname+'\',\''+head[i].key+'\'))">'+(head[i].name+(list2[dataname][head[i].key].com!=undefined?list2[dataname][head[i].key].com:'')).fontsize(1)+'</a></td>'
 			text += (p%2 ? '</tr>' : '')
 			p++
 		}
