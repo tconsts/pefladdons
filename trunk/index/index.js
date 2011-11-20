@@ -61,6 +61,6 @@ $().ready(function(){
 	text = $('table.back3').html()
 		.replace(/\<li\>/g,'')
 		.replace(/\<\/li\>/g,'')
-//	$('table.back3').html(text)
+	$('table.back3').html(text)
 
 }, false);
