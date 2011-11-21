@@ -13,10 +13,12 @@ var db = false
 var divs = []
 var list = {
 	'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
-	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color'}
+	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color,numteams,curtour'}
 var m = []
 var dprize = 0
 var dnum2  = 0
+var dteams = 0
+var dtour  = 0
 var tplace = 0
 var school = 0
 
@@ -30,8 +32,8 @@ function GetFinish(type, res){
 	if((m.dprize && m.tplace) || m.dprize!=undefined || m.tplace!=undefined) {
 		var d = 1000-tplace-dnum2*100-1
 		if(m.school!=undefined){
-			debug(tplace+':'+dnum2+':'+dprize)
-			EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000)
+			debug(tplace+':'+dnum2+':'+dprize+':'+dteams+':'+dtour)
+			EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000, dteams,dtour)
 		}
 	}	
 }
@@ -60,7 +62,7 @@ function GetDivInfo(did,nname,dnum){
 			var down  = parseInt($('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(3)').html())
 			var downc = parseInt($('td.back4 table:eq(1) tr:eq('+(i+dnum-1)+') td:eq(3) sup').text())
 
-			drotcomlink = '' 
+			drotcomlink = ''
 			if(!isNaN(upc) && !isNaN(downc)) drotcomlink = upc
 			else if (!isNaN(upc)) 		 	 drotcomlink = upc
 			else if (!isNaN(downc))			 drotcomlink = downc
@@ -110,6 +112,8 @@ function GetData2(){
 				if(curt['my']) {
 					dprize = (curt['dprize']!=undefined ? curt['dprize'].split(',') : 0)
 					dnum2  = (curt['dnum']  !=undefined ? parseInt(curt['dnum']) : 0)
+					dteams = (curt['numteams']  !=undefined ? parseInt(curt['numteams']) : 0)
+					dtour  = (curt['curtour']  !=undefined ? parseInt(curt['curtour']) : 0)
 				}
 			}
 			GetFinish('dprize',true)
@@ -138,11 +142,13 @@ function GetData2(){
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			tx.executeSql("SELECT dprize,dnum FROM divs WHERE my='true'", [],
+			tx.executeSql("SELECT dprize,dnum,numteams,curtour FROM divs WHERE my='true'", [],
 				function(tx, result){
 					for(var i = 0; i < result.rows.length; i++) {
 						dprize = result.rows.item(i)['dprize'].split(',')
 						dnum2  = result.rows.item(i)['dnum']
+						dteams = result.rows.item(i)['numteams']
+						dtour  = result.rows.item(i)['curtour']
 					}
 					GetFinish('dprize',true)
 				},
@@ -278,8 +284,8 @@ function GetData(dataname){
 	}
 }
 
-function EditFinance(school,divpriz){
-	debug('EditFinance('+school+','+divpriz+')')
+function EditFinance(school,divpriz,dteams,dtour){
+	debug('EditFinance('+school+','+divpriz+','+dteams+','+dtour+')')
 		var fin = {}
 		var finance = []
 		var cur = {}
@@ -337,7 +343,13 @@ function EditFinance(school,divpriz){
 
 		// Count finish finance
 		fin.sponsors = sponsors * fin.fid + cur.bonus
-		fin.stadion = (cur.fid == 0 ? 0 : cur.stadion*fin.fid/cur.fid)
+
+//		fin.stadion = (cur.fid == 0 ? 0 : cur.stadion*fin.fid/cur.fid)
+		var curhometour = parseInt(((dtour-0.1)/2).toFixed(0))
+		var maxhometour = (dteams==0 ? 0 : (dteams-1)*(dteams<13 ? 2 : 1))
+		debug(cur.stadion+':'+curhometour+':'+maxhometour)
+		fin.stadion = (cur.fid == 0 ? 0 : (curhometour==0 ? cur.stadion : parseInt((cur.stadion/curhometour*maxhometour).toFixed(0))))
+
 		fin.priz = cur.priz + divpriz
 		fin.sale = cur.sale
 		fin.allup = fin.sponsors + fin.stadion + fin.priz + fin.sale
@@ -376,6 +388,9 @@ function EditFinance(school,divpriz){
 		$('td.back4 table#3').after(preparedhtml)
 
 		$('td[id=cur]:eq(7)').next().append(' ('+cur.schoolperc+')')
+
+		$('table#2 tr:eq(2) td:first').append((' <i>*3</i>').fontsize(1))
+		$('table#4').after(('<i>*3 - считаем что уже сыгранно домашних игр: '+curhometour+', максимум в чемпионате: '+maxhometour+'.</i><br>').fontsize(1))
 
 		$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1))
 		$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1))

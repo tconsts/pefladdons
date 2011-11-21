@@ -72,7 +72,9 @@ var list2 = {
 		'drotate':{'num':6, 'name':'+-'},
 		'drotcom':{'num':7, 'name':'Комент'},
 		'dprize': {'num':8, 'name':'Призовые'},
-		'color':  {'num':9, 'name':'Расскрас'}}
+		'color':  {'num':9, 'name':'Расскрас'},
+		'numteams':{'num':10, 'name':'NumTeams'},
+		'curtour':{'num':11, 'name':'CurTour'}}
 }
 
 var tasks	= ['','Чемпионство','Выйти в высший Д.','Медали','Зона Судамерикана','Зона УЕФА','Попасть в 3А','Попасть в пятерку','Попасть в десятку','15 место','Не вылететь']
@@ -687,8 +689,9 @@ function GetInfoPageDiv(){
 	div_cur.drotate = ''
 	div_cur.drotcom = ''
 	div_cur.color = ''
-
-//	for(i in div_cur) debug('d'+i+':'+div_cur[i])
+	div_cur.curtour = parseInt($('td.back4 table:first table:first tr td:has(a[href^="plug.php?p=refl&t=k&j="]):first').next().text())
+	div_cur.numteams= parseInt($('a[href^="plug.php?p=refl&t=s_graph&j="]:last u').text())
+	debug('cur&num:'+div_cur.curtour+':'+div_cur.numteams)
 
 	GetFinish('get_pgdivs',true)
 }
