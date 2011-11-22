@@ -3,15 +3,19 @@
 // @namespace		pefl
 // @description		mail page modification
 // @include			http://*pefl.*/pm.php
+// @include			http://*pefl.*/pm.php?filter=
+// @include			http://*pefl.*/pm.php?filter=archives
 // ==/UserScript==
 
 var mails = []
 
 $().ready(function() {
-	$('td.back4:first td.back1:eq(1)').hide()
+	var text = '<table id="mail" width=100% bgcolor=A3DE8F><tr><th width=18%>Дата</th><th width=5%>Отправ.</th><th>Заголовок</th><th width=3%></th></tr></table>'
+
+	$('td.back4:first td.back1:eq(1)').html(text)
+	$('td.back4:first tr:has(td.back4)').hide()
 	$('td.back4:first td.back2:gt(0)').each(function(i,val){
 		$(val).parent().hide()
-//		$(val).attr('bgcolor','white')
 
 		var curmail = {}
 
@@ -20,8 +24,6 @@ $().ready(function() {
 
 		curmail.sender 		= $(val).find('a:eq(1)').text()
 		curmail.senderid 	= UrlValue('id',$(val).find('a:eq(1)').attr('href'))
-//		curmail.receiver 	= $(val).find('a:eq(2)').text()
-//		curmail.receiverid 	= UrlValue('id',$(val).find('a:eq(2)').attr('href'))
 		var newmailarr = $(val).html().split('<br>')
 		curmail.date 		= newmailarr[1].split('- Дата: ')[1].replace(' ','&nbsp;')
 		newmailarr.shift()
@@ -29,30 +31,29 @@ $().ready(function() {
 		newmailarr.pop()
 		curmail.body 		=  newmailarr.join('<br>')
 
-//		var mails[curmail.id] = {}
-		mails[curmail.id] = curmail
-	})
-	var html = '<table width=100% bgcolor=C9F8B7><tr><th>N</th><th>Дата</th><th>Отправитель</th><th>Суммари</th><th>управление</th></tr>'
-	for (i in mails) {
-		var mli = mails[i]
-		html += '<tr bgcolor=A3DE8F>'
-		html += '<td><br><a href="javascript:void(OpenMail('+mli.id+'))" id=a'+mli.id+' class="off">>>></a></td>'
-		html += '<td>'+mli.date+'</td>'
-		html += '<td><a href="users.php?m=details&id='+mli.senderid+'">'+mli.sender+'</a></td>'
-		html += '<th align=left>'+mli.summary+'</th>'
-		html += '<td align=right>'
-		html += '[<a href="pm.php?m=send&to='+mli.senderid+'&quote='+mli.id+'">Ответить</a>]&nbsp;'
-		html += '[<a href="">В&nbsp;архив</a>]&nbsp;'
-		html += '[<a href="">Удалить</a>]'
+		var html = ''
+		html += '<tr bgcolor=C9F8B7 height=25>'
+		html += '<td>'+curmail.date + '</td>'
+		html += '<td>'
+		html += '<a href="users.php?m=details&id='+curmail.senderid+'">'+curmail.sender+'</a><br>'
+//		html += '<a href="javascript:void(OpenMail('+curmail.id+'))" id=a'+curmail.id+' class="off">>></a>'
+		html += '</td>'
+		html += '<th align=left><a href="javascript:void(OpenMail('+curmail.id+'))" id=a'+curmail.id+' class="off">'+curmail.summary+'</a></th>'
+		html += '<td align=center>'
+//		html += '[<a href="pm.php?m=edit&a=archive&id='+curmail.id+'">а</a>]'
+		html += '<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(UrlValue('filter')=='archives' ? 'archives' : '')+'">x</a>'
 		html += '</td>'
 		html += '</tr>'
-		html += '<tr id='+mli.id+' style="display: none;">'
-		html += '<td colspan=5>'+mli.body+'</td>'
+		html += '<tr id='+curmail.id+' style="display: none;">'
+		html += '<td colspan=4>'+curmail.body+'<br><br>'
+		html += '[<a href="pm.php?m=edit&a='+(UrlValue('filter')=='archives' ? 'unarchive' : 'archive')+'&id='+curmail.id+'">'+(UrlValue('filter')=='archives' ? 'Вернуть во Входящие' : 'В архив')+'</a>] '
+		html += '[<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(UrlValue('filter')=='archives' ? 'archives' : '')+'">Удалить</a>] '
+		html += '[<a href="pm.php?m=send&to='+curmail.senderid+'&quote='+curmail.id+'">Ответить отправителю</a>]'
+		html += '</td>'
 		html += '</tr>'
-	}
-	html += '</table>'	
-	$('td.back4:first').append(html)
-
+		$('table#mail').append(html)
+		mails[curmail.id] = curmail
+	})
 }, false)
 
 function OpenMail(mid){
