@@ -442,7 +442,7 @@ function CodeForForum(){
 	var seasonstatshow = ($('a[id="th1"]').html() == '+' ? false : true)
 	var fullstatshow = ($('a[id="th2"]').html() == '+' ? false : true)
 	// если не школьник, то короткий код для форума есть.
-	if (compare == false && ptype != 'yp' && ptype != 'yp2') {
+/**	if (compare == false && ptype != 'yp' && ptype != 'yp2') {
 		x += '<br><b>Упрощенный вариант</b>:<br><br>'
 		x += '[url=plug.php?' + location.search.substring(1) + ']' + pl.firstname + ' ' + pl.secondname + '[/url] (сс=' + pl.sumskills + ')'
 		if (ptype == 'p') x += ' | [player=' + pl.id + '][img]images/eye.png[/img][/player]'
@@ -455,7 +455,7 @@ function CodeForForum(){
 		else x += ' | [url=plug.php?p=refl&t=k&j='+pl.teamid+'&z='+pl.teamhash+']' + pl.team + '[/url]'
 		x+= '<br>'
 	}
-
+/**/
 	$('td.back4 table:first table:not(#plheader):first img').removeAttr('style')
 	x += '<br><hr><b>Полный вариант</b>:<br>'
 	x +='<textarea rows="20" cols="80" readonly="readonly" id="CodeForForum">'
@@ -533,6 +533,8 @@ function CodeForForum(){
 				x += '[/table]'
 			}
 	}
+	var y = x 
+	
 	// stat of season
 	if (seasonstatshow && (ptype == 'p' || ptype == 'pp')){
 		x += '\n[center][b]Статистика сезона[/b][/center]\n'
@@ -575,12 +577,37 @@ function CodeForForum(){
 	x += '\n\n'
 	x +='[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
 //	x += '[/spoiler]'
-	x += '</textarea>'
-
+	x += '</textarea><hr>'
+/**
+	x += '<b>Текстовый вариант:</b><br><br>'
+	x += pl.firstname + ' ' +pl.secondname+' (' + pl.team +')<br>'
+	x += pl.age +' лет, '+ pl.natfull+'<br>'
+	x += 'Контракт: '+pl.contract +' г., '+ pl.wage+' в игровой день<br>'
+	x += 'Номинал: '+pl.value +'<br>'
+	x += pl.position + ' (' + pl.newpos+ ')'+'<br>'
+	x += '<br>'
+	x += 'Умения ('+pl.sumskills+')<br>'
+	x += lp('Лидерство')		+parseInt(pl.leadership)+' '+lp('Дриблинг')		+parseInt(pl.dribbling)+'<br>'
+	x += lp('Удары')			+parseInt(pl.finishing)+' '	+lp('Игра в пас')	+parseInt(pl.passing)+'<br>'
+	x += lp('Видение поля')		+parseInt(pl.vision)+' '	+lp('Игра головой')	+parseInt(pl.heading)+'<br>'
+	x += lp('Навесы','.')		+parseInt(pl.crossing)+' '	+lp('Дальние удары')+parseInt(pl.longshots)+'<br>'
+	x += lp('Перс. опека')		+parseInt(pl.marking)+' '	+lp('Скорость')		+parseInt(pl.pace)+'<br>'
+	x += lp('Штрафные')			+parseInt(pl.freekicks)+' '	+lp('Выбор позиции')+parseInt(pl.positioning)+'<br>'
+	x += lp('Угловые')			+parseInt(pl.corners)+' '	+lp('Техника')		+parseInt(pl.technique)+'<br>'
+	x += lp('Мощь')				+parseInt(pl.strenght)+' '	+lp('Отбор мяча')	+parseInt(pl.tackling)+'<br>'
+	x += lp('Работоспособность')+parseInt(pl.workrate)+' '	+lp('Выносливость')	+parseInt(pl.stamina)+'<br>'
+	x += '<br>'
+	x += 'Форма: '+pl.form+'% | Мораль: '+pl.morale+'%<br>'
+/**/
 	$('td.back4').html(x)
 	$('td#crabglobalright').empty()
 
 	return true
+}
+function lp(txt){
+	var num = 19-txt.length
+	for(i=0;i<num;i++) txt += '_'
+	return txt
 }
 
 var players = [[]]
