@@ -59,7 +59,7 @@ function printClassic (plid,type){
 		cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
 	}
 	cardhtml += '[/img]'+ "\n"
-	cardhtml += pl["firstname"] + ' ' + pl["secondname"];
+	cardhtml += (pl["firstname"]!='???' ? pl["firstname"] + ' ' : '') + pl["secondname"];
 	cardhtml += '[/center][/td]';
 
 	return cardhtml;
@@ -73,14 +73,15 @@ function printCard (plid,type){
 	var playerpasses = pl["passes"]
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
 
-	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
-	cardhtml += '[tr][td][player=' + plid + '][img]';
-	if (type == 0){
-		cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
-	} else {
-		cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
-	}
-	cardhtml += '[/img][/player][/td]';
+	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] || pl["firstname"]!='???' ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
+	cardhtml += '[tr][td]'
+//	cardhtml += '[player=' + plid + ']'
+	cardhtml += '[img]';
+	if (type == 0) 	cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
+	else 			cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
+	cardhtml += '[/img]'
+//	cardhtml += '[/player]'
+	cardhtml += '[/td]';
 	cardhtml += '[td valign=top height=41]';
 	if (playergames != 0) {
 		cardhtml += 'P ' + pl["ratingav"] + '\n';
@@ -108,14 +109,15 @@ function printCard2 (plid,type){
 	var playervalue = pl["value"]
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% height=100% bgcolor=#A3DE8F]';
 
-	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
-	cardhtml += '[tr][td][player=' + plid + '][img]';
-	if (type == 0){
-		cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
-	} else {
-		cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
-	}
-	cardhtml += '[/img][/player][/td]';
+	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] || pl["firstname"]!='???' ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
+	cardhtml += '[tr][td]'
+//	cardhtml += '[player=' + plid + ']'
+	cardhtml += '[img]';
+	if (type == 0)	cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
+	else 			cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
+	cardhtml += '[/img]'
+//	cardhtml += '[/player]'
+	cardhtml += '[/td]';
 	cardhtml += '[td valign=top height=60 rowspan=2]';
 	cardhtml += pl["form"] + '/' + pl["morale"];
 	if (playergames != 0) {
