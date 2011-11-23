@@ -9,9 +9,9 @@
 
 $().ready(function() {
 	if(UrlValue('m')=='send') {
-		$('td.back4 table tr:eq(1) td:eq(0)').html('<b>Получатель:</b>')
+		$('td.back4 table tr:eq(1) td:eq(0)').html('<b>Кому:</b>')
 		$('td.back4 table tr td').removeAttr('width')
-		$('textarea[name="newpmtext"]').attr('rows','30').attr('cols','70')
+		$('textarea#tex').attr('rows','30').attr('cols','78')
 	}else{
 
 	var text = '<table id="mail" width=100% bgcolor=A3DE8F><tr><th width=18%>Дата</th><th width=5%>Отправ.</th><th>Заголовок</th><th width=3%></th></tr></table>'
@@ -37,12 +37,10 @@ $().ready(function() {
 		html += '<tr bgcolor=C9F8B7 height=25>'
 		html += '<td>'+curmail.date + '</td>'
 		html += '<td>'
-		html += '<a href="users.php?m=details&id='+curmail.senderid+'">'+curmail.sender+'</a><br>'
-//		html += '<a href="javascript:void(OpenMail('+curmail.id+'))" id=a'+curmail.id+' class="off">>></a>'
+		html += '<a href="users.php?m=details&id='+curmail.senderid+'">'+curmail.sender+'</a>'
 		html += '</td>'
 		html += '<th align=left><a href="javascript:void(OpenMail('+curmail.id+'))" id=a'+curmail.id+' class="off">'+curmail.summary+'</a></th>'
 		html += '<td align=center>'
-//		html += '[<a href="pm.php?m=edit&a=archive&id='+curmail.id+'">а</a>]'
 		html += '<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(UrlValue('filter')=='archives' ? 'archives' : '')+'">x</a>'
 		html += '</td>'
 		html += '</tr>'
