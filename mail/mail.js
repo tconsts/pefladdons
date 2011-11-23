@@ -3,15 +3,18 @@
 // @namespace		pefl
 // @description		mail page modification
 // @include			http://*pefl.*/pm.php
-// @include			http://*pefl.*/pm.php?filter=
-// @include			http://*pefl.*/pm.php?filter=archives
+// @include			http://*pefl.*/pm.php?filter=*
+// @include			http://*pefl.*/pm.php?m=send*
 // ==/UserScript==
 
-var mails = []
-
 $().ready(function() {
-	var text = '<table id="mail" width=100% bgcolor=A3DE8F><tr><th width=18%>Дата</th><th width=5%>Отправ.</th><th>Заголовок</th><th width=3%></th></tr></table>'
+	if(UrlValue('m')=='send') {
+		$('td.back4 table tr:eq(1) td:eq(0)').html('<b>Получатель:</b>')
+		$('td.back4 table tr td').removeAttr('width')
+		$('textarea[name="newpmtext"]').attr('rows','30').attr('cols','70')
+	}else{
 
+	var text = '<table id="mail" width=100% bgcolor=A3DE8F><tr><th width=18%>Дата</th><th width=5%>Отправ.</th><th>Заголовок</th><th width=3%></th></tr></table>'
 	$('td.back4:first td.back1:eq(1)').html(text)
 	$('td.back4:first tr:has(td.back4)').hide()
 	$('td.back4:first td.back2:gt(0)').each(function(i,val){
@@ -19,12 +22,11 @@ $().ready(function() {
 
 		var curmail = {}
 
-		curmail.id 		= parseInt($(val).find('a:first').attr('name'))
-		curmail.summary	= $(val).find('b:first').text()
-
+		curmail.id 			= parseInt($(val).find('a:first').attr('name'))
+		curmail.summary		= $(val).find('b:first').text()
 		curmail.sender 		= $(val).find('a:eq(1)').text()
 		curmail.senderid 	= UrlValue('id',$(val).find('a:eq(1)').attr('href'))
-		var newmailarr = $(val).html().split('<br>')
+		var newmailarr 		= $(val).html().split('<br>')
 		curmail.date 		= newmailarr[1].split('- Дата: ')[1].replace(' ','&nbsp;')
 		newmailarr.shift()
 		newmailarr.shift()
@@ -52,8 +54,9 @@ $().ready(function() {
 		html += '</td>'
 		html += '</tr>'
 		$('table#mail').append(html)
-		mails[curmail.id] = curmail
+		$(val).parent().remove()
 	})
+	}
 }, false)
 
 function OpenMail(mid){
@@ -64,7 +67,6 @@ function OpenMail(mid){
 		$('tr#'+mid).hide()
 		$('a#a'+mid).attr('class','off')
 	}
-
 }
 
 function UrlValue(key,url){

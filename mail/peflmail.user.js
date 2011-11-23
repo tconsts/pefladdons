@@ -3,8 +3,8 @@
 // @namespace		pefl
 // @description		mail page modification
 // @include			http://*pefl.*/pm.php
-// @include			http://*pefl.*/pm.php?filter=
-// @include			http://*pefl.*/pm.php?filter=archives
+// @include			http://*pefl.*/pm.php?filter=*
+// @include			http://*pefl.*/pm.php?m=send*
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
