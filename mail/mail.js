@@ -50,9 +50,9 @@ $().ready(function() {
 		html += '</tr>'
 		html += '<tr id='+curmail.id+' style="display: none;">'
 		html += '<td colspan=4>'+curmail.body+'<br><br>'
-		html += '[<a href="pm.php?m=edit&a='+(UrlValue('filter')=='archives' ? 'unarchive' : 'archive')+'&id='+curmail.id+'">'+(UrlValue('filter')=='archives' ? 'Вернуть во Входящие' : 'В архив')+'</a>] '
-		html += '[<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(UrlValue('filter')=='archives' ? 'archives' : '')+'">Удалить</a>] '
-		html += '[<a href="pm.php?m=send&to='+curmail.senderid+'&quote='+curmail.id+'">Ответить отправителю</a>]'
+		html += (UrlValue('filter')=='sentbox' ? '' : '[<a href="pm.php?m=edit&a='+(UrlValue('filter')=='archives' ? 'unarchive' : 'archive')+'&id='+curmail.id+'">'+(UrlValue('filter')=='archives' ? 'Вернуть во Входящие' : 'В архив')+'</a>] ')
+		html += '[<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(!UrlValue('filter') ? '' : UrlValue('filter'))+'">Удалить</a>] '
+		html += (UrlValue('filter')=='sentbox' ? '' : '[<a href="pm.php?m=send&to='+curmail.senderid+'&quote='+curmail.id+'">Ответить отправителю</a>]')
 		html += '</td>'
 		html += '</tr>'
 		$('table#mail').append(html)
