@@ -14,7 +14,9 @@ $().ready(function() {
 		$('textarea#tex').attr('rows','30').attr('cols','78')
 	}else{
 
-	var text = '<table id="mail" width=100% bgcolor=A3DE8F><tr><th width=18%>Дата</th><th width=5%>Отправ.</th><th>Заголовок</th><th width=3%></th></tr></table>'
+	var text = '<table id="mail" width=100% bgcolor=A3DE8F><tr><th width=18%>Дата</th><th width=5%>'
+		text += (UrlValue('filter')=='sentbox' ? 'Кому' : 'От&nbsp;кого')
+		text += '</th><th>Заголовок</th><th width=3%></th></tr></table>'
 	$('td.back4:first td.back1:eq(1)').html(text)
 	$('td.back4:first tr:has(td.back4)').hide()
 	$('td.back4:first td.back2:gt(0)').each(function(i,val){
@@ -26,6 +28,8 @@ $().ready(function() {
 		curmail.summary		= $(val).find('b:first').text()
 		curmail.sender 		= $(val).find('a:eq(1)').text()
 		curmail.senderid 	= UrlValue('id',$(val).find('a:eq(1)').attr('href'))
+		curmail.receiver 	= $(val).find('a:eq(2)').text()
+		curmail.receiverid 	= UrlValue('id',$(val).find('a:eq(2)').attr('href'))
 		var newmailarr 		= $(val).html().split('<br>')
 		curmail.date 		= newmailarr[1].split('- Дата: ')[1].replace(' ','&nbsp;')
 		newmailarr.shift()
@@ -37,7 +41,7 @@ $().ready(function() {
 		html += '<tr bgcolor=C9F8B7 height=25>'
 		html += '<td>'+curmail.date + '</td>'
 		html += '<td>'
-		html += '<a href="users.php?m=details&id='+curmail.senderid+'">'+curmail.sender+'</a>'
+		html += '<a href="users.php?m=details&id='+(UrlValue('filter')=='sentbox' ? curmail.receiverid : curmail.senderid)+'">'+(UrlValue('filter')=='sentbox' ? curmail.receiver : curmail.sender)+'</a>'
 		html += '</td>'
 		html += '<th align=left><a href="javascript:void(OpenMail('+curmail.id+'))" id=a'+curmail.id+' class="off">'+curmail.summary+'</a></th>'
 		html += '<td align=center>'
