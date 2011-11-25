@@ -345,7 +345,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 		fin.sponsors = sponsors * fin.fid + cur.bonus
 
 //		fin.stadion = (cur.fid == 0 ? 0 : cur.stadion*fin.fid/cur.fid)
-		var curhometour = parseFloat(((dtour-0.1)/2).toFixed(1))
+		var curhometour = parseFloat((dtour/2).toFixed(1))
 		var maxhometour = (dteams==0 ? 0 : (dteams-1)*(dteams<13 ? 2 : 1))
 		debug(cur.stadion+':'+curhometour+':'+maxhometour)
 		fin.stadion = (cur.fid == 0 ? 0 : (curhometour==0 ? cur.stadion : parseInt((cur.stadion/curhometour*maxhometour).toFixed(0))))
