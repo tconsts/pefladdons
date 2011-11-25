@@ -345,7 +345,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 		fin.sponsors = sponsors * fin.fid + cur.bonus
 
 //		fin.stadion = (cur.fid == 0 ? 0 : cur.stadion*fin.fid/cur.fid)
-		var curhometour = parseInt(((dtour-0.1)/2).toFixed(0))
+		var curhometour = parseFloat(((dtour-0.1)/2).toFixed(1))
 		var maxhometour = (dteams==0 ? 0 : (dteams-1)*(dteams<13 ? 2 : 1))
 		debug(cur.stadion+':'+curhometour+':'+maxhometour)
 		fin.stadion = (cur.fid == 0 ? 0 : (curhometour==0 ? cur.stadion : parseInt((cur.stadion/curhometour*maxhometour).toFixed(0))))
@@ -395,9 +395,11 @@ function EditFinance(school,divpriz,dteams,dtour){
 		$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1))
 		$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1))
 
+		$('table#2 tr:eq(3) td:first').append(divprizmark)
+
 		if(fin.fid != cur.fid) {
 			$('td[id=fin]:eq(7)').next().append(' ('+fin.schoolperc+')')
-			$('td[id=fin]:eq(2)').next().append(divprizmark)
+//			$('td[id=fin]:eq(2)').next().append(divprizmark)
 
 			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
 			$('td[id=fin]:eq(1)').html('~'+format(fin.stadion).bold())
