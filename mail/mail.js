@@ -45,7 +45,7 @@ $().ready(function() {
 		html += '</td>'
 		html += '<th align=left><a href="javascript:void(OpenMail('+curmail.id+'))" id=a'+curmail.id+' class="off">'+curmail.summary+'</a></th>'
 		html += '<td align=center>'
-		html += '<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(UrlValue('filter')=='archives' ? 'archives' : '')+'">x</a>'
+		html += '<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(!UrlValue('filter') ? '' : UrlValue('filter'))+'">x</a>'
 		html += '</td>'
 		html += '</tr>'
 		html += '<tr id='+curmail.id+' style="display: none;">'
