@@ -9,16 +9,14 @@
 
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) {
-		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	}
+	for (n in pf) if(pf[n].split('=')[0] == key) return pf[n].split('=')[1]
 	return false
 }
 
 
 function ChangeFlag(){
 	$('table.reit').find('img[src*=system/img/flags/]').each(function(i, val){
-		var cid = $(val).attr('src').split('flags/')[1].split('.')[0]
+		var cid = parseInt($(val).attr('src').split('flags/')[1].split('.')[0])
 
 		var f = []
 		f[1]='al';	//Албания
@@ -99,17 +97,20 @@ function ChangeFlag(){
 		f[214]='http://pefladdons.googlecode.com/svn/trunk/f-214.png';	//Черногория
 
 		var img = ''
-		if (f[cid]) {
-			if (cid == 161 || cid ==214) img += f[cid]
-			else img += 'system/img/flags/f-' + f[cid] + '.gif'
-		} else img += 'system/img/flags/f-00.gif'
+		if (f[cid]) img += (cid == 161 || cid ==214 ? f[cid] : 'system/img/flags/f-' + f[cid] + '.gif')
+		else img += 'system/img/flags/f-00.gif'
 
 		$(val).removeAttr('src')
 		$(val).removeAttr('width')
 		$(val).attr('src',img)
-	})
 
+		r_new[i+1] = {}
+		r_new[i+1].chid = cid
+		r_new[i+1].reit = parseInt($(val).parent().next().text())
+		r_new[i+1].edit = 0
+	})
 }
+
 function ShowTD(){
 	var country = []
 	$('th:first').parent().append('<th width=30%>'+continent+'</td>')
@@ -144,13 +145,78 @@ function TableCodeForForum(continent){
 		.replace(/.gif/g,'.gif[/img')
 		.replace(/.png/g,'.png[/img')
 		.replace(/"/g,'')
+		.replace(/\[sup\]/g,'(')
+		.replace(/\[\/sup\]/g,')')
+		.replace(/\/font/g,'/color')
+		.replace(/font /g,'')
 	x += '\n\n[center]--------------- [url=forums.php?m=posts&q=173605]CrabVIP[/url] ---------------[/center]\n';
 	x += '[/spoiler]'
 	$('#CodeForForum').html(x);
 }
 
+function GetData(num){
+	var text = String(localStorage['rchamp'+num])
+	if (text != 'undefined'){
+		var x1 = text.split(';')
+		for (i in x1) {
+			var x2 = x1[i].split(',')
+			r_old[x2[0]] = {}
+			r_old[x2[0]].chid = x2[0]
+			r_old[x2[0]].reit = x2[1]
+			r_old[x2[0]].edit = x2[2]
+		}
+		return true
+	} else return false
+}
+
+function SaveData(num,dt){
+	var text  = '0,'+today+','+dt
+	for (i in r_new){
+		var rni = r_new[i]
+		text += ';'+rni.chid+','+rni.reit+','+rni.edit
+	}
+	localStorage['rchamp'+num] = text//.replace(';','')
+}
+
+function check(d) {return (d<10 ? "0"+d : d)}
+
+function ModifyTable(num){
+	var save = false
+	var dt = today
+	if(GetData(num)){
+		dt = r_old[0].edit
+		for(i=1;i<r_new.length;i++){
+			if(typeof(r_old[r_new[i].chid].reit)=='undefined' || r_new[i].reit!=r_old[r_new[i].chid].reit) {
+				save = true
+				dt = r_old[0].reit
+				break
+			}
+		}
+		for(i=1;i<r_new.length;i++){
+			if(typeof(r_old[r_new[i].chid].reit)!='undefined') {
+				if(save) r_new[i].edit = r_new[i].reit - r_old[r_new[i].chid].reit
+				else 	 r_new[i].edit = r_old[r_new[i].chid].edit
+			}else r_new[i].edit = 0
+		}
+		$('table.reit tr').each(function(i, val){
+			if(i==0) ttt = '&nbsp;<sup>'+dt+'</sup>'
+			else if(r_new[i].edit==0) ttt = ''
+			else ttt = '&nbsp;<sup><font color='+(r_new[i].edit>0 ? 'green' : 'red')+'>'+(r_new[i].edit>0 ? '+' : '')+r_new[i].edit+'</font></sup>'
+			$(val).find('td:last').append(ttt)
+		})
+	} else save = true
+	if(save) SaveData(num,dt)
+}
+
+var r_old = []
+var r_new = []
+var today = new Date()
+
 $().ready(function() {
+	var areanum = parseInt(UrlValue('j'))
 	var area = ['','Европа', 'Америка','ЗА']
+	today = check(today.getDate()) + '.' + check(today.getMonth()+1)
+//	r_new[0] = {'edit':today}
 
 	$('td.back4 table table')
 		.addClass('reit')
@@ -163,5 +229,6 @@ $().ready(function() {
 
 	//ShowTD()
 	ChangeFlag()
-	TableCodeForForum(area[+UrlValue('j')])
+	ModifyTable(areanum)
+	TableCodeForForum(area[areanum])
 })
