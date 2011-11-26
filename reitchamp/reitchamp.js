@@ -1,3 +1,12 @@
+// ==UserScript==
+// @name           peflreitchamp
+// @namespace      pefl
+// @description    modification champ reit page
+// @include        http://*pefl.*/plug.php?p=rating&t=cn2&j=*
+// @version        2.0
+// ==/UserScript==
+
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) {
@@ -125,26 +134,17 @@ function TableCodeForForum(continent){
 	x += '[/b] ('
 	x += continent
 	x += ')[spoiler]'
-	x += $('table.reit')
-		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
-		.html()
+	x += $('table.reit').html()
 		.replace(/<tbody>/g,'<table width=100% bgcolor=#C9F8B7>')
 		.replace(/tbody/g,'table')
-		.replace(/<th/g,'[td')
-		.replace(/<\/th>/g,'[/td]')
 		.replace(/\</g,'[')
 		.replace(/\>/g,']')
 		.replace(/ height=\"12\"/g,'')
-//		.replace(/a href=\"/g,'url=')
-//		.replace(/\/a/g,'/url')
-//		.replace(/\&amp\;/g,'&')
 		.replace(/img src="/g,'img]')
 		.replace(/.gif/g,'.gif[/img')
 		.replace(/.png/g,'.png[/img')
 		.replace(/"/g,'')
-//		.replace(/ width=25/g,'')
-		.replace(/\n/g,'')
-	x += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
+	x += '\n\n[center]--------------- [url=forums.php?m=posts&q=173605]CrabVIP[/url] ---------------[/center]\n';
 	x += '[/spoiler]'
 	$('#CodeForForum').html(x);
 }
@@ -152,10 +152,14 @@ function TableCodeForForum(continent){
 $().ready(function() {
 	var area = ['','Европа', 'Америка','ЗА']
 
-	$('td.back4 td.back1').parent().next().find('table').addClass('reit')
+	$('td.back4 table table')
+		.addClass('reit')
+		.find('tr:first').remove().end()
+		.prepend('<tr bgcolor=#a3de8f><td><b>Место</b></td><td><b>Страна</b></td><td><b>Рейтинг</b></td></tr>')
+		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+//		.find('tr').addClass('save').end()
 
-	var pre = '<br><hr>Код для форума<br><textarea rows="5" cols="70" readonly="readonly" id="CodeForForum"></textarea>'
-	$('td.back4').append(pre)
+	$('td.back4').append('<br><hr>Код для форума<br><textarea rows="7" cols="75" readonly="readonly" id="CodeForForum"></textarea>')
 
 	//ShowTD()
 	ChangeFlag()
