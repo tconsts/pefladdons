@@ -155,8 +155,8 @@ function TableCodeForForum(continent){
 }
 
 function GetData(num){
-	var text = String(localStorage['rchamp'+num])
-	if (text != 'undefined'){
+	var text = localStorage['rchamp'+num]
+	if (String(text) != 'undefined' && text != undefined){
 		var x1 = text.split(';')
 		for (i in x1) {
 			var x2 = x1[i].split(',')
