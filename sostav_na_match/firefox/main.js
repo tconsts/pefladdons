@@ -109,7 +109,10 @@ function printCard2 (plid,type){
 	var playervalue = pl["value"]
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% height=100% bgcolor=#A3DE8F]';
 
-	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] || pl["firstname"]!='???' ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
+	cardhtml += '[tr][td colspan=2][b]'
+	cardhtml += (pl["firstname"] && (pl["firstname"]!='???' || pl["firstname"]!='') ? pl["firstname"][0] + '.' : '')
+	cardhtml += (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'')
+	cardhtml += '[/b][/td][/tr]';
 	cardhtml += '[tr][td]'
 //	cardhtml += '[player=' + plid + ']'
 	cardhtml += '[img]';
@@ -127,12 +130,13 @@ function printCard2 (plid,type){
 	}
 	cardhtml += '[/td][/tr]';
 	cardhtml += '[tr][td align=center]';
-	if (playervalue == 0 ) cardhtml +=  'шкл';
+	if(pl["secondname"]=='дублер') cardhtml +=  ' ';
+	else if (playervalue == 0) cardhtml +=  'шкл';
 	else if (playervalue >= 1000) cardhtml += (playervalue/1000).toFixed(1) + 'м$'
 	else cardhtml += playervalue + 'т$';
 	cardhtml += '[/td][/tr]';
 	if (type == 0) {
-		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + pl["position"] + '[/td][/tr]';
+		cardhtml += '[tr][td colspan=2 align=center bgcolor=#C9F8B7]' + (pl["secondname"]=='дублер' ? '-' : pl["position"]) + '[/td][/tr]';
 	}
 	cardhtml += '[/table][/td]';
 	return cardhtml;
@@ -141,7 +145,8 @@ function printCard2 (plid,type){
 function fillTextarea(pt) {
 
 		preparedhtml = '';
-		preparedhtml += ' [b]Стартовый состав:[/b]\n[spoiler]\n\n';
+		preparedhtml += ' [b]Стартовый состав:[/b]\n[spoiler]';
+//		preparedhtml += '[b]сохранен[/b]: '+data_assoc['lastsave']+'\n\n'
 		preparedhtml += '[table]';
 
 		// нападение
@@ -231,7 +236,7 @@ function fillTextarea(pt) {
 		
 		preparedhtml += '[/tr]';
 		preparedhtml += '[/table]';
-		preparedhtml += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n[/spoiler]';
+		preparedhtml += '\n\n[center]--------------- [url=forums.php?m=posts&q=173605]CrabVIP[/url] ---------------[/center]\n[/spoiler]';
 		
 		$('#sostav_na_match').html(preparedhtml);
 		preparedhtml = preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>')
