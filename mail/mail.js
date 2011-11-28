@@ -59,11 +59,11 @@ $().ready(function() {
 		html += '</td>'
 		html += '</tr>'
 		html += '<tr id='+curmail.id+defhide+'>'
-		html += '<td colspan=4>'+curmail.body+'<br><br>'
+		html += '<td colspan=4><fieldset>'+'<legend> <b>'+curmail.summary+'</b> </legend>'+curmail.body+'<br><br>'
 		html += (UrlValue('filter')=='sentbox' ? '' : '[<a href="pm.php?m=edit&a='+(UrlValue('filter')=='archives' ? 'unarchive' : 'archive')+'&id='+curmail.id+'">'+(UrlValue('filter')=='archives' ? 'Вернуть во Входящие' : 'В архив')+'</a>] ')
 		html += '[<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(!UrlValue('filter') ? '' : UrlValue('filter'))+'">Удалить</a>] '
 		html += (UrlValue('filter')=='sentbox' ? '' : '[<a href="pm.php?m=send&to='+curmail.senderid+'&quote='+curmail.id+'">Ответить отправителю</a>]')
-		html += '</td>'
+		html += '</fieldset></td>'
 		html += '</tr>'
 		$('table#mail').append(html)
 		$(val).parent().remove()
