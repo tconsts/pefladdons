@@ -13,6 +13,16 @@ $().ready(function() {
 		$('td.back4 table tr td').removeAttr('width')
 		$('textarea#tex').attr('rows','30').attr('cols','78')
 	}else{
+	var mailcur = parseInt($('td.back4:first td.back2:first').text().split(']')[0].split(':')[1])
+	var maillast = parseInt(localStorage.maillast)
+	if(isNaN(maillast)) maillast = mailcur
+	if(!UrlValue('filter') && mailcur > maillast){
+		mailnum = mailcur - maillast
+		localStorage.maillast = mailcur
+	} else if(!UrlValue('filter') && mailcur < maillast) {
+		mailnum = 0
+		localStorage.maillast = mailcur
+	} else mailnum = 0
 
 	var text = '<table id="mail" width=100% bgcolor=A3DE8F><tr><th width=18%>Дата</th><th width=5%>'
 		text += (UrlValue('filter')=='sentbox' ? 'Кому' : 'От&nbsp;кого')
@@ -21,7 +31,7 @@ $().ready(function() {
 	$('td.back4:first tr:has(td.back4)').hide()
 	$('td.back4:first td.back2:gt(0)').each(function(i,val){
 		$(val).parent().hide()
-
+		var defhide = (i>=mailnum ? ' style="display: none;"': '')
 		var curmail = {}
 
 		curmail.id 			= parseInt($(val).find('a:first').attr('name'))
@@ -48,7 +58,7 @@ $().ready(function() {
 		html += '<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(!UrlValue('filter') ? '' : UrlValue('filter'))+'">x</a>'
 		html += '</td>'
 		html += '</tr>'
-		html += '<tr id='+curmail.id+' style="display: none;">'
+		html += '<tr id='+curmail.id+defhide+'>'
 		html += '<td colspan=4>'+curmail.body+'<br><br>'
 		html += (UrlValue('filter')=='sentbox' ? '' : '[<a href="pm.php?m=edit&a='+(UrlValue('filter')=='archives' ? 'unarchive' : 'archive')+'&id='+curmail.id+'">'+(UrlValue('filter')=='archives' ? 'Вернуть во Входящие' : 'В архив')+'</a>] ')
 		html += '[<a href="pm.php?m=edit&a=delete&id='+curmail.id+'&filter='+(!UrlValue('filter') ? '' : UrlValue('filter'))+'">Удалить</a>] '
