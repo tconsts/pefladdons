@@ -15,7 +15,10 @@ $().ready(function() {
 	}else{
 	var mailcur = parseInt($('td.back4:first td.back2:first').text().split(']')[0].split(':')[1])
 	var maillast = parseInt(localStorage.maillast)
-	if(isNaN(maillast)) maillast = mailcur
+	if(isNaN(maillast)) {
+		maillast = mailcur
+		localStorage.maillast = mailcur
+	}
 	if(!UrlValue('filter') && mailcur > maillast){
 		mailnum = mailcur - maillast
 		localStorage.maillast = mailcur
