@@ -140,7 +140,7 @@ function printCard2 (plid,type){
 function fillTextarea(pt) {
 
 		preparedhtml = '';
-		preparedhtml += ' [b]Стартовый состав:[/b]\n[spoiler]';
+		preparedhtml += ' [b]Стартовый состав (сборная):[/b]\n[spoiler]';
 //		preparedhtml += '[b]сохранен[/b]: '+data_assoc['lastsave']+'\n\n'
 		preparedhtml += '[table]';
 
