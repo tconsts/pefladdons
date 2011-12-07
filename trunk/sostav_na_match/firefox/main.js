@@ -73,7 +73,7 @@ function printCard (plid,type){
 	var playerpasses = pl["passes"]
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
 
-	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] || pl["firstname"]!='???' ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
+	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] && pl["firstname"]!='???' && pl["firstname"]!='' ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
 	cardhtml += '[tr][td]'
 //	cardhtml += '[player=' + plid + ']'
 	cardhtml += '[img]';
@@ -110,7 +110,7 @@ function printCard2 (plid,type){
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% height=100% bgcolor=#A3DE8F]';
 
 	cardhtml += '[tr][td colspan=2][b]'
-	cardhtml += (pl["firstname"] && (pl["firstname"]!='???' || pl["firstname"]!='') ? pl["firstname"][0] + '.' : '')
+	cardhtml += (pl["firstname"] && pl["firstname"]!='???' && pl["firstname"]!='' ? pl["firstname"][0] + '.' : '')
 	cardhtml += (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'')
 	cardhtml += '[/b][/td][/tr]';
 	cardhtml += '[tr][td]'

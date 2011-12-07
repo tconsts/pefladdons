@@ -68,7 +68,7 @@ function printCard (plid,type){
 	var playerpasses = pl["passes"]
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% bgcolor=#A3DE8F]';
 
-	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] || pl["firstname"]!='???' ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
+	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] && pl["firstname"]!='???' && pl["firstname"]!='' ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
 	cardhtml += '[tr][td]'
 //	cardhtml += '[player=' + plid + ']'
 	cardhtml += '[img]';
@@ -105,7 +105,7 @@ function printCard2 (plid,type){
 	var cardhtml = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% height=100% bgcolor=#A3DE8F]';
 
 	cardhtml += '[tr][td colspan=2][b]'
-	cardhtml += (pl["firstname"] && (pl["firstname"]!='???' || pl["firstname"]!='') ? pl["firstname"][0] + '.' : '')
+	cardhtml += (pl["firstname"] && pl["firstname"]!='???' && pl["firstname"]!='' ? pl["firstname"][0] + '.' : '')
 	cardhtml += (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'')
 	cardhtml += '[/b][/td][/tr]';
 	cardhtml += '[tr][td]'
@@ -289,13 +289,14 @@ $().ready(function() {
 			tmpplayer["firstname"] = data_assoc["firstname"+i];
 			tmpplayer["secondname"] = data_assoc["secondname"+i];
 			tmpplayer["position"] = data_assoc["position"+i];
-			tmpplayer["ratingav"] = parseFloat(data_assoc["ratingav"+i]).toFixed(2);
-			tmpplayer["games"] = data_assoc["games"+i];
-			tmpplayer["mom"] = data_assoc["mom"+i];
-			tmpplayer["goals"] = data_assoc["goals"+i];
-			tmpplayer["passes"] = data_assoc["passes"+i];
+			tmpplayer["ratingav"] = parseFloat(data_assoc["wratingav"+i]).toFixed(2);
+			tmpplayer["games"] = data_assoc["wgames"+i];
+			tmpplayer["mom"] = data_assoc["wmom"+i];
+			tmpplayer["goals"] = data_assoc["wgoals"+i];
+			tmpplayer["passes"] = data_assoc["wpasses"+i];
 			tmpplayer["form"] = data_assoc["form"+i];
 			tmpplayer["morale"] = data_assoc["morale"+i];
+			tmpplayer["age"] = data_assoc["age"+i];
 			tmpplayer["value"] = data_assoc["value"+i].replace(/,/g,'')/1000;
 			var playerid = data_assoc["id" + i];
 			players[playerid] = tmpplayer;
