@@ -517,7 +517,6 @@ function PrintRightInfo(){
 //	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
 	thtml += '</td></tr>'
 
-
 	thtml += '<tr id="oszp"><th align=left><a'
 	thtml += (team_cur.twage!=0 ? ' href="javascript:void(ShowPlayersZp())"' : '')
 	thtml += '>зарплаты</a>:</th><th align=right>'
@@ -698,7 +697,7 @@ function ShowPlayersSkillChange(){
 					text += '<tr id="skills"><td align=right colspan=2><i>'+f1+(skillchange[j] + '&nbsp;').fontsize(1)
 					text += (pls[i][skillchange[j]].split('.')[0] + '&nbsp;').fontsize(1) +f2+'</i></td>'
 					if(pls[i][skillchange[j]].split('.')[1] != undefined) {
-						text += '<td><img height="10" src="system/img/g/'+pls[i][skillchange[j]].split('.')[1]+'.gif"></img></td>'
+						text += '<td><img height="8" src="system/img/g/'+pls[i][skillchange[j]].split('.')[1]+'.gif"></img></td>'
 					}
 					text += '</tr>'
 				}
