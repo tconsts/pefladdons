@@ -289,7 +289,7 @@ $().ready(function() {
 			tmpplayer["firstname"] = data_assoc["firstname"+i];
 			tmpplayer["secondname"] = data_assoc["secondname"+i];
 			tmpplayer["position"] = data_assoc["position"+i];
-			tmpplayer["ratingav"] = parseFloat(data_assoc["wratingav"+i]).toFixed(2);
+			tmpplayer["ratingav"] = parseFloat(data_assoc["ratingav"+i]).toFixed(2);
 			tmpplayer["games"] = data_assoc["wgames"+i];
 			tmpplayer["mom"] = data_assoc["wmom"+i];
 			tmpplayer["goals"] = data_assoc["wgoals"+i];
