@@ -479,8 +479,8 @@ function saveData(){
 			);
 			for (var f=0;f<4;f++){
 				var trnf = trn[f]
-				if (trnf){
-					debug('tnrf: '+trnf)
+				if (trnf && !isNaN(trnf[1])){
+					debug('tnrf:'+trnf)
 					tx.executeSql("INSERT INTO training (date, t1, t2, t3, t4, t5, t6, t7) values(?, ?, ?, ?, ?, ?, ?, ?)", 
 						[trnf[0], trnf[1], trnf[2], trnf[3], trnf[4], trnf[5], trnf[6], trnf[7]],
 						function(result){debug('insert trdata ok')},
