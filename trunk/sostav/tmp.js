@@ -291,22 +291,23 @@ function showData(){
 					if (flag==0) {ctn1 += (ctncur1+ctncur2+ctncur3)/2;ctn2 += (ctncur1+ctncur2+ctncur3)/2}
 
 				}
-				$(val).prepend('<td align=center>'+(ctn3!=0? String(ctn3).fontsize(1) :"")+'</td>')
-				$(val).prepend('<td align=center>'+(ctn2!=0? String(ctn2).fontsize(1) :"")+'</td>')
-				$(val).prepend('<td align=center>'+(ctn1!=0? String(ctn1).fontsize(1) :"")+'</td>')
+				$(val).prepend('<td align=center>'+(ctn3!=0 ? String(ctn3).fontsize(1) :"")+'</td>')
+				$(val).prepend('<td align=center>'+(ctn2!=0 ? String(ctn2).fontsize(1) :"")+'</td>')
+				$(val).prepend('<td align=center>'+(ctn1!=0 ? String(ctn1).fontsize(1) :"")+'</td>')
 			}
 			var ht = ''
 			var trnt = 0
 			for (j=trn.length-1;j>=0;j--) {
 				var raz = ''
-				if(trnt!=0){
+				if(trnt!=0 && trnt!=undefined){
 					var colr = 'green'
 					var pref = '+'
 					raz = (trn[j][i]-trnt).toFixed(2)
 					if(raz<0) {colr = 'red';	pref=''}
 					raz = (raz==0 ? '' : '<sup>'+(pref+raz).fontcolor(colr)+'</sup>')
 				}
-				if (j<3){
+				debug('trn'+j+i+':'+trn[j][i])
+				if (j<3 && trn[j][i]!=undefined){
 					if(i==0) ht = '<td id="sum'+j+'"><b>'+trn[j][i]+'</b></td>' + ht
 					else	 ht = '<td>'+((parseFloat(trn[j][i])).toFixed(2) + raz).fontsize(1)+'</td>' + ht
 				}
