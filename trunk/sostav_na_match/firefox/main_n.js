@@ -6,27 +6,11 @@
 // @version        2.0
 // ==/UserScript==
 
-function setCookie(name, value) {
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() + 356); // +1 year
-	if (!name || !value) return false;
-	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
-	return true
-}
-
-function getCookie(name) {
-	var pattern = "(?:; )?" + name + "=([^;]*);?"
-	var regexp  = new RegExp(pattern)
-	 
-	if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
-	return false
-}
-
 function change_field_player_uniform() {
 	newfp_value = prompt("Вставьте адрес картинки", field_player_img_src);
 	if (newfp_value) {
-		field_player_img_src = newfp_value;
-		setCookie("fp_uniform", newfp_value);
+		field_player_img_src 		= newfp_value;
+		localStorage.fp_uniform_n	= newfp_value;
 		$('#fp_uniform_image').attr('src', newfp_value);
 		fillTextarea(printtype);
 	}
@@ -35,8 +19,8 @@ function change_field_player_uniform() {
 function change_goalkeeper_uniform() {
 	newfp_value = prompt("Вставьте адрес картинки", goalkeeper_player_img_src);
 	if (newfp_value) {
-		goalkeeper_player_img_src = newfp_value;
-		setCookie("gk_uniform", newfp_value);
+		goalkeeper_player_img_src	= newfp_value;
+		localStorage.gk_uniform_n	= newfp_value;
 		$('#gk_uniform_image').attr('src', newfp_value);
 		fillTextarea(printtype);	
 	}
@@ -139,8 +123,10 @@ function printCard2 (plid,type){
 
 function fillTextarea(pt) {
 
+		localStorage.printtype_n = pt
+
 		preparedhtml = '';
-		preparedhtml += ' [b]Стартовый состав (сборная):[/b]\n[spoiler]';
+		preparedhtml += ' [b]Стартовый состав[/b](сборная):[spoiler]';
 //		preparedhtml += '[b]сохранен[/b]: '+data_assoc['lastsave']+'\n\n'
 		preparedhtml += '[table]';
 
@@ -243,19 +229,12 @@ var pids = [];		// id игроков, заявленных в состав
 var players = []; // массив игроков, в котором ключ массива - id игрока, а данные - каждые под своим ключом
 var sostav = []; // массив, в котором ключ - позиция на поле, а значение - id игрока
 var positions = [];
-var field_player_img_src = '/field/img/146cd60f8c4985270b74f7839e98059a.png';
-fp_cookie_value = getCookie("fp_uniform");
-if (fp_cookie_value) {
-	field_player_img_src = fp_cookie_value;
-}
-var goalkeeper_player_img_src = '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png';	
-gk_cookie_value = getCookie("gk_uniform");
-if (gk_cookie_value) {
-	goalkeeper_player_img_src = gk_cookie_value;
-}
+
+var field_player_img_src 		= (String(localStorage.fp_uniform_n)!='undefined' ? localStorage.fp_uniform_n : '/field/img/146cd60f8c4985270b74f7839e98059a.png');
+var goalkeeper_player_img_src	= (String(localStorage.gk_uniform_n)!='undefined' ? localStorage.gk_uniform_n : '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png');
 
 $().ready(function() {
-
+	printtype = (String(localStorage.printtype_n)!='undefined' ? parseInt(localStorage.printtype_n) : printtype)
 	$('.back4').html('<table border="0" cellspacing="0" cellpadding="10" width="100%" height="100%"><tr><td valign="top" class="contentframer"></td></tr></table>');
 	$.get('fieldnew3_n.php', {}, function(data){
 		var dataarray = data.split('&');
@@ -306,6 +285,9 @@ $().ready(function() {
 		// сбор данных закончен, можно выводить
 		preparedhtml = '<b>Код для форума</b><br>'
 		preparedhtml += '<textarea rows="10" cols="90" readonly="readonly" id="sostav_na_match"></textarea>';
+		preparedhtml += '<br>1. Ctrl+A: выделить весь текст в форме'
+		preparedhtml += '<br>2. Ctrl+C: скопировать выделеное в буфер'
+		preparedhtml += '<br>3. Ctrl+V: вставить из буфера в форум'
 
 		preparedhtml += '<br><br><hr><table width=100%>';
 		preparedhtml += '<tr><th width=128></th><th>Предосмотр</th></tr>';
@@ -324,9 +306,9 @@ $().ready(function() {
 		preparedhtml += '</td></tr></table>'
 
 		preparedhtml += '<br><b>Стиль показа</b><br>'
-		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=1;fillTextarea(printtype)"> классический<br>'
-		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=2;fillTextarea(printtype)"> карточка<br>'
-		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=3;fillTextarea(printtype)" checked> карточка(2)'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=1;fillTextarea(printtype)"'+(printtype==1 ? ' checked':'')+'> классический<br>'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=2;fillTextarea(printtype)"'+(printtype==2 ? ' checked':'')+'> карточка<br>'
+		preparedhtml += '<input type="radio" name="prtype" onchange="printtype=3;fillTextarea(printtype)"'+(printtype==3 ? ' checked':'')+'> карточка(2)'
 		preparedhtml += ''
 
 		preparedhtml += '</td>'
@@ -341,6 +323,7 @@ $().ready(function() {
 		preparedhtml += '</tr></table>'
 		$('.contentframer').html(preparedhtml);	
 		fillTextarea(printtype);
+		$('#sostav_na_match').select()
 	});
 	
 }, false);
