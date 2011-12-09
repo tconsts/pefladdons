@@ -307,7 +307,7 @@ function showData(){
 					raz = (raz==0 ? '' : '<sup>'+(pref+raz).fontcolor(colr)+'</sup>')
 				}
 				debug('trn'+j+i+':'+trn[j][i])
-				if (j<3 && trn[j][i]!=undefined && !trn[j][i]){
+				if (j<3 && trn[j][i]!=undefined && String(trn[j][i])!='false'){
 					if(i==0) ht = '<td id="sum'+j+'"><b>'+trn[j][i]+'</b></td>' + ht
 					else	 ht = '<td>'+((parseFloat(trn[j][i])).toFixed(2) + raz).fontsize(1)+'</td>' + ht
 				}
