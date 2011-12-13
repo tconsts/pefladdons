@@ -33,7 +33,7 @@ $().ready(function(){
 //			.append('<tr><td>ddddd</td></tr>')
 			.before('<div>'+(names[id]).fontsize(3)+'</div><br><br>')
 			.append('<tr><td></td></tr>')
-			.find('tr:first').append('<td width=30% rowspan=16 valign=center align=center><img height=100 src="system/img/flags/'+id+'.gif"></img></td>')
+			.find('tr:first').append('<td width=30% rowspan=7 valign=center align=center><img height=100 src="system/img/flags/'+id+'.gif"></img></td>')
 	}
 }, false);
 
