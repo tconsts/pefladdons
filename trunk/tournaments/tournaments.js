@@ -11,12 +11,29 @@
 
 if(typeof (deb) == 'undefined') deb = false
 var debnum = 0
+/**/
+var names = {
+	'236': 'Копа СудАмерикана',
+	'230': 'Кубок конфедераций',
+	'235': 'Кубок Либертадорес',
+	'234': 'Кубок чемпионов 3А',
+	'233': 'Лига Европы',
+	'231': 'Лига Чемпионов',
+	'239': 'Межконтинентальный',
+	'238': 'Рекопа',
+	'237': 'Суперкубок Европы'
+}
+/**/
 
 $().ready(function(){
 	if(UrlValue('t')=='ec'){
+		var id = UrlValue('j')
+
 		$('td.back4 table table')
+//			.append('<tr><td>ddddd</td></tr>')
+			.before('<div>'+(names[id]).fontsize(3)+'</div><br><br>')
 			.append('<tr><td></td></tr>')
-			.find('tr:first').append('<td width=30% rowspan=6 valign=center><img src="system/img/flags/'+UrlValue('j')+'.gif"></img></td>')
+			.find('tr:first').append('<td width=30% rowspan=16 valign=center align=center><img height=100 src="system/img/flags/'+id+'.gif"></img></td>')
 	}
 }, false);
 
