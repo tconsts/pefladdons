@@ -3,7 +3,7 @@
 // @namespace      pefl
 // @description    modification training page
 // @include        http://*pefl.*/plug.php?p=training*
-// @version        2.0
+// @version        2.1
 // ==/UserScript==
 
 
@@ -64,16 +64,22 @@ trains[17]	= {level:4,	tr:30,	ball:0,	name:'Тренировочный матч 
 trains[18]	= {level:-1,tr:31,	ball:0,	name:'Отдых'};
 
 $().ready(function() {
-	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 
-	var text = ''
+	var text = '<font color=red><b>ВНИМАНИЕ!!!</b></font><br>'
+	text += '<i>На данной странице работает устаревший КрабВИП скрипт который требуется <a href="http://pefladdons.googlecode.com/svn/trunk/training/pefltraining.user.js">обновить</a>!<hr>'
+	$('td.back4').prepend(text)
+
+	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	var today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 
-	trn[0] = [today]
-
 	var srch="Вы вошли как "
 	var curManagerNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
+
+	var text = ''
+
+
+	trn[0] = [today]
 
 	$.get('training.php', {}, function(data){
 		debug('Get data from training.php')
@@ -85,10 +91,13 @@ $().ready(function() {
 			var tmpvalue = tmparr[1];
 			data_assoc[tmpkey] = tmpvalue;
 
-			if (tmpkey.indexOf('trn') != -1) trn[0].push(parseFloat(String(tmpvalue).replace(',','.')))
+//			if (tmpkey.indexOf('trn') != -1) trn[0].push(parseFloat(String(tmpvalue).replace(',','.')))
 			i++;
 		}
 		debug(trn[0])
+
+		// get current trains
+		for(i=1;i<8;i++) trn[0][i] = parseFloat(data_assoc['trn'+i])
 
 		num_players 	= data_assoc["n"];
 		var trnManagerNick	= data_assoc["s0"];
@@ -299,22 +308,27 @@ function showData(){
 			var trnt = 0
 			for (j=trn.length-1;j>=0;j--) {
 				var raz = ''
+				var sp = ''
 				if(trnt!=0 && trnt!=undefined){
-					var colr = 'green'
-					var pref = '+'
-					raz = (trn[j][i]-trnt).toFixed(2)
-					if(raz<0) {colr = 'red';	pref=''}
-					raz = (raz==0 ? '' : '<sup>'+(pref+raz).fontcolor(colr)+'</sup>')
+					var colr = ''
+					var pref = ''
+					raz = trn[j][i]-trnt
+
+					if(raz<0) {colr = 'red';   pref='';  sp = '-'}
+					if(raz>0) {colr = 'green'; pref='+'; sp = '+'}
+					raz = (raz==0 ? '' : '<sup>'+(sp).fontcolor(colr)+'</sup>')
+
 				}
 				debug('trn'+j+i+':'+trn[j][i])
-				if (j<3 && trn[j][i]!=undefined && String(trn[j][i])!='false'){
-					if(i==0) ht = '<td id="sum'+j+'"><b>'+trn[j][i]+'</b></td>' + ht
-					else	 ht = '<td>'+((parseFloat(trn[j][i])).toFixed(2) + raz).fontsize(1)+'</td>' + ht
+				if (j<5 && trn[j][i]!=undefined && String(trn[j][i])!='false'){
+					if(i==0) ht = '<td id="sum'+j+'"><b>'+(parseInt(trn[j][i])<10?'0':'')+trn[j][i]+'</b></td>' + ht
+					else	 ht = '<td>'+(sp=='-' ? '<font color="red">' : (sp=='+' ? '<font color="green">' : ''))+((parseFloat(trn[j][i])).toFixed(2) + raz).fontsize(1)+(sp==''?'':'</font>')+'</td>' + ht
 				}
 				trnt = trn[j][i]
 			}
 			$(val).append(ht)
 		})
+/**
 		var rzp = 0
 		for(i=trn.length-1;i>=0;i--){
 			var rz = 0
@@ -324,6 +338,7 @@ function showData(){
 			if(i!=trn.length-1) $('td#sum'+i).append('<sup>'+(rz>rzp?'+':'')+(rz-rzp).toFixed(2)+'</sup>')
 			rzp = rz
 		}
+/**/
 
 		$('td.back4 table table:eq(1) tr:first').each(function(i,val){
 			$(val).prepend('<th>'+('*<sup>2</sup>').fontsize(1)+'</th>')
@@ -373,10 +388,6 @@ function getData(){
 		var trnnum = 1
 		var x = globalStorage[location.hostname]['training']
 		debug('Get from GS ')
-		if(x == undefined){
-			x = getCookie('pefltraining')
-			debug('Get cookie ')
-		}
 		if(x != undefined){
 			xx = String(x).split(';')
 			for (var p in xx) {
@@ -428,25 +439,6 @@ function getData(){
 				},
 				function(tx, error){
 					debug(error.message)
-					var trnnum = 1
-					x = getCookie('pefltraining')
-					if(x){
-				        debug('Get cookie ' +x)
-						xx = String(x).split(';')
-						for (var p in xx) {
-							var y = xx[p].split(',')
-							debug('xx[p]: '+xx[p])
-							if (y[1]==trn[0][1] && 
-								y[2]==trn[0][2] && 
-								y[3]==trn[0][3] && 
-								y[4]==trn[0][4] && 
-								y[5]==trn[0][5] && 
-								y[6]==trn[0][6] && 
-								y[7]==trn[0][7]) trnnum = 0
-							trn[trnnum] = y
-							trnnum++
-						}
-					}
 					saveData()
 				}
 			)
@@ -458,10 +450,10 @@ function saveData(){
 	showData()
 	if(ff){
 		var save = ''
-		for (var f=0;f<4;f++){
+		for (var f=0;f<6;f++){
 			if (trn[f]){
 				for (var l in trn[f]) save += trn[f][l] + (l<trn[f].length-1 ? ',' : '')
-				save += (f<3 && trn[f+1] ? ';' :'')
+				save += (f<5 && trn[f+1] ? ';' :'')
 			}
 		}
 		globalStorage[location.hostname]['training'] = save
@@ -478,7 +470,7 @@ function saveData(){
 				function(tx, result){debug('create trtable ok')},
 				function(tx, error) {debug('create trtable error'+error.message)}
 			);
-			for (var f=0;f<4;f++){
+			for (var f=0;f<6;f++){
 				var trnf = trn[f]
 				if (trnf && !isNaN(trnf[1])){
 					debug('tnrf:'+trnf)
@@ -499,22 +491,6 @@ function debug(text){
 		if(debnum == 1)  $('td.back4').append('<hr>DEBUG:<br>')
 		$('td.back4').append(debnum+': \''+text+'\'<br>')
 	}
-}
-
-function getCookie(name) {
-	    var pattern = "(?:; )?" + name + "=([^;]*);?"
-	    var regexp  = new RegExp(pattern)
-	    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
-	    return false
-}
-
-function deleteCookie(name){
-	debug('Delete cookie ' + name)
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() - 30); 
-	if (!name) return false;
-	document.cookie = name + '=; expires='+ exdate.toUTCString() + '; path=/'
-	return true
 }
 
 function check(d) {return (d<10 ? "0"+d : d)}
