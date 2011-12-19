@@ -154,7 +154,7 @@ function ShowForumCode(fc,a){
 	if (a == 0) return 'Автосостав'
 	else {
 		var empty = '[td height=50] [/td]'
-		var txt = '<textarea cols=20 rows=5 readonly>[table width=100%]'
+		var txt = '<textarea cols=20 rows=8 readonly>[table width=100%]'
 		txt += '[tr][td] [/td]' + (fc[23]?fc[23]:empty) + (fc[24]?fc[24]:empty) + (fc[25]?fc[25]:empty) + '[td] [/td][/tr]'
 		txt += '[tr]' + (fc[18]?fc[18]:empty) + (fc[19]?fc[19]:empty) + (fc[20]?fc[20]:empty) + (fc[21]?fc[21]:empty) + (fc[22]?fc[22]:empty) + '[/tr]'
 		txt += '[tr]' + (fc[13]?fc[13]:empty) + (fc[14]?fc[14]:empty) + (fc[15]?fc[15]:empty) + (fc[16]?fc[16]:empty) + (fc[17]?fc[17]:empty) + '[/tr]'
@@ -164,7 +164,8 @@ function ShowForumCode(fc,a){
 		txt += '[tr][td colspan=2] [/td]' + (fc[1]?fc[1]:empty) + '[td colspan=2] [/td][/tr]'
 		txt += '[/table]'
 		txt += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n'
-		txt += '</textarea><br><b>Состав для форума<br>(<a href="/?team">advanced</a>)</b>'
+		txt += '</textarea>'
+//		txt += '<br><b>Состав для форума<br>(<a href="/?team">advanced</a>)</b>'
 		return txt
 	}
 }
