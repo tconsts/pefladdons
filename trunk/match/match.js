@@ -65,10 +65,12 @@ function PlayerTime(mid,mt,mrk,tid){
 	// get info from match text
 	for (i in ttime[tid]){
 		var pl = ttime[tid][i]
-		pl.pfname=':'+pl.pname+':'
-		$('font.p'+(pl.num<10 ? 0 :'')+pl.num).each(function(){
+		pl.pfname='|'+pl.pname+'|'
+		//debug('font.p'+(pl.pnum<10 ? 0 :'')+pl.pnum)
+		$('font.p'+(pl.pnum<10 ? 0 :'')+pl.pnum).each(function(){
 			var cname = $(this).text()
-			
+			//debug(cname)
+			if(pl.pfname.indexOf('|'+cname+'|')==-1) pl.pfname += cname+'|'
 		})
 	}
 
