@@ -19,7 +19,7 @@ var remember = 0
 var save = false
 var db = false
 var list = {
-	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech',
+	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
 	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
 //	'divs':		'did,my,dnum,dname,drotate,drotcom,dprize,color'
 }
@@ -116,6 +116,11 @@ $().ready(function() {
 
 	}
 }, false);
+
+function TrimString(sInString){
+	sInString = sInString.replace(/\&nbsp\;/g,' ');
+	return sInString.replace(/(^\s+)|(\s+$)/g, '');
+}
 
 function DBConnect(){
 	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
@@ -391,11 +396,11 @@ function GetInfoPagePl(){
 		players[pid].tid 	= cid
 		players[pid].num 	= i
 		players[pid].hash	= UrlValue('z',$(val).find('td:eq(1) a:first').attr('href'))
-		players[pid].name	= $(val).find('td:eq(1) a').html()
+		players[pid].name	= TrimString($(val).find('td:eq(1) a').html()
 								.split('<img')[0]
 								.replace('(*)','')
 								.replace('<i>','')
-								.replace('</i>','')
+								.replace('</i>',''))
 		players[pid].nid	= $(val).find('td:eq(2) img').attr('src')
 								.split('/')[4]
 								.split('.')[0]
