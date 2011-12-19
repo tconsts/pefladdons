@@ -35,30 +35,48 @@ function TrimString(sInString){
 
 function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
-function PlayerTime(mid,mt,t1,t2){
-	debug(mt+':'+t1+':'+t2)
-	ttime[t1]= {}
-	ttime[t2]= {}
+function PlayerTime(mid,mt,mrk,tid){
+	debug('PlayerTime('+mid+','+mt+','+mrk+','+tid+')')
+/**/
+	ttime[tid]= {}
 
+	// get info from postmatch table
 	var m = false
-	var uni = 1
+	var uni = 2
 	$('td.back4 table:eq(6) td:has(a[href^=javascript])').each(function(){
 		m = (m ? false : true)
-		var tid = (m ? t1 : t2)
-		var p = TrimString($(this).find('a[href^=javascript]').text())
-		if(ttime[tid][p]==undefined){
-			pname = p
-		}else{
-			uni++;pname = p+uni
-		}
-		var pnum = parseInt($(this).prev().html())
-		var pmin = $(this).next().html()
-		pmin = (pmin.indexOf('(')==-1 ? (pnum<12 ? mt : 0) : (pnum<12 ? parseInt(pmin.split('(')[1]) : mt-parseInt(pmin.split('(')[1])))
+		if(m==mrk){
+			var pname	= TrimString($(this).find('a[href^=javascript]').text())
+			var pnameid	= pname
 
-		ttime[tid][pname]={'ptime':pmin}
-//		debug(pname+':'+pmin)
+			if(ttime[tid][pnameid]!=undefined){
+				pnameid = pname+uni
+				uni++;
+			}
+			var pnum = parseInt($(this).prev().html())+(mrk ? 0 : 18)
+			var nexttd = $(this).next().html()
+			var pmin = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
+
+			ttime[tid][pnameid]={'pnameid':pnameid,'ptime':pmin,'pname':pname,'pnum':pnum}
+
+		}
 	})
-	for(i in ttime) for(j in ttime[i]) debug(mid+':'+i+':'+j+':'+ttime[i][j].ptime)
+
+	// get info from match text
+	for (i in ttime[tid]){
+		var pl = ttime[tid][i]
+		pl.pfname=':'+pl.pname+':'
+		$('font.p'+(pl.num<10 ? 0 :'')+pl.num).each(function(){
+			var cname = $(this).text()
+			
+		})
+	}
+
+	for(i in ttime[tid]) {
+		var x  = ttime[tid][i]
+		debug(mid+':'+tid+':'+x.ptime+':'+x.pfname)
+	}
+/**/
 }
 
 var ttime = []
@@ -83,11 +101,15 @@ $().ready(function() {
 			)
 		}
 	}else{
+		var myteamid = localStorage.myteamid
+		debug('myteamid='+myteamid)
 
-		var matchtime = parseInt($('p.key:last').text().split(' ')[0])
-		var tid1 = parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])
-		var tid2 = parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])
-		PlayerTime(mid,matchtime,tid1,tid2)
+		if(myteamid!=undefined){
+			var mark = 'none'
+			mark = (myteamid==parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0]) ? true : mark)
+			mark = (myteamid==parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0]) ? false : mark)
+			if(mark!='none') PlayerTime(mid,parseInt($('p.key:last').text().split(' ')[0]),mark,myteamid)
+		}
 
 		// даем возможность скрыть отчет
 		$('td.back4 table:eq(2)').before('<br><a id="treport" href="javascript:void(ShowTable(2))">&ndash;</a>')
