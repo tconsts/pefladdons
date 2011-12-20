@@ -245,6 +245,10 @@ function GetInfoPageTm(){
 	team_cur.scbud	= parseInt($('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0])
 	team_cur.screit	= (rschools[screit_name]!=undefined ? rschools[screit_name] : screit_name)
 	team_cur.my		= (team_cur.mname == MyNick ? true : false)
+
+	// Save my team id for script "match"
+	if(team_cur.my) localStorage.myteamid = cid
+
 	GetFinish('pg_teams', true)
 }
 

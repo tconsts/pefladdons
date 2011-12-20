@@ -74,14 +74,9 @@ $().ready(function() {
 						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000)
-						if(ecup.indexOf(str)!=-1){
-							img = imgecup
-						}
-						if(cup.indexOf(str)!=-1){
-							img = imgcup
-						}
-
-						if (excl.indexOf(str) == -1){
+						if(ecup.indexOf(str)!=-1)	img = imgecup
+						if(cup.indexOf(str)!=-1)	img = imgcup
+						if(excl.indexOf(str) == -1){
 							str += '&nbsp;' + d
 							$(val).parent().before('<tr class="freeId"><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=2></td><td>'+img+'</td></tr>')
 						}
@@ -90,7 +85,7 @@ $().ready(function() {
 				}
 			}
 			var newtext = $(val).text()+'&nbsp;' + day[curdt.getDay()]
-			if (shownow==1) newtext.bold()
+			if (shownow==1) $(val).css("border", "1px solid green");
 			$(val).html(newtext)
 			prevdt = curdt
 		}
@@ -102,20 +97,25 @@ $().ready(function() {
 		$('td.back4 td:contains("Предстоящие игры") table:first').each(function(){
 			var p = (prevdt - today)/1000/60/60/24
 			var i=1
+			var img = ''
 			while ( i < p ){
 				var dd = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
 				var d = day[dd.getDay()]
 				if (d=='пнд' || d=='срд' || d=='птн') {
 					var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 					str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
-					str += (dd.getFullYear()-2000) + '&nbsp;' + d
-					$(this).append('<tr><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=3></td></tr>')
+					str += (dd.getFullYear()-2000)
+					if(ecup.indexOf(str)!=-1)	img = imgecup
+					if(cup.indexOf(str)!=-1)	img = imgcup
+					str += '&nbsp;' + d
+
+					$(this).append('<tr><td></td><td bgcolor=white height=25>'+str.fontcolor('#888A85')+'</td><td></td><td></td><td>'+img+'</td></tr>')
 				}
 				i++
 			}
-			$(this).append('<tr><td></td><td height=25 class="now"><b>' + td.fontcolor('#888A85') + '</b></td><td colspan=3></td>')
+			$(this).append('<tr><td></td><td class="now" height=25>' + td.fontcolor('#888A85') + '</td><td></td><td></td><td></td><td>'+img+'</td>')
 		})
-		$('td.now').css("border", "1px solid #a3de8f");
+		$('td.now').css("border", "1px solid green");//#a3de8f
 	}
 	
 	
