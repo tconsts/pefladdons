@@ -644,6 +644,7 @@ var ups = {	"a0e":"-2",
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
 
+	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') return false
 /**/
 	skl['nation']	= ['nt' ,'КСт','Код страны']
 	skl['natfull']	= ['ntf','стр','страна']
