@@ -230,8 +230,8 @@ var players = []; // массив игроков, в котором ключ м�
 var sostav = []; // массив, в котором ключ - позиция на поле, а значение - id игрока
 var positions = [];
 
-var field_player_img_src 		= (String(localStorage.fp_uniform)!='undefined' ? localStorage.fp_uniform : '/field/img/146cd60f8c4985270b74f7839e98059a.png');
-var goalkeeper_player_img_src	= (String(localStorage.gk_uniform)!='undefined' ? localStorage.gk_uniform : '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png');
+var field_player_img_src 		= (String(localStorage.fp_uniform)!='undefined' && String(localStorage.fp_uniform)!='null' ? localStorage.fp_uniform : '/field/img/146cd60f8c4985270b74f7839e98059a.png');
+var goalkeeper_player_img_src	= (String(localStorage.gk_uniform)!='undefined' && String(localStorage.gk_uniform)!='null' ? localStorage.gk_uniform : '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png');
 
 $().ready(function() {
 	printtype = (String(localStorage.printtype)!='undefined' ? parseInt(localStorage.printtype) : printtype)
