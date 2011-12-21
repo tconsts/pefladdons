@@ -5,6 +5,7 @@
 // @include			http://*pefl.*/pm.php
 // @include			http://*pefl.*/pm.php?filter=*
 // @include			http://*pefl.*/pm.php?m=send*
+// @version        1.0
 // ==/UserScript==
 
 var headID = document.getElementsByTagName("head")[0];         
