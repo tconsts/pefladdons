@@ -109,11 +109,11 @@ $().ready(function() {
 					if(cup.indexOf(str)!=-1)	img = imgcup
 					str += '&nbsp;' + d
 
-					$(this).append('<tr><td></td><td bgcolor=white height=25>'+str.fontcolor('#888A85')+'</td><td></td><td></td><td>'+img+'</td></tr>')
+					$(this).append('<tr><td></td><td height=25>'+str.fontcolor('#888A85')+'</td><td></td><td></td><td>'+img+'</td></tr>')
 				}
 				i++
 			}
-			$(this).append('<tr><td></td><td class="now" height=25>' + td.fontcolor('#888A85') + '</td><td></td><td></td><td></td><td>'+img+'</td>')
+			$(this).append('<tr><td></td><td class="now" height=25>' + td.fontcolor('#888A85') + '</td><td></td><td></td><td></td>')
 		})
 		$('td.now').css("border", "1px solid green");//#a3de8f
 	}
