@@ -28,6 +28,6 @@ $().ready(function() {
 	crab += intimg +	' <a href=\'/?team_n\'>На форум(сбр)</a><br>'
 	crab += crabimg +	' <a href="/forums.php?m=posts&q=173605">Crab Форум</a><br>'
 	crab += '<hr>'
-	$('td.back3 table td:first span.text1 hr:eq(2)').after(crab)
+	$('td.back3 table td:first span.text1 hr:eq(4)').after(crab)
 
 });
