@@ -2,12 +2,8 @@
 // @name           peflforum
 // @namespace      pefl
 // @description    remove not needed info from forum
-// @include        http://www.pefl.ru/forums.php?m=posts*
-// @include        http://pefl.ru/forums.php?m=posts*
-// @include        http://www.pefl.net/forums.php?m=posts*
-// @include        http://pefl.net/forums.php?m=posts*
-// @include        http://www.pefl.org/forums.php?m=posts*
-// @include        http://pefl.org/forums.php?m=posts*
+// @include        http://*pefl.*/forums.php?m=posts*
+// @version        1.0
 // ==/UserScript==
 
 $().ready(function() {
