@@ -1,3 +1,11 @@
+// ==UserScript==
+// @name           peflhist
+// @namespace      pefl
+// @description    history page modification
+// @include        http://*pefl.*/hist.php?*
+// @version        1.0
+// ==/UserScript==
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) {

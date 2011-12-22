@@ -918,7 +918,7 @@ function TableCodeForForum(){
 		f[154]='ro';	//Румыния
 		f[155]='ru';	//Россия
 		f[160]='sa';	//Сау. Аравия
-		f[161]='http://pefladdons.googlecode.com/svn/trunk/f-161.gif';	//Шотландия	
+		f[161]='http://pefladdons.googlecode.com/svn/trunk/img/f-161.gif';	//Шотландия	
 		f[166]='sk';	//Словакия
 		f[167]='si';	//Словения
 		f[170]='za';	//ЮАР
@@ -936,7 +936,7 @@ function TableCodeForForum(){
 		f[204]='ve';	//Венесуэла
 		f[207]='wl';	//Уэльс
 		f[209]='yu';	//!!Сербия
-		f[214]='http://pefladdons.googlecode.com/svn/trunk/f-214.png';	//Черногория
+		f[214]='http://pefladdons.googlecode.com/svn/trunk/img/f-214.png';	//Черногория
 
 		var tarr = $(this).attr('src').split('.')[0].split('/')
 		var fid = tarr[tarr.length-1]
