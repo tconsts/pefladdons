@@ -15,7 +15,7 @@ function UrlValue(key,url){
 
 $().ready(function() {
     var teamimg 	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>'
-    var teamimg2	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/forms/'+localStorage.myteamid+'a.png')+'>'
+    var teamimg2	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/forms/'+(localStorage.myteampic!=undefined && localStorage.myteampic!=null ? localStorage.myteampic : localStorage.myteamid+'a')+'.png')+'>'
     var intimg  	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/forms/n'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'a.png')+'>'
 	var crabimg 	= '<img width=16 height=16 src=\'http://pefladdons.googlecode.com/svn/trunk/img/crab1.png\'>'
 	var sostavimg 	= '<img width=16 height=16 src="system/img/g/sostav.gif">'
