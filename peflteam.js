@@ -247,7 +247,12 @@ function GetInfoPageTm(){
 	team_cur.my		= (team_cur.mname == MyNick ? true : false)
 
 	// Save my team id for script "match"
-	if(team_cur.my) localStorage.myteamid = cid
+	if(team_cur.my) {
+		localStorage.myteamid = cid
+		var pic = ($('table.layer1 td[rowspan=3] img:first').attr('src')).split('/')[3].split('.')[0]
+		if(cid+'a'!=pic) localStorage.myteampic = pic
+		else delete localStorage.myteampic
+	}
 
 	GetFinish('pg_teams', true)
 }
