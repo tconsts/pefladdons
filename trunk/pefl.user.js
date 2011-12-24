@@ -5,7 +5,6 @@
 // @include        http://*pefl.*/*
 // @exclude        http://*pefl.*/profile.php
 // @exclude        http://*pefl.*/auth.php
-// @require        http://pefl.ru/js/jquery-1.3.2.min.js
 // @version        1.0
 // @author         const
 // ==/UserScript==
