@@ -76,7 +76,7 @@ function ChangeFlag(){
 		f[154]='ro';	//Румыния
 		f[155]='ru';	//Россия
 		f[160]='sa';	//Сау. Аравия
-		f[161]='http://pefladdons.googlecode.com/svn/trunk/f-161.gif';	//Шотландия	
+		f[161]='http://pefladdons.googlecode.com/svn/trunk/img/f-161.gif';	//Шотландия	
 		f[166]='sk';	//Словакия
 		f[167]='si';	//Словения
 		f[170]='za';	//ЮАР
@@ -94,7 +94,7 @@ function ChangeFlag(){
 		f[204]='ve';	//Венесуэла
 		f[207]='wl';	//Уэльс
 		f[209]='yu';	//!!Сербия
-		f[214]='http://pefladdons.googlecode.com/svn/trunk/f-214.png';	//Черногория
+		f[214]='http://pefladdons.googlecode.com/svn/trunk/img/f-214.png';	//Черногория
 
 		var img = ''
 		if (f[cid]) img += (cid == 161 || cid ==214 ? f[cid] : 'system/img/flags/f-' + f[cid] + '.gif')
