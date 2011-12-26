@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name           pefllinksostav
+// @name           peflmenu
 // @namespace      pefl
-// @description    add menu link to sostav
+// @description    add menu
 // @include        http://*pefl.*/*
 // @exclude        http://*pefl.*/profile.php
 // @exclude        http://*pefl.*/auth.php
@@ -14,6 +14,14 @@ function UrlValue(key,url){
 }
 
 $().ready(function() {
+
+	// Show new mail
+	var maillast = parseInt(localStorage.maillast)
+	if(!isNaN(maillast)){
+		var mailcur = parseInt($('td.topmenu b:last').html())
+		if(mailcur>maillast) $('td.topmenu b:last').append('<sup>+'+(mailcur-maillast)+'</sup>')
+	}
+
     var teamimg 	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>'
     var teamimg2	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/forms/'+(localStorage.myteampic!=undefined && localStorage.myteampic!=null ? localStorage.myteampic : localStorage.myteamid+'a')+'.png')+'>'
     var intimg  	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/forms/n'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'a.png')+'>'
