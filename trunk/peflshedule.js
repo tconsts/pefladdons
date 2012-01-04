@@ -107,9 +107,10 @@ $().ready(function() {
 					str += (dd.getFullYear()-2000)
 					if(ecup.indexOf(str)!=-1)	img = imgecup
 					if(cup.indexOf(str)!=-1)	img = imgcup
-					str += '&nbsp;' + d
-
-					$(this).append('<tr><td></td><td height=25>'+str.fontcolor('#888A85')+'</td><td></td><td></td><td>'+img+'</td></tr>')
+					if(excl.indexOf(str) == -1){
+						str += '&nbsp;' + d
+						$(this).append('<tr><td></td><td height=25>'+str.fontcolor('#888A85')+'</td><td></td><td></td><td>'+img+'</td></tr>')
+					}
 				}
 				i++
 			}
