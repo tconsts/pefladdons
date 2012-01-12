@@ -33,7 +33,7 @@ function CheckInt(ddn, fl){
 	strn += (ddn.getDate()<10 ? '0' : '' ) + ddn.getDate() + '.'
 	strn += (ddn.getMonth()<9 ? '0' : '') + (ddn.getMonth()+1) + '.'
 	strn += (ddn.getFullYear()-2000)
-	if(int.indexOf(strn)!=-1) return '<tr><td></td><td><i>'+'</i></td><td></td><td></td><td>'+fl+' '+strn.fontcolor('#888A85').fontsize(1)+'</td></tr>'
+	if(int.indexOf(strn)!=-1) return '<tr bgcolor=#a3de8f><td></td><td><i>'+'</i></td><td></td><td></td><td>'+fl+' '+(strn.fontsize(1)).fontcolor('#888A85')+'</td></tr>'
 	return ''
 }
 
