@@ -12,6 +12,11 @@
 
 // ==/UserScript==
 
+if(typeof (deb) == 'undefined') deb = false
+var debnum = 0
+
+function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+
 function filter(criteria){
 		$('.back4 tr').each(function(index,value){
 			if ($(this).html().indexOf('Матч')<0 && $(this).html().indexOf('now')<0){
@@ -23,11 +28,22 @@ function filter(criteria){
 			}
 		})
 }
+function CheckInt(ddn, fl){
+	var strn = ''
+	strn += (ddn.getDate()<10 ? '0' : '' ) + ddn.getDate() + '.'
+	strn += (ddn.getMonth()<9 ? '0' : '') + (ddn.getMonth()+1) + '.'
+	strn += (ddn.getFullYear()-2000)
+	if(int.indexOf(strn)!=-1) return '<tr><td></td><td><i>'+'</i></td><td></td><td></td><td>'+fl+' '+strn.fontcolor('#888A85').fontsize(1)+'</td></tr>'
+	return ''
+}
+
+var int = 	'17.01.12!31.01.12!14.02.12!28.02.12!13.03.12!27.03.12!10.04.12!24.04.12!08.05.12!22.05.12!05.06.12!19.06.12!'
 
 $().ready(function() {
 
 	var imgecup = '<img height=12 src="system/img/g/e.gif">'
-	var imgcup = '<img height=12 src="plugins/s/topcontributors/img/cup-1.gif">'
+	var imgcup  = '<img height=12 src="plugins/s/topcontributors/img/cup-1.gif">'
+	var imgint  = '<img height=11 src="system/img/g/int.gif">'
 	var ecup = 	'16.11.11!25.11.11!02.12.11!14.12.11!19.12.11!26.12.11!13.01.12!18.01.12!25.01.12!03.02.12!13.02.12!20.02.12!27.02.12!12.03.12!19.03.12!02.04.12!09.04.12!23.04.12!07.05.12!18.05.12!25.05.12!01.06.12!'
 	var cup = 	'21.11.11!07.12.11!23.12.11!30.01.12!08.02.12!05.02.12!26.03.12!16.04.12!'
 	var excl = 	'30.12.11!02.01.12!04.01.12!06.01.12!09.01.12!02.05.12!04.05.12!'	
@@ -59,6 +75,7 @@ $().ready(function() {
 			dt[1] = parseInt((dt[1][0]==0? dt[1][1]:dt[1]))-1
 			dt[2] = parseInt((dt[2][0]==0? dt[2][1]:dt[2]))+2000
 
+
 			var curdt = new Date(dt[2],dt[1],dt[0])
 
 			if (curdt.getDate() == today.getDate() && curdt.getMonth() == today.getMonth()) shownow = 1;
@@ -67,23 +84,37 @@ $().ready(function() {
 				var p = (prevdt - curdt)/1000/60/60/24
 				var i=1
 				while ( i < p ){
-					var dd = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
+					var dd  = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
 					var d = day[dd.getDay()]
 					if (d=='пнд' || d=='срд' || d=='птн') {
 						var img = ''
-						var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
+						var str = ''
+						str += (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
 						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
 						str += (dd.getFullYear()-2000)
 						if(ecup.indexOf(str)!=-1)	img = imgecup
 						if(cup.indexOf(str)!=-1)	img = imgcup
 						if(excl.indexOf(str) == -1){
+				            var ddaten = new Date(dd.getTime() + 60*60*24*1000);
+							$(val).parent().before(CheckInt(ddaten,imgint))
+
 							str += '&nbsp;' + d
-							$(val).parent().before('<tr class="freeId"><td></td><td>'+str.fontcolor('#888A85')+'</td><td colspan=2></td><td>'+img+'</td></tr>')
+							var tt = '<tr class="freeId">'
+							tt += '<td></td>'
+							tt += '<td>'+str.fontcolor('#888A85')+'</td>'
+							tt += '<td colspan=2></td>'
+							tt += '<td>'+img+'</td>'
+							tt += '</tr>'
+							$(val).parent().before(tt)
 						}
+						
 					}
 					i++
 				}
 			}
+            var daten = new Date(curdt.getTime() + 60*60*24*1000);
+			$(val).parent().before(CheckInt(daten,imgint))
+
 			var newtext = $(val).text()+'&nbsp;' + day[curdt.getDay()]
 			if (shownow==1) $(val).css("border", "1px solid green");
 			$(val).html(newtext)
