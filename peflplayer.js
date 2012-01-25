@@ -267,7 +267,7 @@ function RememberPl(x){
 	var mark = 1
 	var text = ''
 	for (k in players){
-		if (players[k].id!=undefined && ((k>0 && mark<=10) || (k==0 && x==0))){
+		if (players[k].id!=undefined && ((k>0 && mark<=25) || (k==0 && x==0))){
 			for (i in players[k]) text += i+'_'+mark+'='+players[k][i]+','
 			mark++
 		}
