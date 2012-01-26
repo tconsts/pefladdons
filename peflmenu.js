@@ -17,7 +17,7 @@ $().ready(function() {
 
 	// Show new mail
 	var maillast = parseInt(localStorage.maillast)
-	if(!isNaN(maillast) && !isNaN(localStorage.scripts) && localStorage.scripts.split(':')[16]==0){
+	if(!isNaN(maillast) && localStorage.scripts!=null && localStorage.scripts.split(':')[16]==0){
 		var mailcur = parseInt($('td.topmenu b:last').html())
 		if(mailcur>maillast) $('td.topmenu b:last').append('<sup>+'+(mailcur-maillast)+'</sup>')
 	}
