@@ -16,6 +16,7 @@ var teams = []
 var team_cur = {}
 var m = []
 var remember = 0
+var sumvaluechange = 0
 var save = false
 var db = false
 var list = {
@@ -438,9 +439,9 @@ function ModifyPlayers(){
 		var pl = players[i]
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
-			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form)){
+			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form || pl.value != pl2.value)){
 				remember = 1
-				debug('players:NeedSave '+pl.id+':'+pl.morale +'/'+pl2.morale+':'+pl.form+'/'+pl2.form)
+				debug('players:NeedSave '+pl.id+':'+pl.morale +'/'+pl2.morale+':'+pl.form+'/'+pl2.form+':'+pl.value+'/'+pl2.value)
 				break;
 			}
 		}
@@ -453,22 +454,25 @@ function ModifyPlayers(){
 			if (remember == 1){
 				players[i]['mchange'] = pl.morale - pl2.morale
 				players[i]['fchange'] = pl.form   - pl2.form
+				players[i]['valuech'] = pl.value   - pl2.value
 			} else {
 				players[i]['mchange'] = pl2.mchange
 				players[i]['fchange'] = pl2.fchange
+				players[i]['valuech'] = pl2.valuech
 			}
 			//debug('plCalc '+pl.id+':'+pl.form+'/'+pl.fchange)
 		}
 	}
 	// Update page
 	debug('players:UpdatePage ')
+
 	for(i in players) {
 		var pl = players[i]
 		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(4)').append(ShowChange(pl['mchange']))
-//		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(5)').append(ShowChange(pl['fchange']))
 		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(4)').append(ShowChange(pl['mchange']))
-//		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(5)').append(ShowChange(pl['fchange']))
+		sumvaluechange += pl.valuech/1000
 	}
+	debug('nomch:'+sumvaluechange)
 	// Save if not team21
 	if (remember==1) SaveData('players')
 }
@@ -527,8 +531,8 @@ function PrintRightInfo(){
 	thtml += (team_cur.tvalue!=0 ? ' href="javascript:void(ShowPlayersValue())"' : '')
 	thtml += '>номиналы</a>:</th><th align=right>'
 	thtml += (team_cur.tvalue!=0 ? ShowValueFormat(team_cur.tvalue)+'т' : '<font color=BABDB6>для VIP</font>')
-	thtml += '</th><td width=10%>'
-//	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
+	thtml += '</th><td width=10% id="nomch">&nbsp;'
+	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
 	thtml += '</td></tr>'
 
 	thtml += '<tr id="oszp"><th align=left><a'
