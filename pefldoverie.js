@@ -1,3 +1,11 @@
+// ==UserScript==
+// @name           pefldoverie
+// @namespace      pefl
+// @description    doverie
+// @include        http://*pefl.*/plug.php?p=refl&t=dov&k=*
+// @version        1.0
+// ==/UserScript==
+
 //document.addEventListener('DOMContentLoaded', function(){
 //(function(){
 $().ready(function() {
