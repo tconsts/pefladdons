@@ -1,3 +1,11 @@
+// ==UserScript==
+// @name           peflcontracts
+// @namespace      pefl
+// @description    contracts modification
+// @include        http://*pefl.*/plug.php?p=fin&t=ctr&*
+// @version        1.0
+// ==/UserScript==
+
 $().ready(function() {
 	var szp=0
 	$('td.back4 td').each(function(i,val){
