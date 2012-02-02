@@ -13,8 +13,16 @@ $().ready(function() {
 			szp += +$(val).html().replace('$','')
 		}
 	});
+
+	var addtext = '(за каждого школьника еще по +100$)'
+	var schnum = parseInt(localStorage.schoolnum)
+	if(!isNaN(schnum)){
+		addtext = '(с учетом школьников: '+schnum+')'
+		szp += schnum*100
+	}
+
 	var txt='<br>Сумма зарплат:';
-	var newtxt = '<hr><table width=100%><tr><td width=5%></td><td width=30%></td><td width=10% ALIGN=right  bgcolor=#a3de8f><b>'+String((szp/1000).toFixed(3)).replace('.',',')+'$</b></td><td colspan=2><i>(за каждого школьника еще по +100$)</i></td></tr></table>'+txt;
+	var newtxt = '<hr><table width=100%><tr><td width=5%></td><td width=30%></td><td width=10% ALIGN=right  bgcolor=#a3de8f><b>'+String((szp/1000).toFixed(3)).replace('.',',')+'$</b></td><td colspan=2><i>'+addtext+'</i></td></tr></table>'+txt;
 	
 	$('td.back4').each(function(){
 		if ($(this).html().indexOf(txt) != -1){
