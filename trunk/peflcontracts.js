@@ -17,7 +17,7 @@ $().ready(function() {
 	var addtext = '(за каждого школьника еще по +100$)'
 	var schnum = parseInt(localStorage.schoolnum)
 	if(!isNaN(schnum)){
-		addtext = '(с учетом школьников: '+schnum+')'
+		addtext = '(с учетом школьников: '+schnum+(schnum>0 ? ' по 100$' : '')+')'
 		szp += schnum*100
 	}
 
