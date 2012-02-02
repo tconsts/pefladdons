@@ -13,15 +13,19 @@ function UrlValue(key,url){
 	return false
 }
 
-$().ready(function() {
-
-	// Show new mail
+function CheckNewMail(){
 	var maillast = parseInt(localStorage.maillast)
-	if(!isNaN(maillast) && localStorage.scripts!=null && localStorage.scripts.split(':')[16]==0){
+	if(!isNaN(maillast) && (localStorage.scripts==undefined || (localStorage.scripts!=null && localStorage.scripts.split(':')[16]==0))){
 		var mailcur = parseInt($('td.topmenu b:last').html())
 		if(mailcur>maillast) $('td.topmenu b:last').append('<sup>+'+(mailcur-maillast)+'</sup>')
 	}
+}
 
+function SetNumShcoolers(){
+	localStorage.schoolnum = $('td.back4 table table:eq(0) tr').length + $('td.back4 table table:eq(1) tr').length
+}
+
+$().ready(function() {
     var teamimg 	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>'
     var teamimg2	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/forms/'+(localStorage.myteampic!=undefined && localStorage.myteampic!=null ? localStorage.myteampic : localStorage.myteamid+'a')+'.png')+'>'
     var intimg  	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/forms/n'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'a.png')+'>'
@@ -37,5 +41,8 @@ $().ready(function() {
 	crab += crabimg +	' <a href="/forums.php?m=posts&q=173605">Crab Форум</a><br>'
 	crab += '<hr>'
 	$('td.back3 table td:first span.text1 hr:eq(4)').after(crab)
+
+	CheckNewMail()
+	if (UrlValue("t")=="school") SetNumShcoolers()
 
 });
