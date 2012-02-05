@@ -312,7 +312,7 @@ function showData(){
 				}
 				debug('trn'+j+i+':'+trn[j][i])
 				if (j<5 && trn[j][i]!=undefined && String(trn[j][i])!='false'){
-					if(i==0) ht = '<td id="sum'+j+'"><b>'+(parseInt(trn[j][i])<10?'0':'')+trn[j][i]+'</b></td>' + ht
+					if(i==0) ht = '<td id="sum'+j+'"><b>'+trn[j][i]+'</b></td>' + ht
 					else	 ht = '<td>'+(sp=='-' ? '<font color="red">' : (sp=='+' ? '<font color="green">' : ''))+((parseFloat(trn[j][i])).toFixed(2) + raz).fontsize(1)+(sp==''?'':'</font>')+'</td>' + ht
 				}
 				trnt = trn[j][i]
