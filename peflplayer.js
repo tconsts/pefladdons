@@ -370,6 +370,7 @@ function CheckPlayer(nn){
 	$('div#th0').before(header)
 
 	var skillupsumm = 0
+	var skillupsumm2 = 0
 	// Skills:
 	$('td.back4 table:first table:not(#plheader):first td:even').each(function(i, val){
 		var skillname = sklfr[$(val).text()]
@@ -377,8 +378,10 @@ function CheckPlayer(nn){
 		var skillvalue1 = (players[nn][skillname] == undefined ? '??' : players[nn][skillname])
 		var skillup0 = parseInt(skillvalue0)*7 + parseInt(ups[String(skillvalue0).split('.')[1]])
 		var skillup1 = parseInt(skillvalue1)*7 + parseInt(ups[String(skillvalue1).split('.')[1]])
+		var skillup2 = parseInt(skillvalue1)*7 + parseInt(ups[(String(skillvalue1).split('.')[1] == 'next' ? 'a1e' : String(skillvalue1).split('.')[1])])
 		var raz = parseInt(skillvalue0)-parseInt(skillvalue1)
 		skillupsumm += skillup0 - skillup1
+		skillupsumm2 += skillup0 - skillup2
 		var razcolor = 'red'
 		if(raz == 0 || isNaN(raz)) raz = '&nbsp;&nbsp;&nbsp;&nbsp;'
 		else if (raz>0) {
@@ -402,13 +405,14 @@ function CheckPlayer(nn){
 			.after(skilltext)
 	})
 	if(players[0].id == players[nn].id && (players[0].t == 'yp' || players[0].t == 'yp2')){
-		var skilltext =  '<tr><td colspan=6>&nbsp;</td></tr><tr><td colspan=6 align=center><b>Изменения</b>(апы): '
-		if (skillupsumm > 0){
-			skilltext +=  '<font color="green">+' + skillupsumm + '</font>'
-		} else if (skillupsumm < 0){
-			skilltext +=  '<font color="red">' + skillupsumm + '</font>'
-		} else skilltext += ' нет'
-		skilltext += '</td></tr><tr><td colspan=6>&nbsp;</td></tr>'
+		var skilltext =  '<tr><td colspan=6>&nbsp;</td></tr>'
+		skilltext += '<tr><td colspan=6 align=center><b>Изменения</b> (апы): '
+		skilltext +=  '<font color='+(skillupsumm < 0 ? 'red' : 'green')+'>'+ (skillupsumm > 0 ? '+' : '') + skillupsumm + '</font>'
+		skilltext += '</td></tr>'
+		skilltext += '<tr><td colspan=6 align=center><b>зел = жел</b> (апы): '
+		skilltext +=  '<font color="'+(skillupsumm2 < 0 ? 'red' : 'green')+'">'+ (skillupsumm2 > 0 ? '+' : '') + skillupsumm2 + '</font>'
+		skilltext += '</td></tr>'
+		skilltext += '<tr><td colspan=6>&nbsp;</td></tr>'
 		$('td.back4 table:first table:not(#plheader):eq(0)').append(skilltext)
 	}
 
