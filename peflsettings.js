@@ -9,7 +9,7 @@ if(typeof (deb) == 'undefined') deb = false
 var debnum = 0
 
 var flag = '<img height=13 src="/system/img/g/tick.gif"></img>'
-var scflags = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1'.split(':')
+var scflags = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:1'.split(':')
 var scnames = [
 	{'name':'Настройки',			'desc':''},
 	{'name':'Состав +',				'desc':''},
@@ -22,7 +22,7 @@ var scnames = [
 	{'name':'Финансы',				'desc':''},
 	{'name':'Состав на матч',		'desc':'команда и сборная'},
 	{'name':'Рейтинг школ',			'desc':''},
-	{'name':'Ненужные',				'desc':'удален так как реализован на проекте'},
+	{'name':'Ненужные',				'desc':'удален так как реализован на проекте','del':true},
 	{'name':'История',				'desc':''},
 	{'name':'Кредит доверия',		'desc':''},
 	{'name':'Матч',					'desc':''},
@@ -31,7 +31,8 @@ var scnames = [
 	{'name':'Тренировки',			'desc':''},
 	{'name':'Турниры',				'desc':''},
 	{'name':'Календарь',			'desc':''},
-	{'name':'Форум',				'desc':'пока в разработке, недоделан'}
+	{'name':'Форум',				'desc':'пока в разработке, недоделан'},
+	{'name':'Рефери',				'desc':'пока в разработке, недоделан'}
 ]
 
 $().ready(function() {
@@ -45,7 +46,7 @@ $().ready(function() {
 		html += '<tr bgcolor=#A3DE8F>'
 		html += '<td>'+i+'</td>'
 		html += '<th id="f'+i+'">'+(parseInt(scflags[i])==0 ? flag : '')+'</th>'
-		html += '<td colspan=2><a href="javascript:void(SwitchScFlag('+i+'))">'+scnames[i].name+'</a></td>'
+		html += '<td colspan=2>'+(scnames[i].del ? scnames[i].name : '<a href="javascript:void(SwitchScFlag('+i+'))">'+scnames[i].name+'</a>')+'</td>'
 		html += '<td><i>'+scnames[i].desc+'</i></td>'
 		html += '</tr>'
 	}

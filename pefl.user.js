@@ -5,7 +5,7 @@
 // @include        http://*pefl.*/*
 // @exclude        http://*pefl.*/profile.php
 // @exclude        http://*pefl.*/auth.php
-// @version        1.0
+// @version        1.1
 // @author         const
 // ==/UserScript==
 
@@ -20,7 +20,7 @@ headID.appendChild(newScriptMenu);
 var url1 = location.pathname.substring(1)
 var url2 = location.search.substring(1)
 
-var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1'.split(':')
+var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:1'.split(':')
 if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflag = localStorage.scripts.split(':')
 
 // 0 Settings
@@ -45,7 +45,7 @@ if(scflag[2]==0 && (url2.indexOf('p=refl&t=p')!=-1 || url2.indexOf('p=refl&t=yp'
 	headID.appendChild(newScriptPlayer);
 }
 //3 Contracts
-if(scflag[3]==0 && url2.indexOf('p=fin&t=ctr&')!=-1){
+if(scflag[3]==0 && (url2.indexOf('p=fin&t=ctr&')!=-1 || url2.indexOf('p=tr&')!=-1)){
 	var newScriptContract = document.createElement('script');
 	newScriptContract.type = 'text/javascript';
 	newScriptContract.src = 'http://pefladdons.googlecode.com/svn/trunk/peflcontracts.js';
@@ -169,4 +169,11 @@ if(scflag[20]==0 && url1=='forums.php' && url2.indexOf('m=posts')!=-1){
 	newScriptForum.type = 'text/javascript';
 	newScriptForum.src = 'http://pefladdons.googlecode.com/svn/trunk/peflforum.js';
 	headID.appendChild(newScriptForum);
+}
+// 21 referee
+if(scflag[21]==0 && url2.indexOf('t=ref&')!=-1){
+	var newScriptRef = document.createElement('script');
+	newScriptRef.type = 'text/javascript';
+	newScriptRef.src = 'http://pefladdons.googlecode.com/svn/trunk/peflref.js';
+	headID.appendChild(newScriptRef);
 }
