@@ -16,7 +16,7 @@ $().ready(function() {
 
 	var addtext = '(за каждого школьника еще по +100$)'
 	var schnum = parseInt(localStorage.schoolnum)
-	if(!isNaN(schnum)){
+	if(!isNaN(schnum) && !UrlValue("j")){
 		addtext = '(с учетом школьников: '+schnum+(schnum>0 ? ' по 100$' : '')+')'
 		szp += schnum*100
 	}
@@ -31,3 +31,9 @@ $().ready(function() {
 		}
 	});
 });
+
+function UrlValue(key,url){
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
+	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
+	return false
+}
