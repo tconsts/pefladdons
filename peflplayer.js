@@ -7,7 +7,83 @@
 // ==/UserScript==
 /**/
 
-//(function(){ // for ie
+if(typeof (deb) == 'undefined') deb = false
+var debnum = 0
+var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+var db = false
+
+function SetValue(vl,vlch){
+	debug('SetValue')
+	debug(vl+':'+vlch)
+}
+
+function GetValue(){
+	debug('GetValue')
+	debug('myteam:'+localStorage.myteamid)
+	debug('teamid:'+players[0].teamid)
+	if(localStorage.myteamid == players[0].teamid){
+		var list = {'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name'}
+		var head = list['players'].split(',')
+		if(ff){
+			var text1 = String(globalStorage[location.hostname]['players'])
+			if (text1 != 'undefined'){
+				var text = text1.split('#')
+				for (i in text) {
+					var x = text[i].split('|')
+					var curt = {}
+					var num = 0
+					for(j in head){
+						curt[head[j]] = (x[num]!=undefined ? x[num] : '')
+						num++
+					}
+					if(curt['id']==players[0].id) UpdateValue(parseInt(curt['value']),parseInt(curt['valuech']))
+				}
+			}
+		}else{
+			if(!db) DBConnect()
+			db.transaction(function(tx) {
+				tx.executeSql("SELECT * FROM players",[],
+					function(tx, result){
+						for(var i = 0; i < result.rows.length; i++) {
+							var row = result.rows.item(i)
+							if(row['id']==players[0].id) UpdateValue(row['value'],row['valuech'])
+						}
+					},
+					function(tx, error) {debug(error.message)}
+				);                                           
+			})		
+		}
+	}
+}
+
+function UpdateValue(vl,vlch){
+	debug('UpdateValue')
+	debug(vl+':'+vlch)
+	if(vl!=players[0].value){
+		vlch = players[0].value - vl
+		SetValue(vl,vlch)
+		PrintValue(vlch)
+	}else if(vlch!=0){
+		PrintValue(vlch)
+	}
+}
+function PrintValue(vlch){
+	debug(vlch)
+	var ttext = $('td.back4 table center:first').html().split('<br>')
+	for(i in ttext){
+		if(ttext[i].indexOf('Номинал')!=-1) ttext[i]=ttext[i]+(vlch==0?'':' </b><sup>'+(vlch>0 ? '<font color=green>+'+vlch/1000 : '<font color=red>'+vlch/1000)+'</font></sup><b>')
+	}
+	$('td.back4 table center:first').html(ttext.join('<br>'))
+	
+}
+
+function DBConnect(){
+	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
+	if(!db) {debug('Open DB PEFL fail.');return false;} 
+	else 	{debug('Open DB PEFL ok.')}
+}
+
+function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
 function GetPlayerHistory(n,pid){
 	var stats = []
@@ -842,7 +918,7 @@ $().ready(function() {
 
 	players[0].t = UrlValue('t')
 
-	if (players[0].t =='p') {
+	if (players[0].t =='p' ||players[0].t =='pp') {
 		players[0].teamid = UrlValue('j',$('td.back4 a:first').attr('href'))
 		players[0].teamhash = UrlValue('z',$('td.back4 a:first').attr('href'))
 
@@ -1047,7 +1123,7 @@ $().ready(function() {
 
 	// Draw left panel and fill data
 	var preparedhtml = ''
-	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
+	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 	preparedhtml += '</td></tr></table>'
 	$('body table.border:last').before(preparedhtml)
@@ -1082,6 +1158,7 @@ $().ready(function() {
 		PrintPlayers()
 	}
 	GetPlayerHistory(0,players[0].id)
+	GetValue()
 
 }, false)
 //})();	// for ie
