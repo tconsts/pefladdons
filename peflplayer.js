@@ -59,11 +59,11 @@ function GetValue(){
 function UpdateValue(vl,vlch){
 	debug('UpdateValue')
 	debug(vl+':'+vlch)
-	if(vl!=players[0].value){
+	if(vl!=players[0].value && vl!=0){
 		vlch = players[0].value - vl
-		SetValue(vl,vlch)
-		PrintValue(vlch)
-	}else if(vlch!=0){
+		if(UrlValue('t')=='p') SetValue(players[0].value,vlch)
+	}
+	if(vlch!=0 && vl!=0){
 		PrintValue(vlch)
 	}
 }
