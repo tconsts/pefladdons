@@ -139,8 +139,15 @@ $().ready(function() {
 					if(ecup.indexOf(str)!=-1)	img = imgecup
 					if(cup.indexOf(str)!=-1)	img = imgcup
 					if(excl.indexOf(str) == -1){
+			            var ddn = new Date(dd.getTime() + 60*60*24*1000);
+						var strn = ''
+						var strint = ''
+						strn += (ddn.getDate()<10 ? '0' : '' ) + ddn.getDate() + '.'
+						strn += (ddn.getMonth()<9 ? '0' : '') + (ddn.getMonth()+1) + '.'
+						strn += (ddn.getFullYear()-2000)
+						if(int.indexOf(strn)!=-1) strint = '<tr bgcolor=#a3de8f><td></td><td><i>'+'</i></td><td></td><td></td><td>'+imgint+' '+(strn.fontsize(1)).fontcolor('#888A85')+'</td></tr>'
 						str += '&nbsp;' + d
-						$(this).append('<tr><td></td><td height=25>'+str.fontcolor('#888A85')+'</td><td></td><td></td><td>'+img+'</td></tr>')
+						$(this).append(strint + '<tr><td></td><td height=25>'+str.fontcolor('#888A85')+'</td><td></td><td></td><td>'+img+'</td></tr>')
 					}
 				}
 				i++
