@@ -71,7 +71,7 @@ function PrintValue(vlch){
 	debug(vlch)
 	var ttext = $('td.back4 table center:first').html().split('<br>')
 	for(i in ttext){
-		if(ttext[i].indexOf('Номинал')!=-1) ttext[i]=ttext[i]+(vlch==0?'':' </b><sup>'+(vlch>0 ? '<font color=green>+'+vlch/1000 : '<font color=red>'+vlch/1000)+'</font></sup><b>')
+		if(ttext[i].indexOf('Номинал')!=-1) ttext[i]=ttext[i]+(vlch==0?'':' <sup>'+(vlch>0 ? '<font color=green>+'+vlch/1000 : '<font color=red>'+vlch/1000)+'</font></sup>')
 	}
 	$('td.back4 table center:first').html(ttext.join('<br>'))
 	
@@ -582,6 +582,10 @@ function CodeForForum(){
 			.replace(/\&amp\;/g,'&')
 			.replace(/"/g,'')
 			.replace(/\[br\]/g,'\n')
+			.replace(/\[sup\]/g,'(')
+			.replace(/\[\/sup\]/g,')')
+			.replace(/font /g,'')
+			.replace(/font/g,'color')
 		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+pl.position+'[b]'
 		if(pl.newpos != '' && pl.newpos != undefined) x += '[/b] (' +pl.newpos + ')[b]'
 		x += '\n\nУмения[/b](сс='+pl.sumskills+')[/center]'
