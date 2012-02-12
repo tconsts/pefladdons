@@ -7,7 +7,7 @@
 // @version		    2.0
 // ==/UserScript==
 
-if(typeof (deb) == 'undefined') deb = false
+deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 var db = false
 var divs = []

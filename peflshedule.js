@@ -12,7 +12,7 @@
 
 // ==/UserScript==
 
-if(typeof (deb) == 'undefined') deb = false
+deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}

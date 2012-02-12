@@ -5,7 +5,7 @@
 // @include        http://*pefl.*/?settings
 // ==/UserScript==
 
-if(typeof (deb) == 'undefined') deb = false
+deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var flag = '<img height=13 src="/system/img/g/tick.gif"></img>'
