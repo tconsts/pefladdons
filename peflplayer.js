@@ -7,14 +7,36 @@
 // ==/UserScript==
 /**/
 
-if(typeof (deb) == 'undefined') deb = false
+deb = (localStorage.debug == '1' ? true : false)
+
 var debnum = 0
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var db = false
 
 function SetValue(vl,vlch){
-	debug('SetValue')
-	debug(vl+':'+vlch)
+	debug('SetValue:'+vl/1000+':'+vlch/1000+':'+players[0].id)
+	if(UrlValue('t')=='p') {
+		if(ff){
+			var text1 = String(globalStorage[location.hostname]['players']).split('#')
+			for (i in text1){
+				if(parseInt(text1[i].split('|')[0])==players[0].id){
+					var text2 = text1[i].split('|')
+					text2[7] = vl
+					text2[8] = vlch
+					text1[i] = text2.join('|')
+				}
+			}
+			globalStorage[location.hostname]['players'] = text1.join('#')
+		}else{
+			if(!db) DBConnect()			
+			db.transaction(function(tx) {
+				tx.executeSql("UPDATE players SET value='"+vl+"', valuech='"+vlch+"' WHERE id='"+players[0].id+"'",[],
+					function(tx, result){debug('saved!')},
+					function(tx, error) {debug(error.message)}
+				);                                           
+			})		
+		}		
+	}
 }
 
 function GetValue(){
@@ -57,24 +79,28 @@ function GetValue(){
 }
 
 function UpdateValue(vl,vlch){
-	debug('UpdateValue')
-	debug(vl+':'+vlch)
-	if(vl!=players[0].value && vl!=0){
-		vlch = players[0].value - vl
-		if(UrlValue('t')=='p') SetValue(players[0].value,vlch)
+	debug('UpdateValue:'+vl/1000+':'+vlch/1000)
+	if(vl==0){
+		SetValue(players[0].value,0)
+	}else{
+		if(vl!=players[0].value){
+			debug(vl+'!='+players[0].value)
+			players[0].valuech = players[0].value - vl
+			SetValue(players[0].value,players[0].valuech)
+		}else{
+			players[0].valuech = vlch
+		}
+		if(players[0].valuech!=0) PrintValue(players[0].valuech)
 	}
-	if(vlch!=0 && vl!=0){
-		PrintValue(vlch)
-	}
+	//SetValue(1595000,465000)
 }
 function PrintValue(vlch){
-	debug(vlch)
+	debug('PrintValue:'+vlch/1000)
 	var ttext = $('td.back4 table center:first').html().split('<br>')
 	for(i in ttext){
 		if(ttext[i].indexOf('Номинал')!=-1) ttext[i]=ttext[i]+(vlch==0?'':' <sup>'+(vlch>0 ? '<font color=green>+'+vlch/1000 : '<font color=red>'+vlch/1000)+'</font></sup>')
 	}
 	$('td.back4 table center:first').html(ttext.join('<br>'))
-	
 }
 
 function DBConnect(){
@@ -979,6 +1005,8 @@ $().ready(function() {
 	} else {
 		players[0].value = 0
 	}
+	players[0].valuech = 0
+
 	if (ms[j].indexOf('Клуб требует:') != -1) {
 		j++
 		players[0].sale = 1
