@@ -8,7 +8,7 @@
 
 // 10й сезон, матч с которго считается сыгранность и СвУс: http://www.pefl.ru/plug.php?p=refl&t=if&j=602078&z=a72e875256e6b57eb52e95dbd2d1b152
 
-if(typeof (deb) == 'undefined') deb = false
+deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var ttime = []
