@@ -420,6 +420,8 @@ function GetInfoPagePl(){
 		players[pid].form	= parseInt($(val).find('td:eq(5)').html())
 		players[pid].fchange= 0
 		players[pid].position= $(val).find('td:eq(11)').html()
+		players[pid].value 	= 0
+		players[pid].valuech= 0
 
 		if(eurl==undefined || UrlValue('h')==1){
 			Ready()
@@ -439,7 +441,7 @@ function ModifyPlayers(){
 		var pl = players[i]
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
-			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form || pl.value != pl2.value)){
+			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form || (pl.value!=0 && pl.value != pl2.value))){
 				remember = 1
 				debug('players:NeedSave '+pl.id+':'+pl.morale +'/'+pl2.morale+':'+pl.form+'/'+pl2.form+':'+pl.value+'/'+pl2.value)
 				break;
@@ -454,7 +456,11 @@ function ModifyPlayers(){
 			if (remember == 1){
 				players[i]['mchange'] = pl.morale - pl2.morale
 				players[i]['fchange'] = pl.form   - pl2.form
-				players[i]['valuech'] = pl.value   - pl2.value
+				if(pl.value!=0) {
+					players[i]['valuech'] = pl.value   - pl2.value
+				}else {
+					if(pl2.value>0) players[i]['value'] = pl2.value
+				}
 			} else {
 				players[i]['mchange'] = pl2.mchange
 				players[i]['fchange'] = pl2.fchange
