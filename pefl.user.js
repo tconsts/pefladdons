@@ -143,7 +143,7 @@ if(scflag[16]==0 && url1=='pm.php'){
 	headID.appendChild(newScriptMail);
 }
 // 17 Training
-if(scflag[17]==0 && url2.indexOf('p=training')!=-1){
+if(scflag[17]==0 && (url2.indexOf('p=training')!=-1 || url2.indexOf('p=trainplan')!=-1){
 	var newScriptTrain = document.createElement('script');
 	newScriptTrain.type = 'text/javascript';
 	newScriptTrain.src = 'http://pefladdons.googlecode.com/svn/trunk/pefltraining.js';
