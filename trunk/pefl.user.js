@@ -20,7 +20,7 @@ headID.appendChild(newScriptMenu);
 var url1 = location.pathname.substring(1)
 var url2 = location.search.substring(1)
 
-var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:1'.split(':')
+var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0'.split(':')
 if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflag = localStorage.scripts.split(':')
 
 // 0 Settings
@@ -143,7 +143,7 @@ if(scflag[16]==0 && url1=='pm.php'){
 	headID.appendChild(newScriptMail);
 }
 // 17 Training
-if(scflag[17]==0 && (url2.indexOf('p=training')!=-1 || url2.indexOf('p=trainplan')!=-1){
+if(scflag[17]==0 && (url2.indexOf('p=training')!=-1 || url2.indexOf('p=trainplan')!=-1)){
 	var newScriptTrain = document.createElement('script');
 	newScriptTrain.type = 'text/javascript';
 	newScriptTrain.src = 'http://pefladdons.googlecode.com/svn/trunk/pefltraining.js';
