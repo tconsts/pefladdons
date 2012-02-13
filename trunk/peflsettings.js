@@ -9,7 +9,7 @@ deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var flag = '<img height=13 src="/system/img/g/tick.gif"></img>'
-var scflags = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:1'.split(':')
+var scflags = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0'.split(':')
 var scnames = [
 	{'name':'Настройки',			'desc':''},
 	{'name':'Состав +',				'desc':''},
@@ -32,7 +32,7 @@ var scnames = [
 	{'name':'Турниры',				'desc':''},
 	{'name':'Календарь',			'desc':''},
 	{'name':'Форум',				'desc':'пока в разработке, недоделан'},
-	{'name':'Рефери',				'desc':'пока в разработке, недоделан'}
+	{'name':'Рефери',				'desc':'позволяет сортировку страницы списка рефери'}
 ]
 
 $().ready(function() {
