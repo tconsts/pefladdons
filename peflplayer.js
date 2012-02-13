@@ -90,9 +90,8 @@ function UpdateValue(vl,vlch){
 		}else{
 			players[0].valuech = vlch
 		}
-		if(players[0].valuech!=0) PrintValue(players[0].valuech)
+		if(players[0].valuech!=0 && !isNaN(players[0].valuech)) PrintValue(players[0].valuech)
 	}
-	//SetValue(1595000,465000)
 }
 function PrintValue(vlch){
 	debug('PrintValue:'+vlch/1000)
