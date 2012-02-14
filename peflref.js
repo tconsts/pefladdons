@@ -19,6 +19,7 @@ $().ready(function() {
 	$('table#t1 th:eq(4)').append(' (<a href="javascript:void(PrintTable(\'ycr\'))">#</a>)')
 	$('table#t1 th:eq(5)').html('<a href="javascript:void(PrintTable(\'rcn\'))">'+$('table#t1 th:eq(5)').html()+'</a>')
 	$('table#t1 th:eq(5)').append(' (<a href="javascript:void(PrintTable(\'rcr\'))">#</a>)')
+	$('table#t1 tr:eq(0)').append('<th><a href="javascript:void(PrintTable(\'acr\'))">жк+кк*3</a> (<a href="javascript:void(PrintTable(\'acr\'))">#</a>)</th>')
 
 	$('td.back4 table table tr:gt(0)').each(function(){
 		var id = 0
@@ -45,6 +46,8 @@ $().ready(function() {
 				case 5:
 					refs[id].rcn = parseInt($(val).html())
 					refs[id].rcr = parseFloat($(val).html().split('(')[1])
+					refs[id].acn = refs[id].ycn + refs[id].rcn*3
+					refs[id].acr = refs[id].acn/refs[id].games
 					break;
 				default:
 					break;
@@ -65,7 +68,7 @@ function PrintTable(sorting){
 	for (i in refs){
 		num++
 		rf = refs[i]
-		var tr = '<tr align=left><td>'+rf.id+'</td><td>'+rf.name+'</td><td align=center><img src="system/img/flags/'+rf.nid+'.gif" width="30"></td><td>'+rf.games+'</td><td>'+rf.ycn+' ('+rf.ycr+')'+'</td><td>'+rf.rcn+' ('+rf.rcr+')'+'</td></tr>'
+		var tr = '<tr align=left><td>'+rf.id+'</td><td>'+rf.name+'</td><td align=center><img src="system/img/flags/'+rf.nid+'.gif" width="30"></td><td>'+rf.games+'</td><td>'+rf.ycn+' ('+rf.ycr+')'+'</td><td>'+rf.rcn+' ('+rf.rcr+')'+'</td><td>'+rf.acn+' ('+(rf.acr).toFixed(2)+')'+'</td></tr>'
 		$('table#t1').append(tr)
 	}
 	$('table#t1 tr:gt(0):odd').attr('bgcolor','#a3de8f')
