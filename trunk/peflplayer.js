@@ -9,7 +9,7 @@
 
 deb = (localStorage.debug == '1' ? true : false)
 
-localStorage.debug = 1
+//if(localStorage.debug == 1) 
 
 var debnum = 0
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
