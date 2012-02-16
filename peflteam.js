@@ -250,6 +250,7 @@ function GetInfoPageTm(){
 	// Save my team id for script "match"
 	if(team_cur.my) {
 		localStorage.myteamid = cid
+		localStorage.mycountry = team_cur.ncode+'.'+team_cur.nname
 		var pic = ($('table.layer1 td[rowspan=3] img:first').attr('src')).split('/')[3].split('.')[0]
 		if(cid+'a'!=pic) localStorage.myteampic = pic
 		else delete localStorage.myteampic
