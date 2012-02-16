@@ -7,9 +7,9 @@
 // ==/UserScript==
 /**/
 
-deb = (localStorage.debug == '1' ? true : false)
+if(localStorage.debug == 1) delete localStorage.debug
 
-//if(localStorage.debug == 1) 
+deb = (localStorage.debug == '1' ? true : false)
 
 var debnum = 0
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
