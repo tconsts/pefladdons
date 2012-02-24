@@ -604,7 +604,7 @@ function EditSkillsPage(){
 	$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
 	$('table#tblRostSkills')
 		.attr('width','886')
-		.find('td:contains("*")').attr('bgcolor','F57900').end()
+		.find('td:contains("*")').attr('bgcolor','white').end()
 		.find('img').attr('height','10').end()
 		.find('tr').each(function(){
 			$(this).attr('height','20').find('td:eq(1)').html(
