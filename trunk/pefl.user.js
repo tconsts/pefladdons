@@ -20,7 +20,7 @@ headID.appendChild(newScriptMenu);
 var url1 = location.pathname.substring(1)
 var url2 = location.search.substring(1)
 
-var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0'.split(':')
+var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0:0'.split(':')
 if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflag = localStorage.scripts.split(':')
 
 // 0 Settings
@@ -176,4 +176,11 @@ if(scflag[21]==0 && url2.indexOf('t=ref&')!=-1){
 	newScriptRef.type = 'text/javascript';
 	newScriptRef.src = 'http://pefladdons.googlecode.com/svn/trunk/peflref.js';
 	headID.appendChild(newScriptRef);
+}
+// 22 adaptation
+if(scflag[22]==0 && url2=='adaptation'){
+	var newScriptAd = document.createElement('script');
+	newScriptAd.type = 'text/javascript';
+	newScriptAd.src = 'http://pefladdons.googlecode.com/svn/trunk/pefladaptation.js';
+	headID.appendChild(newScriptAd);
 }

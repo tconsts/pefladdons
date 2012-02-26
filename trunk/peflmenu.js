@@ -32,12 +32,14 @@ $().ready(function() {
 	var crabimg 	= '<img width=16 height=16 src=\'http://pefladdons.googlecode.com/svn/trunk/img/crab1.png\'>'
 	var sostavimg 	= '<img width=16 height=16 src="system/img/g/sostav.gif">'
 	var settingimg 	= '<img width=16 height=16 src="system/img/g/stats.gif"></img>'
+	var adaptimg 	= '<img width=16 height=16 src="system/img/g/scout.gif"></img>'
 	var crab = new String()
 	crab += '<div align=center><b>CrabVIP</b></div>'
 	crab += settingimg+	' <a href=\'/?settings\'>Настройки</a><br>'
 	crab += teamimg +	' <a href=\'/?sostav\'>Состав +</a><br>'
 	crab += teamimg2+	' <a href=\'/?team\'>На форум(ком)</a><br>'
-	crab += intimg +	' <a href=\'/?team_n\'>На форум(сбр)</a><br>'
+	crab += intimg 	+	' <a href=\'/?team_n\'>На форум(сбр)</a><br>'
+	crab += adaptimg+	' <a href=\'/?adaptation\'>Адаптация</a><br>'
 	crab += crabimg +	' <a href="/forums.php?m=posts&q=173605">Crab Форум</a><br>'
 	crab += '<hr>'
 	$('td.back3 table td:first span.text1 hr:eq(4)').after(crab)
