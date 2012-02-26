@@ -9,7 +9,7 @@ deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var flag = '<img height=13 src="/system/img/g/tick.gif"></img>'
-var scflags = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0'.split(':')
+var scflags = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0:0'.split(':')
 var scnames = [
 	{'name':'Настройки',			'desc':''},
 	{'name':'Состав +',				'desc':''},
@@ -32,7 +32,8 @@ var scnames = [
 	{'name':'Турниры',				'desc':''},
 	{'name':'Календарь',			'desc':''},
 	{'name':'Форум',				'desc':'пока в разработке, недоделан'},
-	{'name':'Рефери',				'desc':'позволяет сортировку страницы списка рефери'}
+	{'name':'Рефери',				'desc':'позволяет сортировку страницы списка рефери'},
+	{'name':'Адаптация',			'desc':'Карта адаптации в цифрах'}
 ]
 
 $().ready(function() {
@@ -51,6 +52,7 @@ $().ready(function() {
 		html += '</tr>'
 	}
 	html += '</table>'
+	html += '<br><br>&nbsp;* - <i>при появлении нового скрипта, чтобы он заработал, требуется переустановить(поставить поверх) основной скрипт: <a href="http://pefladdons.googlecode.com/svn/trunk/pefl.user.js">pefl.user.js</a>.'
 	$('td.back4').append(html)
 });
 
