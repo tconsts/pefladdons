@@ -219,22 +219,31 @@ var peflnation ={
 
 var peflcountry=[1,2,8,9,11,12,13,18,19,24,25,27,30,41,42,44,47,48,50,51,53,58,59,61,64,66,69,70,73,74,76,84,87,88,91,93,94,95,98,100,105,111,122,123,126,129,137,139,145,147,149,150,152,154,155,160,161,166,167,170,171,172,180,181,191,192,195,196,200,201,202,204,96,207,209,214]
 var pfc = []
-$().ready(function(){$.getScript("js/adaptation.en.js", function() {
-	for (f=0;f<76;f++) {
-		pfc[f] = []
-		for(i in peflnation) pfc[f][i] = {'name':peflnation[i]}
-	}
+$().ready(function(){
 	$('td.back4').html('<b>Карта адаптации</b><br>')
-	for (i in s_adaptationMap) for(j in s_adaptationMap[i]) pfc[j][i]['num'] = parseInt(s_adaptationMap[i][j])
-	PrintAd()
-});});
+	$.getScript("js/adaptation.en.js", function() {
+		for (f=0;f<76;f++) {
+			pfc[f] = []
+			for(i in peflnation) pfc[f][i] = {'name':peflnation[i]}
+		}
+		for (i in s_adaptationMap) for(j in s_adaptationMap[i]) pfc[j][i]['num'] = parseInt(s_adaptationMap[i][j])
+		PrintAd()
+	});
+});
+
+function sNum(i, ii) { // По SumSkills (убыванию)
+    if 		(i.num < ii.num)	return  1
+    else if	(i.num > ii.num)	return -1
+    else						return  0
+}
 
 function PrintAd(){
 	var mtext = ''
 	for( i in pfc){
-		var text = '<tr class="cname" bgcolor=A3DE8F><td colspan=2><a href="javascript:void(ShowC(\''+i+'\'))">'+peflnation[peflcountry[i]]+' ('+s_adaptationResultList[i]+')</a></td></tr>'
-		for(j in pfc[i]){
-			text+= '<tr class="c'+i+'"'+(parseInt(localStorage.mycountry) == peflcountry[i] ? '' : ' style="display: none;"')+'><td align=right width=10%>'+pfc[i][j]['num'] +'0%</td><td>'+ pfc[i][j]['name']+'</td></tr>'
+		var text = '<tr class="cname" bgcolor=A3DE8F><td colspan=2><a href="javascript:void(ShowC(\''+i+'\'))">'+s_adaptationResultList[i]+' ('+peflnation[peflcountry[i]]+')</a></td></tr>'
+		var pfcs = pfc[i].sort(sNum)
+		for(j in pfcs){
+			text+= '<tr class="c'+i+'"'+(parseInt(localStorage.mycountry) == peflcountry[i] ? '' : ' style="display: none;"')+'><td align=right width=10%>'+pfcs[j]['num'] +'0%</td><td>'+ pfcs[j]['name']+'</td></tr>'
 		}
 		if(parseInt(localStorage.mycountry) == peflcountry[i]) mtext = text+mtext
 		else mtext += text
