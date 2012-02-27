@@ -6,6 +6,84 @@
 // @version        1.0
 // ==/UserScript==
 
+var nationteamnum = {
+214:12,
+209:36,
+207:18,
+204:22,
+202:16,
+201:20,
+200:36,
+196:28,
+195:12,
+192:38,
+191:12,
+181:28,
+180:32,
+172:66,
+171:28,
+170:26,
+167:24,
+166:24,
+161:42,
+160:12,
+155:110,
+154:18,
+152:12,
+150:36,
+149:36,
+147:12,
+145:12,
+139:32,
+137:12,
+129:16,
+126:16,
+123:10,
+122:34,
+111:20,
+105:20,
+100:20,
+98:52,
+96:14,
+95:78,
+94:24,
+93:22,
+91:16,
+88:24,
+87:32,
+84:38,
+76:34,
+74:76,
+73:20,
+70:60,
+69:24,
+66:12,
+64:20,
+61:114,
+59:26,
+58:28,
+53:44,
+51:32,
+50:14,
+48:32,
+47:12,
+44:36,
+42:28,
+41:16,
+30:32,
+27:62,
+25:16,
+24:28,
+19:68,
+18:36,
+13:24,
+12:38,
+11:20,
+9:10,
+8:44,
+2:18,
+1:12
+}
 var peflnation ={
 0:'Афганистан',
 1:'Албания',
@@ -240,14 +318,17 @@ function sNum(i, ii) { // По SumSkills (убыванию)
 function PrintAd(){
 	var mtext = ''
 	for( i in pfc){
-		var text = '<tr class="cname" bgcolor=A3DE8F><td colspan=2><a href="javascript:void(ShowC(\''+i+'\'))">'+s_adaptationResultList[i]+' ('+peflnation[peflcountry[i]]+')</a></td></tr>'
+		var text = '<tr class="cname" bgcolor=A3DE8F><td colspan=3 width=50%><a href="javascript:void(ShowC(\''+i+'\'))">'+s_adaptationResultList[i]+' ('+peflnation[peflcountry[i]]+')</a></td>'
+		text += '<td>'+nationteamnum[peflcountry[i]]+'</td>'
+		text += '</tr>'
 		var pfcs = pfc[i].sort(sNum)
 		for(j in pfcs){
-			text+= '<tr class="c'+i+'"'+(parseInt(localStorage.mycountry) == peflcountry[i] ? '' : ' style="display: none;"')+'><td align=right width=10%>'+pfcs[j]['num'] +'0%</td><td>'+ pfcs[j]['name']+'</td></tr>'
+			text+= '<tr class="c'+i+'"'+(parseInt(localStorage.mycountry) == peflcountry[i] ? '' : ' style="display: none;"')+'><td align=right width=10%>'+pfcs[j]['num'] +'0%</td><td>'+ pfcs[j]['name']+'</td><td></td><td></td></tr>'
 		}
 		if(parseInt(localStorage.mycountry) == peflcountry[i]) mtext = text+mtext
 		else mtext += text
 	}
+	mtext = '<table width=100%><tr><td colspan=2>Страна</td><td width=10%>игроков</td><td>команд</td></tr>'+mtext+'</table>'
 	$('td.back4').append('<table width=100%>'+mtext+'</table>')
 }
 function ShowC(n){
