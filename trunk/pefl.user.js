@@ -9,7 +9,7 @@
 // @author         const
 // ==/UserScript==
 
-var headID = document.getElementsByTagName("head")[0];         
+var headID = document.getElementsByTagName("head")[0];
 
 // Show always
 var newScriptMenu = document.createElement('script');
