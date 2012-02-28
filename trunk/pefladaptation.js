@@ -550,7 +550,7 @@ function PrintAd(){
 		text1 += '<td align=left colspan=3 width=40%><a href="javascript:void(ShowC(\''+i+'\'))">'+s_adaptationResultList[i]+' ('+peflnation[peflcountry[i]]+')</a></td>'
 		text1 += '<td>'+pforn_sum.toFixed(2).replace('.',',')+'</td>'
 		text1 += '<td>'+(pforn_sum/nationteamnum[peflcountry[i]]).toFixed(2).replace('.',',')+'</td>'
-		text1 += '<td align=left width=50%>'+nationteamnum[peflcountry[i]]+'</td>'
+		text1 += '<td align=left width=30%>'+nationteamnum[peflcountry[i]]+'</td>'
 		text1 += '</tr>'
 		if(parseInt(localStorage.mycountry) == peflcountry[i]) mtext = text1+text2+mtext
 		else mtext += text1+text2
