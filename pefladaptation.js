@@ -6,6 +6,216 @@
 // @version        1.0
 // ==/UserScript==
 
+
+var nationplayers = {
+11:564,
+12:685,
+13:511,
+1:360,
+2:428,
+3:0,
+6:0,
+61:2508,
+5:62,
+4:23,
+7:6,
+8:1878,
+9:216,
+10:2,
+0:19,
+14:0,
+16:1,
+17:8,
+15:6,
+20:2,
+18:722,
+19:1439,
+21:44,
+22:2,
+30:771,
+24:569,
+25:557,
+26:6,
+27:2687,
+28:1,
+29:0,
+31:53,
+32:13,
+23:0,
+203:0,
+87:678,
+204:523,
+205:4,
+71:47,
+83:35,
+82:0,
+72:50,
+75:188,
+213:2,
+79:8,
+80:75,
+81:45,
+74:1618,
+84:1003,
+85:30,
+86:2,
+77:3,
+76:725,
+73:407,
+78:0,
+53:1037,
+54:0,
+55:0,
+56:7,
+153:100,
+59:566,
+211:38,
+212:42,
+94:443,
+89:1,
+90:2,
+99:0,
+92:50,
+91:386,
+93:766,
+88:542,
+172:1639,
+95:2019,
+208:0,
+37:45,
+100:319,
+38:2,
+34:0,
+35:226,
+36:120,
+152:230,
+101:34,
+50:164,
+103:31,
+42:696,
+138:29,
+44:1135,
+215:10,
+45:76,
+47:335,
+96:437,
+49:11,
+102:0,
+132:36,
+104:3,
+105:439,
+107:4,
+108:32,
+106:31,
+109:8,
+111:449,
+110:36,
+112:37,
+121:3,
+120:9,
+114:15,
+113:0,
+66:335,
+115:31,
+116:1,
+118:108,
+117:0,
+119:32,
+126:542,
+122:789,
+127:28,
+123:214,
+124:0,
+125:1,
+128:0,
+130:33,
+131:0,
+136:8,
+137:412,
+135:1,
+134:53,
+133:1,
+139:927,
+195:283,
+140:3,
+46:0,
+141:3,
+142:4,
+143:34,
+144:0,
+145:364,
+147:257,
+149:944,
+150:931,
+151:28,
+155:2233,
+156:16,
+154:411,
+60:24,
+157:0,
+158:23,
+159:2,
+160:311,
+179:5,
+129:500,
+163:0,
+162:188,
+176:2,
+174:3,
+175:0,
+209:1382,
+165:1,
+182:32,
+166:529,
+167:646,
+168:5,
+169:8,
+177:0,
+178:29,
+196:485,
+164:42,
+184:26,
+186:3,
+216:0,
+43:1,
+185:3,
+194:1,
+188:53,
+189:0,
+190:34,
+191:290,
+193:22,
+192:1249,
+199:28,
+202:355,
+200:998,
+201:694,
+207:381,
+67:59,
+68:1,
+148:10,
+69:680,
+70:1681,
+48:968,
+39:13,
+40:7,
+214:398,
+51:560,
+41:452,
+181:512,
+180:884,
+161:1140,
+173:2,
+58:676,
+62:3,
+63:1,
+64:470,
+65:9,
+170:616,
+171:858,
+97:40,
+98:1393,
+}
 var nationteamnum = {
 214:12,
 209:36,
@@ -304,7 +514,10 @@ $().ready(function(){
 			pfc[f] = []
 			for(i in peflnation) pfc[f][i] = {'name':peflnation[i]}
 		}
-		for (i in s_adaptationMap) for(j in s_adaptationMap[i]) pfc[j][i]['num'] = parseInt(s_adaptationMap[i][j])
+		for (i in s_adaptationMap) for(j in s_adaptationMap[i]) {
+			pfc[j][i]['num'] = parseInt(s_adaptationMap[i][j])
+			pfc[j][i]['id'] = i
+		}
 		PrintAd()
 	});
 });
@@ -318,17 +531,31 @@ function sNum(i, ii) { // По SumSkills (убыванию)
 function PrintAd(){
 	var mtext = ''
 	for( i in pfc){
-		var text = '<tr class="cname" bgcolor=A3DE8F><td colspan=3 width=50%><a href="javascript:void(ShowC(\''+i+'\'))">'+s_adaptationResultList[i]+' ('+peflnation[peflcountry[i]]+')</a></td>'
-		text += '<td>'+nationteamnum[peflcountry[i]]+'</td>'
-		text += '</tr>'
+		var pforn_sum = 0
+		var text2 = '' 
 		var pfcs = pfc[i].sort(sNum)
 		for(j in pfcs){
-			text+= '<tr class="c'+i+'"'+(parseInt(localStorage.mycountry) == peflcountry[i] ? '' : ' style="display: none;"')+'><td align=right width=10%>'+pfcs[j]['num'] +'0%</td><td>'+ pfcs[j]['name']+'</td><td></td><td></td></tr>'
+			var pforn = pfcs[j]['num']*nationplayers[pfcs[j]['id']]/10
+			pforn_sum += pforn
+			text2 += '<tr align=right class="c'+i+'"'+(parseInt(localStorage.mycountry) == peflcountry[i] ? '' : ' style="display: none;"')+'>'
+			text2 += '<td width=10%>'+pfcs[j]['num'] +'0%</td>'
+			text2 += '<td align=left>'+ pfcs[j]['name']+'</td>'
+			text2 += '<td>'+nationplayers[pfcs[j]['id']]+'</td>'
+			text2 += '<td>'+pforn.toFixed(2)+'</td>'
+			text2 += '<td>'+(pforn/nationteamnum[peflcountry[i]]).toFixed(2)+'</td>'
+			text2 += '<td>'+'</td>'
+			text2 += '</tr>'
 		}
-		if(parseInt(localStorage.mycountry) == peflcountry[i]) mtext = text+mtext
-		else mtext += text
+		var text1 = '<tr align=right class="cname" bgcolor=A3DE8F>'
+		text1 += '<td align=left colspan=3 width=40%><a href="javascript:void(ShowC(\''+i+'\'))">'+s_adaptationResultList[i]+' ('+peflnation[peflcountry[i]]+')</a></td>'
+		text1 += '<td>'+pforn_sum.toFixed(2)+'</td>'
+		text1 += '<td>'+(pforn_sum/nationteamnum[peflcountry[i]]).toFixed(2)+'</td>'
+		text1 += '<td align=left width=50%>'+nationteamnum[peflcountry[i]]+'</td>'
+		text1 += '</tr>'
+		if(parseInt(localStorage.mycountry) == peflcountry[i]) mtext = text1+text2+mtext
+		else mtext += text1+text2
 	}
-	mtext = '<table width=100%><tr><td colspan=2>Страна</td><td width=10%>игроков</td><td>команд</td></tr>'+mtext+'</table>'
+	mtext = '<table width=100%><tr><td colspan=2>Страна</td><td width=10%>игроков</td><td>для&nbsp;страны</td><td>для&nbsp;команды</td><td>команд</td></tr>'+mtext+'</table>'
 	$('td.back4').append('<table width=100%>'+mtext+'</table>')
 }
 function ShowC(n){
