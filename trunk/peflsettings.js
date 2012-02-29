@@ -52,7 +52,22 @@ $().ready(function() {
 		html += '</tr>'
 	}
 	html += '</table>'
-	html += '<br><br>&nbsp;* - <i>при появлении нового скрипта, чтобы он заработал, требуется переустановить(поставить поверх) основной скрипт: <a href="http://pefladdons.googlecode.com/svn/trunk/pefl.user.js">pefl.user.js</a>.'
+	html += '<br><br>&nbsp;* - <i>при появлении нового скрипта, чтобы он заработал, требуется переустановить(поставить поверх) основной скрипт: <a href="http://pefladdons.googlecode.com/svn/trunk/pefl.user.js">pefl.user.js</a>.</i>'
+
+	html += '<br><br>&nbsp;* - <i>Вы можете поддержать проект (или например запросить сделать определенную фичу в первую очередь, или в персональное пользование), перечислив какую-либо сумму одним из следующих способов (оплата возможна через любой платёжный терминал)</i>'
+	html += '<table align=center bgcolor=A3DE8F><tr bgcolor=C9F8B7 height=30><th>WebMoney</th>'
+	html += '<td>R930480028049 (рубли)<br>'
+	html += 'Z811907519489 (доллары)</td></tr>'
+
+	html += '<tr bgcolor=C9F8B7 height=30><th>Яндекс-деньги</th>'
+	html += '<td>Счет: 41001993673065</td></tr>'
+
+	html += '<tr bgcolor=C9F8B7 height=30><th><b>RBK Money</th>'
+	html += '<td>RU339032359</td></tr>'
+
+	html += '<tr bgcolor=C9F8B7 height=30><th><b>PayPal</th>'
+	html += '<td>tconsts@gmail.com</td></tr></table>'
+
 	$('td.back4').append(html)
 });
 
