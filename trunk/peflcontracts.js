@@ -73,6 +73,7 @@ function GetTeams(nid,nname){
 					}
 					teams[parseInt(curt['tid'])] = parseInt(curt['ncode'])
 				}
+				MarkMyCountry(nid,nname)
 			}
 		}else{
 			if(!db) DBConnect()
