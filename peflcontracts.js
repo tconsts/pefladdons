@@ -25,7 +25,7 @@ $().ready(function() {
 				return false;
 	    	});
 		/**/
-		}else if(UrlValue('t')=='transfers4') {
+		}else if(UrlValue('t')=='transfers' || UrlValue('t')=='transfers3' || UrlValue('t')=='transfers4') {
 			GetTeams(parseInt(localStorage.mycountry),localStorage.mycountry.split('.')[1])
 		}
 	} else if(UrlValue('p')=='fin'){
