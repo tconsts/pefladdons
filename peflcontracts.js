@@ -57,6 +57,7 @@ $().ready(function() {
 
 function GetTeams(nid,nname){
 		if(ff){
+			debug('GetTeams as FF')
 			var list = {'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid'}
 			var head = list['teams'].split(',')
 			var text1 = String(globalStorage[location.hostname]['teams'])
@@ -93,6 +94,7 @@ function GetTeams(nid,nname){
 }
 
 function MarkMyCountry(nid,nname){
+	debug('MarkMyCountry')
 	$('span.text2b').html('Помечены команды из '+nname)
 	$('td.back4 table table tr:gt(0)').each(function(){
 		$(this).find('td:eq(3), td:eq(4)').each(function(i,val){
