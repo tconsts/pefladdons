@@ -71,18 +71,18 @@ function GetTeams(nid,nname){
 						curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 						num++
 					}
-					teams[parseInt(curt['tid'])] = parseInt(curt['ncode'])
+					teams[parseInt(curt['tid'])] = curt['nname']
 				}
 				MarkMyCountry(nid,nname)
 			}
 		}else{
 			if(!db) DBConnect()
 			db.transaction(function(tx) {
-				tx.executeSql("SELECT tid,ncode FROM teams",[],
+				tx.executeSql("SELECT tid,nname FROM teams",[],
 					function(tx, result){
 						for(var i = 0; i < result.rows.length; i++) {
 							var row = result.rows.item(i)
-							teams[parseInt(row['tid'])] = parseInt(row['ncode'])
+							teams[parseInt(row['tid'])] = row['nname']
 						}
 						MarkMyCountry(nid,nname)
 					},
@@ -99,7 +99,7 @@ function MarkMyCountry(nid,nname){
 	$('span.text2b').html('Помечены команды: '+nname)
 	$('td.back4 table table tr:gt(0)').each(function(){
 		$(this).find('td:eq(3), td:eq(4)').each(function(i,val){
-			if(nid==teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))]) $(this).attr('bgcolor','yellow').parent().attr('bgcolor','white')
+			if(nname==teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))]) $(this).attr('bgcolor','yellow').parent().attr('bgcolor','white')
 		})
 	})
 }
