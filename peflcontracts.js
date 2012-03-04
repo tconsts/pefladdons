@@ -96,7 +96,7 @@ function GetTeams(nid,nname){
 
 function MarkMyCountry(nid,nname){
 	debug('MarkMyCountry')
-	$('span.text2b').html('Помечены команды из '+nname)
+	$('span.text2b').html('Помечены команды: '+nname)
 	$('td.back4 table table tr:gt(0)').each(function(){
 		$(this).find('td:eq(3), td:eq(4)').each(function(i,val){
 			if(nid==teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))]) $(this).attr('bgcolor','yellow').parent().attr('bgcolor','white')
