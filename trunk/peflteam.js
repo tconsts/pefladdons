@@ -566,11 +566,11 @@ function PrintRightInfo(){
 	thtml += team_cur.age + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 
-	thtml += '<tr id="osage"><td><b>форма</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += '<tr id="osform"><td><b>форма</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
 	thtml += team_cur.tform + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 
-	thtml += '<tr id="osage"><td><b>мораль</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += '<tr id="osmorale"><td><b>мораль</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
 	thtml += team_cur.tmorale + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 
