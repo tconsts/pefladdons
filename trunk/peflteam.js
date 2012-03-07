@@ -21,7 +21,7 @@ var save = false
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
-	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
+	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale',
 //	'divs':		'did,my,dnum,dname,drotate,drotcom,dprize,color'
 }
 
@@ -169,6 +169,8 @@ function CheckTrash(){
 	debug('ss:'+ss)
 	var tss  = 0
 	var age  = 0
+	var tform = 0
+	var tmorale = 0
 	var pnum = 0
 	for(i in players){
 		var pli = players[i]
@@ -177,11 +179,15 @@ function CheckTrash(){
 		}else{
 			tss += pli.sumskills
 			age += pli.age
+			tform += pli.form
+			tmorale += pli.morale
 			pnum++
 		}
 		team_cur.pnum = pnum
 		team_cur.tss = (isNaN(tss) ? 0 : (tss/pnum).toFixed(2))
 		team_cur.age = (age/pnum).toFixed(2)
+		team_cur.tform = (tform/pnum).toFixed(2)
+		team_cur.tmorale = (tmorale/pnum).toFixed(2)
 	}
 	GetFinish('trash', true)
 }
@@ -246,6 +252,8 @@ function GetInfoPageTm(){
 	team_cur.scbud	= parseInt($('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0])
 	team_cur.screit	= (rschools[screit_name]!=undefined ? rschools[screit_name] : screit_name)
 	team_cur.my		= (team_cur.mname == MyNick ? true : false)
+	team_cur.tform	= 0
+	team_cur.tmorale= 0
 
 	// Save my team id for script "match"
 	if(team_cur.my) {
@@ -556,6 +564,14 @@ function PrintRightInfo(){
 
 	thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
 	thtml += team_cur.age + '&nbsp;'
+	thtml += '</th><td></td></tr>'
+
+	thtml += '<tr id="osage"><td><b>форма</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += team_cur.tform + '&nbsp;'
+	thtml += '</th><td></td></tr>'
+
+	thtml += '<tr id="osage"><td><b>мораль</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += team_cur.tmorale + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 
 	$('#crabright table:first').append(thtml)
