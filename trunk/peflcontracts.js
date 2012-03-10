@@ -30,12 +30,21 @@ $().ready(function() {
 		}
 	} else if(UrlValue('p')=='fin'){
 		var szp=0
+/**
 		$('td.back4 td').each(function(i,val){
 			if ($(val).html().indexOf('$') != -1 && !isNaN(+$(val).html().replace('$',''))){
+				$(val).attr('bgcolor','white')
 				szp += +$(val).html().replace('$','')
 			}
 		});
-
+/**/
+		$('td.back4 table table tr').each(function(){
+			var wage = parseInt($(this).find('td:eq(2)').html())
+			var cnt = parseInt($(this).find('td:eq(3)').html())
+			szp += wage
+			$(this).append('<td width=5% align=right>'+((wage*cnt*25)/1000).toFixed(3)+'$</td>')
+		})
+		$('td.back4').append('<br>*  - последняя колонка показывает сумму компенсации при увольнении')
 		var addtext = '(за каждого школьника еще по +100$)'
 		var schnum = parseInt(localStorage.schoolnum)
 		if(!isNaN(schnum) && !UrlValue("j")){
