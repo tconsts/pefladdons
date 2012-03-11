@@ -11,14 +11,18 @@
 deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
+var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+var db = false
 var ttime = []
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
-	'matches':	'',
+	'matches':	'id,hash,place,schet,pen,weather,ref,ename',
 	'plmatches':'',
 }
+var match1 = {}
 
 $().ready(function() {
+	if(deb) $('td.back4').prepend('<div id=debug></div>')
 //	$('td.back4 table:first').attr('border','5')	// расстановка
 //	$('td.back4 table:eq(1)').attr('border','5')	// все вместе кроме расстановки
 //	$('td.back4 table:eq(2)').attr('border','5')	// отчет
@@ -27,8 +31,8 @@ $().ready(function() {
 //	$('td.back4 table:eq(5)').attr('border','5')	// стата
 //	$('td.back4 table:eq(6)').attr('border','5')	// оценки
 
-	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	var mid = UrlValue('j')
+	match1.id = mid
 	var su = (mid>602078 ? true: false)
 
 	//дорисовываем оценки в код для форума(t=code) и редактируем страницу матча (t=if)
@@ -44,25 +48,28 @@ $().ready(function() {
 		var myteamid = localStorage.myteamid
 		debug('myteamid='+myteamid)
 
-		if(myteamid!=undefined){
-			var mark = 'none'
-			mark = (myteamid==parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0]) ? true : mark)
-			mark = (myteamid==parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0]) ? false : mark)
-			if(mark!='none') PlayerTime(mid,parseInt($('p.key:last').text().split(' ')[0]),mark,myteamid)
-		}
-
 		// даем возможность скрыть отчет
 		$('td.back4 table:eq(2)').before('<br><a id="treport" href="javascript:void(ShowTable(2))">&ndash;</a>')
 /**/
 		// запоминаем таблицу оценок
-		var wimg = '[img]' + $('img[src^="system/img/w"]').attr('src') + '[/img]'
-		var ref = ' [b]Главный арбитр:[/b] ' + $('td.back4 table:eq(2)').html().split('Главный арбитр:')[1].split(').')[0] + ').'
-		var schet = $('td.back4 table:eq(3) td:eq(1)').text()
+		match1.wimg = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
+		match1.ref = $('td.back4 table:eq(2)').html().split('Главный арбитр:')[1].split(').')[0] + ')'
+		match1.schet = $('td.back4 table:eq(3) td:eq(1)').text()
 		var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
-		var finschet = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
-		debug(finschet+'='+schet)
+		match1.fschet = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
 
-		finschet = (finschetarr[1]!=undefined && finschet!=schet ? ' [center]По пенальти [b][color=red]'+ finschet + '[/color][/b][/center]' : '')
+		var finschet = (finschetarr[1]!=undefined && match1.fschet!=match1.schet ? ' [center]По пенальти [b][color=red]'+ match1.fschet + '[/color][/b][/center]' : '')
+
+		if(myteamid!=undefined){
+			var mark = 'none'
+			mark = (myteamid==parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0]) ? true : mark)
+			mark = (myteamid==parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0]) ? false : mark)
+			if(mark!='none') {
+				PlayerTime(mid,parseInt($('p.key:last').text().split(' ')[0]),mark,myteamid)
+				MatchGetData()
+				//MatchCheck(mid)
+			}
+		}
 
 		$('td.back4 table:eq(6)')
 			.find('td').removeAttr('width').end()
@@ -86,9 +93,107 @@ $().ready(function() {
 			.replace(/font/g,'color')
 			.replace(/\</g,'[')
 			.replace(/\>/g,']')
-			+ wimg + ref 
+			+ '[img]system/img/w' + match1.wimg + '.png[/img]' 
+			+ ' [b]Главный арбитр:[/b] ' + match1.ref + '.'
 	}
 }, false);
+
+function MatchGetData(mid){
+	debug('MatchGetData()')
+	for(i in match1) debug(i+':'+match1[i])
+}
+
+function MatchCheck(mid){
+	debug('MatchCheck('+mid+')')
+	var head = list['matches'].split(',')
+	if(ff) {
+/**		var text1 = String(globalStorage[location.hostname][dataname])
+		if (text1 != 'undefined'){
+			var text = text1.split('#')
+			for (i in text) {
+				var x = text[i].split('|')
+				var curt = {}
+				var num = 0
+				for(j in head){
+					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
+					num++
+				}
+				data[curt[head[0]]] = {}
+				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
+			}
+			GetFinish('get_'+dataname, true)
+		} else {
+			GetFinish('get_'+dataname, false)
+		}
+/**/
+	}else{
+		if(!db) DBConnect()
+		db.transaction(function(tx) {
+			tx.executeSql("SELECT * FROM matches WHERE id='"+mid+"'", [],
+				function(tx, result){
+					debug('matches:Select ok')
+					for(var i = 0; i < result.rows.length; i++) {
+						var row = result.rows.item(i)
+						var id = row[head[0]]
+						match2 = {}
+						for(j in row) match2[j] = row[j]
+						debug('matches:g'+id+':'+match2.schet)
+					}
+				},
+				function(tx, error){
+					debug(error.message)
+					MatchSave()
+				}
+			)
+		})
+	}
+}
+
+function MatchSave(){
+	debug('MatchSave()')
+	var head = list['matches'].split(',')
+	if(ff) {
+/**		var text = ''
+		for (var i in data) {
+			text += (text!='' ? '#' : '')
+			if(typeof(data[i])!='undefined') {
+				var dti = data[i]
+				var dtid = []
+				for(var j in head){
+					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+				}
+				text += dtid.join('|')
+			}
+		}
+		globalStorage[location.hostname][dataname] = text
+/**/
+	}else{
+		db.transaction(function(tx) {
+			tx.executeSql("CREATE TABLE IF NOT EXISTS matches ("+list['matches']+")", [],
+				function(tx, result){debug('matches:create ok')},
+				function(tx, error) {debug(error.message)}
+			);
+
+//			for(var i in data) {
+				var dti = match1//data[i]
+				var x1 = []
+				var x2 = []
+				var x3 = []
+				for(var j in head){
+					x1.push(head[j])
+					x2.push('?')
+					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
+				}
+				debug('matches:s'+x3['0']+'_'+x3['1'])
+				tx.executeSql("INSERT INTO matches ("+x1+") values("+x2+")", x3,
+					function(tx, result){},
+					function(tx, error) {debug('matches:insert('+i+') error:'+error.message)
+				});
+//			}
+/**/
+		});
+	}
+}
 
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
@@ -112,7 +217,7 @@ function TrimString(sInString){
 	return sInString.replace(/(^\s+)|(\s+$)/g, '');
 }
 
-function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+function debug(text) {if(deb) {debnum++;$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
 function PlayerTime(mid,mt,mrk,tid){
 	debug('PlayerTime('+mid+','+mt+','+mrk+','+tid+')')
@@ -162,6 +267,12 @@ function PlayerTime(mid,mt,mrk,tid){
 		debug(mid+':'+tid+':'+x.ptime+':'+x.pfname)
 	}
 /**/
+}
+
+function DBConnect(){
+	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
+	if(!db) {debug('Open DB PEFL fail.');return false;} 
+	else 	{debug('Open DB PEFL ok.')}
 }
 
 function SaveData(dataname){
