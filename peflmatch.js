@@ -68,7 +68,8 @@ $().ready(function() {
 				PlayerTime(mid,parseInt($('p.key:last').text().split(' ')[0]),mark,myteamid)
 				MatchGetData()
 				//MatchCheck(mid)
-				//MatchSave()}
+				//MatchSave()
+			}
 		}
 
 		$('td.back4 table:eq(6)')
