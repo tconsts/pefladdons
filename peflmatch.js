@@ -16,7 +16,7 @@ var db = false
 var ttime = []
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
-	'matches':	'id,hash,place,schet,pen,weather,ref,ename',
+	'matches':	'id,hash,place,schet,pen,weather,ref,ename,su',
 	'plmatches':'',
 }
 var match1 = {}
@@ -33,7 +33,7 @@ $().ready(function() {
 
 	var mid = UrlValue('j')
 	match1.id = mid
-	var su = (mid>602078 ? true: false)
+	match1.su = (mid>602078 ? true: false)
 
 	//дорисовываем оценки в код для форума(t=code) и редактируем страницу матча (t=if)
 	if(UrlValue('t') == 'code') {
@@ -68,7 +68,7 @@ $().ready(function() {
 				PlayerTime(mid,parseInt($('p.key:last').text().split(' ')[0]),mark,myteamid)
 				MatchGetData()
 				//MatchCheck(mid)
-			}
+				//MatchSave()}
 		}
 
 		$('td.back4 table:eq(6)')
@@ -105,6 +105,7 @@ function MatchGetData(mid){
 
 function MatchCheck(mid){
 	debug('MatchCheck('+mid+')')
+	var dataname = 'matches'
 	var head = list['matches'].split(',')
 	if(ff) {
 /**		var text1 = String(globalStorage[location.hostname][dataname])
@@ -129,19 +130,22 @@ function MatchCheck(mid){
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			tx.executeSql("SELECT * FROM matches WHERE id='"+mid+"'", [],
+			tx.executeSql("SELECT * FROM "+dataname+" WHERE id='"+match1.id+"'", [],
 				function(tx, result){
-					debug('matches:Select ok')
-					for(var i = 0; i < result.rows.length; i++) {
+					debug(dataname+':select:ok')
+					var i = 0
+					for(i = 0; i < result.rows.length; i++) {
 						var row = result.rows.item(i)
 						var id = row[head[0]]
 						match2 = {}
 						for(j in row) match2[j] = row[j]
-						debug('matches:g'+id+':'+match2.schet)
+						debug(dataname+':g'+id+':'+match2.schet)
 					}
+					debug(dataname+':select:i:'+i)
+					if (i==0) MatchSave()
 				},
 				function(tx, error){
-					debug(error.message)
+					debug(dataname+':select:'+error.message)
 					MatchSave()
 				}
 			)
@@ -151,7 +155,8 @@ function MatchCheck(mid){
 
 function MatchSave(){
 	debug('MatchSave()')
-	var head = list['matches'].split(',')
+	var dataname = 'matches'
+	var head = list[dataname].split(',')
 	if(ff) {
 /**		var text = ''
 		for (var i in data) {
@@ -168,11 +173,28 @@ function MatchSave(){
 		globalStorage[location.hostname][dataname] = text
 /**/
 	}else{
+		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			tx.executeSql("CREATE TABLE IF NOT EXISTS matches ("+list['matches']+")", [],
-				function(tx, result){debug('matches:create ok')},
-				function(tx, error) {debug(error.message)}
-			);
+/**
+			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
+				function(tx, result){debug(dataname+':drop:ok')},
+				function(tx, error) {debug(dataname+':drop:' + error.message)});                                           
+/**/
+			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head+")", [],
+				function(tx, result){debug(dataname+':create ok:'+head)},
+				function(tx, error) {debug(error.message)});
+
+			tx.executeSql("SELECT * FROM "+dataname+" WHERE id='"+match1.id+"'", [],
+				function(tx, result){
+					debug(dataname+':select:ok')
+					for(i = 0; i < result.rows.length; i++) {
+						var row = result.rows.item(i)
+						var id = row[head[0]]
+						var match2 = {}
+						for(j in row) match2[j] = row[j]
+						debug(dataname+':g'+id+':'+match2.schet)}
+					debug(dataname+':select:i:'+i)},
+				function(tx, error){debug(dataname+':select:'+error.message)})
 
 //			for(var i in data) {
 				var dti = match1//data[i]
@@ -182,13 +204,11 @@ function MatchSave(){
 				for(var j in head){
 					x1.push(head[j])
 					x2.push('?')
-					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
-				}
-				debug('matches:s'+x3['0']+'_'+x3['1'])
-				tx.executeSql("INSERT INTO matches ("+x1+") values("+x2+")", x3,
-					function(tx, result){},
-					function(tx, error) {debug('matches:insert('+i+') error:'+error.message)
-				});
+					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))}
+
+				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
+					function(tx, result){debug(dataname+':insert ok:'+x3)},
+					function(tx, error) {debug(dataname+':insert error:'+error.message)});
 //			}
 /**/
 		});
@@ -264,7 +284,7 @@ function PlayerTime(mid,mt,mrk,tid){
 	// print debug info
 	for(i in ttime[tid]) {
 		var x  = ttime[tid][i]
-		debug(mid+':'+tid+':'+x.ptime+':'+x.pfname)
+		//debug(mid+':'+tid+':'+x.ptime+':'+x.pfname)
 	}
 /**/
 }
