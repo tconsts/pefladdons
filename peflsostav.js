@@ -3,7 +3,8 @@
 // @namespace      pefl
 // @description    Display sostav
 // @include        http://*pefl.*/*?sostav
-// @version			1.1
+// @include        http://*pefl.*/*?sostav_n
+// @version			1.2
 // ==/UserScript==
 
 function getPairValue(str,def,delim) {
@@ -150,27 +151,8 @@ function ShowHelp(){
 	return html
 }
 
-function ShowForumCode(fc,a){
-	if (a == 0) return 'Автосостав'
-	else {
-		var empty = '[td height=50] [/td]'
-		var txt = '<textarea cols=20 rows=8 readonly>[table width=100%]'
-		txt += '[tr][td] [/td]' + (fc[23]?fc[23]:empty) + (fc[24]?fc[24]:empty) + (fc[25]?fc[25]:empty) + '[td] [/td][/tr]'
-		txt += '[tr]' + (fc[18]?fc[18]:empty) + (fc[19]?fc[19]:empty) + (fc[20]?fc[20]:empty) + (fc[21]?fc[21]:empty) + (fc[22]?fc[22]:empty) + '[/tr]'
-		txt += '[tr]' + (fc[13]?fc[13]:empty) + (fc[14]?fc[14]:empty) + (fc[15]?fc[15]:empty) + (fc[16]?fc[16]:empty) + (fc[17]?fc[17]:empty) + '[/tr]'
-		txt += '[tr]' + (fc[8]?fc[8]:empty) + (fc[9]?fc[9]:empty) + (fc[10]?fc[10]:empty) + (fc[11]?fc[11]:empty) + (fc[12]?fc[12]:empty) + '[/tr]'
-		txt += '[tr]' + (fc[3]?fc[3]:empty) + (fc[4]?fc[4]:empty) + (fc[5]?fc[5]:empty) + (fc[6]?fc[6]:empty) + (fc[7]?fc[7]:empty) + '[/tr]'
-		txt += '[tr][td colspan=2] [/td]' + (fc[2]?fc[2]:empty) + '[td colspan=2] [/td][/tr]'
-		txt += '[tr][td colspan=2] [/td]' + (fc[1]?fc[1]:empty) + '[td colspan=2] [/td][/tr]'
-		txt += '[/table]'
-		txt += '\n\n\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n'
-		txt += '</textarea>'
-//		txt += '<br><b>Состав для форума<br>(<a href="/?team">advanced</a>)</b>'
-		return txt
-	}
-}
-
 $().ready(function() {
+	var geturl = (location.search.substring(1) == 'sostav' ? 'fieldnew3.php' : 'fieldnew3_n.php')
 	var text = ''
 	var posfilter = []
 	var forumcode = []
@@ -235,7 +217,7 @@ $().ready(function() {
 	}
 	$('.back4').html('<table border="0" cellspacing="0" cellpadding="10" width="100%" height="100%"><tr><td valign="top" class="contentframer"></td></tr></table>')
 
-	$.get('fieldnew3.php', {}, function(data){
+	$.get(geturl, {}, function(data){
 		var dataarray = data.split('&');
 		var pid = [];		// id игроков заявленых в состав
 		var p0 = [];		// тактика1, всего 5 тактик.
@@ -355,7 +337,7 @@ $().ready(function() {
 				plid.push(getPairValue(dataarray[i+58]))	// инфа о тренировке
 				plid.push(getPairValue(dataarray[i+59]))	// инфа о травме
 				plid.push(getPairValue(dataarray[i+60]))	// инфа о дискве
-				plid.push(getPairValue(dataarray[i+61]))	// инфа о сыгрыности
+				plid.push(getPairValue(dataarray[i+61]))	// инфа о сыгранности
 
 				if (!players[id][st["кп"]]) players[id][st["кп"]] = ''
 				if (!players[id][st["иш"]]) players[id][st["иш"]] = ''
@@ -400,37 +382,6 @@ $().ready(function() {
 					pl[st["са"]] = ''
 					pl[st["со"]] = ''
 				}
-
-				// добавить в состав для форума
-				if (+pfi1 == -plid && auto == 1) {
-					var value = pl[st["ном"]].replace(/,/g,'')/1000
-					forumcode[i] = '[td valign=top width=20% bgcolor=#C9F8B7][table width=100% height=100% bgcolor=#A3DE8F]';
-					forumcode[i] += '[tr][td colspan=2][b]' + (pl[st["Имя"]].charAt(0)!='?' ? pl[st["Имя"]].charAt(0) + '.' : '') + (pl[st["Фам"]]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
-					forumcode[i] += '[tr][td][player=' + plid + '][img]';
-					if (pl[st["поз"]] == "GK") {
-						forumcode[i] += '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png'
-					} else {
-						forumcode[i] += '/field/img/146cd60f8c4985270b74f7839e98059a.png'
-					}
-					forumcode[i] += '[/img][/player][/td]';
-					forumcode[i] += '[td valign=top height=60 rowspan=2]';
-					forumcode[i] += pl[st["фрм"]] + '/' + pl[st["мрл"]];
-					if (pl[st["оиг"]] != 0) {
-						forumcode[i] += '\nP ' + parseFloat(pl[st["орт"]]).toFixed(2);
-						forumcode[i] += '\nИ/' + pl[st["оиг"]] + (pl[st["оим"]] != 0 ? '(' + pl[st["оим"]] + ')' : '');
-						forumcode[i] += (pl[st["огл"]] != 0 || pl[st["опс"]] != 0 ? '\nГП/' + pl[st["огл"]] + '+' + pl[st["опс"]] : '');
-					}
-					forumcode[i] += '[/td][/tr]';
-					forumcode[i] += '[tr][td align=center]';
-
-					if (+pl[st["ном"]] == 0 ) forumcode[i] +=  'шкл';
-					else if (value >= 1000) forumcode[i] += (value/1000).toFixed(1) + 'м$'
-					else forumcode[i] += value + 'т$';
-
-					forumcode[i] += '[/td][/tr]';
-					forumcode[i] += '[/table][/td]';
-				}
-
 				// пометить игрока не своей позиции назначеного в состав
 				if (((plpos.indexOf(psi[2]) == -1) || (plpos.indexOf(psi[3]) == -1)) && +pfi1 == -plid) {
 					osnova = 3
@@ -491,9 +442,13 @@ $().ready(function() {
 		var tr1 = 'tr'
 		var td1 = 'td valign=top bgcolor=#A3DE8F'
 		var td1e = 'td'
-
+		if(geturl=='fieldnew3_n.php'){
+	    	var img = '<img src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
+		}else{
+		    var img = '<img src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>'
+		}
 		text += '<' +table1+'>'
-/**/	text += '<'+tr1+'><'+td1e+' valign=top>'+ShowForumCode(forumcode,auto)+'</td><'+td1+'>' +ShowPos(posfilter[23],poss[23])+ '</td><'+td1+'>' +ShowPos(posfilter[24],poss[24])+ '</td><'+td1+'>' +ShowPos(posfilter[25],poss[25])+ '</td><'+td1e+' valign=top align=center>' + ShowHelp() + '</td></tr>'
+/**/	text += '<'+tr1+'><'+td1e+' valign=top>'+img+'</td><'+td1+'>' +ShowPos(posfilter[23],poss[23])+ '</td><'+td1+'>' +ShowPos(posfilter[24],poss[24])+ '</td><'+td1+'>' +ShowPos(posfilter[25],poss[25])+ '</td><'+td1e+' valign=top align=center>' + ShowHelp() + '</td></tr>'
 		text += '<'+tr1+'><'+td1+'>' +ShowPos(posfilter[18],poss[18])+ '</td><'+td1+'>' +ShowPos(posfilter[19],poss[19])+ '</td><'+td1+'>' +ShowPos(posfilter[20],poss[20])+ '</td><'+td1+'>' +ShowPos(posfilter[21],poss[21])+ '</td><'+td1+'>' +ShowPos(posfilter[22],poss[22])+ '</td></tr>'
 		text += '<'+tr1+'><'+td1+'>' +ShowPos(posfilter[13],poss[13])+ '</td><'+td1+'>' +ShowPos(posfilter[14],poss[14])+ '</td><'+td1+'>' +ShowPos(posfilter[15],poss[15])+ '</td><'+td1+'>' +ShowPos(posfilter[16],poss[16])+ '</td><'+td1+'>' +ShowPos(posfilter[17],poss[17])+ '</td></tr>'
 		text += '<'+tr1+'><'+td1+'>' +ShowPos(posfilter[8],poss[8])+ '</td><'+td1+'>' +ShowPos(posfilter[9],poss[9])+ '</td><'+td1+'>' +ShowPos(posfilter[10],poss[10])+ '</td><'+td1+'>' +ShowPos(posfilter[11],poss[11])+ '</td><'+td1+'>' +ShowPos(posfilter[12],poss[12])+ '</td></tr>'
@@ -513,14 +468,14 @@ $().ready(function() {
 		text += '<br><br> <table bgcolor=#A3DE8F><tr>'
 		text += '<td valign=top>' +ShowPos(posfilter[32],poss[32])+ '</td>'
 		text += '<td valign=top>' +ShowPos(posfilter[33],poss[33])+ '</td>'
-		text += '<td valign=top>' +ShowPos(posfilter[34],poss[34])+ '</td>'
-		text += '<td valign=top>' +ShowPos(posfilter[35],poss[35])+ '</td>'
+		if(geturl!='fieldnew3_n.php') text += '<td valign=top>' +ShowPos(posfilter[34],poss[34])+ '</td>'
+		if(geturl!='fieldnew3_n.php') text += '<td valign=top>' +ShowPos(posfilter[35],poss[35])+ '</td>'
 		text += '<td valign=top>' +ShowPos(posfilter[36],poss[36])+ '</td>'
 		text += '<td valign=top>' +ShowPos(posfilter[37],poss[37])+ '</td>'
 		text += '<td></td></tr></table>'
 
 		text += '<br><br><table bgcolor=#A3DE8F><tr><td><img src="http://pefladdons.googlecode.com/svn/trunk/img/crab1.png"></td><td>'
-		text += '<a href="forums.php?m=posts&q=173605">Cостав v1.2</a> (c) <a href="users.php?m=details&id=661">const</a></td></tr></table>'
+		text += '<a href="forums.php?m=posts&q=173605">Cостав v1.3</a> (c) <a href="users.php?m=details&id=661">const</a></td></tr></table>'
 /**/	$('.contentframer').html(text)
 	})
 
