@@ -66,6 +66,7 @@ var skills = {
 	'отб':'Отбор мяча', 'вид':'Видение поля', 'рбт':'Работоспособность', 'тех':'Техника'}
 
 $().ready(function() {
+
 	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	cid = parseInt($('td.back4 table:first table td:first').text())
 	teams[cid] = {'tid':cid}
@@ -77,6 +78,12 @@ $().ready(function() {
 
 	if(UrlValue('l')=='y'){
 		//Page for show skills
+		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
+		$('table#tblRostSkills tr:eq(0) td').each(function(){
+			var onclick = String($(this).find('a').attr('onclick')).split('{')[1].split('}')[0]
+			var name = $(this).find('a').html()
+			$(this).html('<a href="#" class="sort" onclick="'+onclick+';EditSkillsPage()">'+name+'</a>')
+		})
 		EditSkillsPage()
 	}else if(UrlValue('n')!=false){
 		//Ростер с фильтром(не вся стата показывается)
@@ -114,7 +121,6 @@ $().ready(function() {
 //			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
 			$("#rg").after(preparedhtml)
 		}
-
 	}
 }, false);
 
@@ -422,7 +428,6 @@ function GetInfoPagePl(){
 								.replace('</i>',''))
 		players[pid].d		= ($(val).find('td:eq(1) img[src*=system/img/g/d.png]').html()==null ? 0 : $(val).find('td:eq(1) img[src*=system/img/g/d.png]').attr('src'))
 		players[pid].t		= ($(val).find('td:eq(1) img[src*=system/img/g/t]').html()==null ? 0 : $(val).find('td:eq(1) img[src*=system/img/g/t]').attr('src'))
-		debug(players[pid].id+':'+players[pid].d)
 		players[pid].nid	= $(val).find('td:eq(2) img').attr('src')
 								.split('/')[4]
 								.split('.')[0]
@@ -620,9 +625,9 @@ function EditFinance(){
 
 function EditSkillsPage(){
 	debug('EditSkillsPage')
-	$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
 	$('table#tblRostSkills')
 		.attr('width','886')
+		.find('td[bgcolor=white]').removeAttr('bgcolor').end()
 		.find('td:contains("*")').attr('bgcolor','white').end()
 		.find('img').attr('height','10').end()
 		.find('tr').each(function(){
@@ -1063,25 +1068,3 @@ function UrlValue(key,url){
 function check(d) {return (d<10 ? "0"+d : d)}
 
 function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;\''+text+'\'<br>');}}
-
-/**
-
-function ForgotPlValueCh(){
-	var text = ''
-	for(j in players) {
-		players[j].valuech = 0
-		text += players[j].id + ':'
-		text += players[j].value/1000 + ':'
-		text += 0
-		text += ','
-	}
-	//SaveStorageData('playersvalue',text)
-	if(ff)	globalStorage[location.hostname]['playersvalue'] = text
-	else	sessionStorage['playersvalue'] = text
-
-	nom = 0
-	$('a#os').remove()
-	$('tr#nom').remove()
-	$('tr#osnom td:last').html('')
-}
-/**/
