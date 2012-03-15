@@ -80,7 +80,7 @@ $().ready(function() {
 		//Page for show skills
 		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
 		$('table#tblRostSkills tr:eq(0) td').each(function(){
-			var onclick = String($(this).find('a').attr('onclick')).split('{')[1].split('}')[0]
+			var onclick = (ff ? String($(this).find('a').attr('onclick')) : String($(this).find('a').attr('onclick')).split('{')[1].split('}')[0])
 			var name = $(this).find('a').html()
 			$(this).html('<a href="#" class="sort" onclick="'+onclick+';EditSkillsPage()">'+name+'</a>')
 		})
