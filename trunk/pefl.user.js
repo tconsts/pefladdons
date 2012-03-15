@@ -31,7 +31,7 @@ if(url2=='settings'){
 	headID.appendChild(newScriptSettings);
 }
 // 1 Sostav
-if(scflag[1]==0 && url2=='sostav'){
+if(scflag[1]==0 && (url2=='sostav' || url2=='sostav_n')){
 	var newScriptSostav = document.createElement('script');
 	newScriptSostav.type = 'text/javascript';
 	newScriptSostav.src = 'http://pefladdons.googlecode.com/svn/trunk/peflsostav.js';
