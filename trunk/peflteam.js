@@ -420,8 +420,9 @@ function GetInfoPagePl(){
 								.replace('(*)','')
 								.replace('<i>','')
 								.replace('</i>',''))
-		players[pid].d		= ($(val).find('td:eq(1) a img[src*=system/img/g/d.png]').html()==null ? 0 : $(val).find('td:eq(1) a img[src*=system/img/g/d.png]').attr('src'))
-		players[pid].t		= ($(val).find('td:eq(1) a img[src*=system/img/g/t]').html()==null ? 0 : $(val).find('td:eq(1) a img[src*=system/img/g/t]').attr('src'))
+		players[pid].d		= ($(val).find('td:eq(1) img[src*=system/img/g/d.png]').html()==null ? 0 : $(val).find('td:eq(1) img[src*=system/img/g/d.png]').attr('src'))
+		players[pid].t		= ($(val).find('td:eq(1) img[src*=system/img/g/t]').html()==null ? 0 : $(val).find('td:eq(1) img[src*=system/img/g/t]').attr('src'))
+		debug(players[pid].id+':'+players[pid].d)
 		players[pid].nid	= $(val).find('td:eq(2) img').attr('src')
 								.split('/')[4]
 								.split('.')[0]
