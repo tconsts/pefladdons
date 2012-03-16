@@ -52,7 +52,7 @@ $().ready(function() {
 		html += '</tr>'
 	}
 	html += '</table>'
-	html += '<br><br>&nbsp;* - <i>при появлении нового скрипта, чтобы он заработал, требуется переустановить(поставить поверх) основной скрипт: <a href="http://pefladdons.googlecode.com/svn/trunk/pefl.user.js">pefl.user.js</a>.</i>'
+	html += '<br><br>&nbsp;* - <i>при появлении нового скрипта, чтобы он заработал, требуется переустановить(поставить поверх) основной скрипт: <a href="http://pefladdons.googlecode.com/files/pefl.user.js">pefl.user.js</a>.</i>'
 
 	html += '<br><br>&nbsp;* - <i>Вы можете поддержать проект (или например запросить сделать определенную фичу в первую очередь, или в персональное пользование), перечислив какую-либо сумму одним из следующих способов (оплата возможна через любой платёжный терминал)</i>'
 	html += '<table align=center bgcolor=A3DE8F width=50%><tr bgcolor=C9F8B7 height=50 valign=top><td><b>WebMoney</b><br>'
