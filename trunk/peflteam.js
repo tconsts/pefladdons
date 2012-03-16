@@ -20,7 +20,7 @@ var sumvaluechange = 0
 var save = false
 var db = false
 var list = {
-	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
+	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
 	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale',
 //	'divs':		'did,my,dnum,dname,drotate,drotcom,dprize,color'
 }
@@ -438,6 +438,11 @@ function GetInfoPagePl(){
 		players[pid].mchange= 0
 		players[pid].form	= parseInt($(val).find('td:eq(5)').html())
 		players[pid].fchange= 0
+		players[pid].games	= parseInt($(val).find('td:eq(6)').html())
+		players[pid].goals	= parseInt($(val).find('td:eq(7)').html())
+		players[pid].passes	= parseInt($(val).find('td:eq(8)').html())
+		players[pid].ims	= parseInt($(val).find('td:eq(9)').html())
+		players[pid].rate	= parseInt($(val).find('td:eq(10)').html())
 		players[pid].position= $(val).find('td:eq(11)').html()
 		players[pid].value 	= 0
 		players[pid].valuech= 0
@@ -472,13 +477,14 @@ function ModifyPlayers(){
 		var pl = players[i]
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
+			debug(pl.id+':'+pl.goals+'='+pl2.goals)
 			if (remember == 1){
-				players[i]['mchange'] = pl.morale - pl2.morale
-				players[i]['fchange'] = pl.form   - pl2.form
+				players[i].mchange = pl.morale - pl2.morale
+				players[i].fchange = pl.form   - pl2.form
 				if(pl.value!=0) {
-					players[i]['valuech'] = pl.value   - pl2.value
+					players[i].valuech = pl.value   - pl2.value
 				}else {
-					if(pl2.value>0) players[i]['value'] = pl2.value
+					if(pl2.value>0) players[i].value = pl2.value
 				}
 			} else {
 				players[i]['mchange'] = pl2.mchange
@@ -493,8 +499,14 @@ function ModifyPlayers(){
 
 	for(i in players) {
 		var pl = players[i]
-		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(4)').append(ShowChange(pl['mchange']))
-		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(4)').append(ShowChange(pl['mchange']))
+		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(4)').append(ShowChange(pl.mchange))
+		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(4)').append(ShowChange(pl.mchange))
+		if(typeof(players2[pl.id])!='undefined'){
+			var pl2 = players2[pl.id]
+			$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(7)').append(ShowChange(pl.goals-pl2.goals, true))
+			$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(8)').append(ShowChange(pl.passes-pl2.passes, true))
+			$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(9)').append(ShowChange(pl.ims-pl2.ims, true))
+		}
 		sumvaluechange += pl.valuech/1000
 	}
 	debug('nomch:'+sumvaluechange)
@@ -1055,9 +1067,9 @@ function sAge(i, ii) { // По zp (убыванию)
     else						return  0
 }
 
-function ShowChange(value){
-	if(value > 0) 		return '<sup><font color="green">+' + value + '</font></sup>'
-	else if(value < 0)	return '<sup><font color="red">' 	+ value + '</font></sup>'
+function ShowChange(value,hide){
+	if(value > 0) 		return '<sup><font color="green">+' + (hide ? ''  : value) + '</font></sup>'
+	else if(value < 0)	return '<sup><font color="red">' 	+ (hide ? '-' : value) + '</font></sup>'
 	else 		  		return ''
 }
 
