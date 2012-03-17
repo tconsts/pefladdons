@@ -16,13 +16,14 @@ var db = false
 var ttime = []
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
-	'matches':	'id,hash,place,schet,pen,weather,ref,ename,su',
-	'plmatches':'',
+	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash',
+	'matchespl':'',
 }
 var match1 = {}
+var matches = []
 
 $().ready(function() {
-	if(deb) $('td.back4').prepend('<div id=debug></div>')
+	if(deb) $('body').prepend('<div id=debug></div>')
 //	$('td.back4 table:first').attr('border','5')	// расстановка
 //	$('td.back4 table:eq(1)').attr('border','5')	// все вместе кроме расстановки
 //	$('td.back4 table:eq(2)').attr('border','5')	// отчет
@@ -31,9 +32,10 @@ $().ready(function() {
 //	$('td.back4 table:eq(5)').attr('border','5')	// стата
 //	$('td.back4 table:eq(6)').attr('border','5')	// оценки
 
-	var mid = UrlValue('j')
+	var mid = parseInt(UrlValue('j'))
 	match1.id = mid
-	match1.su = (mid>602078 ? true: false)
+	match1.hash = UrlValue('z')
+	match1.su = ((mid>559098 && mid<601685) || mid>602078 ? true : false)
 
 	//дорисовываем оценки в код для форума(t=code) и редактируем страницу матча (t=if)
 	if(UrlValue('t') == 'code') {
@@ -52,22 +54,38 @@ $().ready(function() {
 		$('td.back4 table:eq(2)').before('<br><a id="treport" href="javascript:void(ShowTable(2))">&ndash;</a>')
 /**/
 		// запоминаем таблицу оценок
-		match1.wimg = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
+		match1.weather = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
 		match1.ref = $('td.back4 table:eq(2)').html().split('Главный арбитр:')[1].split(').')[0] + ')'
 		match1.schet = $('td.back4 table:eq(3) td:eq(1)').text()
 		var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
 		match1.fschet = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
 
-		var finschet = (finschetarr[1]!=undefined && match1.fschet!=match1.schet ? ' [center]По пенальти [b][color=red]'+ match1.fschet + '[/color][/b][/center]' : '')
-
+		var finschet = ''
+		if(finschetarr[1]!=undefined && match1.fschet!=match1.schet) {
+			finschet = ' [center]По пенальти [b][color=red]'+ match1.fschet + '[/color][/b][/center]'
+			match1.pen = match1.fschet
+		}
 		if(myteamid!=undefined){
 			var mark = 'none'
-			mark = (myteamid==parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0]) ? true : mark)
-			mark = (myteamid==parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0]) ? false : mark)
+			if(myteamid==parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])) {
+				mark =  true
+				match1.place = 'h'
+				match1.eid = parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])
+				match1.ename = $('td.back4 table:eq(3) tr:first td:eq(2)').text()
+				match1.emanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
+			}
+			if(myteamid==parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])) {
+				mark = false
+				match1.place = 'a'
+				match1.eid = parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])
+				match1.ename = $('td.back4 table:eq(3) tr:first td:eq(0)').text()
+				match1.emanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(0)').text()
+			}
 			if(mark!='none') {
+				if($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined) match1.place += '.n'
 				PlayerTime(mid,parseInt($('p.key:last').text().split(' ')[0]),mark,myteamid)
 				MatchGetData()
-				//MatchCheck(mid)
+				MatchGet()
 				//MatchSave()
 			}
 		}
@@ -94,7 +112,7 @@ $().ready(function() {
 			.replace(/font/g,'color')
 			.replace(/\</g,'[')
 			.replace(/\>/g,']')
-			+ '[img]system/img/w' + match1.wimg + '.png[/img]' 
+			+ '[img]system/img/w' + match1.weather + '.png[/img]' 
 			+ ' [b]Главный арбитр:[/b] ' + match1.ref + '.'
 	}
 }, false);
@@ -104,8 +122,8 @@ function MatchGetData(mid){
 	for(i in match1) debug(i+':'+match1[i])
 }
 
-function MatchCheck(mid){
-	debug('MatchCheck('+mid+')')
+function MatchGet(){
+	debug('MatchGet()')
 	var dataname = 'matches'
 	var head = list['matches'].split(',')
 	if(ff) {
@@ -131,22 +149,27 @@ function MatchCheck(mid){
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			tx.executeSql("SELECT * FROM "+dataname+" WHERE id='"+match1.id+"'", [],
+/**
+			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
+				function(tx, result){},
+				function(tx, error) {debug(dataname+':' + error.message)}
+			);
+/**/
+			tx.executeSql("SELECT * FROM "+dataname, [],
 				function(tx, result){
 					debug(dataname+':select:ok')
-					var i = 0
-					for(i = 0; i < result.rows.length; i++) {
+					for(var i = 0; i < result.rows.length; i++) {
 						var row = result.rows.item(i)
 						var id = row[head[0]]
-						match2 = {}
+						var match2 = {}
 						for(j in row) match2[j] = row[j]
+						matches[match2.id] = match2
 						debug(dataname+':g'+id+':'+match2.schet)
 					}
-					debug(dataname+':select:i:'+i)
-					if (i==0) MatchSave()
+					MatchSave()
 				},
 				function(tx, error){
-					debug(dataname+':select:'+error.message)
+					debug(dataname+':'+error.message)
 					MatchSave()
 				}
 			)
@@ -156,8 +179,10 @@ function MatchCheck(mid){
 
 function MatchSave(){
 	debug('MatchSave()')
+	matches[match1.id] = match1
 	var dataname = 'matches'
 	var head = list[dataname].split(',')
+	var data = matches
 	if(ff) {
 /**		var text = ''
 		for (var i in data) {
@@ -176,41 +201,30 @@ function MatchSave(){
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-/**
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
-				function(tx, result){debug(dataname+':drop:ok')},
-				function(tx, error) {debug(dataname+':drop:' + error.message)});                                           
-/**/
+				function(tx, result){},
+				function(tx, error) {debug(dataname+':' + error.message)}
+			);
 			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head+")", [],
-				function(tx, result){debug(dataname+':create ok:'+head)},
-				function(tx, error) {debug(error.message)});
-
-			tx.executeSql("SELECT * FROM "+dataname+" WHERE id='"+match1.id+"'", [],
-				function(tx, result){
-					debug(dataname+':select:ok')
-					for(i = 0; i < result.rows.length; i++) {
-						var row = result.rows.item(i)
-						var id = row[head[0]]
-						var match2 = {}
-						for(j in row) match2[j] = row[j]
-						debug(dataname+':g'+id+':'+match2.schet)}
-					debug(dataname+':select:i:'+i)},
-				function(tx, error){debug(dataname+':select:'+error.message)})
-
-//			for(var i in data) {
-				var dti = match1//data[i]
+				function(tx, result){},
+				function(tx, error) {debug(dataname+':'+error.message)}
+			);
+			for(var i in data) {
+				var dti = data[i]
 				var x1 = []
 				var x2 = []
 				var x3 = []
 				for(var j in head){
 					x1.push(head[j])
 					x2.push('?')
-					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))}
-
+					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
+				}
+				debug('insert:'+x3)
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
-					function(tx, result){debug(dataname+':insert ok:'+x3)},
-					function(tx, error) {debug(dataname+':insert error:'+error.message)});
-//			}
+					function(tx, result){},
+					function(tx, error) {debug(dataname+':'+error.message)}
+				);
+			}
 /**/
 		});
 	}
