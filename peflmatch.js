@@ -13,14 +13,17 @@ var debnum = 0
 
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var db = false
-var ttime = []
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
 	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash',
-	'matchespl':'',
+	'matchespl':'nameid,name,minute',
 }
-var match1 = {}
-var matches = []
+var match1	= {}
+var matches	= []
+var plmatch	= []
+var plhead	= ['id']
+var pldbase	= []
+var plteam	= []
 
 $().ready(function() {
 	if(deb) $('body').prepend('<div id=debug></div>')
@@ -84,7 +87,6 @@ $().ready(function() {
 			if(mark!='none') {
 				if($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined) match1.place += '.n'
 				PlayerTime(mid,parseInt($('p.key:last').text().split(' ')[0]),mark,myteamid)
-				MatchGetData()
 				MatchGet()
 				//MatchSave()
 			}
@@ -116,11 +118,6 @@ $().ready(function() {
 			+ ' [b]Главный арбитр:[/b] ' + match1.ref + '.'
 	}
 }, false);
-
-function MatchGetData(mid){
-	debug('MatchGetData()')
-	for(i in match1) debug(i+':'+match1[i])
-}
 
 function MatchGet(){
 	debug('MatchGet()')
@@ -164,7 +161,7 @@ function MatchGet(){
 						var match2 = {}
 						for(j in row) match2[j] = row[j]
 						matches[match2.id] = match2
-						debug(dataname+':g'+id+':'+match2.schet)
+						//debug(dataname+':g'+id+':'+match2.schet)
 					}
 					MatchSave()
 				},
@@ -257,93 +254,81 @@ function debug(text) {if(deb) {debnum++;$('div#debug').append(debnum+'&nbsp;\''+
 function PlayerTime(mid,mt,mrk,tid){
 	debug('PlayerTime('+mid+','+mt+','+mrk+','+tid+')')
 /**/
-	ttime[tid]= {}
+	plmatch[mid] = {}
 
 	// get info from postmatch table
 	var m = false
 	var uni = 2
 	$('td.back4 table:eq(6) td:has(a[href^=javascript])').each(function(){
+		var player = {}
 		m = (m ? false : true)
 		if(m==mrk){
-			var pname	= TrimString($(this).find('a[href^=javascript]').text())
-			var pnameid	= pname
+			player.name		= TrimString($(this).find('a[href^=javascript]').text())
+			player.nameid	= player.name
 
-			if(ttime[tid][pnameid]!=undefined){
-				pnameid = pname+uni
+			if(plmatch[mid][player.nameid]!=undefined){
+				player.nameid += '_'+uni
 				uni++;
 			}
-			var pnum = parseInt($(this).prev().html())+(mrk ? 0 : 18)
+			var headsave = true
+			for(i in plhead) if(plhead[i]==player.nameid) headsave = false
+			if(headsave) plhead.push(player.nameid)
+
+			var pnum = player.num = parseInt($(this).prev().html())+(mrk ? 0 : 18)
 			var nexttd = $(this).next().html()
-			var pmin = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
+			player.minute = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
 
-			ttime[tid][pnameid]={'pnameid':pnameid,'ptime':pmin,'pname':pname,'pnum':pnum}
-
+			// get info from match text
+			player.searchname = ':'+player.name+':'
+			$('font.p'+(player.num<10 ? 0 :'')+player.num).each(function(){
+				var cname = $(this).text()
+				if(player.searchname.indexOf(':'+cname+':')==-1) player.searchname += cname+':'
+			})
+			plmatch[mid][player.nameid] = player
 		}
 	})
-
-	// get info from match text
-	for (i in ttime[tid]){
-		var pl = ttime[tid][i]
-		pl.pfname=':'+pl.pname+':'
-		//debug('font.p'+(pl.pnum<10 ? 0 :'')+pl.pnum)
-		$('font.p'+(pl.pnum<10 ? 0 :'')+pl.pnum).each(function(){
-			var cname = $(this).text()
-			//debug(cname)
-			if(pl.pfname.indexOf(':'+cname+':')==-1) pl.pfname += cname+':'
-		})
-	}
 
 	// get players position
 	//$('td.back4 table:first').attr('border','2')
 
 	// print debug info
-	for(i in ttime[tid]) {
-		var x  = ttime[tid][i]
-		//debug(mid+':'+tid+':'+x.ptime+':'+x.pfname)
+/**
+	for(i in plmatch[mid]) {
+		var x  = plmatch[mid][i]
+		var dtext = ''
+		for(j in x) dtext += ' '+x[j]
+		debug(dtext)
 	}
 /**/
+	//SavePlayers(mid)
 }
 
-function DBConnect(){
-	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
-	if(!db) {debug('Open DB PEFL fail.');return false;} 
-	else 	{debug('Open DB PEFL ok.')}
-}
-
-function SaveData(dataname){
-	debug(dataname+':SaveData')
-
+function SavePlayers(mid) {
+	debug('SavePlayers()')
+	var dataname = 'matchespl'
+	var head = plhead
+	debug('head:'+head.join(','))
 	var data = []
-	var head = list[dataname].split(',')
-	switch (dataname){
-		case 'players':		data = players;break
-		case 'matches':		data = matches;break
-		case 'plmatches': 	data = plmatches;break
-		default: return false
+	for (i in plmatch){
+		var players = {'id':mid}
+		for (j in plmatch[i]) players[plmatch[i][j].nameid] = plmatch[i][j].minute
+		data[i] = players
 	}
+
 	if(ff) {
-		var text = ''
-		for (var i in data) {
-			text += (text!='' ? '#' : '')
-			if(typeof(data[i])!='undefined') {
-				var dti = data[i]
-				var dtid = []
-				for(var j in head){
-					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
-				}
-				text += dtid.join('|')
-			}
-		}
-		globalStorage[location.hostname][dataname] = text
+
 	}else{
+		if(!db) DBConnect()
 		db.transaction(function(tx) {
+			/**/
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
 				function(tx, result){},
-				function(tx, error) {debug(dataname+':drop error:' + error.message)}
-			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+list[dataname]+")", [],
-				function(tx, result){debug(dataname+':create ok')},
-				function(tx, error) {debug(error.message)}
+				function(tx, error) {debug(dataname+':' + error.message)}
+			);/**/
+			debug("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head.join(',')+")")
+			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head.join(',')+")", [],
+				function(tx, result){},
+				function(tx, error) {debug(dataname+':create:'+error.message)}
 			);
 			for(var i in data) {
 				var dti = data[i]
@@ -355,66 +340,19 @@ function SaveData(dataname){
 					x2.push('?')
 					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
 				}
-//				debug(dataname+':s'+x3['0']+'_'+x3['1'])
+				debug(dataname+':insert3:'+x3)
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
-					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
-				});
+					function(tx, error) {debug(dataname+':insert:'+error.message)}
+				);
 			}
+/**/
 		});
 	}
 }
 
-function GetData(dataname){
-	debug(dataname+':GetData')
-	var data = []
-	var head = list[dataname].split(',')
-	switch (dataname){
-		case 'players': data = players2;break
-		case 'teams': 	data = teams;	break
-//		case 'divs'	: 	data = divs;	break
-		default: return false
-	}
-	if(ff) {
-		var text1 = String(globalStorage[location.hostname][dataname])
-		if (text1 != 'undefined'){
-			var text = text1.split('#')
-			for (i in text) {
-				var x = text[i].split('|')
-				var curt = {}
-				var num = 0
-				for(j in head){
-					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
-					num++
-				}
-				data[curt[head[0]]] = {}
-				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
-			}
-			GetFinish('get_'+dataname, true)
-		} else {
-			GetFinish('get_'+dataname, false)
-		}			
-	}else{
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-			tx.executeSql("SELECT * FROM "+dataname, [],
-				function(tx, result){
-					debug(dataname+':Select ok')
-					for(var i = 0; i < result.rows.length; i++) {
-						var row = result.rows.item(i)
-						var id = row[head[0]]
-						data[id] = {}
-						for(j in row) data[id][j] = row[j]
-//						debug(dataname+':g'+id+':'+data[id].my)
-					}
-					GetFinish('get_'+dataname,true)
-				},
-				function(tx, error){
-					debug(error.message)
-					GetFinish('get_'+dataname, false)
-				}
-			)
-		})
-	}
+function DBConnect(){
+	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
+	if(!db) {debug('Open DB PEFL fail.');return false;} 
+	else 	{debug('Open DB PEFL ok.')}
 }
-
