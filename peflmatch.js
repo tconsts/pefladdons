@@ -21,9 +21,9 @@ var list = {
 var match1	= {}
 var matches	= []
 var plmatch	= []
-var plhead	= ['id']
-var pldbase	= []
-var plteam	= []
+var plhead	= 'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
+//var pldbase	= []
+//var plteam	= []
 
 $().ready(function() {
 	if(deb) $('body').prepend('<div id=debug></div>')
@@ -270,17 +270,15 @@ function PlayerTime(mid,mt,mrk,tid){
 				player.nameid += '_'+uni
 				uni++;
 			}
-			var headsave = true
-			for(i in plhead) if(plhead[i]==player.nameid) headsave = false
-			if(headsave) plhead.push(player.nameid)
 
-			var pnum = player.num = parseInt($(this).prev().html())+(mrk ? 0 : 18)
+			var pnum = parseInt($(this).prev().html())+(mrk ? 0 : 18)
 			var nexttd = $(this).next().html()
 			player.minute = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
+			player.num = (pnum>18 ? pnum-18 : pnum)
 
 			// get info from match text
 			player.searchname = ':'+player.name+':'
-			$('font.p'+(player.num<10 ? 0 :'')+player.num).each(function(){
+			$('font.p'+(pnum<10 ? 0 :'')+pnum).each(function(){
 				var cname = $(this).text()
 				if(player.searchname.indexOf(':'+cname+':')==-1) player.searchname += cname+':'
 			})
@@ -300,18 +298,18 @@ function PlayerTime(mid,mt,mrk,tid){
 		debug(dtext)
 	}
 /**/
-	//SavePlayers(mid)
+	SavePlayers(mid)
 }
 
 function SavePlayers(mid) {
 	debug('SavePlayers()')
 	var dataname = 'matchespl'
-	var head = plhead
-	debug('head:'+head.join(','))
+	var head = plhead.split(',')
+	debug('head:'+head)
 	var data = []
 	for (i in plmatch){
 		var players = {'id':mid}
-		for (j in plmatch[i]) players[plmatch[i][j].nameid] = plmatch[i][j].minute
+		for (j in plmatch[i]) players['n'+plmatch[i][j].num] = plmatch[i][j].nameid + ':' + plmatch[i][j].minute
 		data[i] = players
 	}
 
@@ -320,13 +318,12 @@ function SavePlayers(mid) {
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			/**/
+			/**
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
 				function(tx, result){},
 				function(tx, error) {debug(dataname+':' + error.message)}
 			);/**/
-			debug("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head.join(',')+")")
-			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head.join(',')+")", [],
+			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head.join(',').replace('id','id UNIQUE')+")", [],
 				function(tx, result){},
 				function(tx, error) {debug(dataname+':create:'+error.message)}
 			);
@@ -340,7 +337,7 @@ function SavePlayers(mid) {
 					x2.push('?')
 					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
 				}
-				debug(dataname+':insert3:'+x3)
+				//debug(dataname+':insert3:'+x3)
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
 					function(tx, error) {debug(dataname+':insert:'+error.message)}
