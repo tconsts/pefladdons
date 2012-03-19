@@ -10,9 +10,11 @@ deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var type 	= 'num'
-var players  = []
-var players2 = []
-var teams = []
+var players = []
+var players2= []
+var matches	= []
+var teams 	= []
+var plsu	= {}
 var team_cur = {}
 var m = []
 var remember = 0
@@ -22,7 +24,7 @@ var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
 	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale',
-//	'divs':		'did,my,dnum,dname,drotate,drotcom,dprize,color'
+	'matchespl':'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
 }
 
 var rtasks = {
@@ -120,11 +122,27 @@ $().ready(function() {
 		if(deb){
 			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
 			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
-//			preparedhtml += '<a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a><br>'
+			preparedhtml += '<a id="matches" href="javascript:void(PrintSU())">debug:Сверхусталость</a><br>'
 			$("#rg").after(preparedhtml)
 		}
 	}
+	GetData('matchespl')
 }, false);
+
+function PrintSU() {
+	debug('PrintMatches()')
+	for(i in matches){
+		for (j in matches[i]){
+			var field = String(matches[i][j]).split(':')
+
+			if(field[1] != undefined) {
+				if (plsu[field[0]]==undefined) plsu[field[0]] = parseInt(field[1])	
+				else plsu[field[0]] += parseInt(field[1])
+			}
+		}
+	}
+	for(i in plsu) debug(i+':'+plsu[i])
+}
 
 function TrimString(sInString){
 	sInString = sInString.replace(/\&nbsp\;/g,' ');
@@ -363,13 +381,10 @@ function GetData(dataname){
 	switch (dataname){
 		case 'players': data = players2;break
 		case 'teams': 	data = teams;	break
-//		case 'divs'	: 	data = divs;	break
+		case 'matchespl':data = matches;	break
 		default: return false
 	}
 	if(ff) {
-		delete globalStorage[location.hostname]['playersvalue']
-		delete globalStorage[location.hostname]['tasks']
-		delete globalStorage[location.hostname]['team']
 		var text1 = String(globalStorage[location.hostname][dataname])
 		if (text1 != 'undefined'){
 			var text = text1.split('#')
