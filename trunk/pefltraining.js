@@ -3,6 +3,7 @@
 // @namespace      pefl
 // @description    modification training page
 // @include        http://*pefl.*/plug.php?p=training*
+// @include        http://*pefl.*/plug.php?p=trainplan*
 // @version        2.0
 // ==/UserScript==
 
