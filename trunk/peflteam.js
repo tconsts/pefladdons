@@ -138,7 +138,7 @@ function PrintSU() {
 
 			if(field[1] != undefined) {
 				if(plsu[field[0]]==undefined){
-					plsu[field[0]] = {'name':field[0], 'minute':parseInt(field[1]),'matches':0}
+					plsu[field[0]] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1}
 				}else{
 					plsu[field[0]].minute	+= parseInt(field[1])
 					plsu[field[0]].matches	+= 1
@@ -150,9 +150,7 @@ function PrintSU() {
 	html += '<table width=50%><tr><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th></tr>'
 	var pls = plsu.sort(sSu)
 	for(i in pls) {
-		debug(i+':'+pls[i].minute+'('+pls[i].matches+')')
 		var ost = sumax - pls[i].minute
-
 		html += '<tr><td><b>'+i+'</b></td><td>'+pls[i].minute+'</td><td>'+pls[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
 	}
 	html += '</table>'
