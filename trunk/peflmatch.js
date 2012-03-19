@@ -310,20 +310,22 @@ function SavePlayers(mid) {
 	}
 	var text = String(globalStorage[location.hostname][dataname])
 	text = (text=='undefined' ? '' : text)
-	if(ff && deb && (text=='' || (text.indexOf('#'+mid+'|')==-1) && text.split('|',1)[0]!=mid)) {
-		debug(dataname+':add')
-		for (var i in data) {
-			text += (text!='' ? '#' : '')
-			if(typeof(data[i])!='undefined') {
-				var dti = data[i]
-				var dtid = []
-				for(var j in head){
-					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+	if(ff){
+		if(deb && (text=='' || (text.indexOf('#'+mid+'|')==-1 && text.split('|',1)[0]!=mid))) {
+			debug(dataname+':add')
+			for (var i in data) {
+				text += (text!='' ? '#' : '')
+				if(typeof(data[i])!='undefined') {
+					var dti = data[i]
+					var dtid = []
+					for(var j in head){
+						dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+					}
+					text += dtid.join('|')
 				}
-				text += dtid.join('|')
 			}
+			globalStorage[location.hostname][dataname] = text
 		}
-		globalStorage[location.hostname][dataname] = text
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
