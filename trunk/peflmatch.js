@@ -177,7 +177,7 @@ function MatchSave(){
 	var dataname = 'matches'
 	var head = list[dataname].split(',')
 	var data = matches
-	if(ff && deb){/**/
+	if(ff){/**/
 		var text = ''
 		for (var i in data) {
 			text += (text!='' ? '#' : '')
@@ -302,15 +302,26 @@ function SavePlayers(mid) {
 	debug('SavePlayers()')
 	var dataname = 'matchespl'
 	var head = plhead.split(',')
-	debug('head:'+head)
 	var data = []
 	for (i in plmatch){
 		var players = {'id':mid}
 		for (j in plmatch[i]) players['n'+plmatch[i][j].num] = plmatch[i][j].nameid + ':' + plmatch[i][j].minute
 		data[i] = players
 	}
-
-	if(ff) {
+	if(ff && deb && globalStorage[location.hostname][dataname].indexOf('#'+mid+'|')==-1) {
+		var text = ''
+		for (var i in data) {
+			text += (text!='' ? '#' : '')
+			if(typeof(data[i])!='undefined') {
+				var dti = data[i]
+				var dtid = []
+				for(var j in head){
+					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+				}
+				text += dtid.join('|')
+			}
+		}
+		globalStorage[location.hostname][dataname] = text
 
 	}else{
 		if(!db) DBConnect()
