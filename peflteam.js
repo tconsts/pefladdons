@@ -15,6 +15,7 @@ var players2= []
 var matches	= []
 var teams 	= []
 var plsu	= {}
+var sumax 	= 3600
 var team_cur = {}
 var m = []
 var remember = 0
@@ -136,12 +137,25 @@ function PrintSU() {
 			var field = String(matches[i][j]).split(':')
 
 			if(field[1] != undefined) {
-				if (plsu[field[0]]==undefined) plsu[field[0]] = parseInt(field[1])	
-				else plsu[field[0]] += parseInt(field[1])
+				if(plsu[field[0]]==undefined){
+					plsu[field[0]] = {'name':field[0], 'minute':parseInt(field[1]),'matches':0}
+				}else{
+					plsu[field[0]].minute	+= parseInt(field[1])
+					plsu[field[0]].matches	+= 1
+				}
 			}
 		}
 	}
-	for(i in plsu) debug(i+':'+plsu[i])
+	var html = '<b>Таблица Сверхусталости:</b>'
+	html += '<table width=50%><tr><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th></tr>'
+	for(i in plsu) {
+		debug(i+':'+plsu[i].minute+'('+plsu[i].matches+')')
+		var ost = sumax - plsu[i].minute
+
+		html += '<tr><td><b>'+i+'</b></td><td>'+plsu[i].minute+'</td><td>'+plsu[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
+	}
+	html += '</table>'
+    $('td.back4').html(html)
 }
 
 function TrimString(sInString){
