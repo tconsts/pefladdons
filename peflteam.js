@@ -14,7 +14,7 @@ var players = []
 var players2= []
 var matches	= []
 var teams 	= []
-var plsu	= {}
+var plsu	= []
 var sumax 	= 3600
 var team_cur = {}
 var m = []
@@ -148,11 +148,12 @@ function PrintSU() {
 	}
 	var html = '<b>Таблица Сверхусталости:</b>'
 	html += '<table width=50%><tr><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th></tr>'
-	for(i in plsu) {
-		debug(i+':'+plsu[i].minute+'('+plsu[i].matches+')')
-		var ost = sumax - plsu[i].minute
+	var pls = plsu.sort(sSu)
+	for(i in pls) {
+		debug(i+':'+pls[i].minute+'('+pls[i].matches+')')
+		var ost = sumax - pls[i].minute
 
-		html += '<tr><td><b>'+i+'</b></td><td>'+plsu[i].minute+'</td><td>'+plsu[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
+		html += '<tr><td><b>'+i+'</b></td><td>'+pls[i].minute+'</td><td>'+pls[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
 	}
 	html += '</table>'
     $('td.back4').html(html)
@@ -1094,6 +1095,12 @@ function sAge(i, ii) { // По zp (убыванию)
     if 		(i.age < ii.age)	return  1
     else if	(i.age > ii.age)	return -1
     else						return  0
+}
+
+function sSu(i, ii) { // По su (убыванию)
+    if 		(i.minute < ii.minute)	return  1
+    else if	(i.minute > ii.minute)	return -1
+    else							return  0
 }
 
 function ShowChange(value,hide){
