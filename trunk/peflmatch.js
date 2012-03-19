@@ -308,7 +308,8 @@ function SavePlayers(mid) {
 		for (j in plmatch[i]) players['n'+plmatch[i][j].num] = plmatch[i][j].nameid + ':' + plmatch[i][j].minute
 		data[i] = players
 	}
-	if(ff && deb && globalStorage[location.hostname][dataname].indexOf('#'+mid+'|')==-1) {
+	var text = globalStorage[location.hostname][dataname]
+	if(ff && deb && text!=undefined && text.indexOf('#'+mid+'|')==-1) {
 		var text = ''
 		for (var i in data) {
 			text += (text!='' ? '#' : '')
