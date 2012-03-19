@@ -308,9 +308,9 @@ function SavePlayers(mid) {
 		for (j in plmatch[i]) players['n'+plmatch[i][j].num] = plmatch[i][j].nameid + ':' + plmatch[i][j].minute
 		data[i] = players
 	}
-	var text = globalStorage[location.hostname][dataname]
-	if(ff && deb && (text==undefined || String(text).indexOf('#'+mid+'|')==-1)) {
-		var text = ''
+	var text = String(globalStorage[location.hostname][dataname])
+	text = (text=='undefined' ? '' : text)
+	if(ff && deb && (text=='' || text.indexOf('#'+mid+'|')==-1) || text.split('|',1)[0]!=mid) {
 		for (var i in data) {
 			text += (text!='' ? '#' : '')
 			if(typeof(data[i])!='undefined') {
