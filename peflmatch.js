@@ -88,7 +88,6 @@ $().ready(function() {
 				if($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined) match1.place += '.n'
 				PlayerTime(mid,parseInt($('p.key:last').text().split(' ')[0]),mark,myteamid)
 				MatchGet()
-				//MatchSave()
 			}
 		}
 
@@ -122,10 +121,11 @@ $().ready(function() {
 function MatchGet(){
 	debug('MatchGet()')
 	var dataname = 'matches'
-	var head = list['matches'].split(',')
-	if(ff) {
-/**		var text1 = String(globalStorage[location.hostname][dataname])
-		if (text1 != 'undefined'){
+	var data = matches
+	var head = list[dataname].split(',')
+	if(ff){/**/
+		var text1 = String(globalStorage[location.hostname][dataname])
+		if(text1 != 'undefined'){
 			var text = text1.split('#')
 			for (i in text) {
 				var x = text[i].split('|')
@@ -138,30 +138,27 @@ function MatchGet(){
 				data[curt[head[0]]] = {}
 				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 			}
-			GetFinish('get_'+dataname, true)
-		} else {
-			GetFinish('get_'+dataname, false)
 		}
-/**/
+		MatchSave()
+	/**/
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-/**
+			/**
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
 				function(tx, result){},
 				function(tx, error) {debug(dataname+':' + error.message)}
-			);
-/**/
+			);/**/
 			tx.executeSql("SELECT * FROM "+dataname, [],
 				function(tx, result){
 					debug(dataname+':select:ok')
 					for(var i = 0; i < result.rows.length; i++) {
 						var row = result.rows.item(i)
 						var id = row[head[0]]
-						var match2 = {}
-						for(j in row) match2[j] = row[j]
-						matches[match2.id] = match2
-						//debug(dataname+':g'+id+':'+match2.schet)
+						var curt = {}
+						for(j in row) curt[j] = row[j]
+						data[curt.id] = curt
+						//debug(dataname+':g'+id+':'+curt.schet)
 					}
 					MatchSave()
 				},
@@ -180,8 +177,8 @@ function MatchSave(){
 	var dataname = 'matches'
 	var head = list[dataname].split(',')
 	var data = matches
-	if(ff) {
-/**		var text = ''
+	if(ff && deb){/**/
+		var text = ''
 		for (var i in data) {
 			text += (text!='' ? '#' : '')
 			if(typeof(data[i])!='undefined') {
@@ -194,7 +191,7 @@ function MatchSave(){
 			}
 		}
 		globalStorage[location.hostname][dataname] = text
-/**/
+	/**/
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
