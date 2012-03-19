@@ -308,10 +308,10 @@ function SavePlayers(mid) {
 		for (j in plmatch[i]) players['n'+plmatch[i][j].num] = plmatch[i][j].nameid + ':' + plmatch[i][j].minute
 		data[i] = players
 	}
-	var text = String(globalStorage[location.hostname][dataname])
-	text = (text=='undefined' ? '' : text)
 	if(ff){
-		if(deb && (text=='' || (text.indexOf('#'+mid+'|')==-1 && text.split('|',1)[0]!=mid))) {
+		var text = String(globalStorage[location.hostname][dataname])
+		text = (text=='undefined' ? '' : text)
+    	if(deb && (text=='' || (text.indexOf('#'+mid+'|')==-1 && text.split('|',1)[0]!=mid))) {
 			debug(dataname+':add')
 			for (var i in data) {
 				text += (text!='' ? '#' : '')
