@@ -110,6 +110,34 @@ $().ready(function() {
 		preparedhtml += '</table><br>'
 		$("#crabright").html(preparedhtml)
 
+		// add tables
+		var filter = '<div id="divRostSkillsFilter" style="display: none;"><a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a></div>'
+		filter += '<table id="tblRostSkillsFilter" width=50% align=left cellspacing=1 cellpadding=1 bgcolor="#c9f8b7" border=0 style="display: none;">'
+		filter += '<tr align=center><th width=10%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th></tr>'
+		filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td bgcolor=a3de8f id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
+		filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td bgcolor=a3de8f id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
+		filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td bgcolor=a3de8f id="R DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="L DF">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td bgcolor=a3de8f id="R DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="L DM">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td bgcolor=a3de8f id="R MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="L MF">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td bgcolor=a3de8f id="R AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="L AM">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<th></th></tr>'
+		filter += '</table>'
+		filter += '<table id="SumPl" width=50% align=right style="display: none;">'
+		filter += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Суммарный игрок</th></tr>'
+		filter += '<tr id="sumlast1"><td colspan=4 align=right id="sumlast1"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></td></tr>'
+		//filter += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
+		filter += '</table>'
+		filter += '<div id="filter" style="display:none;">&nbsp;</div>'
+		$('table#tblRosterFilter').after(filter)
+
+		preparedhtml  = '<table id="tblRostSkills" width=866 bgcolor=BFDEB3 style="display: none;">'
+		preparedhtml += '</table>'
+		preparedhtml += '<div id="divRostSkills" style="display: none;">'
+		preparedhtml += '<br>* - <i>нажать на значение <b>Сум</b> чтобы отключить или включить показ скиллов определенного игрока</i>'
+		preparedhtml += '<br>* - <i>нажимать на заголовки столбцов чтоб сортировать по сумме выделенных скиллов</i></div><br>'
+
+		$('table#tblRoster').after(preparedhtml)
+
 		EditFinance();
 
 		GetData('teams')
@@ -123,38 +151,65 @@ $().ready(function() {
 		if(deb){
 			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
 			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
-			preparedhtml += '<a id="matches" href="javascript:void(PrintSU())">debug:Сверхусталость</a><br>'
 			$("#rg").after(preparedhtml)
 		}
+		if(cid==parseInt(localStorage.myteamid)) GetData('matchespl')
 	}
-	GetData('matchespl')
 }, false);
 
-function PrintSU() {
-	debug('PrintMatches()')
-	for(i in matches){
-		for (j in matches[i]){
-			var field = String(matches[i][j]).split(':')
+function ShowSU() {
+	debug('ShowSU()')
+	$('div#divRostSkillsFilter').hide()
+	$('table#tblRostSkillsFilter').hide()
+	$('table#SumPl').hide()
+	$('table#tblRostSkills').hide()
+	$('div#divRostSkills').hide()
+	$('div#filter').hide()
 
-			if(field[1] != undefined) {
-				if(plsu[field[0]]==undefined){
-					plsu[field[0]] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1}
-				}else{
-					plsu[field[0]].minute	+= parseInt(field[1])
-					plsu[field[0]].matches	+= 1
+	$('table#tblRosterFilter').hide()
+	$('table#tblRoster').hide()
+
+	debug('x:'+$('table#tblSu').length)
+	if($('table#tblSu').length>0) {
+		$('table#tblSu').show()
+		$('div#divSu').show()
+	}else{
+		for(i in matches){
+			for (j in matches[i]){
+				var field = String(matches[i][j]).split(':')
+				if(field[1] != undefined) {
+					if(plsu[field[0]]==undefined){
+						plsu[field[0]] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1}
+					}else{
+						plsu[field[0]].minute	+= parseInt(field[1])
+						plsu[field[0]].matches	+= 1
+					}
 				}
 			}
 		}
+
+		var preparedhtml = '<table id="tblSu" bgcolor=BFDEB3 width=100%>'
+		preparedhtml += '<tr align=left><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th></tr>'
+		var pls = plsu.sort(sSu)
+		var num = 1
+		for(i in pls) {
+			var ost = sumax - pls[i].minute
+			preparedhtml += '<tr><td>'+num+'</td><td><b>'+i+'</b></td><td>'+pls[i].minute+'</td><td>'+pls[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
+			num++
+		}
+		preparedhtml += '</table>'
+		preparedhtml += '<br><br><div id="divSu">'
+		preparedhtml += '<br>1. матчи за сборные не учитываются'
+		preparedhtml += '<br>2. матчи за предыдущие клубы не учитываются'
+		preparedhtml += '<br>3. минуты в матчах с получением травм и удалений считаются некорректно'
+		preparedhtml += '<br>4. товы с установкой "набирать кондиции" временно считаются в зачет СУ'
+		preparedhtml += '<br>5. с однофамильцами мугут быт проблемы'
+		preparedhtml += '<br>6. игроки покинувшие клуб пока не удалены из списка'
+		preparedhtml += '</div>'
+		$('table#tblRoster').after(preparedhtml)
+		$('table#tblSu tr:even').attr('bgcolor','a3de8f')
+		$('table#tblSu tr:odd').attr('bgcolor','C9F8B7')
 	}
-	var html = '<b>Таблица Сверхусталости:</b>'
-	html += '<table width=50%><tr><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th></tr>'
-	var pls = plsu.sort(sSu)
-	for(i in pls) {
-		var ost = sumax - pls[i].minute
-		html += '<tr><td><b>'+i+'</b></td><td>'+pls[i].minute+'</td><td>'+pls[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
-	}
-	html += '</table>'
-    $('td.back4').html(html)
 }
 
 function TrimString(sInString){
@@ -505,7 +560,7 @@ function ModifyPlayers(){
 		var pl = players[i]
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
-			debug(pl.id+':'+pl.goals+'='+pl2.goals)
+			//debug(pl.id+':'+pl.goals+'='+pl2.goals)
 			if (remember == 1){
 				players[i].mchange = pl.morale - pl2.morale
 				players[i].fchange = pl.form   - pl2.form
@@ -583,7 +638,9 @@ function PrintRightInfo(){
 	if(UrlValue('h')==1) return false
 
 	// print link to skills page
-	var text = (team_cur.tss!=0 ? '<a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a>' : '<b><a>Скиллы игроков</a> <font color=BABDB6>(для VIP)</font></b>')
+	var text = '<a href="javascript:void(ShowRoster())"><b>Ростер команды</b></a><br>'
+	text += (team_cur.tss!=0 ? '<a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a>' : '<b><a>Скиллы игроков</a> <font color=BABDB6>(для VIP)</font></b>')
+	text += (team_cur.my ? '<br><a href="javascript:void(ShowSU())"><b>Сверхусталость</b></a>(debug)' : '')
 	$('#crabright').append('<br>'+text+'<br><br>')
 
 	// print to right menu
@@ -801,54 +858,39 @@ function ShowPlayersSkillChange(){
 		$('tr#skills').remove()
 	}
 }
+function ShowRoster(){
+	debug('ShowRoster()')
+//	$('table[background]:eq(1)').show()
+	$('table#tblSu').hide()
+	$('div#divSu').hide()
+
+	$('table#tblRostSkills').hide()
+	$('div#divRostSkills').hide()
+
+	$('table#tblRostSkillsFilter').hide()
+	$('table#SumPl').hide()
+	$('div#divRostSkillsFilter').hide()
+	$('div#filter').hide()
+
+	$('table#tblRoster').show()
+	$('table#tblRosterFilter').show()
+}
 
 function ShowSkills(param){
 	debug('ShowSkills param: '+param)
 	if(param == 1){
-		$('table[background]:eq(1)').hide()
-		$('td#crabglobalright').html('')
-		$('table#tblRoster')
-			.attr('id','tblRostSkills')
-			.attr('width','886')
-			.attr('bgcolor','BFDEB3')
+//		$('table[background]:eq(1)').hide()
+		//$('td#crabglobalright').html('')
 
-		var filter = ''
-		filter += '<tr align=center><th width=10%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th></tr>'
-		filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td bgcolor=a3de8f id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
-		filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td bgcolor=a3de8f id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
-		filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td bgcolor=a3de8f id="R DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="L DF">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td bgcolor=a3de8f id="R DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="L DM">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td bgcolor=a3de8f id="R MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="L MF">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td bgcolor=a3de8f id="R AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="L AM">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<th></th></tr>'
-		$('table#tblRosterFilter')
-			.attr('id','tblRostSkillsFilter')
-			.attr('width','50%')
-			.attr('align','left')
-			.attr('cellspacing','1')
-			.attr('cellpadding','1')
-			.after('<div id="filter">&nbsp;</div>')
-			.before('<a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a><br>')
-			.html(filter)
-		$('span#tskills').html('Ростер команды')
-		$('a#tskills').attr('href','')
-		ShowFilter()
-//		ShowSkills(2)
-		
-		var sumpl = '<table id="SumPl" width=50% align=right>'
-		sumpl += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Суммарный игрок</th></tr>'
-		sumpl += '<tr id="sumlast1"><td colspan=4 align=right id="sumlast1"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></td></tr>'
-//		sumpl += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
-		sumpl += '</table>'
-		$('table#tblRostSkillsFilter').after(sumpl)
-		$('table#SumPl').hide()
+		$('table#tblSu').hide()
+		$('div#divSu').hide()
+		$('table#tblRoster').hide()
+		$('table#tblRosterFilter').hide()
 
-		var text = '<br>'
-		text += '<br>* - <i>нажать на значение <b>Сум</b> чтобы отключить или включить показ скиллов определенного игрока</i>'
-		text += '<br>* - <i>нажимать на заголовки столбцов чтоб сортировать по сумме выделенных скиллов</i><br>'
-		$('table#tblRostSkills').after(text)
+		$('table#tblRostSkills').show()
+		$('div#divRostSkills').show()
+		$('div#divRostSkillsFilter').show()
 	}
-
 
 	$('table#tblRostSkills tr').remove()
 	if(param == 2) type = (type=='img' ? 'num' : 'img')

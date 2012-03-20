@@ -311,7 +311,7 @@ function SavePlayers(mid) {
 	if(ff){
 		var text = String(globalStorage[location.hostname][dataname])
 		text = (text=='undefined' ? '' : text)
-    	if(deb && (text=='' || (text.indexOf('#'+mid+'|')==-1 && text.split('|',1)[0]!=mid))) {
+    	if((text=='' || (text.indexOf('#'+mid+'|')==-1 && text.split('|',1)[0]!=mid))) {
 			debug(dataname+':add')
 			for (var i in data) {
 				text += (text!='' ? '#' : '')
