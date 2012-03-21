@@ -194,11 +194,6 @@ function initScripts () {
 		newScriptTV.type = 'text/javascript';
 		newScriptTV.src = source+'pefltv.js';
 		headID.appendChild(newScriptTV);
-		var cssScript = document.createElement('link');
-		cssScript.type = 'text/css';
-		cssScript.href = source+'tv/css/tv.css';
-		cssScript.rel = 'stylesheet';
-		headID.appendChild(cssScript);
 	}
 
 }

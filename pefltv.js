@@ -100,4 +100,8 @@ function getNoflashTV() {
 
 $().ready(function () {
 	$('body').prepend('<p><a href="#" onclick="return getNoflashTV();">Смотреть без flash</a></p>');
+	$('.div_play').css({ 'width' : '50%', 'float' : 'left' });
+	$('.div_speed ').css({ 'width' : '50%', 'float' : 'right', 'text-align' : 'right' });
+	$('.div_minute').css({ 'text-align' : 'center', 'font-weight' : 'bold' });
+	$('.div_comment').css({ 'text-align' : 'center' });
 });
