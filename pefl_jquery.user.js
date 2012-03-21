@@ -213,7 +213,7 @@ if(window.jQuery == undefined) {
 	jqueryScript.onload = initScripts;
 	headID.appendChild(jqueryScript);	
 } else {
-	$(document).ready(function () {
+	$().ready(function () {
 		initScripts();
 	});
 }
