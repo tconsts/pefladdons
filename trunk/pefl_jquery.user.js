@@ -13,14 +13,6 @@ var headID = document.getElementsByTagName("head")[0];
 var source = 'http://pefladdons.googlecode.com/svn/trunk/'
 //var source = 'http://localhost/web/'
 
-if(window.jQuery == undefined) { 
-	var jqueryScript = document.createElement('script');
-	jqueryScript.type = 'text/javascript';
-	jqueryScript.src = 'js/jquery-1.3.2.min.js';
-	jqueryScript.id = 'jscript';
-	headID.appendChild(jqueryScript);	
-} 
-
 // Show always
 var newScriptMenu = document.createElement('script');
 newScriptMenu.type = 'text/javascript';
@@ -205,4 +197,19 @@ if(url1=='tvgame.php'){ //scflag[23]==0 &&
 	cssScript.href = source+'tv/css/tv.css';
 	cssScript.rel = 'stylesheet';
 	headID.appendChild(cssScript);
+	
+	if(window.jQuery == undefined) { 
+		var jqueryScript = document.createElement('script');
+		jqueryScript.type = 'text/javascript';
+		jqueryScript.src = 'js/jquery-1.3.2.min.js';
+		script.onreadystatechange= function () {
+			if (this.readyState == 'complete') drawTVLink();
+		}
+		script.onload= drawTVLink;
+		headID.appendChild(jqueryScript);	
+	} else {
+		$(document).ready(function () {
+			drawTVLink();
+		}
+	}
 }

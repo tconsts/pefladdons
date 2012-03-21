@@ -98,7 +98,7 @@ function getNoflashTV() {
 	return false;
 }
 
-jscript.onload=function(){ 
+function drawTVLink(){ 
 	
 	$('body').prepend('<p><a href="#" onclick="return getNoflashTV();">Смотреть без flash</a></p>');
 
