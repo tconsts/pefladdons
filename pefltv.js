@@ -98,4 +98,6 @@ function getNoflashTV() {
 	return false;
 }
 
-$('body').prepend('<p><a href="#" onclick="return getNoflashTV();">Смотреть без flash</a></p>');
+$().ready(function () {
+	$('body').prepend('<p><a href="#" onclick="return getNoflashTV();">Смотреть без flash</a></p>');
+});
