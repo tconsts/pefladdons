@@ -176,13 +176,15 @@ function ShowSU() {
 	}else{
 		for(i in matches){
 			for (j in matches[i]){
+				var num = plsu.length
 				var field = String(matches[i][j]).split(':')
 				if(field[1] != undefined) {
-					if(plsu[field[0]]==undefined){
-						plsu[field[0]] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1}
+					for(p in plsu) if(plsu[p].name && plsu[p].name == field[0]) num = p
+					if(plsu[num]==undefined || plsu[num].name==undefined){
+						plsu[num] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1}
 					}else{
-						plsu[field[0]].minute	+= parseInt(field[1])
-						plsu[field[0]].matches	+= 1
+						plsu[num].minute	+= parseInt(field[1])
+						plsu[num].matches	+= 1
 					}
 				}
 			}
@@ -190,12 +192,10 @@ function ShowSU() {
 
 		var preparedhtml = '<table id="tblSu" bgcolor=BFDEB3 width=100%>'
 		preparedhtml += '<tr align=left><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th></tr>'
-		var pls = plsu.sort(sSu)
-		var num = 1
+		var pls = plsu.sort(function(a,b){return b.minute - a.minute})
 		for(i in pls) {
 			var ost = sumax - pls[i].minute
-			preparedhtml += '<tr><td>'+num+'</td><td><b>'+i+'</b></td><td>'+pls[i].minute+'</td><td>'+pls[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
-			num++
+			preparedhtml += '<tr><td>'+(parseInt(i)+1)+'</td><td><b>'+pls[i].name+'</b></td><td>'+pls[i].minute+'</td><td>'+pls[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
 		}
 		preparedhtml += '</table>'
 		preparedhtml += '<br><br><div id="divSu">'
@@ -1135,12 +1135,6 @@ function sAge(i, ii) { // По zp (убыванию)
     if 		(i.age < ii.age)	return  1
     else if	(i.age > ii.age)	return -1
     else						return  0
-}
-
-function sSu(i, ii) { // По su (убыванию)
-    if 		(i.minute < ii.minute)	return  1
-    else if	(i.minute > ii.minute)	return -1
-    else							return  0
 }
 
 function ShowChange(value,hide){
