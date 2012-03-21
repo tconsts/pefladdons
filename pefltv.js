@@ -102,6 +102,6 @@ function getNoflashTV() {
 	return false;
 }
 
-$().ready(function () {
+$(document).ready(function () {
 	$('body').prepend('<p><a href="#" onclick="return getNoflashTV();">Смотреть без flash</a></p>');
 });
