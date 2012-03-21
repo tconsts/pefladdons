@@ -8,8 +8,6 @@ speed[4] = 1000;
 var play = false;
 var p_interval = null;
 
-var jscript = document.getElementById("jscript");
-
 function showcomment() {
 	if(play) {
 		var comment = comments[tv_counter].split('=');
