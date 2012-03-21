@@ -55,20 +55,21 @@ function getNoflashTV() {
 		$('body').removeAttr("topmargin");
 		$('body').removeAttr("leftmargin");
 		
-		$('body').html('<div id="tv_box"><div class="div_play"><a href="#" id="play_button">Play</a></div><div class="div_speed"><a href="#" id="speed_button">1x</a></div><div class="div_minute"></div><div class="div_comment"></div></div>');
+		$('body').html('<div id="tv_box"><div class="div_play"><a href="#" id="play_button" title="Play"> </a></div><div class="div_speed"><a href="#" id="speed_button">1x</a></div><div class="div_minute"></div><div class="div_comment"></div></div>');
 		$('.div_play').css({ 'width' : '50%', 'float' : 'left' });
+		$('.div_play a').css({ 'width' : '30px', 'height' : '30px', 'background-image' : "url(http://pefladdons.googlecode.com/svn/trunk/tv/Play.jpg)"});
 		$('.div_speed ').css({ 'width' : '50%', 'float' : 'right', 'text-align' : 'right' });
 		$('.div_minute').css({ 'text-align' : 'center', 'font-weight' : 'bold' });
 		$('.div_comment').css({ 'text-align' : 'center' });
 		$('#tv_box .div_play a').click(function(){
-			if($(this).text() == 'Play') {
+			if($(this).attr("title") == 'Play') {
 				p_interval = setTimeout('showcomment()', speed[speed_selected]);
 				play = true;
-				$(this).text('Pause');
+				$(this).attr("title", 'Pause');
 			} else {
 				clearTimeout(p_interval);
 				play = false;
-				$(this).text('Play');
+				$(this).attr("title", 'Play');
 			}
 			return false;
 		});
