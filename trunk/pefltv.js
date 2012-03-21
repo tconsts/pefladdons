@@ -102,6 +102,4 @@ function getNoflashTV() {
 	return false;
 }
 
-$(document).ready(function () {
-	$('body').prepend('<p><a href="#" onclick="return getNoflashTV();">Смотреть без flash</a></p>');
-});
+$('body').prepend('<p><a href="#" onclick="return getNoflashTV();">Смотреть без flash</a></p>');
