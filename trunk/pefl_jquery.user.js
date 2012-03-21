@@ -198,7 +198,7 @@ if(url1=='tvgame.php'){ //scflag[23]==0 &&
 	cssScript.rel = 'stylesheet';
 	headID.appendChild(cssScript);
 	
-	if(window.jQuery == undefined) { 
+	if(window.jQuery == undefined) {
 		var jqueryScript = document.createElement('script');
 		jqueryScript.type = 'text/javascript';
 		jqueryScript.src = 'js/jquery-1.3.2.min.js';
@@ -210,6 +210,6 @@ if(url1=='tvgame.php'){ //scflag[23]==0 &&
 	} else {
 		$(document).ready(function () {
 			drawTVLink();
-		}
+		});
 	}
 }
