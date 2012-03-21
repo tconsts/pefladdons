@@ -13,7 +13,7 @@ var jscript = document.getElementById("jscript");
 function showcomment() {
 	if(play) {
 		var comment = comments[tv_counter].split('=');
-		$('#tv_box .div_minute').html(comment[0]+' минута');
+		$('#tv_box .div_minute').html(comment[0]+' РјРёРЅСѓС‚Р°');
 		$('#tv_box .div_comment').html(comment[1]);
 		tv_counter++;
 		p_interval = setTimeout('showcomment()', speed[speed_selected]);
@@ -103,5 +103,5 @@ function getNoflashTV() {
 }
 
 $(document).ready(function () {
-	$('body').prepend('<p><a href="#" onclick="return getNoflashTV();">Смотреть без flash</a></p>');
+	$('body').prepend('<p><a href="#" onclick="return getNoflashTV();">РЎРјРѕС‚СЂРµС‚СЊ Р±РµР· flash</a></p>');
 });
