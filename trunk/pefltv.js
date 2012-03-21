@@ -10,6 +10,10 @@ var p_interval = null;
 
 function showcomment() {
 	if(play) {
+		if(typeof comments[tv_counter] == 'undefined') {
+			clearTimeout(p_interval);
+			play = false;
+		}
 		var comment = comments[tv_counter].split('=');
 		$('#tv_box .div_minute').html(comment[0]+' минута');
 		$('#tv_box .div_comment').html(comment[1]);
