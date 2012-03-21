@@ -195,7 +195,7 @@ if(scflag[22]==0 && url2=='adaptation'){
 	headID.appendChild(newScriptAd);
 }
 //23 tv
-if(scflag[23]==0 && url1=='tvgame.php'){
+if(url1=='tvgame.php'){ //scflag[23]==0 && 
 	var newScriptTV = document.createElement('script');
 	newScriptTV.type = 'text/javascript';
 	newScriptTV.src = source+'pefltv.js';
