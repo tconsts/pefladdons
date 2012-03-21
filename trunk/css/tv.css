@@ -1,0 +1,19 @@
+.div_play {
+	width: 50%; 
+	float: left;
+}
+
+.div_speed {
+	width: 50%; 
+	float: right; 
+	text-align: right;
+}
+
+.div_minute {
+	text-align: center; 
+	font-weight: bold;
+}
+
+.div_comment {
+	text-align: center;
+}
