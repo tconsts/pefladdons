@@ -198,10 +198,20 @@ function initScripts () {
 
 }
 
+	var jqueryScript = document.createElement('script');
+	jqueryScript.type = 'text/javascript';
+	jqueryScript.src = source+'jquery-1.7.1.min.js';
+	jqueryScript.onreadystatechange= function () {
+		if (this.readyState == 'complete') initScripts();
+	}
+	jqueryScript.onload = initScripts;
+	headID.appendChild(jqueryScript);
+	
+/*
 if(window.jQuery == undefined) {
 	var jqueryScript = document.createElement('script');
 	jqueryScript.type = 'text/javascript';
-	jqueryScript.src = 'js/jquery-1.3.2.min.js';
+	jqueryScript.src = source+'jquery-1.7.1.min.js';
 	jqueryScript.onreadystatechange= function () {
 		if (this.readyState == 'complete') initScripts();
 	}
@@ -210,3 +220,4 @@ if(window.jQuery == undefined) {
 } else {
 	initScripts();
 }
+*/
