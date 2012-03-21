@@ -57,7 +57,7 @@ function getNoflashTV() {
 		
 		$('body').html('<div id="tv_box"><div class="div_play"><a href="#" id="play_button" title="Play"> </a></div><div class="div_speed"><a href="#" id="speed_button">1x</a></div><div class="div_minute"></div><div class="div_comment"></div></div>');
 		$('.div_play').css({ 'width' : '50%', 'float' : 'left' });
-		$('.div_play a').css({ 'width' : '30px', 'height' : '30px', 'background-image' : "url(http://pefladdons.googlecode.com/svn/trunk/tv/Play.jpg)"});
+		$('.div_play a').css({ 'width' : '30px', 'height' : '30px', 'background-image' : "url(http://pefladdons.googlecode.com/svn/trunk/tv/Play.jpg)", "display" : "block"});
 		$('.div_speed ').css({ 'width' : '50%', 'float' : 'right', 'text-align' : 'right' });
 		$('.div_minute').css({ 'text-align' : 'center', 'font-weight' : 'bold' });
 		$('.div_comment').css({ 'text-align' : 'center' });
