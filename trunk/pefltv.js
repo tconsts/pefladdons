@@ -55,6 +55,7 @@ function getNoflashTV() {
 		$('body').removeAttr("rightmargin");
 		$('body').removeAttr("topmargin");
 		$('body').removeAttr("leftmargin");
+		$('body').css({'background-color' : '#C9F8B7'});
 		
 		$('body').html('<div id="tv_box"><div class="div_play"><a href="#" id="play_button" title="Play"> </a></div><div class="div_speed"><a href="#" id="speed_button">1x</a></div><div class="div_minute"></div><div class="div_comment"></div></div>');
 		$('.div_play').css({ 'width' : '50%', 'float' : 'left' });
