@@ -1,4 +1,4 @@
-var tv_counter = 0;
+Ôªøvar tv_counter = 0;
 var comments = [];
 var speed_selected = 1;
 var speed = [];
@@ -15,7 +15,7 @@ function showcomment() {
 			play = false;
 		}
 		var comment = comments[tv_counter].split('=');
-		$('#tv_box .div_minute').html(comment[0]+' ÏËÌÛÚ‡');
+		$('#tv_box .div_minute').html(comment[0]+' –º–∏–Ω—É—Ç–∞');
 		$('#tv_box .div_comment').html(comment[1]);
 		tv_counter++;
 		p_interval = setTimeout('showcomment()', speed[speed_selected]);
@@ -57,7 +57,7 @@ function getNoflashTV() {
 		
 		$('body').html('<div id="tv_box"><div class="div_play"><a href="#" id="play_button" title="Play"> </a></div><div class="div_speed"><a href="#" id="speed_button">1x</a></div><div class="div_minute"></div><div class="div_comment"></div></div>');
 		$('.div_play').css({ 'width' : '50%', 'float' : 'left' });
-		$('.div_play a').css({ 'width' : '30px', 'height' : '30px', 'background-image' : "url(http://pefladdons.googlecode.com/svn/trunk/tv/Play.jpg)", "display" : "block"});
+		$('.div_play a').css({ 'width' : '30px', 'height' : '30px', 'background-image' : "url("+source+"tv/Play.jpg)", "display" : "block"});
 		$('.div_speed ').css({ 'width' : '50%', 'float' : 'right', 'text-align' : 'right' });
 		$('.div_minute').css({ 'text-align' : 'center', 'font-weight' : 'bold' });
 		$('.div_comment').css({ 'text-align' : 'center' });
@@ -66,10 +66,12 @@ function getNoflashTV() {
 				p_interval = setTimeout('showcomment()', speed[speed_selected]);
 				play = true;
 				$(this).attr("title", 'Pause');
+				$(this).css({'background-image' : "url("+source+"tv/Pause.jpg)"});
 			} else {
 				clearTimeout(p_interval);
 				play = false;
 				$(this).attr("title", 'Play');
+				$(this).css({'background-image' : "url("+source+"tv/Play.jpg)"});
 			}
 			return false;
 		});
