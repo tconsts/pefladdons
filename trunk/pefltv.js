@@ -1,4 +1,14 @@
-﻿var source = 'http://pefladdons.googlecode.com/svn/trunk/';
+﻿// ==UserScript==
+// @name           pefltv
+// @namespace      pefl
+// @description    tv without flash
+// @include        http://*pefl.*/tvgame.php?*
+// @version        0.2
+// @author         Stason
+// ==/UserScript==
+
+
+//var source = 'http://pefladdons.googlecode.com/svn/trunk/';
 var tv_counter = 0;
 var comments = [];
 var speed_selected = 1;
