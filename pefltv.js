@@ -74,6 +74,12 @@ function getNoflashTV() {
 		$('.div_play a').css({ 'width' : '30px', 'height' : '30px', 'background-image' : "url("+source+"tv/Play.jpg)", "display" : "block"});
 		$('.div_speed ').css({ 'width' : '50%', 'float' : 'right'});
 		$('.div_speed a').css({ 'width' : '30px', 'height' : '30px', 'background-image' : "url("+source+"tv/Speed.jpg)", "display" : "block", 'float' : 'right' });
+		if(speed_selected == 2) {
+			$('.div_speed a').css({'background-position' : "0 -30px"});
+		}
+		if(speed_selected == 4) {
+			$('.div_speed a').css({'background-position' : "0 -60px"});
+		}
 		$('.div_minute').css({ 'text-align' : 'center', 'font-weight' : 'bold', 'clear' : 'both' });
 		$('.div_comment').css({ 'text-align' : 'center' });
 		$('#tv_box .div_play a').click(function(){
