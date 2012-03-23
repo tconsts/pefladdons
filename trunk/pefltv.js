@@ -1,4 +1,5 @@
-﻿var tv_counter = 0;
+﻿var source = 'http://pefladdons.googlecode.com/svn/trunk/';
+var tv_counter = 0;
 var comments = [];
 var speed_selected = 1;
 var speed = [];
