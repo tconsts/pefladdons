@@ -8,7 +8,7 @@
 // ==/UserScript==
 
 
-//var source = 'http://pefladdons.googlecode.com/svn/trunk/';
+var source = 'http://pefladdons.googlecode.com/svn/trunk/';
 var tv_counter = 0;
 var comments = [];
 var speed_selected = 1;
