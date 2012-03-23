@@ -2,6 +2,8 @@
 var tv_counter = 0;
 var comments = [];
 var speed_selected = 1;
+if(localStorage.tv_speed != undefined && localStorage.tv_speed)
+	speed_selected = localStorage.tv_speed;
 var speed = [];
 speed[1] = 4000;
 speed[2] = 2000;
@@ -79,6 +81,7 @@ function getNoflashTV() {
 			return false;
 		});
 		$('#tv_box .div_speed a').click(function(){
+			speed_selected = 1;
 			var val = $(this).attr("title");
 			if(val == '1x') {
 				speed_selected = 2;
@@ -107,6 +110,7 @@ function getNoflashTV() {
 				$(this).attr("title", '1x');
 				$(this).css({'background-position' : "0 0"});
 			}
+			localStorage.tv_speed = speed_selected;
 			return false;
 		});
 	});
