@@ -60,19 +60,19 @@ function getNoflashTV() {
 		$('.div_play').css({ 'width' : '50%', 'float' : 'left' });
 		$('.div_play a').css({ 'width' : '30px', 'height' : '30px', 'background-image' : "url("+source+"tv/Play.jpg)", "display" : "block"});
 		$('.div_speed ').css({ 'width' : '50%', 'float' : 'right', 'text-align' : 'right' });
-		$('.div_minute').css({ 'text-align' : 'center', 'font-weight' : 'bold' });
+		$('.div_minute').css({ 'text-align' : 'center', 'font-weight' : 'bold', 'clear' : 'both' });
 		$('.div_comment').css({ 'text-align' : 'center' });
 		$('#tv_box .div_play a').click(function(){
 			if($(this).attr("title") == 'Play') {
 				p_interval = setTimeout('showcomment()', speed[speed_selected]);
 				play = true;
 				$(this).attr("title", 'Pause');
-				$(this).css({'background-image' : "url("+source+"tv/Pause.jpg)"});
+				$(this).css({'background-image' : "url("+source+"tv/Play.jpg)"});
 			} else {
 				clearTimeout(p_interval);
 				play = false;
 				$(this).attr("title", 'Play');
-				$(this).css({'background-image' : "url("+source+"tv/Play.jpg)"});
+				$(this).css({'background' : "url("+source+"tv/Play.jpg) 0 -32px"});
 			}
 			return false;
 		});
