@@ -67,12 +67,12 @@ function getNoflashTV() {
 				p_interval = setTimeout('showcomment()', speed[speed_selected]);
 				play = true;
 				$(this).attr("title", 'Pause');
-				$(this).css({'background' : "url("+source+"tv/Play.jpg)"});
+				$(this).css({'background-position' : "0 -30px"});
 			} else {
 				clearTimeout(p_interval);
 				play = false;
 				$(this).attr("title", 'Play');
-				$(this).css({'background' : "url("+source+"tv/Play.jpg) 0 -32px"});
+				$(this).css({'background' : "0 0"});
 			}
 			return false;
 		});
