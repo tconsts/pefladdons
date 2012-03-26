@@ -33,7 +33,7 @@ function SetNation(){
 $().ready(function() {
 	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
 
-	var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0:0'.split(':')
+	var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0:0:0'.split(':')
 	if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflags = localStorage.scripts.split(':')
     var teamimg 	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>'
     var teamimg2	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/forms/'+(localStorage.myteampic!=undefined && localStorage.myteampic!=null ? localStorage.myteampic : localStorage.myteamid+'a')+'.png')+'>'
