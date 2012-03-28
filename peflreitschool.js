@@ -6,6 +6,18 @@
 // @version	       2.0
 // ==/UserScript==
 
+
+deb = (localStorage.debug == '1' ? true : false)
+var debnum = 0
+
+function debug(text) {
+	if(deb) {
+		if(debnum==0) $('body').prepend('<div id=debug></div>')
+		debnum++;
+		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
+	}
+}
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) {
@@ -95,6 +107,7 @@ function GetRepForecast(val1,val2){
 }
 
 function Forecast(){
+	debug('Forecast()')
 	htmltext = '<th width=20%>Прогноз от КрабVIP (<a href="/page.php?id=4442">*</a>)</th>'
 	$('td.back4 table table tr:eq(0)').prepend(htmltext)
 	$('td.back4 table table tr:gt(0)').each(function(k,val2){
@@ -103,6 +116,17 @@ function Forecast(){
 		$(val2).prepend(htmltext)
 	},false)
 	$('#forecast').hide()
+}
+
+function MarkMyTeam(myteamid){
+	debug('MarkMyTeam('+myteamid+')')
+	if(myteamid==undefined) return true
+	$('td.back4 table table tr').each(function(){
+		if(parseInt(UrlValue('j',$(this).find('td:eq(2) a').attr('href')))==myteamid) {
+			var newline = '<tr bgcolor=#D3D7CF>'+$(this).attr('bgcolor','#D3D7CF').html()+'</tr><tr><td colspan=3><hr></td></tr>'
+			$('td.back4 table table').prepend(newline)
+		}
+	})
 }
 
 var lv = {0:-3,1:-2,2:-1,3:0,4:1,5:2,6:3}
@@ -136,7 +160,8 @@ var reputations = {
 var teams = []
 
 $().ready(function() {
-
+	var myteamid = localStorage.myteamid
+	debug('myteamid:'+myteamid)
 /**/
 	// Get info fom Global or Session Storage
 	var text1 = ''
@@ -162,7 +187,7 @@ $().ready(function() {
 	// page contry reit
 	if (teams[0] && UrlValue('j') && UrlValue('j') > 0 && UrlValue('n') == 2){
 		var htmltext = ''
-//		alert('country')
+		debug('Country budget page')
 		if(teams[0]['bud'] != ' '){
 			htmltext = '(PEFL:'+teams[0]['bud']+')'
 			$('td.back4 table table tr:eq(0) th:first').append(htmltext)
@@ -184,11 +209,11 @@ $().ready(function() {
 		}
 
 	} else if(!UrlValue('j') && UrlValue('n') == 2){
-//		alert('bud')
+		debug('Budget page')
 		GetAllReit('bud');
-
+		MarkMyTeam(myteamid)
 	} else if(!UrlValue('j') && UrlValue('n') == 1){
-//		alert('rep')
+		debug('Reputation page')
 		GetAllReit('rep');
 		repid = 1
 		$('td.back4 table table tr').each(function(i, val){
@@ -197,6 +222,7 @@ $().ready(function() {
 			$(val).find('td:eq(0)').append(' '+reputations[repid].name)
 		})
 //		for(i in reputations) $('td.back4 table table tr:gt(0):eq('+(reputations[i].st-1)+')').attr('bgcolor','white').find('td:first').append(' '+reputations[i].name)
+		MarkMyTeam(myteamid)
 	}
 /**/
 }, false);
