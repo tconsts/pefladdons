@@ -58,7 +58,9 @@ $().ready(function() {
 /**/
 		// запоминаем таблицу оценок
 		match1.weather = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
-		match1.ref = $('td.back4 table:eq(2)').html().split('Главный арбитр:')[1].split(').')[0] + ')'
+		var otch = $('td.back4 table:eq(2)').html()
+		match1.ref = ( otch.indexOf('Главный арбитр:') ==-1 ? '???' : otch.split('Главный арбитр:')[1].split(').')[0] + ')')
+		debug('Ref:'+match1.ref)
 		match1.schet = $('td.back4 table:eq(3) td:eq(1)').text()
 		var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
 		match1.fschet = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
@@ -68,7 +70,10 @@ $().ready(function() {
 			finschet = ' [center]По пенальти [b][color=red]'+ match1.fschet + '[/color][/b][/center]'
 			match1.pen = match1.fschet
 		}
-		if(myteamid!=undefined){
+		// /system/img/club/1455.gif - club
+		// /system/img/flags/155.gif - national
+		if(myteamid!=undefined && $('td.back4 table:eq(4) td:first img').attr('src').indexOf('club')!=-1 ){
+			debug('check my team')
 			var mark = 'none'
 			if(myteamid==parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])) {
 				mark =  true
@@ -114,7 +119,7 @@ $().ready(function() {
 			.replace(/\</g,'[')
 			.replace(/\>/g,']')
 			+ '[img]system/img/w' + match1.weather + '.png[/img]' 
-			+ ' [b]Главный арбитр:[/b] ' + match1.ref + '.'
+			+ (match1.ref!='???' ? ' [b]Главный арбитр:[/b] ' + match1.ref + '.' : '')
 	}
 }, false);
 
