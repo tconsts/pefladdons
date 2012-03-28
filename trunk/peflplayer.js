@@ -24,9 +24,8 @@ function GetNomData(){
 	var saleAge = 0
 	var saleValue = 0
 	$('td.back4').prepend('<div id=debval style="display: none;"></div>')
-//	var url = 'forums.php?m=posts&p='+top+' blockquote:eq(0) pre'
-//	$('div#debug2').load(url, function(){
-	$('div#debval').load('forums.php?m=posts&p=9107892 blockquote:eq(0) pre', function(){
+	var top = 9107892
+	$('div#debval').load('forums.php?m=posts&p='+top+' blockquote:eq(0) pre', function(){
 		$('div#debval').find('hr').remove()
 		//$('div#debug').html($('div#debug').html().replace('<br>#t#<br>',''))
 		var data = $('#debval pre').html().split('#t#').map(function(val,i){
