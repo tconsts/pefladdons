@@ -128,7 +128,7 @@ function fillTextarea(pt) {
 		preparedhtml = '';
 		preparedhtml += ' [b]Стартовый состав:[/b]\n[spoiler]';
 //		preparedhtml += '[b]сохранен[/b]: '+data_assoc['lastsave']+'\n\n'
-		preparedhtml += '[table]';
+		preparedhtml += '[table width=100%]';
 
 		// нападение
 		preparedhtml += '[tr]';
