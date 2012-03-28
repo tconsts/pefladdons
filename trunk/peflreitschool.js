@@ -102,7 +102,7 @@ function Forecast(){
 		htmltext = '<td>' + GetRepForecast(GetRepLevel(teams[id]['rep']),teams[id]['bud']) + '</td>'
 		$(val2).prepend(htmltext)
 	},false)
-//	$('#forecast').hide()
+	$('#forecast').hide()
 }
 
 var lv = {0:-3,1:-2,2:-1,3:0,4:1,5:2,6:3}
@@ -180,7 +180,7 @@ $().ready(function() {
 				htmltext = '<td>'+GetRepName(teams[id]['rep'])+'</td>'
 				$(val2).prepend(htmltext)
     		},false)
-//			$('td.back4').prepend('<div align=right><a id="forecast" href="javascript:void(Forecast())">Показать прогноз</a>&nbsp;</div><br>')
+			$('td.back4').prepend('<div align=right><a id="forecast" href="javascript:void(Forecast())">Показать прогноз</a>&nbsp;</div><br>')
 		}
 
 	} else if(!UrlValue('j') && UrlValue('n') == 2){
