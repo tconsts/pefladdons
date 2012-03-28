@@ -81,6 +81,10 @@ $().ready(function() {
 				match1.eid = parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])
 				match1.ename = $('td.back4 table:eq(3) tr:first td:eq(2)').text()
 				match1.emanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
+				// player
+				localStorage.fp_uniform = $('td.back4 center:first table:first tr:first td.field_left:first img').attr('src')
+				// gk
+				localStorage.gk_uniform = $('td.back4 center:first table:first tr:first td:eq(2) img').attr('src')
 			}
 			if(myteamid==parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])) {
 				mark = false
@@ -88,6 +92,10 @@ $().ready(function() {
 				match1.eid = parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])
 				match1.ename = $('td.back4 table:eq(3) tr:first td:eq(0)').text()
 				match1.emanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(0)').text()
+				// player
+				localStorage.fp_uniform = $('td.back4 center:first table:first tr:last td.field_left:first img').attr('src')
+				// gk
+				localStorage.gk_uniform = $('td.back4 center:first table:first tr:last td:eq(2) img').attr('src')
 			}
 			if(mark!='none') {
 				if($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined) match1.place += '.n'
@@ -218,7 +226,7 @@ function MatchSave(){
 					x2.push('?')
 					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
 				}
-				debug('insert:'+x3)
+				//debug('insert:'+x3)
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
 					function(tx, error) {debug(dataname+':'+error.message)}
