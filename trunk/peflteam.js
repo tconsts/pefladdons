@@ -13,6 +13,7 @@ var type 	= 'num'
 var players = []
 var players2= []
 var matches	= []
+var matchespl	= []
 var teams 	= []
 var plsu	= []
 var sumax 	= 3600
@@ -25,6 +26,7 @@ var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
 	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale',
+	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash',
 	'matchespl':'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
 }
 
@@ -153,7 +155,10 @@ $().ready(function() {
 			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
 			$("#rg").after(preparedhtml)
 		}
-		if(cid==parseInt(localStorage.myteamid)) GetData('matchespl')
+		if(cid==parseInt(localStorage.myteamid)) {
+			GetData('matchespl')
+			GetData('matches')
+		}
 	}
 }, false);
 
@@ -174,17 +179,19 @@ function ShowSU() {
 		$('table#tblSu').show()
 		$('div#divSu').show()
 	}else{
-		for(i in matches){
-			for (j in matches[i]){
+		for(i in matchespl){
+			for (j in matchespl[i]){
+				//debug(i+'_'+j+'_'+matchespl[i][j])
 				var num = plsu.length
-				var field = String(matches[i][j]).split(':')
+				var field = String(matchespl[i][j]).split(':')
 				if(field[1] != undefined) {
 					for(p in plsu) if(plsu[p].name && plsu[p].name == field[0]) num = p
 					if(plsu[num]==undefined || plsu[num].name==undefined){
-						plsu[num] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1}
+						plsu[num] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1,'mlist':i}
 					}else{
 						plsu[num].minute	+= parseInt(field[1])
 						plsu[num].matches	+= 1
+						plsu[num].mlist		+= ','+i
 					}
 				}
 			}
@@ -195,7 +202,7 @@ function ShowSU() {
 		var pls = plsu.sort(function(a,b){return b.minute - a.minute})
 		for(i in pls) {
 			var ost = sumax - pls[i].minute
-			preparedhtml += '<tr><td>'+(parseInt(i)+1)+'</td><td><b>'+pls[i].name+'</b></td><td>'+pls[i].minute+'</td><td>'+pls[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
+			preparedhtml += '<tr><td>'+(parseInt(i)+1)+'</td><td><a href="javascript:void(ShowPlM(\''+pls[i].name+'\'))"><b>'+pls[i].name+'</b></a></td><td>'+pls[i].minute+'</td><td>'+pls[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
 		}
 		preparedhtml += '</table>'
 		preparedhtml += '<br><br><div id="divSu">'
@@ -206,10 +213,39 @@ function ShowSU() {
 		preparedhtml += '<br>5. с однофамильцами мугут быт проблемы'
 		preparedhtml += '<br>6. игроки покинувшие клуб пока не удалены из списка'
 		preparedhtml += '</div>'
+
+		preparedhtml += '<hr><table id="tblSuM"></table>'
+
 		$('table#tblRoster').after(preparedhtml)
 		$('table#tblSu tr:even').attr('bgcolor','a3de8f')
 		$('table#tblSu tr:odd').attr('bgcolor','C9F8B7')
 	}
+}
+function ShowPlM(plid){
+	debug('ShowPlM('+plid+')')
+	var mlistpl = ''
+	var prehtml = '<tr><td>N</td><td>СУ</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
+	for(i in plsu) if(plsu[i].name==plid) mlistpl = plsu[i].mlist.split(',') //debug(plsu[i].mlist)
+	$('table#tblSuM tr').remove()
+	// 'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash'
+	var num = 1
+	for(j in mlistpl){
+		var mch = matches[mlistpl[j]]
+		var t1 = t2 = '<b>'+team_cur.tname+'</b>'
+		if(mch.place.split('.')[0]=='a') t1 = TrimString(mch.ename)
+		else 							 t2 = TrimString(mch.ename)
+		prehtml += '<tr>'
+		prehtml += '<td>'+num+'</td>'
+		prehtml += '<td>'+(mch.su ? '<img src="system/img/g/tick.gif"></img>' : '')+'</td>'
+		prehtml += '<td align=right>'+t1+'</td>'
+		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.hash+'">'+mch.schet+'</a>'+(mch.pen!='' ? '(п'+mch.pen+')' : '')+'</td>'
+		prehtml += '<td>'+t2+'</td>'
+		prehtml += '<td><img height=15 src="/system/img/w'+mch.weather+'.png"></img></td>'
+		prehtml += '<td>'+mch.ref+'</td>'
+		prehtml += '</tr>'
+		num++
+	}
+	$('table#tblSuM').html(prehtml)
 }
 
 function TrimString(sInString){
@@ -447,9 +483,10 @@ function GetData(dataname){
 	var data = []
 	var head = list[dataname].split(',')
 	switch (dataname){
-		case 'players': data = players2;break
-		case 'teams': 	data = teams;	break
-		case 'matchespl':data = matches;	break
+		case 'players':  data = players2;	break
+		case 'teams': 	 data = teams;		break
+		case 'matches':	 data = matches;	break
+		case 'matchespl':data = matchespl;	break
 		default: return false
 	}
 	if(ff) {
@@ -862,6 +899,7 @@ function ShowRoster(){
 	debug('ShowRoster()')
 //	$('table[background]:eq(1)').show()
 	$('table#tblSu').hide()
+	$('table#tblSuM').hide()
 	$('div#divSu').hide()
 
 	$('table#tblRostSkills').hide()
@@ -883,6 +921,7 @@ function ShowSkills(param){
 		//$('td#crabglobalright').html('')
 
 		$('table#tblSu').hide()
+		$('table#tblSuM').hide()
 		$('div#divSu').hide()
 		$('table#tblRoster').hide()
 		$('table#tblRosterFilter').hide()
