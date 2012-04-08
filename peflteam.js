@@ -235,7 +235,7 @@ function ShowPlM(plid){
 		if(mch.place.split('.')[0]=='a') t1 = TrimString(mch.ename)
 		else 							 t2 = TrimString(mch.ename)
 		prehtml += '<tr>'
-		prehtml += '<td>'+num+'</td>'
+		prehtml += '<td>'+num+'('+mch.id+')</td>'
 		for(p in matchespl[mch.id]) if(String(matchespl[mch.id][p]).split(':')[0]==plid) prehtml += '<td align=right>'+String(matchespl[mch.id][p]).split(':')[1]+'</td>'
 		prehtml += '<td>'+(mch.su ? '<img src="system/img/g/tick.gif"></img>' : '')+'</td>'
 		prehtml += '<td align=right>'+t1+'</td>'
