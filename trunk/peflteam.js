@@ -184,7 +184,7 @@ function ShowSU() {
 				//debug(i+'_'+j+'_'+matchespl[i][j])
 				var num = plsu.length
 				var field = String(matchespl[i][j]).split(':')
-				if(field[1] != undefined) {
+				if(field[1] != undefined && field[1]!=0) {
 					for(p in plsu) if(plsu[p].name && plsu[p].name == field[0]) num = p
 					if(plsu[num]==undefined || plsu[num].name==undefined){
 						plsu[num] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1,'mlist':i}
@@ -224,7 +224,7 @@ function ShowSU() {
 function ShowPlM(plid){
 	debug('ShowPlM('+plid+')')
 	var mlistpl = ''
-	var prehtml = '<tr><td>N</td><td>СУ</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
+	var prehtml = '<tr><td>N</td><td>мин</td><td>СУ</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
 	for(i in plsu) if(plsu[i].name==plid) mlistpl = plsu[i].mlist.split(',') //debug(plsu[i].mlist)
 	$('table#tblSuM tr').remove()
 	// 'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash'
@@ -236,6 +236,7 @@ function ShowPlM(plid){
 		else 							 t2 = TrimString(mch.ename)
 		prehtml += '<tr>'
 		prehtml += '<td>'+num+'</td>'
+		for(p in matchespl[mch.id]) if(String(matchespl[mch.id][p]).split(':')[0]==plid) prehtml += '<td align=right>'+String(matchespl[mch.id][p]).split(':')[1]+'</td>'
 		prehtml += '<td>'+(mch.su ? '<img src="system/img/g/tick.gif"></img>' : '')+'</td>'
 		prehtml += '<td align=right>'+t1+'</td>'
 		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.hash+'">'+mch.schet+'</a>'+(mch.pen!='' ? '(п'+mch.pen+')' : '')+'</td>'
