@@ -162,8 +162,15 @@ $().ready(function() {
 	}
 }, false);
 
-function ShowSU() {
+function ShowSU(del) {
 	debug('ShowSU()')
+	if(del) {
+		$('table#tblSu, table#tblSuM, div#divSu').remove()
+//		plsu.splice(0,100000)
+		plsu = []
+		debug('plsu.length:'+plsu.length)
+	}
+
 	$('div#divRostSkillsFilter').hide()
 	$('table#tblRostSkillsFilter').hide()
 	$('table#SumPl').hide()
@@ -177,6 +184,7 @@ function ShowSU() {
 	debug('x:'+$('table#tblSu').length)
 	if($('table#tblSu').length>0) {
 		$('table#tblSu').show()
+		$('table#tblSuM').show()
 		$('div#divSu').show()
 	}else{
 		for(i in matchespl){
@@ -187,10 +195,15 @@ function ShowSU() {
 				if(field[1] != undefined && field[1]!=0) {
 					for(p in plsu) if(plsu[p].name && plsu[p].name == field[0]) num = p
 					if(plsu[num]==undefined || plsu[num].name==undefined){
-						plsu[num] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1,'mlist':i}
+						if(matches[i].su) 	plsu[num] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1, 'matches2':0,'mlist':i}
+						else 				plsu[num] = {'name':field[0], 'minute':0,'matches':0, 'matches2':1,'mlist':i}
 					}else{
-						plsu[num].minute	+= parseInt(field[1])
-						plsu[num].matches	+= 1
+						if(matches[i].su){
+							plsu[num].minute	+= parseInt(field[1])
+							plsu[num].matches	+= 1
+						}else{
+							plsu[num].matches2	+= 1
+						}
 						plsu[num].mlist		+= ','+i
 					}
 				}
@@ -202,7 +215,13 @@ function ShowSU() {
 		var pls = plsu.sort(function(a,b){return b.minute - a.minute})
 		for(i in pls) {
 			var ost = sumax - pls[i].minute
-			preparedhtml += '<tr><td>'+(parseInt(i)+1)+'</td><td><a href="javascript:void(ShowPlM(\''+pls[i].name+'\'))"><b>'+pls[i].name+'</b></a></td><td>'+pls[i].minute+'</td><td>'+pls[i].matches+'</td><td>'+ost+'('+(ost/93).toFixed(1)+')</td></tr>'
+			preparedhtml += '<tr>'
+			preparedhtml += '<td>'+(parseInt(i)+1)+'</td>'
+			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+pls[i].name+'\'))"><b>'+pls[i].name+'</b></a></td>'
+			preparedhtml += '<td>'+pls[i].minute+'</td>'
+			preparedhtml += '<td>'+pls[i].matches+(pls[i].matches2>0 ? '('+pls[i].matches2+')' : '')+'</td>'
+			preparedhtml += '<td>'+ost+'('+(ost/93).toFixed(1)+')</td>'
+			preparedhtml += '</tr>'
 		}
 		preparedhtml += '</table>'
 		preparedhtml += '<br><br><div id="divSu">'
@@ -212,9 +231,9 @@ function ShowSU() {
 		preparedhtml += '<br>4. товы с установкой "набирать кондиции" временно считаются в зачет СУ'
 		preparedhtml += '<br>5. с однофамильцами мугут быт проблемы'
 		preparedhtml += '<br>6. игроки покинувшие клуб пока не удалены из списка'
-		preparedhtml += '</div>'
+		preparedhtml += '<hr></div>'
 
-		preparedhtml += '<hr><table id="tblSuM"></table>'
+		preparedhtml += '<table id="tblSuM"></table>'
 
 		$('table#tblRoster').after(preparedhtml)
 		$('table#tblSu tr:even').attr('bgcolor','a3de8f')
@@ -224,8 +243,9 @@ function ShowSU() {
 function ShowPlM(plid){
 	debug('ShowPlM('+plid+')')
 	var mlistpl = ''
-	var prehtml = '<tr><td>N</td><td>мин</td><td>СУ</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
-	for(i in plsu) if(plsu[i].name==plid) mlistpl = plsu[i].mlist.split(',') //debug(plsu[i].mlist)
+	var prehtml = '<tr><th colspan=5 align=left>'+plid+':</th></tr>'
+	prehtml += '<tr><td>del</td><td>СУ</td><td>N</td><td>мин</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
+	for(i in plsu) if(plsu[i].name==plid) mlistpl = plsu[i].mlist.split(',');debug(plsu[i].mlist)
 	$('table#tblSuM tr').remove()
 	// 'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash'
 	var num = 1
@@ -234,10 +254,11 @@ function ShowPlM(plid){
 		var t1 = t2 = '<b>'+team_cur.tname+'</b>'
 		if(mch.place.split('.')[0]=='a') t1 = TrimString(mch.ename)
 		else 							 t2 = TrimString(mch.ename)
-		prehtml += '<tr>'
-		prehtml += '<td>'+num+'('+mch.id+')</td>'
+		prehtml += '<tr id="tr'+mch.id+'">'
+		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
+		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;</a>')+'</th>'
+		prehtml += '<th>'+num+'</th>'
 		for(p in matchespl[mch.id]) if(String(matchespl[mch.id][p]).split(':')[0]==plid) prehtml += '<td align=right>'+String(matchespl[mch.id][p]).split(':')[1]+'</td>'
-		prehtml += '<td>'+(mch.su ? '<img src="system/img/g/tick.gif"></img>' : '')+'</td>'
 		prehtml += '<td align=right>'+t1+'</td>'
 		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.hash+'">'+mch.schet+'</a>'+(mch.pen!='' ? '(п'+mch.pen+')' : '')+'</td>'
 		prehtml += '<td>'+t2+'</td>'
@@ -247,6 +268,24 @@ function ShowPlM(plid){
 		num++
 	}
 	$('table#tblSuM').html(prehtml)
+}
+function SuDelMatch(mid, type, plid){
+	debug('SuDelMatch('+mid+','+type+','+plid+')')
+	if(type=='del'){
+		//удалить матч из базы
+		delete matches[mid]
+		delete matchespl[mid]
+		SaveData('matchespl')
+	}else if(type=='suoff'){
+		//снять флаг сверхусталости
+		delete matches[mid].su
+	}else if(type=='suon'){
+		//поставить флаг сверхусталости
+		matches[mid].su = true
+	}
+	SaveData('matches')
+	ShowSU(true)
+	ShowPlM(plid)
 }
 
 function TrimString(sInString){
@@ -430,9 +469,10 @@ function SaveData(dataname){
 	var data = []
 	var head = list[dataname].split(',')
 	switch (dataname){
-		case 'players':	data = players;	break
-		case 'teams': 	data = teams;	break
-//		case 'divs'	: 	data = divs;	break
+		case 'players':	data = players;		break
+		case 'teams': 	data = teams;		break
+		case 'matches':	 data = matches;	break
+		case 'matchespl':data = matchespl;	break
 		default: return false
 	}
 	if(ff) {
