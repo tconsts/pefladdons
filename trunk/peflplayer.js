@@ -19,27 +19,43 @@ var peflnation ={'Афганистан':0,'Албания':1,'Алжир':2,'В�
 var peflcountry={1:0,2:1,8:2,9:3,11:4,12:5,13:6,18:7,19:8,24:9,25:10,27:11,30:12,41:13,42:14,44:15,47:16,48:17,50:18,51:19,53:20,58:21,59:22,61:23,64:24,66:25,69:26,70:27,73:28,74:29,76:30,84:31,87:32,88:33,91:34,93:35,94:36,95:37,98:38,100:39,105:40,111:41,122:42,123:43,126:44,129:45,137:46,139:47,145:48,147:49,149:50,150:51,152:52,154:53,155:54,160:55,161:56,166:57,167:58,170:59,171:60,172:61,180:62,181:63,191:64,192:65,195:66,196:67,200:68,201:69,202:70,204:71,96:72,207:73,209:74,214:75}
 
 function GetNomData(){
-	var ages = '21,23,26,29,31,100'.split(',')
-	var vals = '0,251,500,1000,2000,4000,7000,100000'.split(',')
+	var ages = '21,23,26,29,32,100'.split(',')
+	var vals = '0,251,501,1001,2001,4001,7001,100000'.split(',')
 	var saleAge = 0
 	var saleValue = 0
 	$('td.back4').prepend('<div id=debval style="display: none;"></div>')
 	var top = 9107892
 	$('div#debval').load('forums.php?m=posts&p='+top+' blockquote:eq(0) pre', function(){
 		$('div#debval').find('hr').remove()
-		//$('div#debug').html($('div#debug').html().replace('<br>#t#<br>',''))
+		//$('div#debval').html($('div#debval').html().replace('<br>#t#<br>',''))
 		var data = $('#debval pre').html().split('#t#').map(function(val,i){
 			return val.split('<br>').map(function(val2,i2){
 				return $.grep(val2.split('	'),function(num, index) {return !isNaN(index)})
 			})
 		})
 		debug('GetNomData:pl:'+players[0].value+':'+players[0].age)
+
 		for(i in ages) 	{debug(i+':'+ages[i]);if(players[0].age<ages[i]) 	{saleAge = i;break;}}
 		debug('SaleAge:'+saleAge)
+
 		for(i in vals) 	{debug(i+':'+vals[i]);if(players[0].value<vals[i]*1000)	{saleValue = i;break;}}
 		debug('SaleValue:'+saleValue)
-		var saleNom = players[0].value*parseInt(data[0][saleValue][saleAge])/100000
-		debug('РынНом:'+saleNom+':'+data[0][saleValue][saleAge])
+
+		debug('ТСЗ:'+data[0][saleValue][0])
+		var saleNom = ''
+		saleNom = players[0].value*parseInt(data[1][saleValue][saleAge])/100000
+		debug('РынНом:'+saleNom+':'+data[1][saleValue][saleAge])
+		saleNom = players[0].value*parseInt(data[2][saleValue][saleAge])/100000
+		debug('РынНом:'+saleNom+':'+data[2][saleValue][saleAge])
+		saleNom = players[0].value*parseInt(data[3][saleValue][saleAge])/100000
+		debug('РынНом:'+saleNom+':'+data[3][saleValue][saleAge])
+		saleNom = players[0].value*parseInt(data[4][saleValue][saleAge])/100000
+		debug('РынНом:'+saleNom+':'+data[4][saleValue][saleAge])
+		saleNom = players[0].value*parseInt(data[5][saleValue][saleAge])/100000
+		debug('РынНом:'+saleNom+':'+data[5][saleValue][saleAge])
+		saleNom = players[0].value*parseInt(data[6][saleValue][saleAge])/100000
+		debug('РынНом:'+saleNom+':'+data[6][saleValue][saleAge])
+
 		//for(i in data) for(j in data[i]) for(p in data[i][j]) $('div#debval').append('<hr>'+i+':'+j+':'+p+':'+data[i][j][p])
 	})
 }
@@ -1219,6 +1235,8 @@ $().ready(function() {
 	GetPlayerHistory(0,players[0].id)
 	GetValue()
 	GetAd()
-	//GetNomData()
+
+	if(deb) $("#crabright").append('<br><br>debug:<a href="javascript:void(GetNomData())">Рыночная стоимость</a>')   
+
 }, false)
 //})();	// for ie
