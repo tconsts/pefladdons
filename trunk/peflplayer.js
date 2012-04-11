@@ -23,6 +23,7 @@ function GetNomData(){
 	var vals = '0,251,501,1001,2001,4001,7001,100000'.split(',')
 	var saleAge = 0
 	var saleValue = 0
+	var plnom = []
 	$('td.back4').prepend('<div id=debval style="display: none;"></div>')
 	var top = 9107892
 	$('div#debval').load('forums.php?m=posts&p='+top+' blockquote:eq(0) pre', function(){
@@ -43,20 +44,18 @@ function GetNomData(){
 
 		debug('ТСЗ:'+data[0][saleValue][0])
 		var saleNom = ''
-		saleNom = players[0].value*parseInt(data[1][saleValue][saleAge])/100000
-		debug('РынНом:'+saleNom+':'+data[1][saleValue][saleAge])
-		saleNom = players[0].value*parseInt(data[2][saleValue][saleAge])/100000
-		debug('РынНом:'+saleNom+':'+data[2][saleValue][saleAge])
-		saleNom = players[0].value*parseInt(data[3][saleValue][saleAge])/100000
-		debug('РынНом:'+saleNom+':'+data[3][saleValue][saleAge])
-		saleNom = players[0].value*parseInt(data[4][saleValue][saleAge])/100000
-		debug('РынНом:'+saleNom+':'+data[4][saleValue][saleAge])
-		saleNom = players[0].value*parseInt(data[5][saleValue][saleAge])/100000
-		debug('РынНом:'+saleNom+':'+data[5][saleValue][saleAge])
-		saleNom = players[0].value*parseInt(data[6][saleValue][saleAge])/100000
-		debug('РынНом:'+saleNom+':'+data[6][saleValue][saleAge])
+		for(i=1;i<data.length;i++){
+			debug(data[i][0][0]+':'+players[0].position)
 
+			for(j=1;j<data[i][0].length;j++) debug(parseInt(players[0][data[i][0][j].split('-')[1]])+':'+data[i][0][j].split('-')[1])
+
+			var tmp = data[i][0].join(',')
+			//debug(tmp)
+			saleNom = players[0].value*parseInt(data[i][saleValue][saleAge])/100000
+			debug('РН:'+saleNom+':'+data[i][saleValue][saleAge]+'<br>')
+		}
 		//for(i in data) for(j in data[i]) for(p in data[i][j]) $('div#debval').append('<hr>'+i+':'+j+':'+p+':'+data[i][j][p])
+		//debug('4^1/2:'+Math.pow(4,1/2))
 	})
 }
 
