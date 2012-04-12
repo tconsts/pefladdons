@@ -40,7 +40,7 @@ var list2 = {
 		'twage':{'num':13, 'name':'ЗП',	'nsel':true, 'type':'int','com':'<sup><font color=red>vip</font></sup>'},
 		'tss':	{'num':14, 'name':'СС','type':'float','com':'<sup><font color=red>vip</font></sup>'},
 		'age':	{'num':15, 'name':'Возр','nsel':true,'type':'float'},
-		'pnum':	{'num':16, 'name':'кол','nsel':true,'type':'int','com':' (игроков)'},
+		'pnum':	{'num':16, 'name':'кол','nsel':true,'type':'int','com':'(игр-ов)'},
 		'tfin':	{'num':17, 'name':'Фин','nsel':true,'al':'left'},
 		'screit':{'num':18,'name':'ШкРейт','nsel':true,'al':'left'},
 		'scbud':{'num':19, 'name':'ШкБюд','nsel':true,'type':'int'},
@@ -49,22 +49,23 @@ var list2 = {
 		'ssize':{'num':22, 'name':'СтРазм','nsel':true,'type':'int'},
 		'mid':  {'num':23, 'nshow':true,'type':'int'},
 		'tform':  {'num':24,'name':'Форма','nsel':true,'type':'float'},
-		'tmorale':  {'num':25,'name':'Мораль','nsel':true,'type':'float'},
-		'dname':{'num':26,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
-		'tprize':{'num':27,'name':'Приз','nsave':true,'nsel':true},
-		'dnum': {'num':28,'nsave':true,'nshow':true},
-		'timg':	{'num':29,'name':'Лого','nsave':true,'nsel':true},
-		'nomzp':{'num':30,'name':'Н/ЗП','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
-		'zpnom':{'num':31,'name':'ЗП/Н','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
-		'games':{'num':32,'name':'И&nbsp;','nsave':true,'nsel':true,'com':'(игр)'},
-		'wins':	{'num':33,'name':'В&nbsp;','nsave':true,'nsel':true,'com':'(поб)'},
-		'draws':{'num':34,'name':'Н&nbsp;','nsave':true,'nsel':true,'com':'(нич)'},
-		'loses':{'num':35,'name':'П&nbsp;','nsave':true,'nsel':true,'com':'(пор)'},
-		'gup':	{'num':36,'name':'ГЗ','nsave':true,'nsel':true,'com':'(забито)'},
-		'gdown':{'num':37,'name':'ГП','nsave':true,'nsel':true,'com':'(проп)'},
-		'gpm':	{'num':38,'name':'+-','nsave':true,'nsel':true,'com':'(разн)'},
-		'score':{'num':39,'name':'О&nbsp;','nsave':true,'nsel':true,'com':'(очки)'},
-		'del':	{'num':40,'name':'Удл','nsave':true,'nsel':true,'al':'center','com':'(удалить)'}},
+		'tmorale':{'num':25,'name':'Мораль','nsel':true,'type':'float'},
+		'tsvalue':{'num':26,'name':'Стоим.','nsel':true,'type':'int','com':'<sup><font color=red>vip</font></sup>'},
+		'dname':{'num':27,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
+		'tprize':{'num':28,'name':'Приз','nsave':true,'nsel':true},
+		'dnum': {'num':29,'nsave':true,'nshow':true},
+		'timg':	{'num':30,'name':'Лого','nsave':true,'nsel':true},
+		'nomzp':{'num':31,'name':'Н/ЗП','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
+		'zpnom':{'num':32,'name':'ЗП/Н','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
+		'games':{'num':33,'name':'И&nbsp;','nsave':true,'nsel':true,'com':'(игр)'},
+		'wins':	{'num':34,'name':'В&nbsp;','nsave':true,'nsel':true,'com':'(поб)'},
+		'draws':{'num':35,'name':'Н&nbsp;','nsave':true,'nsel':true,'com':'(нич)'},
+		'loses':{'num':36,'name':'П&nbsp;','nsave':true,'nsel':true,'com':'(пор)'},
+		'gup':	{'num':37,'name':'ГЗ','nsave':true,'nsel':true,'com':'(забито)'},
+		'gdown':{'num':38,'name':'ГП','nsave':true,'nsel':true,'com':'(проп)'},
+		'gpm':	{'num':39,'name':'+-','nsave':true,'nsel':true,'com':'(разн)'},
+		'score':{'num':40,'name':'О&nbsp;','nsave':true,'nsel':true,'com':'(очки)'},
+		'del':	{'num':41,'name':'Удл','nsave':true,'nsel':true,'al':'center','com':'(удалить)'}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -336,6 +337,7 @@ function Print(dataname, sr){
 							tt = (dti['mid']==undefined || dti['mid']=='' ? tt : '<a href="users.php?m=details&id='+dti['mid']+'">'+tt+'</a>')
 							break;
 						case 'tvalue':
+						case 'tsvalue':
 						case 'tprize':	tt = ShowValueFormat(tt)+'т';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
 						case 'nomzp':	tt = (isNaN(tt) ? '' : (tt/100).toFixed(2));break;
