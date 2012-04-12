@@ -129,7 +129,7 @@ function GetNomData(id){
 	svalue = parseInt(pl.value*tkp*fp.res/1000)
 	debug('РН='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3))
 	
-	$('div#SValue').html(ShowValueFormat(svalue))
+	$('div#SValue').html('Примерно ~<font size=2><b>'+ShowValueFormat(svalue)+'</b></font>')
 }
 
 function sNomPsum(i, ii) { // Сортировка
@@ -1257,7 +1257,9 @@ $().ready(function() {
 	players[0].idealpos = posfilter[1][1]
 
 	var text3 = ''
-	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить').fontsize(1)+'</a><br>'
+	text3 += '<br><b>Рыночная стоимость</b>:<br>'
+	text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
+	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить игрока').fontsize(1)+'</a><br>'
 	text3 += '<div id="compare"></div>'
 	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
 	text3 += '<br><b>Сила&nbsp;игрока</b>'
@@ -1316,12 +1318,7 @@ $().ready(function() {
 	GetPlayerHistory(0,players[0].id)
 	GetValue()
 	GetAd()
-	if(deb){
-		var text = '<br><br><b>Рыночная стоимость</b>:<br>'
-		text += '<div id="SValue"></div>'
-		$("#crabright").append(text)
-		RelocateGetNomData()
-	}
+	RelocateGetNomData()
 
 }, false)
 //})();	// for ie

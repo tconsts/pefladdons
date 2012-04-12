@@ -25,10 +25,32 @@ var save = false
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
-	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale',
+	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale,tsvalue',
 	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash',
 	'matchespl':'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
 }
+var skl = {}
+	skl['corners']	= 'Угловые'
+	skl['crossing']	= 'Навесы'
+	skl['dribbling']= 'Дриблинг'
+	skl['finishing']= 'Удары'
+	skl['freekicks']= 'Штрафные'
+	skl['handling']	= 'Игра руками'
+	skl['heading']	= 'Игра головой'
+	skl['exiting']	= 'Игра на выходах'
+	skl['leadership']= 'Лидерство'
+	skl['longshots']= 'Дальние удары'
+	skl['marking']	= 'Перс. опека'
+	skl['pace']		= 'Скорость'
+	skl['passing']	= 'Игра в пас'
+	skl['positioning']= 'Выбор позиции'
+	skl['reflexes']	= 'Реакция'
+	skl['stamina']	= 'Выносливость'
+	skl['strength']	= 'Мощь'
+	skl['tackling']	= 'Отбор мяча'
+	skl['vision']	= 'Видение поля'
+	skl['workrate']	= 'Работоспособность'
+	skl['technique']= 'Техника'
 
 var rtasks = {
 	'Чемпионство':1,
@@ -57,6 +79,7 @@ var MyNick = ''
 
 var countSostav = 0
 var countSk = [0]
+var svalue = true
 var nom = true
 var zp  = true
 var sk  = true
@@ -142,8 +165,7 @@ $().ready(function() {
 
 		EditFinance();
 
-		GetData('teams')
-		GetData('players')
+		RelocateGetNomData()
 //		GetData('divs')
 		countSostavMax  = $('tr[id^=tblRosterTr]').length
 		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
@@ -161,6 +183,130 @@ $().ready(function() {
 		}
 	}
 }, false);
+
+function RelocateGetNomData(){
+	var top = 9107892
+	debug('RelocateGetNomData()')
+	if(sessionStorage.getnomdata != undefined){
+		debug('sessionStorage.getnomdata ok!')
+		//GetNomData(0)
+		GetFinish('getnomdata', true)
+	}else{
+		debug('sessionStorage.getnomdata no!')
+
+		$('td.back4').prepend('<div id=debval style="display: none;"></div>')
+		$('div#debval').load('forums.php?m=posts&p='+top+' blockquote:eq(0) pre', function(){
+			$('div#debval').find('hr').remove()
+			//$('div#debval').html($('div#debval').html().replace('<br>#t#<br>',''))
+			var data = $('#debval pre').html().split('#t#').map(function(val,i){
+				return val.split('<br>').map(function(val2,i2){
+					return $.grep(val2.split('	'),function(num, index) {return !isNaN(index)})
+				})
+			})
+			var text = ''
+			var nm = []
+			for (i in data){
+				var x = []
+				for(j in data[i]){
+					x[j] = data[i][j].join('!')
+				}
+				nm[i] = x.join('|')
+			}
+			text = nm.join('#')
+			sessionStorage.getnomdata = text
+			//GetNomData(0)
+			GetFinish('getnomdata', true)
+		})
+	}
+}
+
+function GetNomData(id){
+	var sdata = []
+	var pl = players[id]
+	var tkp = 0
+	var fp = {}
+	var svalue = 0
+	var kpkof = 1.1
+	var plnom = []
+	nm = sessionStorage.getnomdata.split('#')
+	for (i in nm){
+		sdata[i] = []
+		x = nm[i].split('|')
+		for (j in x){
+			sdata[i][j] = x[j].split('!')
+		}
+	}
+	kpkof = parseFloat(sdata[0][0][0].replace('Code',''))
+	debug('GetNomData:pl:'+pl.value+':'+pl.age)
+
+	var saleAge = 0
+	var ages = (sdata[0][0][1]+',100').split(',')
+	for(i in ages) 	if(pl.age<ages[i]) 	{saleAge = i;break;}
+	debug('SaleAge:'+saleAge+':'+ages[saleAge])
+
+	var saleValue = 0
+	var vals = ('0,'+sdata[0][0][2]+',100000').split(',')
+	for(i in vals) 	if(pl.value<vals[i]*1000)	{saleValue = i;break;}
+	debug('SaleValue:'+saleValue+':'+vals[saleValue])
+
+	debug('ТСЗ:'+sdata[0][saleValue][0])
+	fp.av = parseFloat(sdata[0][saleValue][0])
+	fp.mn = parseFloat(sdata[0][saleValue][1])
+	fp.mx = parseFloat(sdata[0][saleValue][2])
+	var saleNom = ''
+	for(i=1;i<sdata.length;i++){
+		debug('-')
+		plnom[i] = {psum:0,tkp:0}
+		debug(sdata[i][0][0]+':'+pl.position)
+		var pos1 = (sdata[i][0][0].split(' ')[1]!=undefined ? sdata[i][0][0].split(' ')[0] : '')
+		if(pos1=='') plnom[i].pos1 = true
+		else for(h in pos1) if(pl.position.indexOf(pos1[h])!=-1) plnom[i].pos1 = true
+
+		var pos2 = (sdata[i][0][0].split(' ')[1]==undefined ? sdata[i][0][0].split(' ')[0] : sdata[i][0][0].split(' ')[1]).split('/')
+		for(h in pos2) if(pl.position.indexOf(pos2[h])!=-1) plnom[i].pos2 = true
+
+		if(plnom[i].pos1 && plnom[i].pos2){
+			plnom[i].psum = 1
+			plnom[i].id = i
+			plnom[i].pos = sdata[i][0][0]
+			var count = 0
+			for(j=1;j<sdata[i][0].length;j++) {
+				var kof = parseFloat(sdata[i][0][j].split('-')[0])
+				var skil = parseInt(pl[skl[sdata[i][0][j].split('-')[1]]])
+				if(!isNaN(skil)){
+					plnom[i].psum = plnom[i].psum*Math.pow((skil<1 ? 1 : skil) ,kof)
+					count += kof
+				}
+				debug(skil+'^'+kof+':'+sdata[i][0][j].split('-')[1])
+			}
+			plnom[i].psum = Math.pow(plnom[i].psum,1/count)
+			plnom[i].tkp = sdata[i][saleValue][saleAge]
+			debug(plnom[i].id+':'+(plnom[i].psum).toFixed(2)+':'+plnom[i].tkp+':'+plnom[i].pos)
+		}
+	}
+	plnom = plnom.sort(sNomPsum)
+	fp.res = plnom[0].psum/fp.av
+	fp.res = (fp.res<fp.mn ? fp.mn : (fp.res > fp.mx ? fp.mx : fp.res))
+	tkp = plnom[0].tkp/100
+	for (i=0;i<2;i++) debug('psum:'+(plnom[i].psum).toFixed(2))
+	debug('КП:'+(plnom[0].psum/plnom[1].psum).toFixed(3) + ' < '+kpkof)
+	if(plnom[1].psum!=0 && ((plnom[0].psum/plnom[1].psum)<kpkof)) {
+		tkp = Math.max(plnom[0].tkp,plnom[1].tkp)/100
+	}
+	for (i=0;i<2;i++) debug('tkp:'+plnom[i].tkp)
+	svalue = parseInt(pl.value*tkp*fp.res/1000)*1000
+	debug('РН='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3))
+	
+	//$('div#SValue').html('Примерно ~<font size=2><b>'+ShowValueFormat(svalue)+'</b></font>')
+	return svalue
+}
+
+function sNomPsum(i, ii) { // Сортировка
+    if 		(i.psum < ii.psum)	return  1
+    else if	(i.psum > ii.psum)	return -1
+    else					return  0
+}
+
 
 function ShowSU(del) {
 	debug('ShowSU()')
@@ -229,7 +375,7 @@ function ShowSU(del) {
 		preparedhtml += '<br>2. матчи за предыдущие клубы не учитываются'
 		preparedhtml += '<br>3. минуты в матчах с получением травм и удалений считаются некорректно'
 		preparedhtml += '<br>4. товы с установкой "набирать кондиции" временно считаются в зачет СУ'
-		preparedhtml += '<br>5. с однофамильцами мугут быт проблемы'
+		preparedhtml += '<br>5. с однофамильцами мугут быть проблемы'
 		preparedhtml += '<br>6. игроки покинувшие клуб пока не удалены из списка'
 		preparedhtml += '<hr></div>'
 
@@ -303,6 +449,11 @@ function GetFinish(type, res){
 	debug(type + ' ' + res + ' ')
 	m[type] = res;
 
+	if(m.savenomdata==undefined && m.getnomdata){
+		m.savenomdata = true
+		GetData('teams')
+		GetData('players')
+	}
 	if(m.trash==undefined && m.pg_teams && m.pg_players){
 		m.trash = true
 		CheckTrash()
@@ -407,6 +558,7 @@ function GetInfoPageTm(){
 	team_cur.ttask	= (rtasks[task_name]!=undefined ? rtasks[task_name] : task_name)
 	team_cur.twage	= 0
 	team_cur.tvalue	= 0
+	team_cur.tsvalue= 0
 	team_cur.tss	= 0
 	team_cur.age	= 0
 	team_cur.tplace	= ''
@@ -705,8 +857,12 @@ function GetPl(pid){
 	players[pid].contract 	= parseInt(head.split('Контракт: ')[1])
 	players[pid].wage 		= parseInt(head.split('г., ')[1].split('$')[0].replace(/,/g,''))
 
+	players[pid].svalue		= GetNomData(pid)
+	//debug(players[pid].value+':'+players[pid].svalue)
+
 	team_cur.twage	+= players[pid].wage
 	team_cur.tvalue	+= players[pid].value/1000
+	team_cur.tsvalue+= players[pid].svalue/1000
 	$('table#pl'+pid).remove()
 
 	Ready()
@@ -727,6 +883,15 @@ function PrintRightInfo(){
 //	if(sumvaluechange != 0) 
 //	thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
 	thtml += '</td></tr>'
+	thtml += '<tr id="ossvalue"><th align=left width=50%><a'
+	thtml += (team_cur.tsvalue!=0 ? ' href="javascript:void(ShowPlayersSValue())"' : '')
+	thtml += '>стоимость</a>:</th><th align=right>'
+	thtml += (team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : '<font color=BABDB6>для VIP</font>')
+	thtml += '</th><td width=10% id="svaluech">&nbsp;'
+//	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
+	thtml += '</td></tr>'
+
+
 	thtml += '<tr id="osnom"><th align=left width=50%><a'
 	thtml += (team_cur.tvalue!=0 ? ' href="javascript:void(ShowPlayersValue())"' : '')
 	thtml += '>номиналы</a>:</th><th align=right>'
@@ -853,6 +1018,29 @@ function ShowPlayersValue(){
 	} else {
 		nom = true
 		$('tr#nom').remove()
+	}
+}
+function ShowPlayersSValue(){
+	if(svalue) {
+		svalue = false
+		var nomtext = ''
+		var pls = players.sort(sSValue)
+		for(i in pls) {
+			var bgcolor = ''
+			if(i<18) bgcolor = ' bgcolor=#A3DE8F'
+			if(i<5)  bgcolor = ' bgcolor=white'
+			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
+			var f2 = (pls[i].trash ? '</font>' : '')
+			nomtext += '<tr id="svalue"'+bgcolor+'>'
+			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
+			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].svalue/1000) + 'т').fontsize(1) + '</td>'
+//			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
+			nomtext += '</tr>'
+		}
+		$('#ossvalue').after(nomtext + '<tr id="svalue"><td>&nbsp;</td></tr>')
+	} else {
+		svalue = true
+		$('tr#svalue').remove()
 	}
 }
 
@@ -1204,6 +1392,11 @@ function sSkills(i, ii) { // По SumSkills (убыванию)
 function sValue(i, ii) { // По value (убыванию)
     if 		(i.value < ii.value)	return  1
     else if	(i.value > ii.value)	return -1
+    else							return  0
+}
+function sSValue(i, ii) { // По value (убыванию)
+    if 		(i.svalue < ii.svalue)	return  1
+    else if	(i.svalue > ii.svalue)	return -1
     else							return  0
 }
 function sZp(i, ii) { // По zp (убыванию)
