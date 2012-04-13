@@ -60,7 +60,7 @@ function GetNomData(id){
 	var svalue = 0
 	var kpkof = 1.1
 	var plnom = []
-	nm = sessionStorage.getnomdata.split('#')
+	nm = String(sessionStorage.getnomdata).split('#')
 	for (i in nm){
 		data[i] = []
 		x = nm[i].split('|')
