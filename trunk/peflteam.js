@@ -163,12 +163,19 @@ $().ready(function() {
 
 		$('table#tblRoster').after(preparedhtml)
 
+		countSostavMax  = $('tr[id^=tblRosterTr]').length
+		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
+
 		EditFinance();
 
 		RelocateGetNomData()
+/**
+		GetData('teams')
+		GetData('players')
+		GetInfoPagePl()
+		GetInfoPageTm()
+/**/
 //		GetData('divs')
-		countSostavMax  = $('tr[id^=tblRosterTr]').length
-		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
 
 		if(deb){
 			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
@@ -451,10 +458,12 @@ function GetFinish(type, res){
 
 	if(m.savenomdata==undefined && m.getnomdata){
 		m.savenomdata = true
+/**/
 		GetData('teams')
 		GetData('players')
 		GetInfoPagePl()
 		GetInfoPageTm()
+/**/
 	}
 	if(m.trash==undefined && m.pg_teams && m.pg_players){
 		m.trash = true
