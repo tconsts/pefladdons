@@ -127,7 +127,7 @@ function GetNomData(id){
 	}
 	for (i=0;i<2;i++) debug('tkp:'+plnom[i].tkp)
 	svalue = parseInt(pl.value*tkp*fp.res/1000)
-	svalue = (svalue == 0 ? 1000 : svalue)
+	svalue = (svalue == 0 ? 1 : svalue)
 	debug('РН='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3))
 	
 	$('div#SValue').html('Примерно ~<font size=2><b>'+ShowValueFormat(svalue)+'</b></font>')
