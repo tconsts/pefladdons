@@ -169,8 +169,6 @@ $().ready(function() {
 //		GetData('divs')
 		countSostavMax  = $('tr[id^=tblRosterTr]').length
 		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
-		GetInfoPagePl()
-		GetInfoPageTm()
 
 		if(deb){
 			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
@@ -223,6 +221,7 @@ function RelocateGetNomData(){
 function GetNomData(id){
 	var sdata = []
 	var pl = players[id]
+	//debug('GetNomData:pl'+pl.id+':'+(pl.value/1000)+':'+pl.age)
 	var tkp = 0
 	var fp = {}
 	var svalue = 0
@@ -237,27 +236,26 @@ function GetNomData(id){
 		}
 	}
 	kpkof = parseFloat(sdata[0][0][0].replace('Code',''))
-	debug('GetNomData:pl:'+pl.value+':'+pl.age)
 
 	var saleAge = 0
 	var ages = (sdata[0][0][1]+',100').split(',')
 	for(i in ages) 	if(pl.age<ages[i]) 	{saleAge = i;break;}
-	debug('SaleAge:'+saleAge+':'+ages[saleAge])
+	//debug('SaleAge:'+saleAge+':'+ages[saleAge])
 
 	var saleValue = 0
 	var vals = ('0,'+sdata[0][0][2]+',100000').split(',')
 	for(i in vals) 	if(pl.value<vals[i]*1000)	{saleValue = i;break;}
-	debug('SaleValue:'+saleValue+':'+vals[saleValue])
+	//debug('SaleValue:'+saleValue+':'+vals[saleValue])
 
-	debug('ТСЗ:'+sdata[0][saleValue][0])
+	//debug('ТСЗ:'+sdata[0][saleValue][0])
 	fp.av = parseFloat(sdata[0][saleValue][0])
 	fp.mn = parseFloat(sdata[0][saleValue][1])
 	fp.mx = parseFloat(sdata[0][saleValue][2])
 	var saleNom = ''
 	for(i=1;i<sdata.length;i++){
-		debug('-')
+		//debug('-')
 		plnom[i] = {psum:0,tkp:0}
-		debug(sdata[i][0][0]+':'+pl.position)
+		//debug(sdata[i][0][0]+':'+pl.position)
 		var pos1 = (sdata[i][0][0].split(' ')[1]!=undefined ? sdata[i][0][0].split(' ')[0] : '')
 		if(pos1=='') plnom[i].pos1 = true
 		else for(h in pos1) if(pl.position.indexOf(pos1[h])!=-1) plnom[i].pos1 = true
@@ -277,25 +275,27 @@ function GetNomData(id){
 					plnom[i].psum = plnom[i].psum*Math.pow((skil<1 ? 1 : skil) ,kof)
 					count += kof
 				}
-				debug(skil+'^'+kof+':'+sdata[i][0][j].split('-')[1])
+				//debug(skil+'^'+kof+':'+sdata[i][0][j].split('-')[1])
 			}
 			plnom[i].psum = Math.pow(plnom[i].psum,1/count)
 			plnom[i].tkp = sdata[i][saleValue][saleAge]
-			debug(plnom[i].id+':'+(plnom[i].psum).toFixed(2)+':'+plnom[i].tkp+':'+plnom[i].pos)
+			//debug(plnom[i].id+':'+(plnom[i].psum).toFixed(2)+':'+plnom[i].tkp+':'+plnom[i].pos)
 		}
 	}
 	plnom = plnom.sort(sNomPsum)
 	fp.res = plnom[0].psum/fp.av
 	fp.res = (fp.res<fp.mn ? fp.mn : (fp.res > fp.mx ? fp.mx : fp.res))
 	tkp = plnom[0].tkp/100
-	for (i=0;i<2;i++) debug('psum:'+(plnom[i].psum).toFixed(2))
-	debug('КП:'+(plnom[0].psum/plnom[1].psum).toFixed(3) + ' < '+kpkof)
+	//for (i=0;i<2;i++) debug('psum:'+(plnom[i].psum).toFixed(2))
+	//debug('КП:'+(plnom[0].psum/plnom[1].psum).toFixed(3) + ' < '+kpkof)
 	if(plnom[1].psum!=0 && ((plnom[0].psum/plnom[1].psum)<kpkof)) {
 		tkp = Math.max(plnom[0].tkp,plnom[1].tkp)/100
 	}
-	for (i=0;i<2;i++) debug('tkp:'+plnom[i].tkp)
+	//for (i=0;i<2;i++) debug('tkp:'+plnom[i].tkp)
 	svalue = parseInt(pl.value*tkp*fp.res/1000)*1000
-	debug('РН='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3))
+
+	svalue = (svalue == 0 ? 1000 : svalue)
+	//debug('РН'+pl.id+'='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3))
 	
 	//$('div#SValue').html('Примерно ~<font size=2><b>'+ShowValueFormat(svalue)+'</b></font>')
 	return svalue
@@ -453,6 +453,8 @@ function GetFinish(type, res){
 		m.savenomdata = true
 		GetData('teams')
 		GetData('players')
+		GetInfoPagePl()
+		GetInfoPageTm()
 	}
 	if(m.trash==undefined && m.pg_teams && m.pg_players){
 		m.trash = true
