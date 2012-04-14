@@ -21,11 +21,11 @@ var peflcountry={1:0,2:1,8:2,9:3,11:4,12:5,13:6,18:7,19:8,24:9,25:10,27:11,30:12
 function RelocateGetNomData(){
 	var top = 9107892
 	debug('RelocateGetNomData()')
-	if(sessionStorage.getnomdata != undefined){
-		debug('sessionStorage.getnomdata ok!')
+	if(localStorage.getnomdata != undefined){
+		debug('Storage.getnomdata ok!')
 		GetNomData(0)
 	}else{
-		debug('sessionStorage.getnomdata no!')
+		debug('Storage.getnomdata no!')
 
 		$('td.back4').prepend('<div id=debval style="display: none;"></div>')
 		$('div#debval').load('forums.php?m=posts&p='+top+' blockquote:eq(0) pre', function(){
@@ -46,7 +46,7 @@ function RelocateGetNomData(){
 				nm[i] = x.join('|')
 			}
 			text = nm.join('#')
-			sessionStorage.getnomdata = text
+			localStorage.getnomdata = '0$'+text
 			GetNomData(0)
 		})
 	}
@@ -60,7 +60,7 @@ function GetNomData(id){
 	var svalue = 0
 	var kpkof = 1.1
 	var plnom = []
-	nm = String(sessionStorage.getnomdata).split('#')
+	nm = String(localStorage.getnomdata).split('$')[1].split('#')
 	for (i in nm){
 		data[i] = []
 		x = nm[i].split('|')

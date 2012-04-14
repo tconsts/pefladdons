@@ -192,12 +192,12 @@ $().ready(function() {
 function RelocateGetNomData(){
 	var top = 9107892
 	debug('RelocateGetNomData()')
-	if(sessionStorage.getnomdata != undefined){
-		debug('sessionStorage.getnomdata ok!')
+	if(localStorage.getnomdata != undefined){
+		debug('Storage.getnomdata ok!')
 		//GetNomData(0)
 		GetFinish('getnomdata', true)
 	}else{
-		debug('sessionStorage.getnomdata no!')
+		debug('Storage.getnomdata no!')
 
 		$('td.back4').prepend('<div id=debval style="display: none;"></div>')
 		$('div#debval').load('forums.php?m=posts&p='+top+' blockquote:eq(0) pre', function(){
@@ -218,7 +218,7 @@ function RelocateGetNomData(){
 				nm[i] = x.join('|')
 			}
 			text = nm.join('#')
-			sessionStorage.getnomdata = text
+			localStorage.getnomdata = '0$'+text
 			//GetNomData(0)
 			GetFinish('getnomdata', true)
 		})
@@ -234,7 +234,7 @@ function GetNomData(id){
 	var svalue = 0
 	var kpkof = 1.1
 	var plnom = []
-	nm = String(sessionStorage.getnomdata).split('#')
+	nm = String(localStorage.getnomdata).split('$')[1].split('#')
 	for (i in nm){
 		sdata[i] = []
 		x = nm[i].split('|')
