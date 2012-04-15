@@ -131,7 +131,7 @@ function GetNomData(id){
 	svalue = (svalue == 0 ? 1 : svalue)
 	debug('РН='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3))
 	
-	$('div#SValue').html('Примерно ~<font size=2><b>'+ShowValueFormat(svalue)+'</b></font>')
+	$('div#SValue').html('~<font size=2>'+ShowValueFormat(svalue)+'</font>')
 }
 
 function sNomPsum(i, ii) { // Сортировка
@@ -1261,7 +1261,7 @@ $().ready(function() {
 	players[0].idealpos = posfilter[1][1]
 
 	var text3 = ''
-	text3 += '<br><b>Рыночная стоимость</b>:<br>'
+	text3 += '<br><b>Номинал+</b>: <b><sup><a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></sup></b><br>'
 	text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
 	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить игрока').fontsize(1)+'</a><br>'
 	text3 += '<div id="compare"></div>'

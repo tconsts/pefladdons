@@ -898,9 +898,9 @@ function PrintRightInfo(){
 	thtml += '</td></tr>'
 	thtml += '<tr id="ossvalue"><th align=left width=50%><a'
 	thtml += (team_cur.tsvalue!=0 ? ' href="javascript:void(ShowPlayersSValue())"' : '')
-	thtml += '>стоимость</a>:</th><th align=right>'
+	thtml += '>номиналы+</a>:</th><th align=right>'
 	thtml += (team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : '<font color=BABDB6>для VIP</font>')
-	thtml += '</th><td width=10% id="svaluech">&nbsp;'
+	thtml += '</th><td width=10% id="svaluech">&nbsp;<a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a>'
 //	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
 	thtml += '</td></tr>'
 

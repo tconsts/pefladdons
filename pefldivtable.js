@@ -50,7 +50,7 @@ var list2 = {
 		'mid':  {'num':23, 'nshow':true,'type':'int'},
 		'tform':  {'num':24,'name':'Форма','nsel':true,'type':'float'},
 		'tmorale':{'num':25,'name':'Мораль','nsel':true,'type':'float'},
-		'tsvalue':{'num':26,'name':'Стоим.','nsel':true,'type':'int','com':'<sup><font color=red>vip</font></sup>'},
+		'tsvalue':{'num':26,'name':'Ном+','nsel':true,'type':'int','com':'<sup><font color=red>vip</font></sup>'},
 		'dname':{'num':27,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
 		'tprize':{'num':28,'name':'Приз','nsave':true,'nsel':true},
 		'dnum': {'num':29,'nsave':true,'nshow':true},
