@@ -58,6 +58,17 @@ $().ready(function() {
 /**/
 		// запоминаем таблицу оценок
 		match1.weather = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
+
+		var otcharr = []
+		$('td.back4 table:eq(2) center p').each(function(){
+			otcharr.push($(this).html())
+		})
+		match1.ust = ''
+		for(i in otcharr) {
+			if(String(otcharr[i]).indexOf('предельно настроенными') != -1 || String(otcharr[i]).indexOf('активно начинает') != -1) match1.ust = otcharr[i].replace('1 минута','')
+		}
+		debug('уст:'+match1.ust)
+
 		var otch = $('td.back4 table:eq(2)').html()
 		match1.ref = ( otch.indexOf('Главный арбитр:') ==-1 ? '???' : otch.split('Главный арбитр:')[1].split(').')[0] + ')')
 		debug('Ref:'+match1.ref)
@@ -128,6 +139,7 @@ $().ready(function() {
 			.replace(/\>/g,']')
 			+ '[img]system/img/w' + match1.weather + '.png[/img]' 
 			+ (match1.ref!='???' ? ' [b]Главный арбитр:[/b] ' + match1.ref + '.' : '')
+			+ '\n\n'+match1.ust
 	}
 }, false);
 
