@@ -102,6 +102,8 @@ $().ready(function() {
 	MyNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 
 	today = new Date()
+	todayTmst = today.valueOf()
+
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 
 	if(UrlValue('l')=='y'){
@@ -218,7 +220,7 @@ function RelocateGetNomData(){
 				nm[i] = x.join('|')
 			}
 			text = nm.join('#')
-			localStorage.getnomdata = '0$'+text
+			localStorage.getnomdata = todayTmst+'$'+text
 			//GetNomData(0)
 			GetFinish('getnomdata', true)
 		})
