@@ -20,6 +20,7 @@ var peflcountry={1:0,2:1,8:2,9:3,11:4,12:5,13:6,18:7,19:8,24:9,25:10,27:11,30:12
 
 function RelocateGetNomData(){
 	var top = 9107892
+
 	debug('RelocateGetNomData()')
 	if(localStorage.getnomdata != undefined){
 		debug('Storage.getnomdata ok!')
@@ -46,7 +47,7 @@ function RelocateGetNomData(){
 				nm[i] = x.join('|')
 			}
 			text = nm.join('#')
-			localStorage.getnomdata = '0$'+text
+			localStorage.getnomdata = todayTmst+'$'+text
 			GetNomData(0)
 		})
 	}
@@ -890,6 +891,8 @@ var ups = {	"a0e":"-2",
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
 	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') return false
+	today = new Date()
+	todayTmst = today.valueOf()
 
 	// Draw left and right panels
 	var preparedhtml = ''
