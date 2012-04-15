@@ -24,6 +24,7 @@ var plmatch	= []
 var plhead	= 'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
 //var pldbase	= []
 //var plteam	= []
+var sshort = false
 
 $().ready(function() {
 	if(deb) $('body').prepend('<div id=debug></div>')
@@ -54,7 +55,7 @@ $().ready(function() {
 		debug('myteamid='+myteamid)
 
 		// даем возможность скрыть отчет
-		$('td.back4 table:eq(2)').before('<br><a id="treport" href="javascript:void(ShowTable(2))">&ndash;</a>')
+		$('td.back4 table:eq(2)').before('<br><a id="a2" href="javascript:void(ShowTable(2))">&ndash;</a> <b>Отчет</b><br>')
 /**/
 		// запоминаем таблицу оценок
 		match1.weather = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
@@ -64,9 +65,12 @@ $().ready(function() {
 			otcharr.push($(this).html())
 		})
 		match1.ust = ''
+		match1.sshort = ''
 		for(i in otcharr) {
 			if(String(otcharr[i]).indexOf('предельно настроенными') != -1 || String(otcharr[i]).indexOf('активно начинает') != -1) match1.ust = otcharr[i].replace('1 минута','')
+			if(String(otcharr[i]).indexOf('(*)') != -1 || String(otcharr[i]).indexOf('СЧЕТ') != -1) match1.sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
 		}
+
 		debug('уст:'+match1.ust)
 
 		var otch = $('td.back4 table:eq(2)').html()
@@ -141,6 +145,7 @@ $().ready(function() {
 			+ (match1.ref!='???' ? ' [b]Главный арбитр:[/b] ' + match1.ref + '.' : '')
 			+ '\n\n'+match1.ust
 	}
+	$('a#a2').before('<a href="javascript:void(ShowSShort())" id="sshort">+</a> <b>Смены тактик и счета</b><div id="sshort" style="display: none;"><center><hr>'+match1.sshort+'<hr></center></div><br>')
 }, false);
 
 function MatchGet(){
@@ -254,15 +259,26 @@ function UrlValue(key,url){
 	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
 	return false
 }
+function ShowSShort(){
+	if(sshort) {
+		$('div#sshort').hide()
+		$('a#sshort').html('+')
+		sshort = false
+	}else{
+		$('div#sshort').show()
+		$('a#sshort').html('&ndash;')
+		sshort = true
+	}
+}
 
 function ShowTable(n){
 	var style = $('td.back4 table:eq('+n+')').attr('style')
 	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
 		$('td.back4 table:eq('+n+')').show()
-		$('a#treport'+n).html('&ndash;')
+		$('a#a'+n).html('&ndash;')
 	} else {
 		$('td.back4 table:eq('+n+')').hide()
-		$('a#treport'+n).html('+')
+		$('a#a'+n).html('+')
 	}
 }
 
