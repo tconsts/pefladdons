@@ -191,8 +191,8 @@ var TableToForum = {
 		txt = txt.replace(/\[\/?tbody\]/ig, '');
 		
 		// change width="\"15%\"" to width=15%, and height="\"15%\"" to height=15%
-		txt = txt.replace(/ (width|height)\=\"\\\"(\d+)\%\\\"\"/ig, function(match, attrName, percentage) {
-			return ' ' + attrName + '=' + percentage + '%';
+		txt = txt.replace(/ (width|height)\=[^\]]*(\d+)\%[^\]]*\]/ig, function(match, attrName, percentage) {
+			return ' ' + attrName + '=' + percentage + '%]';
 		});
 		
 		// change [a href="url"]anchor[/a] to [url=url]anchor[/url]
@@ -210,7 +210,7 @@ var TableToForum = {
 			if (bgcolor == "#a3de8f") {
 				bgcolor = "#C9F8B7";
 			}
-			var str = 'bgcolor='+bgcolor;			
+			return 'bgcolor='+bgcolor;
 		});
 		
 		// change [th] to [td][b] & [/th] to [/b][/td]
