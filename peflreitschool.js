@@ -184,8 +184,8 @@ var TableToForum = {
 	
 	htmlToForum: function(html) {
 		var txt = '';
-		txt = html.replace('<', '[');
-		txt = txt.replace('>', ']');
+		txt = html.replace(/\</g, '[');
+		txt = txt.replace(/\>/g, ']');
 		return txt;
 	}
 	
