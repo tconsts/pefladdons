@@ -159,6 +159,39 @@ var reputations = {
 
 var teams = []
 
+var TableToForum = {
+	
+	buttonSelector: '',
+	codeWrapperSelector: '',
+	tableSelector: '',
+	
+	init: function(params) {
+		this.buttonSelector = params.buttonSelector;
+		this.codeWrapperSelector = params.codeWrapperSelector;
+		this.tableSelector = params.tableSelector;
+		
+		$(this.buttonSelector).click(TableToForum.generateCode);
+	},
+	
+	generateCode: function() {
+		var html = '<textarea cols="50" rows="30">';
+		html += '[table]';
+		html += TableToForum.htmlToForum( $(TableToForum.tableSelector).html() );
+		html += '[/table]</textarea>';
+		
+		$(TableToForum.codeWrapperSelector).html(html);
+	},
+	
+	htmlToForum: function(html) {
+		var txt = '';
+		txt = html.replace('<', '[');
+		txt = txt.replace('>', ']');
+		return txt;
+	}
+	
+}
+
+
 $().ready(function() {
 	var myteamid = localStorage.myteamid
 	debug('myteamid:'+myteamid)
@@ -224,5 +257,8 @@ $().ready(function() {
 //		for(i in reputations) $('td.back4 table table tr:gt(0):eq('+(reputations[i].st-1)+')').attr('bgcolor','white').find('td:first').append(' '+reputations[i].name)
 		MarkMyTeam(myteamid)
 	}
+	
+	$('td.back4').append('<input type="button" class="code-to-forum" value="Код для форума" /><div class="code2forum"></div>');
+	TableToForum.init({buttonSelector: '.code-to-forum', codeWrapperSelector: '.code2forum', tableSelector: 'td.back4 table table'});
 /**/
 }, false);
