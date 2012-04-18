@@ -191,7 +191,7 @@ var TableToForum = {
 		txt = txt.replace(/\[\/?tbody\]/ig, '');
 		
 		// change width="\"15%\"" to width=15%, and height="\"15%\"" to height=15%
-		txt = txt.replace(/ (width|height)\=\"\\\"\(d+)\%\\\"\"/ig, function(match, attr, percentage) {
+		txt = txt.replace(/ (width|height)\=\"\\\"(\d+)\%\\\"\"/ig, function(match, attr, percentage) {
 			return ' ' + attr + '=' + percentage + '%';
 		});
 		
