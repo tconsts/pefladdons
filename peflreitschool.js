@@ -231,7 +231,7 @@ var TableToForum = {
 		});
 		
 		// change [br] to '<br />';
-		txt = txt.replace('[br]', '\r\n');
+		txt = txt.replace(/\[br\]/ig, '\r\n');
 		
 		return txt;
 	}
