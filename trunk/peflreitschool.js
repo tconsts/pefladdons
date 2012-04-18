@@ -177,7 +177,11 @@ var TableToForum = {
 		var html = '<textarea cols="50" rows="30">';
 		html += '[table]';
 		html += TableToForum.htmlToForum( $(TableToForum.tableSelector).html() );
-		html += '[/table]</textarea>';
+		html += '[/table]';
+		
+		html += '<br /><br />[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]';
+		
+		html += '</textarea>';
 		
 		$(TableToForum.codeWrapperSelector).html(html);
 	},
@@ -220,6 +224,14 @@ var TableToForum = {
 		txt = txt.replace(/\[\/th\]/ig, function(match) {
 			return '[/b][/td]';
 		});
+		
+		// change ="left" to =left
+		txt = txt.replace(/ align\=\"(left|center|right)\"/ig, function(match, alignment) {
+			return ' align=' + alignment;
+		});
+		
+		// change [br] to '<br />';
+		txt = txt.replace('[br]', '<br />');
 		
 		return txt;
 	}
