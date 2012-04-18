@@ -179,7 +179,7 @@ var TableToForum = {
 		html += TableToForum.htmlToForum( $(TableToForum.tableSelector).html() );
 		html += '[/table]';
 		
-		html += '<br /><br />[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]';
+		html += '\r\n\r\n[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]';
 		
 		html += '</textarea>';
 		
@@ -231,7 +231,7 @@ var TableToForum = {
 		});
 		
 		// change [br] to '<br />';
-		txt = txt.replace('[br]', '<br />');
+		txt = txt.replace('[br]', '\r\n');
 		
 		return txt;
 	}
