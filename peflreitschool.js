@@ -191,13 +191,23 @@ var TableToForum = {
 		txt = txt.replace(/\[\/?tbody\]/ig, '');
 		
 		// change width="\"15%\"" to width=15%, and height="\"15%\"" to height=15%
-		txt = txt.replace(/ (width|height)\=\"\\\"(\d+)\%\\\"\"/ig, function(match, attr, percentage) {
+		txt = txt.replace(/ (width|height)\=\"\\\"(\d+)%\\\"\"/ig, function(match, attr, percentage) {
 			return ' ' + attr + '=' + percentage + '%';
 		});
 		
 		// change [a href="url"]anchor[/a] to [url=url]anchor[/url]
 		txt = txt.replace(/\[a href\=\"([^\]]*)\"\]([^\[]*)\[\/a\]/ig, function(match, link, anchorText) {
 			return '[url='+ link + ']' + anchorText + '[/url]';
+		});
+		
+		// change [img src="url"] to [img]url[/img]
+		txt = txt.replace(/\[img\ src\=\"?([^\]]*)\"?]/ig, function(match, link) {
+			return '[img]' + link + '[/img]';
+		});
+		
+		// change bgcolor="#777777" to bgcolor=#777777
+		txt = txt.replace(/bgcolor\=\"([^\"]+)\"/ig, function(match, bgcolor) {
+			return 'bgcolor='+bgcolor;
 		});
 		
 		return txt;
