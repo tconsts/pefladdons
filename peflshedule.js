@@ -33,7 +33,8 @@ function CheckInt(ddn, fl){
 	strn += (ddn.getDate()<10 ? '0' : '' ) + ddn.getDate() + '.'
 	strn += (ddn.getMonth()<9 ? '0' : '') + (ddn.getMonth()+1) + '.'
 	strn += (ddn.getFullYear()-2000)
-	if(int.indexOf(strn)!=-1) return '<tr bgcolor=#a3de8f><td></td><td><i>'+'</i></td><td></td><td></td><td>'+fl+' '+(strn.fontsize(1)).fontcolor('#888A85')+'</td></tr>'
+	var htmlnew = '<td rowspan=2 width=1% bgcolor=C9F8B7><table width=100% cellpadding="0" cellspacing="0"><tr><td> </td></tr><tr bgcolor=A3DE8F><td height=25>'+fl+'</td></tr><tr><td> </td></tr></table></td>'
+	if(int.indexOf(strn)!=-1) return htmlnew
 	return ''
 }
 
@@ -43,7 +44,7 @@ $().ready(function() {
 
 	var imgecup = '<img height=12 src="system/img/g/e.gif">'
 	var imgcup  = '<img height=12 src="plugins/s/topcontributors/img/cup-1.gif">'
-	var imgint  = '<img height=11 src="system/img/g/int.gif">'
+	var imgint  = '<img height=12 src="system/img/g/int.gif">'
 	var ecup = 	'16.11.11!25.11.11!02.12.11!14.12.11!19.12.11!26.12.11!13.01.12!18.01.12!25.01.12!03.02.12!13.02.12!20.02.12!27.02.12!12.03.12!19.03.12!02.04.12!09.04.12!23.04.12!07.05.12!18.05.12!25.05.12!01.06.12!'
 	var cup = 	'21.11.11!07.12.11!23.12.11!30.01.12!08.02.12!05.03.12!26.03.12!16.04.12!'
 	var excl = 	'30.12.11!02.01.12!04.01.12!06.01.12!09.01.12!30.04.12!02.05.12!04.05.12!'	
@@ -96,10 +97,10 @@ $().ready(function() {
 						if(cup.indexOf(str)!=-1)	img = imgcup
 						if(excl.indexOf(str) == -1){
 				            var ddaten = new Date(dd.getTime() + 60*60*24*1000);
-							$(val).parent().before(CheckInt(ddaten,imgint))
+							$(val).parent().prev().append(CheckInt(ddaten,imgint))
 
 							str += '&nbsp;' + d
-							var tt = '<tr class="freeId">'
+							var tt = '<tr class="freeId" height=25>'
 							tt += '<td></td>'
 							tt += '<td>'+str.fontcolor('#888A85')+'</td>'
 							tt += '<td colspan=2></td>'
@@ -113,7 +114,7 @@ $().ready(function() {
 				}
 			}
             var daten = new Date(curdt.getTime() + 60*60*24*1000);
-			$(val).parent().before(CheckInt(daten,imgint))
+			$(val).parent().prev().append(CheckInt(daten,imgint))
 
 			var newtext = $(val).text()+'&nbsp;' + day[curdt.getDay()]
 			if (shownow==1) $(val).css("border", "1px solid green");
@@ -145,7 +146,7 @@ $().ready(function() {
 						strn += (ddn.getDate()<10 ? '0' : '' ) + ddn.getDate() + '.'
 						strn += (ddn.getMonth()<9 ? '0' : '') + (ddn.getMonth()+1) + '.'
 						strn += (ddn.getFullYear()-2000)
-						if(int.indexOf(strn)!=-1) strint = '<tr bgcolor=#a3de8f><td></td><td><i>'+'</i></td><td></td><td></td><td>'+imgint+' '+(strn.fontsize(1)).fontcolor('#888A85')+'</td></tr>'
+						//if(int.indexOf(strn)!=-1) strint = '<tr bgcolor=#a3de8f><td></td><td><i>'+'</i></td><td></td><td></td><td>'+imgint+' '+(strn.fontsize(1)).fontcolor('#888A85')+'</td></tr>'
 						str += '&nbsp;' + d
 						$(this).append(strint + '<tr><td></td><td height=25>'+str.fontcolor('#888A85')+'</td><td></td><td></td><td>'+img+'</td></tr>')
 					}
