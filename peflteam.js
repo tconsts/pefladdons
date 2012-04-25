@@ -192,7 +192,6 @@ $().ready(function() {
 }, false);
 
 function RelocateGetNomData(){
-	var top = 9107892
 	debug('RelocateGetNomData()')
 	if(localStorage.getnomdata != undefined){
 		debug('Storage.getnomdata ok!')
@@ -200,6 +199,7 @@ function RelocateGetNomData(){
 		GetFinish('getnomdata', true)
 	}else{
 		debug('Storage.getnomdata no!')
+		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9107892)
 
 		$('td.back4').prepend('<div id=debval style="display: none;"></div>')
 		$('div#debval').load('forums.php?m=posts&p='+top+' blockquote:eq(0) pre', function(){
