@@ -39,6 +39,7 @@ var scnames = [
 
 $().ready(function() {
 	if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflags = localStorage.scripts.split(':')
+	var datatop = (localStorage.datatop != undefined ? localStorage.datatop : 9107892)
 
 	$('td.back4').html('<br><br><div align=center><font size=3>Настройки CrabVIP скриптов</font></div>')
 
@@ -49,7 +50,11 @@ $().ready(function() {
 		html += '<td>'+i+'</td>'
 		html += '<th id="f'+i+'">'+(parseInt(scflags[i])==0 ? flag : '')+'</th>'
 		html += '<td colspan=2>'+(scnames[i].del ? scnames[i].name : '<a href="javascript:void(SwitchScFlag('+i+'))">'+scnames[i].name+'</a>')+'</td>'
-		html += '<td><i>'+scnames[i].desc+'</i></td>'
+		html += '<td><i>'+scnames[i].desc+(scnames[i].desc != '' ? '<br>' :'')
+		if(i==4){
+			html += 'Номинал+: <a id="nomdata" href="javascript:void(NomDataSwitch(\''+datatop+'\'))">'+datatop+'</a> (топ с данными)'
+		}
+		html += '</i></td>'
 		html += '</tr>'
 	}
 	html += '</table>'
@@ -72,6 +77,17 @@ $().ready(function() {
 
 	$('td.back4').append(html)
 });
+
+function NomDataSwitch(curtop){
+	debug('NomDataSwitch('+curtop+')')
+	var newtop = parseInt(prompt('Введите номер сообщения с форума с данными\nДефоултный вариант 9107892:', curtop));
+	if (!isNaN(newtop)) {
+		localStorage.datatop = newtop
+		delete localStorage.getnomdata
+		$('a#nomdata').html(newtop)
+	}
+	return true
+}
 
 function SwitchScFlag(scid){
 	debug('SwitchScFlag('+scid+')')
