@@ -491,7 +491,7 @@ function ShowEnd(){
 	var sumraz = 0
 	$('td.back4 table table:eq(1) th:eq(4)').after('<td id="end"><b>-20%</b></td>')
 	$('td.back4 table table:eq(1) tr:first td:eq(3)').remove()
-	$('td.back4 table table:eq(1) tr').find('td:eq(4)').each(function(i,val){
+	$('td.back4 table table:eq(1) tr:gt(0)').find('td:eq(4)').each(function(i,val){
 		var newtrn = (trn[0][i+1]-1)*0.8+1
 		var newraz = (newtrn-trn[0][i+1]).toFixed(2)
 		sumraz += parseFloat(newraz)
