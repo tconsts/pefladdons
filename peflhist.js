@@ -54,8 +54,8 @@ if (type == 'p') {
 	{ 
 		var cols =  tbody.rows[i].cells;
 
-		if (cols[1].innerHTML.indexOf('Сборная') >= 0 ||
-			cols[1].innerHTML.indexOf('Клуб') >= 0) 	
+		if (cols[0].innerHTML.indexOf('Сезон') >= 0 ||
+			cols[0].innerHTML.indexOf('Всего') >= 0) 	
 		{
 			bCanParseStats = true;
 			continue;
