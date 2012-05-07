@@ -31,6 +31,8 @@ function SetNation(){
 }
 
 $().ready(function() {
+	delete localStorage.debug
+
 	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
 
 	var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0:0:0'.split(':')
