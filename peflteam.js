@@ -193,19 +193,19 @@ $().ready(function() {
 
 function RelocateGetNomData(){
 	debug('RelocateGetNomData()')
-	if(localStorage.getnomdata != undefined){
+	if(localStorage.getnomdata != undefined && String(localStorage.getnomdata).indexOf('1.1$')!=-1){
 		debug('Storage.getnomdata ok!')
 		//GetNomData(0)
 		GetFinish('getnomdata', true)
 	}else{
-		debug('Storage.getnomdata no!')
-		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9107892)
+		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9107893)
+		debug('Storage.getnomdata('+top+')')
 
-		$('td.back4').prepend('<div id=debval style="display: none;"></div>')
-		$('div#debval').load('forums.php?m=posts&p='+top+' blockquote:eq(0) pre', function(){
+		$('td.back4').prepend('<div id=debval style="display: none;"></div>') //
+		$('div#debval').load('forums.php?m=posts&p='+top+' td.back3:contains(#CrabNom1.1.'+top+'#) blockquote pre', function(){
 			$('div#debval').find('hr').remove()
 			//$('div#debval').html($('div#debval').html().replace('<br>#t#<br>',''))
-			var data = $('#debval pre').html().split('#t#').map(function(val,i){
+			var data = $('#debval pre').html().split('#').map(function(val,i){
 				return val.split('<br>').map(function(val2,i2){
 					return $.grep(val2.split('	'),function(num, index) {return !isNaN(index)})
 				})
@@ -214,13 +214,11 @@ function RelocateGetNomData(){
 			var nm = []
 			for (i in data){
 				var x = []
-				for(j in data[i]){
-					x[j] = data[i][j].join('!')
-				}
+				for(j in data[i]) x[j] = data[i][j].join('!')
 				nm[i] = x.join('|')
 			}
 			text = nm.join('#')
-			localStorage.getnomdata = todayTmst+'$'+text
+			localStorage.getnomdata ='1.1$'+text.replace('Code','')
 			//GetNomData(0)
 			GetFinish('getnomdata', true)
 		})
@@ -230,7 +228,6 @@ function RelocateGetNomData(){
 function GetNomData(id){
 	var sdata = []
 	var pl = players[id]
-	//debug('GetNomData:pl'+pl.id+':'+(pl.value/1000)+':'+pl.age)
 	var tkp = 0
 	var fp = {}
 	var svalue = 0
@@ -244,7 +241,8 @@ function GetNomData(id){
 			sdata[i][j] = x[j].split('!')
 		}
 	}
-	kpkof = parseFloat(sdata[0][0][0].replace('Code',''))
+	kpkof = parseFloat(sdata[0][0][0])
+	//debug('GetNomData:pl:'+pl.value+':'+pl.age)
 
 	var saleAge = 0
 	var ages = (sdata[0][0][1]+',100').split(',')
@@ -253,61 +251,66 @@ function GetNomData(id){
 
 	var saleValue = 0
 	var vals = ('0,'+sdata[0][0][2]+',100000').split(',')
-	for(i in vals) 	if(pl.value<vals[i]*1000)	{saleValue = i;break;}
+	for(i in vals) 	if(pl.value<vals[i]*1000)	{saleValue = i-1;break;}
 	//debug('SaleValue:'+saleValue+':'+vals[saleValue])
 
-	//debug('ТСЗ:'+sdata[0][saleValue][0])
-	fp.av = parseFloat(sdata[0][saleValue][0])
-	fp.mn = parseFloat(sdata[0][saleValue][1])
-	fp.mx = parseFloat(sdata[0][saleValue][2])
+	//debug('ТСЗ:'+sdata[0][saleValue+1][0])
+	fp.av = parseFloat(sdata[0][saleValue+1][0])
+	fp.mn = parseFloat(sdata[0][saleValue+1][1])
+	fp.mx = parseFloat(sdata[0][saleValue+1][2])
 	var saleNom = ''
+	var t = 0
 	for(i=1;i<sdata.length;i++){
-		//debug('-')
-		plnom[i] = {psum:0,tkp:0}
-		//debug(sdata[i][0][0]+':'+pl.position)
-		var pos1 = (sdata[i][0][0].split(' ')[1]!=undefined ? sdata[i][0][0].split(' ')[0] : '')
-		if(pos1=='') plnom[i].pos1 = true
-		else for(h in pos1) if(pl.position.indexOf(pos1[h])!=-1) plnom[i].pos1 = true
+		for(n in sdata[i]){
+			if(isNaN(parseInt(sdata[i][n][0])) && TrimString(sdata[i][n][0])!=''){
+				t++
+				plnom[t] = {psum:0,tkp:sdata[i][saleValue][saleAge]}
 
-		var pos2 = (sdata[i][0][0].split(' ')[1]==undefined ? sdata[i][0][0].split(' ')[0] : sdata[i][0][0].split(' ')[1]).split('/')
-		for(h in pos2) if(pl.position.indexOf(pos2[h])!=-1) plnom[i].pos2 = true
+				var pos1 = (sdata[i][n][0].split(' ')[1]!=undefined ? sdata[i][n][0].split(' ')[0] : '')
+				if(pos1=='') plnom[t].pos1 = true
+				else for(h in pos1) if(pl.position.indexOf(pos1[h])!=-1) plnom[t].pos1 = true
 
-		if(plnom[i].pos1 && plnom[i].pos2){
-			plnom[i].psum = 1
-			plnom[i].id = i
-			plnom[i].pos = sdata[i][0][0]
-			var count = 0
-			for(j=1;j<sdata[i][0].length;j++) {
-				var kof = parseFloat(sdata[i][0][j].split('-')[0])
-				var skil = parseInt(pl[skl[sdata[i][0][j].split('-')[1]]])
-				if(!isNaN(skil)){
-					plnom[i].psum = plnom[i].psum*Math.pow((skil<1 ? 1 : skil) ,kof)
-					count += kof
+				var pos2 = (sdata[i][n][0].split(' ')[1]==undefined ? TrimString(sdata[i][n][0].split(' ')[0]) : sdata[i][n][0].split(' ')[1]).split('/')
+				for(h in pos2) if(pl.position.indexOf(pos2[h])!=-1) plnom[t].pos2 = true
+
+				if(plnom[t].pos1 && plnom[t].pos2){
+					plnom[t].psum = 1
+					plnom[t].id = t
+					plnom[t].pos = sdata[i][n][0]
+					var count = 0
+					for(j=1;j<sdata[i][n].length;j++) {
+						var kof = parseFloat(sdata[i][n][j].split('-')[0])
+						//var skl = parseInt(pl[skl[sdata[i][n][j].split('-')[1]]])
+						var skil = parseInt(pl[skl[sdata[i][n][j].split('-')[1]]])
+						if(!isNaN(skil)){
+							plnom[t].psum = plnom[t].psum*Math.pow((skil<1 ? 1 : skil) ,kof)
+							count += kof
+						}
+						//debug(skil+'^'+kof+':'+sdata[i][n][j].split('-')[1])
+					}
+					plnom[t].psum = Math.pow(plnom[t].psum,1/count)
+					//debug(plnom[t].id+':'+plnom[t].pos+':'+(plnom[t].psum).toFixed(2)+':'+plnom[t].tkp)
+				}else{
+					//debug('----- no ----'+sdata[i][n][0])
 				}
-				//debug(skil+'^'+kof+':'+sdata[i][0][j].split('-')[1])
 			}
-			plnom[i].psum = Math.pow(plnom[i].psum,1/count)
-			plnom[i].tkp = sdata[i][saleValue][saleAge]
-			//debug(plnom[i].id+':'+(plnom[i].psum).toFixed(2)+':'+plnom[i].tkp+':'+plnom[i].pos)
 		}
 	}
 	plnom = plnom.sort(sNomPsum)
 	fp.res = plnom[0].psum/fp.av
 	fp.res = (fp.res<fp.mn ? fp.mn : (fp.res > fp.mx ? fp.mx : fp.res))
 	tkp = plnom[0].tkp/100
-	//for (i=0;i<2;i++) debug('psum:'+(plnom[i].psum).toFixed(2))
+	//for (i=0;i<2;i++) debug('psum'+plnom[i].id+':'+(plnom[i].psum).toFixed(2))
 	//debug('КП:'+(plnom[0].psum/plnom[1].psum).toFixed(3) + ' < '+kpkof)
 	if(plnom[1].psum!=0 && ((plnom[0].psum/plnom[1].psum)<kpkof)) {
 		tkp = Math.max(plnom[0].tkp,plnom[1].tkp)/100
 	}
 	//for (i=0;i<2;i++) debug('tkp:'+plnom[i].tkp)
-	svalue = parseInt(pl.value*tkp*fp.res/1000)*1000
-
-	svalue = (svalue == 0 ? 1000 : svalue)
-	//debug('РН'+pl.id+'='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3))
-	
-	//$('div#SValue').html('Примерно ~<font size=2><b>'+ShowValueFormat(svalue)+'</b></font>')
-	return svalue
+	svalue = parseInt(pl.value*tkp*fp.res/1000)
+	svalue = (svalue == 0 ? 1 : svalue)
+	//debug('РН='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3)+'='+svalue)
+	//$('div#SValue').html('~<font size=2>'+ShowValueFormat(svalue)+'</font>')
+	return svalue*1000
 }
 
 function sNomPsum(i, ii) { // Сортировка
