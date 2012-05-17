@@ -40,7 +40,10 @@ var scnames = [
 $().ready(function() {
 	if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflags = localStorage.scripts.split(':')
 	var datatop = (localStorage.datatop != undefined ? localStorage.datatop : 9107893)
-
+	if(datatop==9107892 || datatop==9107893){
+		datatop = 9107893
+		delete localStorage.datatop
+	}
 	$('td.back4').html('<br><br><div align=center><font size=3>Настройки CrabVIP скриптов</font></div>')
 
 	var html = '<br><table width=90% align=center bgcolor=#C9F8B7>'
@@ -80,7 +83,7 @@ $().ready(function() {
 
 function NomDataSwitch(curtop){
 	debug('NomDataSwitch('+curtop+')')
-	var newtop = parseInt(prompt('Введите номер сообщения с форума с данными\nДефоултный вариант 9107892:', curtop));
+	var newtop = parseInt(prompt('Введите номер сообщения с форума с данными\nДефоултный вариант 9107893:', curtop));
 	if (!isNaN(newtop)) {
 		localStorage.datatop = newtop
 		delete localStorage.getnomdata
