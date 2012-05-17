@@ -39,7 +39,7 @@ var scnames = [
 
 $().ready(function() {
 	if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflags = localStorage.scripts.split(':')
-	var datatop = (localStorage.datatop != undefined ? localStorage.datatop : 9107892)
+	var datatop = (localStorage.datatop != undefined ? localStorage.datatop : 9107893)
 
 	$('td.back4').html('<br><br><div align=center><font size=3>Настройки CrabVIP скриптов</font></div>')
 
