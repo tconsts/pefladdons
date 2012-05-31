@@ -56,9 +56,9 @@ function PrintTables(geturl) {
 			} else if (i>5 && j!=3){
 				newhtml += '<td valign=top height=90 id=td'+i+j+' bgcolor=#C9F8B7 align= center>'
 			} else {
-				newhtml += '<td valign=top height=90 id=td'+i+j+'>'
-				newhtml += '<div align=center id=div'+i+j+'>'
-				newhtml += 	'<span id=span'+i+j+' onclick="MouseOn(\''+i+'\',\''+j+'\')">значение 0</span>'
+				newhtml += '<td valign=top width=20% height=90 id=td'+i+j+'>'
+				newhtml += '<div align=center id=div'+i+j+' onmousedown="MouseOn(\''+i+'\',\''+j+'\')">'
+				newhtml += 	'<span id=span'+i+j+'>&nbsp;</span>'
 				newhtml += 	'<select hidden id=select'+i+j+' onchange="CheckT(\''+i+'\',\''+j+'\')">'
 				newhtml += 		'<option selected value="0"></option>'
 				newhtml += 		'<option value="1">Чебурашка</option>'
@@ -83,13 +83,13 @@ function MouseOn(p1,p2){
 }
 function MouseOff(p1,p2){
 	if($('#select'+p1+p2).val()!=0) $('#span'+p1+p2).html('значение '+$('#select'+p1+p2).val())
-	$('#span'+p1+p2).show()
+	else $('#span'+p1+p2).html('&nbsp;')
 	$('#select'+p1+p2).hide()
+	$('#span'+p1+p2).show()
 }
 
 function CheckT(p1,p2){
-	var x = 'f'
-	x = $('#select'+p1+p2).val()
+	var x = $('#select'+p1+p2).val()
 	$('#table'+p1+p2).remove()
 	if(x!=0){
 		var html = '<table id=table'+p1+p2+' width=100%><tr>'
