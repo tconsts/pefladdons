@@ -65,7 +65,8 @@ var list2 = {
 		'gdown':{'num':38,'name':'ГП','nsave':true,'nsel':true,'com':'(проп)'},
 		'gpm':	{'num':39,'name':'+-','nsave':true,'nsel':true,'com':'(разн)'},
 		'score':{'num':40,'name':'О&nbsp;','nsave':true,'nsel':true,'com':'(очки)'},
-		'del':	{'num':41,'name':'Удл','nsave':true,'nsel':true,'al':'center','com':'(удалить)'}},
+		'hide':	{'num':41,'name':'Скр','nsave':true,'nsel':true,'al':'center','com':'(скрыть)'},
+		'del':	{'num':42,'name':'Удл','nsave':true,'nsel':true,'al':'center','com':'(удал.)'}},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
@@ -261,6 +262,15 @@ function DeleteTeam(teamid){
 	SaveData('teams')
 }
 
+function HideTeam(teamid){
+	debug('HideTeam('+teamid+'):'+typeof(teamid))
+	var teams2 = []
+	for (i in teams) if(teams[i].tid!=teamid) teams2[i] = teams[i]
+	teams = teams2
+	Print('teams')
+	//SaveData('teams')
+}
+
 function Print(dataname, sr){
 	ClosePrint()
 	debug('Print:'+dataname+':'+sr)
@@ -349,6 +359,7 @@ function Print(dataname, sr){
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
 						case 'num':		tt = num;break;
 						case 'del':		tt = '<a class="del" href="javascript:void(DeleteTeam(\''+dti['tid']+'\'))">х</a> ';break
+						case 'hide':	tt = '<a class="hide" href="javascript:void(HideTeam(\''+dti['tid']+'\'))">&ndash;</a> ';break
 						default:
 							if(head[j].type=='float') tt = tt.toFixed(2)
 					}
@@ -593,6 +604,7 @@ function ModifyTeams(){
 	for (i in teams){
 		teams[i].num = i
 		teams[i].del = i
+		teams[i].hide = i
 		teams[i].timg = i
 		teams[i].nomzp = (teams[i]['twage']==0 || teams[i]['twage']=='' ? '' : parseInt((teams[i]['tvalue']/teams[i]['twage'])*100));
 		teams[i].zpnom = (teams[i]['tvalue']==0 || teams[i]['tvalue']=='' ? '' : parseInt((teams[i]['twage']/teams[i]['tvalue'])*100));
@@ -973,6 +985,7 @@ function TableCodeForForum(){
 	}
 	x += $('td.back4 table:eq(1)')
 		.find('a.del').remove().end()
+		.find('a.hide').remove().end()
 		.find('img.imgteam').remove().end()
 		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 		.find('img').removeAttr('height').end()
