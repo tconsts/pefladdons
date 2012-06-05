@@ -13,6 +13,7 @@ var debnum = 0
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var data = []
 var plkeys = []
+var players = []
 var tabslist = ''
 var maxtables = 25
 var positions = [
@@ -44,9 +45,8 @@ $().ready(function() {
 			i++;
 			if(tmpkey == 'nation0') check = true
 			if(tmpkey == 'nation1') check = false
-			if(check) plkeys.push[tmpkey.replace('0','')]
+			if(check) plkeys.push(tmpkey.replace('0',''))
 		}
-		for(i in plkeys) debug(i+':'+plkeys[i])
 		getPlayers()
 		PrintTables(geturl)
 		FillHeaders()
@@ -59,7 +59,12 @@ function debug(text) {if(deb) {debnum++;$('div#debug').append(debnum+'&nbsp;\''+
 function getPlayers(){
 	var numPlayers = parseInt(data['n'])
 	debug('numPlayers:'+numPlayers)
-
+	for(i=0;i<numPlayers;i++){
+		var pl = {}
+		for(j in plkeys) pl[plkeys[j]] = data[plkeys[j]+i]
+		players[pl.id] = pl
+	}
+	//for(i in players[58279]) debug(i+':'+players[58279][i])
 }
 
 function FillHeaders(){
