@@ -162,7 +162,7 @@ function SetValue(vl,vlch){
 	debug('SetValue:'+vl/1000+':'+vlch/1000+':'+players[0].id)
 	if(UrlValue('t')=='p') {
 		if(ff){
-			var text1 = String(globalStorage[location.hostname]['players']).split('#')
+			var text1 = String(localStorage['players']).split('#')
 			for (i in text1){
 				if(parseInt(text1[i].split('|')[0])==players[0].id){
 					var text2 = text1[i].split('|')
@@ -171,7 +171,7 @@ function SetValue(vl,vlch){
 					text1[i] = text2.join('|')
 				}
 			}
-			globalStorage[location.hostname]['players'] = text1.join('#')
+			localStorage['players'] = text1.join('#')
 		}else{
 			if(!db) DBConnect()			
 			db.transaction(function(tx) {
@@ -192,7 +192,7 @@ function GetValue(){
 		var list = {'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name'}
 		var head = list['players'].split(',')
 		if(ff){
-			var text1 = String(globalStorage[location.hostname]['players'])
+			var text1 = String(localStorage['players'])
 			if (text1 != 'undefined'){
 				var text = text1.split('#')
 				for (i in text) {
@@ -510,8 +510,7 @@ function RememberPl(x){
 			mark++
 		}
 	}
-	if (navigator.userAgent.indexOf('Firefox') != -1) globalStorage[location.hostname].peflplayer = text
-	else localStorage.peflplayer = text
+	localStorage.peflplayer = text
 	if (x==0)	PrintPlayers(0)
 	else 		PrintPlayers()
 }
@@ -1319,7 +1318,7 @@ $().ready(function() {
 	else 							$('td.back4 center:last').append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
 
 	// Get info fom Global or Session Storage
-	var text1 = String(navigator.userAgent.indexOf('Firefox') != -1 ? globalStorage[location.hostname].peflplayer : localStorage.peflplayer)
+	var text1 = localStorage.peflplayer
 	if (text1 != 'undefined'){
 		var pl = text1.split(',');
 		for (i in pl) {

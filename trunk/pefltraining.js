@@ -378,7 +378,7 @@ function DBConnect(){
 function getData(){
 	if(ff){
 		var trnnum = 1
-		var x = globalStorage[location.hostname]['training']
+		var x = localStorage['training']
 		debug('Get from GS ')
 		if(x != undefined){
 			xx = String(x).split(';')
@@ -448,7 +448,7 @@ function saveData(){
 				save += (f<5 && trn[f+1] ? ';' :'')
 			}
 		}
-		globalStorage[location.hostname]['training'] = save
+		localStorage['training'] = save
 		debug('Save GS ')
 	}else{
 		debug('Save DB go')
@@ -490,13 +490,11 @@ function check(d) {return (d<10 ? "0"+d : d)}
 function ShowEnd(){
 	var sumraz = 0
 	$('td.back4 table table:eq(1) th:eq(4)').after('<td id="end"><b>-20%</b></td>')
-	$('td.back4 table table:eq(1) tr:first td:eq(3)').remove()
 	$('td.back4 table table:eq(1) tr:gt(0)').find('td:eq(4)').each(function(i,val){
 		var newtrn = (trn[0][i+1]-1)*0.8+1
 		var newraz = (newtrn-trn[0][i+1]).toFixed(2)
 		sumraz += parseFloat(newraz)
 		$(val).after('<td>'+(newtrn).toFixed(2).fontsize(1)+('<sup>'+newraz+'</sup>').fontcolor('red')+'</td>')
-		$(val).parent().find('td:eq(8)').remove()
 	})
 	$('td#end').append('<sup>'+sumraz.toFixed(2)+'</sup>')
 	$('a#end ').remove()

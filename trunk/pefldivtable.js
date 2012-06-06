@@ -476,7 +476,7 @@ function SaveData(dataname){
 				text += dtid.join('|')
 			}
 		}
-		globalStorage[location.hostname][dataname] = text
+		localStorage[dataname] = text
 	}else{
 		db.transaction(function(tx) {
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
@@ -526,7 +526,7 @@ function GetData(dataname){
 		default: return false
 	}
 	if(ff) {
-		var text1 = String(globalStorage[location.hostname][dataname])
+		var text1 = String(localStorage[dataname])
 		if (text1 != 'undefined'){
 			var text = text1.split('#')
 			for (i in text) {

@@ -104,7 +104,7 @@ function GetData2(){
 	if(ff) {
 		debug('ff='+true)
 		var head = list['divs'].split(',')
-		var text1 = String(globalStorage[location.hostname]['divs'])
+		var text1 = String(localStorage['divs'])
 		if (text1 != 'undefined'){
 			var text = text1.split('#')
 			for (i in text) {
@@ -128,7 +128,7 @@ function GetData2(){
 		}			
 
 		head = list['teams'].split(',')
-		var text2 = String(globalStorage[location.hostname]['teams'])
+		var text2 = String(localStorage['teams'])
 		if (text2 != 'undefined'){
 			var text = text2.split('#')
 			for (i in text) {
@@ -208,7 +208,7 @@ function SaveData(dataname){
 				text += dtid.join('|')
 			}
 		}
-		globalStorage[location.hostname][dataname] = text
+		localStorage[dataname] = text
 	}else{
 		db.transaction(function(tx) {
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
@@ -249,7 +249,7 @@ function GetData(dataname){
 		default: return false
 	}
 	if(ff) {
-		var text1 = String(globalStorage[location.hostname][dataname])
+		var text1 = String(localStorage[dataname])
 		if (text1 != 'undefined'){
 			var text = text1.split('#')
 			for (i in text) {
