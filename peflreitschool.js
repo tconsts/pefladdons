@@ -34,7 +34,7 @@ function SaveData(){
 		teamslist += i + ':'+ bud + ':' + rep + ','
 	}
 	if (navigator.userAgent.indexOf('Firefox') != -1){
-		globalStorage[location.hostname].peflcountryteams = teamslist
+		localStorage.peflcountryteams = teamslist
 	} else {	
 		sessionStorage.peflcountryteams = teamslist
 	}
@@ -246,7 +246,7 @@ $().ready(function() {
 	// Get info fom Global or Session Storage
 	var text1 = ''
 	if (navigator.userAgent.indexOf('Firefox') != -1){
-		text1 = String(globalStorage[location.hostname].peflcountryteams)
+		text1 = String(localStorage.peflcountryteams)
 	} else {
 		text1 = String(sessionStorage.peflcountryteams)
 	}

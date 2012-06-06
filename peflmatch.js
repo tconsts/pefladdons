@@ -154,7 +154,7 @@ function MatchGet(){
 	var data = matches
 	var head = list[dataname].split(',')
 	if(ff){/**/
-		var text1 = String(globalStorage[location.hostname][dataname])
+		var text1 = String(localStorage[dataname])
 		if(text1 != 'undefined'){
 			var text = text1.split('#')
 			for (i in text) {
@@ -220,7 +220,7 @@ function MatchSave(){
 				text += dtid.join('|')
 			}
 		}
-		globalStorage[location.hostname][dataname] = text
+		localStorage[dataname] = text
 	/**/
 	}else{
 		if(!db) DBConnect()
@@ -350,7 +350,7 @@ function SavePlayers(mid) {
 		data[i] = players
 	}
 	if(ff){
-		var text = String(globalStorage[location.hostname][dataname])
+		var text = String(localStorage[dataname])
 		text = (text=='undefined' ? '' : text)
     	if((text=='' || (text.indexOf('#'+mid+'|')==-1 && text.split('|',1)[0]!=mid))) {
 			debug(dataname+':add')
@@ -365,7 +365,7 @@ function SavePlayers(mid) {
 					text += dtid.join('|')
 				}
 			}
-			globalStorage[location.hostname][dataname] = text
+			localStorage[dataname] = text
 		}
 	}else{
 		if(!db) DBConnect()
