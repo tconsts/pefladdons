@@ -17,10 +17,15 @@ var players = []
 var tabslist = ''
 var maxtables = 25
 var positions = [
-	{name:'...'},
-	{name:'FW'}
+	{					name:'&nbsp;'},
+	{filter:'GK', 		name:'GK', 		koff:'reflexes=reflexes*3,positioning=positioning*2,handling=handling*1.5,firstname,secondname'},
+	{filter:'LR DF',	name:'LR DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,firstname,secondname'},
+	{filter:'C DF/SW',	name:'C DF/SW',	koff:'firstname,secondname'},
+	{filter:'LR M',		name:'LR M',	koff:'firstname,secondname'},
+	{filter:'C M',		name:'C M',		koff:'firstname,secondname'},
+	{filter:'FW',		name:'FW',		koff:'firstname,secondname'}
 ]
-var selected = '0,1'
+var selected = '0,6,0,6,0,0,0,0,0,4,5,0,5,4,0,0,0,0,0,2,3,0,3,2,0,1'
 
 $().ready(function() {
 	if(deb) $('body').prepend('<div id=debug></div>')
@@ -32,6 +37,7 @@ $().ready(function() {
 	selected = selected.split(',')
 
 	var geturl = (location.search.substring(1) == 'sostav' ? 'fieldnew3.php' : 'fieldnew3_n.php')
+	PrintTables(geturl)
 	$.get(geturl, {}, function(datatext){
 		debug('geturl')
 		var dataarray = datatext.split('&');
@@ -48,13 +54,25 @@ $().ready(function() {
 			if(check) plkeys.push(tmpkey.replace('0',''))
 		}
 		getPlayers()
-		PrintTables(geturl)
+		getPositions()
 		FillHeaders()
-		FillData()
 	})
 })
 
 function debug(text) {if(deb) {debnum++;$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+
+function getPositions(){
+	debug('getPositions()')
+	// TODO: + custom positions(from forum)
+	for(i in positions){
+		var pls = []
+		for(j in players){
+			pls.push(positions[i].name+','+players[j].secondname)
+		}
+		positions[i].pls = pls
+		//debug('fill '+ positions[i].pls[1])
+	}
+}
 
 function getPlayers(){
 	var numPlayers = parseInt(data['n'])
@@ -68,17 +86,35 @@ function getPlayers(){
 }
 
 function FillHeaders(){
-	debug('FillHeaders()')
+	debug('FillHeaders():'+maxtables)
 	for(i=1;i<=maxtables;i++){
+		for(j in positions) $('#select'+i).append('<option value='+j+'>'+positions[j].name+'</option>')
 		var name = positions[0].name
-		if(positions[selected[i]] !=undefined && positions[selected[i]].name != undefined) name= positions[selected[i]].name
-		$('#select'+i).val(selected[i])
+		if(positions[selected[i]] !=undefined && positions[selected[i]].name != undefined) {
+			name = positions[selected[i]].name
+		}
+		if (selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
 		$('#span'+i).html(name)
+		FillData(i)
 	}
 }
 
-function FillData(){
-	debug('FillData()')
+function FillData(nt){
+	var np = $('#select'+nt+' option:selected').val()
+	debug('FillData('+nt+'):'+np)
+/**/
+	$('#table'+nt).remove()
+	var html = '<table id=table'+nt+' width=100%>'
+    for(t in positions[np].pls){
+		var pl = positions[np].pls[t].split(',')
+		html += '<tr>'
+		for(p in pl) html += '<td>'+pl[p]+'</td>'
+		html += '</tr>'
+	}
+	html += '</table>'
+	$('#select'+nt).after(html)
+	MouseOff(num)
+/**/
 }
 
 function PrintTables(geturl) {
@@ -100,14 +136,9 @@ function PrintTables(geturl) {
 				newhtml += '<td valign=top height=90 id=td'+num+' bgcolor=#C9F8B7 align= center>'
 			} else {
 				newhtml += '<td valign=top width=20% height=90 id=td'+num+' onmousedown="MouseOn(\''+num+'\')">'
-				newhtml += '<div align=center id=div'+num+' >'
+				newhtml += '<div align=center id=div'+num+'>'
 				newhtml += 	'<span id=span'+num+'>&nbsp;</span>'
-				newhtml += 	'<select hidden id=select'+num+' onchange="CheckT(\''+num+'\')">'
-				newhtml += 		'<option selected value="0"></option>'
-				newhtml += 		'<option value="1">Чебурашка</option>'
-				newhtml += 		'<option value="2">Крокодил Гена</option>'
-				newhtml += 		'<option value="3">Шапокляк</option>'
-				newhtml += 		'<option value="4">Крыса Лариса</option>'
+				newhtml += 	'<select hidden id=select'+num+' onchange="FillData(\''+num+'\')">'
 				newhtml += 	'</select>'
 				newhtml += '</div>'
 				num++
@@ -131,18 +162,6 @@ function MouseOff(num){
 	else $('#span'+num).html(positions[0].name)
 	$('#select'+num).hide()
 	$('#span'+num).show()
-}
-
-function CheckT(num){
-	var x = $('#select'+num).val()
-	$('#table'+num).remove()
-	if(x!=0){
-		var html = '<table id=table'+num+' width=100%><tr>'
-		html += '<td>0</td><td>0</td><td>'+num+'</td><td>'+num+'</td><td>выбрано '+x+'</td>'
-		html += '</tr></table>'
-		$('#select'+num).after(html)
-	}
-	MouseOff(num)
 }
 
 function ShowHelp(){
