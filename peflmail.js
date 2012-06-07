@@ -27,7 +27,7 @@ $().ready(function() {
 		localStorage.maillast = mailcur
 	} else mailnum = 0
 
-	var text = '<table id="mail" width=100% bgcolor=A3DE8F><tr><th width=18%>Дата</th><th width=5%>'
+	var text = '<table id="mail" width=100% class=back2><tr><th width=18%>Дата</th><th width=5%>'
 		text += (UrlValue('filter')=='sentbox' ? 'Кому' : 'От&nbsp;кого')
 		text += '</th><th>Заголовок</th><th width=3%></th></tr></table>'
 	$('td.back4:first td.back1:eq(1)').html(text)
@@ -51,7 +51,7 @@ $().ready(function() {
 		curmail.body 		=  newmailarr.join('<br>')
 
 		var html = ''
-		html += '<tr bgcolor=C9F8B7 height=25>'
+		html += '<tr class=back1 height=25>'
 		html += '<td>'+curmail.date + '</td>'
 		html += '<td>'
 		html += '<a href="users.php?m=details&id='+(UrlValue('filter')=='sentbox' ? curmail.receiverid : curmail.senderid)+'">'+(UrlValue('filter')=='sentbox' ? curmail.receiver : curmail.sender)+'</a>'

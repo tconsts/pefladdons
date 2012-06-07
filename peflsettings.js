@@ -46,10 +46,10 @@ $().ready(function() {
 	}
 	$('td.back4').html('<br><br><div align=center><font size=3>Настройки CrabVIP скриптов</font></div>')
 
-	var html = '<br><table width=90% align=center bgcolor=#C9F8B7>'
-	html += '<tr bgcolor=#C9F8B7><th width=5%>N</th><th width=5%>Вкл</th><th colspan=2 width=30%>Имя скрипта</th><th>Описание</th></tr>'
+	var html = '<br><table width=90% align=center class=back2>'
+	html += '<tr class=back2><th width=5%>N</th><th width=5%>Вкл</th><th colspan=2 width=30%>Имя скрипта</th><th>Описание</th></tr>'
 	for (i=1;i<scnames.length;i++) {
-		html += '<tr bgcolor=#A3DE8F>'
+		html += '<tr class=back1>'
 		html += '<td>'+i+'</td>'
 		html += '<th id="f'+i+'">'+(parseInt(scflags[i])==0 ? flag : '')+'</th>'
 		html += '<td colspan=2>'+(scnames[i].del ? scnames[i].name : '<a href="javascript:void(SwitchScFlag('+i+'))">'+scnames[i].name+'</a>')+'</td>'
@@ -64,14 +64,14 @@ $().ready(function() {
 	html += '<br><br>&nbsp;* - <i>при появлении нового скрипта, чтобы он заработал, требуется переустановить(поставить поверх) основной скрипт: <a href="http://pefladdons.googlecode.com/files/pefl.user.js">pefl.user.js</a>.</i>'
 
 	html += '<br><br>&nbsp;* - <i>Вы можете поддержать проект (или например запросить сделать определенную фичу в первую очередь, или в персональное пользование), перечислив какую-либо сумму одним из следующих способов (оплата возможна через любой платёжный терминал)</i>'
-	html += '<table align=center bgcolor=A3DE8F width=50%><tr bgcolor=C9F8B7 height=50 valign=top><td><b>WebMoney</b><br>'
+	html += '<table align=center class=back2 width=50%><tr class=back1 height=50 valign=top><td><b>WebMoney</b><br>'
 	html += 'R930480028049 (рубли)<br>'
 	html += 'Z811907519489 (доллары)</td>'
 
 	html += '<td><b>RBK Money</b><br>'
 	html += 'RU339032359</td></tr>'
 
-	html += '<tr bgcolor=C9F8B7 height=50 valign=top><td><b>Яндекс-деньги</b><br>'
+	html += '<tr class=back1 height=50 valign=top><td><b>Яндекс-деньги</b><br>'
 	html += 'Счет: 41001993673065</td>'
 
 

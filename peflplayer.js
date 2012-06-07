@@ -330,7 +330,7 @@ function GetPlayerHistory(n,pid){
 		})
 		//print
 		var data = ''
-		data += '<tr bgcolor=#88C274><td><a id=th2 href="javascript:void(ShowCar('+n+'))">+</a> </td><td colspan=3>Итого</td>'
+		data += '<tr class=back2><td><a id=th2 href="javascript:void(ShowCar('+n+'))">+</a> </td><td colspan=3>Итого</td>' //bgcolor=#88C274
 		for (p in stats[0]){
 			if(p!='sale' && p!='rent' && p!='free' && p!='nat' && p!='u21') {
 				data += '<td>' 
@@ -345,7 +345,7 @@ function GetPlayerHistory(n,pid){
 
 		for (ss=stats.length-1;ss>=1;ss--){
 			if(stats[ss] !=undefined && (stats[ss].gm !=0 || stats[ss].sale!=0 || (stats[ss].free+stats[ss].rent)>0)){
-					data += '<tr bgcolor=A3DE8F id=carpl'+n+' style="display: none;"><td>'
+					data += '<tr class=back3 id=carpl'+n+' style="display: none;"><td>' //bgcolor=A3DE8F
 					data += ss
 					data += '</td><td>'
 					if(stats[ss].sale!=0) 		data += stats[ss].sale.replace('.',',')
@@ -756,6 +756,8 @@ function CodeForForum(){
 	if(skillsshow){
 		x += '\n'
 		x += $('td.back4 table table:not(#plheader):first')
+			.find('tr.back2').removeAttr('class').end()
+			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
 			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 			.find('sup').remove().end()
 			.html()
@@ -784,6 +786,8 @@ function CodeForForum(){
 	if (seasonstatshow && (ptype == 'p' || ptype == 'pp')){
 		x += '\n[center][b]Статистика сезона[/b][/center]\n'
 		x += $('table#stat')
+			.find('tr.back2').removeAttr('class').end()
+			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
 			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 			.html()
 			.replace(/<!-- [а-я] -->/g,'')
@@ -800,6 +804,8 @@ function CodeForForum(){
 	if ($('table#ph0').html()!=null && fullstatshow && (ptype == 'p' || ptype == 'pp')){
 		x += '\n[center][b][url=hist.php?id=' + pl.id + '&t=p]Карьера[/url][/b][/center]\n'
 		x += $('table#ph0')
+			.find('tr.back2').removeAttr('class').end()
+			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
 			.find('img')
 				.removeAttr('ilo-full-src')		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 				.removeAttr('width')
@@ -899,6 +905,8 @@ var ups = {	"a0e":"-2",
 
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
+	$('td.back4 table table tr[bgcolor=#a3de8f]').removeAttr('bgcolor').addClass('back3')
+
 	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') return false
 	today = new Date()
 	todayTmst = today.valueOf()
@@ -906,7 +914,7 @@ $().ready(function() {
 	// Draw left and right panels
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
-	preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
+	preparedhtml += '<table id="crabrighttable" class=back1 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>' //bgcolor="#C9F8B7"
 	preparedhtml += '</td></tr></table>'
 	$('body table.border:last').before(preparedhtml)
 

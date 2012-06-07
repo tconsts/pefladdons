@@ -537,7 +537,7 @@ function PrintAd(){
 		for(j in pfcs){
 			var pforn = pfcs[j]['num']*nationplayers[pfcs[j]['id']]/10
 			pforn_sum += pforn
-			text2 += '<tr align=right class="c'+i+'"'+(parseInt(localStorage.mycountry) == peflcountry[i] ? '' : ' style="display: none;"')+'>'
+			text2 += '<tr align=right id="c'+i+'"'+(parseInt(localStorage.mycountry) == peflcountry[i] ? '' : ' style="display: none;"')+'>'
 			text2 += '<td width=10%>'+pfcs[j]['num'] +'0%</td>'
 			text2 += '<td align=left>'+ pfcs[j]['name']+'</td>'
 			text2 += '<td>'+nationplayers[pfcs[j]['id']]+'</td>'
@@ -546,7 +546,7 @@ function PrintAd(){
 			text2 += '<td>'+'</td>'
 			text2 += '</tr>'
 		}
-		var text1 = '<tr align=right class="cname" bgcolor=A3DE8F>'
+		var text1 = '<tr align=right id="cname" class=back3>'
 		text1 += '<td align=left colspan=3 width=40%><a href="javascript:void(ShowC(\''+i+'\'))">'+s_adaptationResultList[i]+' ('+peflnation[peflcountry[i]]+')</a></td>'
 		text1 += '<td>'+pforn_sum.toFixed(2).replace('.',',')+'</td>'
 		text1 += '<td>'+(pforn_sum/nationteamnum[peflcountry[i]]).toFixed(2).replace('.',',')+'</td>'
@@ -559,6 +559,6 @@ function PrintAd(){
 	$('td.back4').append('<table width=100%>'+mtext+'</table>')
 }
 function ShowC(n){
-	if(String($('tr.c'+n+':first').attr('style')).indexOf('display: none') == -1) $('tr.c'+n).hide()
-	else $('tr.c'+n).show()
+	if(String($('tr#c'+n+':first').attr('style')).indexOf('display: none') == -1) $('tr#c'+n).hide()
+	else $('tr#c'+n).show()
 }
