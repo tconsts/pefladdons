@@ -340,11 +340,16 @@ function EditFinance(school,divpriz,dteams,dtour){
 
 		// set div prizes
 //		var divpriz = 0
-		var divprizmark =	(('<i>*1</i>').fontcolor('red')).fontsize(1)
+		var divprizmark =	('<i>*1</i>').fontcolor('red').fontsize(1)
 		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в команду, див и "Правила".</i>').fontcolor('red').fontsize(1)
 		if(divpriz!=0){
-			divprizmark = 	(('<i>*1</i>').fontcolor('green')).fontsize(1)
-			divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
+			if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) {
+				divprizmark = 	('<i>*1</i>').fontsize(1)
+				divpriztext = 	('<i>*1 - бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontsize(1)
+			} else {
+				divprizmark = 	('<i>*1</i>').fontcolor('green').fontsize(1)
+				divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
+			}
 		}
 
 		// Count finish finance
@@ -436,6 +441,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
 			$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())
 			$('td[id=fin]:eq(7)').html(format(school*fin.fid).bold())
+			$('table#4').after(divpriztext+'<br>')
 		}
 		$('table#4').after('<hr>')
 
