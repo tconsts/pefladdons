@@ -378,9 +378,9 @@ function EditFinance(school,divpriz,dteams,dtour){
 		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>')
 		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>')
 
-		var preparedhtml = '<tr><th width=40%></th><th width=30% bgcolor=#A3DE8F colspan=2>Текущий '+cur.fid+' ФИД</th>'
-		if(fin.fid != cur.fid) preparedhtml += '<th width=30% bgcolor=#A3DE8F colspan=2>Прогноз на '+fin.fid+' ФИД</th>'
-		else if(finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) preparedhtml += '<th width=30% bgcolor=#A3DE8F colspan=2>В следующем сезоне</th>'
+		var preparedhtml = '<tr><th width=40%></th><th width=30% class=back3 colspan=2>Текущий '+cur.fid+' ФИД</th>'
+		if(fin.fid != cur.fid) preparedhtml += '<th width=30% class=back3 colspan=2>Прогноз на '+fin.fid+' ФИД</th>'
+		else if(finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) preparedhtml += '<th width=30% class=back3 colspan=2>В следующем сезоне</th>' //bgcolor=#A3DE8F
 		preparedhtml += '</tr>'
 		$('table#2, table#3').prepend(preparedhtml)
 
