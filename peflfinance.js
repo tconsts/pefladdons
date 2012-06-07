@@ -425,14 +425,17 @@ function EditFinance(school,divpriz,dteams,dtour){
 			$('table#4').after(divpriztext+'<br>')
 		}else if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10){
 			var spraz = parseInt((sponsors - cur.sponsors/fin.fid)/1000)
-			var prev_sp = last_sp-spraz
-			if (spraz>0) spraz = '+'+spraz
-			var nhtml = $('td.back4 > table td:eq(1)').html()
-			var sp_text = ('Спонсорские контракты:<br><font color="red">'+prev_sp+',000$ в ИД / ушедший</font>')
-			$('td.back4 > table td:eq(1)').html(nhtml.replace('Спонсорские контракты:', sp_text))
+			if(spraz != 0){
+				var prev_sp = last_sp-spraz
+				debug('spraz='+spraz+', last_sp='+last_sp+', prev_sp='+prev_sp)
+				if (spraz>0) spraz = '+'+spraz
+				var nhtml = $('td.back4 > table td:eq(1)').html()
+				var sp_text = ('Спонсорские контракты:<br><font color="red">'+prev_sp+',000$ в ИД / ушедший</font>')
+				$('td.back4 > table td:eq(1)').html(nhtml.replace('Спонсорские контракты:', sp_text))
 
-			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
-			$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())			
+				$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
+				$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())			
+			}
 		}
 		$('table#4').after('<hr>')
 
