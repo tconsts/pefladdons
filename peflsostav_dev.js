@@ -18,14 +18,23 @@ var tabslist = ''
 var maxtables = 25
 var positions = [
 	{					name:'&nbsp;'},
-	{filter:'GK', 		name:'GK', 		koff:'reflexes=reflexes*3,positioning=positioning*2,handling=handling*1.5,firstname,secondname'},
-	{filter:'LR DF',	name:'LR DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,firstname,secondname'},
-	{filter:'C DF/SW',	name:'C DF/SW',	koff:'firstname,secondname'},
-	{filter:'LR M',		name:'LR M',	koff:'firstname,secondname'},
-	{filter:'C M',		name:'C M',		koff:'firstname,secondname'},
-	{filter:'FW',		name:'FW',		koff:'firstname,secondname'}
+/**  1 **/	{filter:'GK', 		name:'GK', 		koff:'reflexes=reflexes*3,positioning=positioning*2,handling=handling*1.5,firstname,secondname'},
+/**  2 **/	{filter:'C SW',		name:'C SW',	koff:'positioning=positioning*2,tackling=tackling*1.5,firstname,secondname'},
+/**  3 **/	{filter:'L DF',		name:'L DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,firstname,secondname'},
+/**  4 **/	{filter:'R DF',		name:'R DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,firstname,secondname'},
+/**  5 **/	{filter:'L DM',		name:'L DM',	koff:'positioning=positioning*2,tackling=tackling*1.5,firstname,secondname'},
+/**  6 **/	{filter:'R DM',		name:'R DM',	koff:'positioning=positioning*2,tackling=tackling*1.5,firstname,secondname'},
+/**  7 **/	{filter:'C DF',		name:'C DF',	koff:'firstname,secondname'},
+/**  8 **/	{filter:'C DM',		name:'C DM',	koff:'firstname,secondname'},
+/**  9 **/	{filter:'C M',		name:'C M',		koff:'firstname,secondname'},
+/** 10 **/	{filter:'L M',		name:'L M',		koff:'firstname,secondname'},
+/** 11 **/	{filter:'R M',		name:'R M',		koff:'firstname,secondname'},
+/** 12 **/	{filter:'C AM',		name:'C AM',	koff:'firstname,secondname'},
+/** 13 **/	{filter:'L AM',		name:'L AM',	koff:'firstname,secondname'},
+/** 14 **/	{filter:'R AM',		name:'R AM',	koff:'firstname,secondname'},
+/** 15 **/	{filter:'C FW',		name:'C FW',	koff:'firstname,secondname'}
 ]
-var selected = '0,6,0,6,0,0,0,0,0,4,5,0,5,4,0,0,0,0,0,2,3,0,3,2,0,1'
+var selected = '0,'+'0,15,0,'+'0,12,0,0,14,'+'10,0,9,0,0,'+'0,0,8,0,6,'+'3,0,0,7,0,'+'2,1'
 
 $().ready(function() {
 	if(deb) $('body').prepend('<div id=debug></div>')
@@ -45,10 +54,10 @@ $().ready(function() {
 		var check = false
 		while(dataarray[i] != null) {
 			tmparr = dataarray[i].split('=');
+			i++;
 			var tmpkey = tmparr[0];
 			var tmpvalue = tmparr[1];
 			data[tmpkey] = tmpvalue;
-			i++;
 			if(tmpkey == 'nation0') check = true
 			if(tmpkey == 'nation1') check = false
 			if(check) plkeys.push(tmpkey.replace('0',''))
@@ -61,17 +70,66 @@ $().ready(function() {
 
 function debug(text) {if(deb) {debnum++;$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
+function sSrt(i, ii) { // по убыванию
+    if 		(i.srt < ii.srt)	return  1
+    else if	(i.srt > ii.srt)	return -1
+    return  0
+}
+
+
 function getPositions(){
 	debug('getPositions()')
 	// TODO: + custom positions(from forum)
-	for(i in positions){
+
+
+	for(i=1;i<positions.length;i++){
 		var pls = []
+		var pos = positions[i].filter.split(' ')
 		for(j in players){
-			pls.push(positions[i].name+','+players[j].secondname)
+			var pl = {}
+			var	pos0 = false
+			var pos1 = false
+			var plpos = players[j].position
+			if(pos[1]==undefined) {
+				pos1 = true
+				if(plpos.indexOf(pos[0]) != -1) pos0 = true
+			} else {
+				for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
+				pos1arr = pos[1].split('/')
+				for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
+			}
+			pl.posf = (pos0 && pos1 ? true : false)
+
+			//TODO: посчитать силу
+			pl.srt = parseFloat(((Math.random())*100).toFixed(1))
+
+			//TODO: добавить все параметры
+			pl.secondname = players[j].secondname
+
+			pls.push(pl)
 		}
-		positions[i].pls = pls
-		//debug('fill '+ positions[i].pls[1])
+		positions[i].pls = pls.sort(sSrt)
 	}
+}
+
+function FillData(nt){
+	var np = $('#select'+nt+' option:selected').val()
+	//debug('FillData('+nt+'):'+np)
+/**/
+	$('#table'+nt).remove()
+	if(np!=0){
+		var html = '<table id=table'+nt+' width=100%>'
+    	for(t in positions[np].pls){
+			var pl = positions[np].pls[t]
+			html += '<tr '+(!pl.posf ? 'hidden' : '')+'>'
+			for(p in pl) if(p!='posf') html += '<td>'+pl[p]+'</td>'
+			html += '</tr>'
+		}
+		html += '</table>'
+		$('#select'+nt).after(html)
+	}
+	MouseOff(nt)
+/**/
 }
 
 function getPlayers(){
@@ -99,24 +157,6 @@ function FillHeaders(){
 	}
 }
 
-function FillData(nt){
-	var np = $('#select'+nt+' option:selected').val()
-	debug('FillData('+nt+'):'+np)
-/**/
-	$('#table'+nt).remove()
-	var html = '<table id=table'+nt+' width=100%>'
-    for(t in positions[np].pls){
-		var pl = positions[np].pls[t].split(',')
-		html += '<tr>'
-		for(p in pl) html += '<td>'+pl[p]+'</td>'
-		html += '</tr>'
-	}
-	html += '</table>'
-	$('#select'+nt).after(html)
-	MouseOff(num)
-/**/
-}
-
 function PrintTables(geturl) {
 	debug('PrintTables()')
 	var newhtml = '<br><br>'
@@ -136,7 +176,7 @@ function PrintTables(geturl) {
 				newhtml += '<td valign=top height=90 id=td'+num+' bgcolor=#C9F8B7 align= center>'
 			} else {
 				newhtml += '<td valign=top width=20% height=90 id=td'+num+' onmousedown="MouseOn(\''+num+'\')">'
-				newhtml += '<div align=center id=div'+num+'>'
+				newhtml += '<div id=div'+num+'>'
 				newhtml += 	'<span id=span'+num+'>&nbsp;</span>'
 				newhtml += 	'<select hidden id=select'+num+' onchange="FillData(\''+num+'\')">'
 				newhtml += 	'</select>'
@@ -158,7 +198,7 @@ function MouseOn(num){
 		$('#select'+num).show().select()
 }
 function MouseOff(num){
-	if($('#select'+num).val()!=0) $('#span'+num).html('значение '+$('#select'+num).val())
+	if($('#select'+num).val()!=0) $('#span'+num).html($('#select'+num+' option:selected').text())
 	else $('#span'+num).html(positions[0].name)
 	$('#select'+num).hide()
 	$('#span'+num).show()
