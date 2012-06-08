@@ -345,7 +345,7 @@ function GetPlayerHistory(n,pid){
 
 		for (ss=stats.length-1;ss>=1;ss--){
 			if(stats[ss] !=undefined && (stats[ss].gm !=0 || stats[ss].sale!=0 || (stats[ss].free+stats[ss].rent)>0)){
-					data += '<tr class=back3 id=carpl'+n+' style="display: none;"><td>' //bgcolor=A3DE8F
+					data += '<tr class=back3 id=carpl'+n+' style="display: none;"><td>'
 					data += ss
 					data += '</td><td>'
 					if(stats[ss].sale!=0) 		data += stats[ss].sale.replace('.',',')
@@ -449,7 +449,7 @@ function sSkills(i, ii) { // Сортировка
 
 function ShowAll(){
 	$('td.back4 table:first table:not(#plheader):first td').each(function(){
-		$(this).removeAttr('bgcolor').find('img').removeAttr('style')
+		$(this).removeAttr('class').find('img').removeAttr('style')
 	})
 }
 
@@ -458,16 +458,16 @@ function ShowSkills(skl){
 	if(compare == true) {
 		$('td.back4 table:first table:not(#plheader):first td').each(function(i,val){
 			if (i%3 == 0 && skl.indexOf($(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
-				$(val).attr('bgcolor','#C9F8B7')
-					.next().attr('bgcolor','#C9F8B7').find('img').hide().end()
-					.next().attr('bgcolor','#C9F8B7').find('img').hide();
+				$(val).attr('class','back1')
+					.next().attr('class','back1').find('img').hide().end()
+					.next().attr('class','back1').find('img').hide();
 			}
 		})
 	} else {
 		$('td.back4 table:first table:not(#plheader):first td:even').each(function(){
 			if (skl.indexOf($(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
-				$(this).attr('bgcolor','#C9F8B7')
-				.next().attr('bgcolor','#C9F8B7').find('img').hide();
+				$(this).attr('class','back1')
+				.next().attr('class','back1').find('img').hide();
 			}
 		})
 	}
@@ -655,14 +655,14 @@ function CheckPlayer(nn){
 
 	$('td.back4 table:first table:not(#plheader):eq(1) tr:first td:gt(0)').attr('colspan','3').attr('align','center')
 	$('td.back4 table:first table:not(#plheader):eq(1) tr:gt(0)').each(function(i,val){
-		if(i!=1) $(val).find('td:eq(7)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['kk'+i]!=undefined ? players[nn]['kk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
-		if(i!=1) $(val).find('td:eq(6)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['zk'+i]!=undefined ? players[nn]['zk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' bgcolor=C9F8B7 width=1%> </td>')
+		if(i!=1) $(val).find('td:eq(7)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['kk'+i]!=undefined ? players[nn]['kk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' class=back1 width=1%> </td>')
+		if(i!=1) $(val).find('td:eq(6)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['zk'+i]!=undefined ? players[nn]['zk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' class=back1 width=1%> </td>')
 
-		$(val).find('td:eq(5)').after('<td>'+(parseFloat(players[nn]['sr'+i])==0 || players[nn]['sr'+i]==undefined ? '0,00' : String((parseFloat(players[nn]['sr'+i])).toFixed(2)).replace('.',','))+'</td><td bgcolor=C9F8B7 width=1%> </td>')
-		$(val).find('td:eq(4)').after('<td>'+(players[nn]['im'+i]!=undefined ? players[nn]['im'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
-		$(val).find('td:eq(3)').after('<td>'+(players[nn]['ps'+i]!=undefined ? players[nn]['ps'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>')
-		$(val).find('td:eq(2)').after('<td>'+(players[nn]['gl'+i]!=undefined ? players[nn]['gl'+i] : '?') +'</td><td bgcolor=C9F8B7 width=1%> </td>')
-		$(val).find('td:eq(1)').after('<td>'+(players[nn]['ig'+i]!=undefined ? players[nn]['ig'+i] : '?')+'</td><td bgcolor=C9F8B7 width=1%> </td>').before('<td bgcolor=C9F8B7 width=1%> </td>')
+		$(val).find('td:eq(5)').after('<td>'+(parseFloat(players[nn]['sr'+i])==0 || players[nn]['sr'+i]==undefined ? '0,00' : String((parseFloat(players[nn]['sr'+i])).toFixed(2)).replace('.',','))+'</td><td class=back1 width=1%> </td>')
+		$(val).find('td:eq(4)').after('<td>'+(players[nn]['im'+i]!=undefined ? players[nn]['im'+i] : '?')+'</td><td class=back1 width=1%> </td>')
+		$(val).find('td:eq(3)').after('<td>'+(players[nn]['ps'+i]!=undefined ? players[nn]['ps'+i] : '?')+'</td><td class=back1 width=1%> </td>')
+		$(val).find('td:eq(2)').after('<td>'+(players[nn]['gl'+i]!=undefined ? players[nn]['gl'+i] : '?') +'</td><td class=back1 width=1%> </td>')
+		$(val).find('td:eq(1)').after('<td>'+(players[nn]['ig'+i]!=undefined ? players[nn]['ig'+i] : '?')+'</td><td class=back1 width=1%> </td>').before('<td class=back1 width=1%> </td>')
 	})
 	return false
 }
@@ -758,6 +758,7 @@ function CodeForForum(){
 		x += $('td.back4 table table:not(#plheader):first')
 			.find('tr.back2').removeAttr('class').end()
 			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
+			.find('td.back1').removeAttr('class').attr('bgcolor','#C9F8B7').end()
 			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 			.find('sup').remove().end()
 			.html()
@@ -788,6 +789,7 @@ function CodeForForum(){
 		x += $('table#stat')
 			.find('tr.back2').removeAttr('class').end()
 			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
+			.find('td.back1').removeAttr('class').attr('bgcolor','#C9F8B7').end()
 			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 			.html()
 			.replace(/<!-- [а-я] -->/g,'')
@@ -914,7 +916,7 @@ $().ready(function() {
 	// Draw left and right panels
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
-	preparedhtml += '<table id="crabrighttable" class=back1 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>' //bgcolor="#C9F8B7"
+	preparedhtml += '<table id="crabrighttable" class=back1 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 	preparedhtml += '</td></tr></table>'
 	$('body table.border:last').before(preparedhtml)
 
