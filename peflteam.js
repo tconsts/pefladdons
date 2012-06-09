@@ -124,7 +124,7 @@ $().ready(function() {
 		// Draw right panel and fill data
 		var preparedhtml = ''
 		preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td id="crabgloballeft" width=200 valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
-		preparedhtml += '<table id="crabrighttable" bgcolor="#C9F8B7" width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
+		preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 		preparedhtml += '</td></tr></table>'
 		$('body table.border:last').before(preparedhtml)
 
@@ -138,28 +138,28 @@ $().ready(function() {
 		$("#crabright").html(preparedhtml)
 
 		// add tables
-		var filter = '<div id="divRostSkillsFilter" style="display: none;"><a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a></div>'
-		filter += '<table id="tblRostSkillsFilter" width=50% align=left cellspacing=1 cellpadding=1 bgcolor="#c9f8b7" border=0 style="display: none;">'
+		var filter = '<div id="divRostSkillsFilter" hidden><a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a></div>'
+		filter += '<table id="tblRostSkillsFilter" width=50% align=left cellspacing=1 cellpadding=1 class=back1 border=0 hidden>'
 		filter += '<tr align=center><th width=10%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th></tr>'
-		filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td bgcolor=a3de8f id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
-		filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td bgcolor=a3de8f id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
-		filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td bgcolor=a3de8f id="R DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="C DF">&nbsp;</td>	<td bgcolor=a3de8f id="L DF">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td bgcolor=a3de8f id="R DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="C DM">&nbsp;</td>	<td bgcolor=a3de8f id="L DM">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td bgcolor=a3de8f id="R MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="C MF">&nbsp;</td>	<td bgcolor=a3de8f id="L MF">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td bgcolor=a3de8f id="R AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="C AM">&nbsp;</td>	<td bgcolor=a3de8f id="L AM">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<td bgcolor=a3de8f id="C FW">&nbsp;</td>	<th></th></tr>'
+		filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td class=back2 id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
+		filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td class=back2 id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
+		filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td class=back2 id="R DF">&nbsp;</td>	<td class=back2 id="C DF">&nbsp;</td>	<td class=back2 id="C DF">&nbsp;</td>	<td class=back2 id="C DF">&nbsp;</td>	<td class=back2 id="L DF">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td class=back2 id="R DM">&nbsp;</td>	<td class=back2 id="C DM">&nbsp;</td>	<td class=back2 id="C DM">&nbsp;</td>	<td class=back2 id="C DM">&nbsp;</td>	<td class=back2 id="L DM">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td class=back2 id="R MF">&nbsp;</td>	<td class=back2 id="C MF">&nbsp;</td>	<td class=back2 id="C MF">&nbsp;</td>	<td class=back2 id="C MF">&nbsp;</td>	<td class=back2 id="L MF">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td class=back2 id="R AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="L AM">&nbsp;</td></tr>'
+		filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td class=back2 id="C FW">&nbsp;</td>	<td class=back2 id="C FW">&nbsp;</td>	<td class=back2 id="C FW">&nbsp;</td>	<th></th></tr>'
 		filter += '</table>'
-		filter += '<table id="SumPl" width=50% align=right style="display: none;">'
+		filter += '<table id="SumPl" width=50% align=right hidden>'
 		filter += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Суммарный игрок</th></tr>'
 		filter += '<tr id="sumlast1"><td colspan=4 align=right id="sumlast1"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></td></tr>'
 		//filter += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
 		filter += '</table>'
-		filter += '<div id="filter" style="display:none;">&nbsp;</div>'
+		filter += '<div id="filter" hidden>&nbsp;</div>'
 		$('table#tblRosterFilter').after(filter)
 
-		preparedhtml  = '<table id="tblRostSkills" width=866 bgcolor=BFDEB3 style="display: none;">'
+		preparedhtml  = '<table id="tblRostSkills" width=866 class=back1 hidden>' //BFDEB3
 		preparedhtml += '</table>'
-		preparedhtml += '<div id="divRostSkills" style="display: none;">'
+		preparedhtml += '<div id="divRostSkills" hidden>'
 		preparedhtml += '<br>* - <i>нажать на значение <b>Сум</b> чтобы отключить или включить показ скиллов определенного игрока</i>'
 		preparedhtml += '<br>* - <i>нажимать на заголовки столбцов чтоб сортировать по сумме выделенных скиллов</i></div><br>'
 
@@ -201,7 +201,7 @@ function RelocateGetNomData(){
 		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9107893)
 		debug('Storage.getnomdata('+top+')')
 
-		$('td.back4').prepend('<div id=debval style="display: none;"></div>') //
+		$('td.back4').prepend('<div id=debval hidden></div>') //
 		$('div#debval').load('forums.php?m=posts&p='+top+' td.back3:contains(#CrabNom1.1.'+top+'#) blockquote pre', function(){
 			$('div#debval').find('hr').remove()
 			//$('div#debval').html($('div#debval').html().replace('<br>#t#<br>',''))
@@ -368,7 +368,7 @@ function ShowSU(del) {
 			}
 		}
 
-		var preparedhtml = '<table id="tblSu" bgcolor=BFDEB3 width=100%>'
+		var preparedhtml = '<table id="tblSu" class=back1 width=100%>' //BFDEB3
 		preparedhtml += '<tr align=left><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th></tr>'
 		var pls = plsu.sort(function(a,b){return b.minute - a.minute})
 		for(i in pls) {
@@ -394,8 +394,8 @@ function ShowSU(del) {
 		preparedhtml += '<table id="tblSuM"></table>'
 
 		$('table#tblRoster').after(preparedhtml)
-		$('table#tblSu tr:even').attr('bgcolor','a3de8f')
-		$('table#tblSu tr:odd').attr('bgcolor','C9F8B7')
+		$('table#tblSu tr:even').attr('class','back2')
+		$('table#tblSu tr:odd').attr('class','back1')
 	}
 }
 function ShowPlM(plid){
@@ -779,7 +779,7 @@ function GetInfoPagePl(){
 		if(eurl==undefined || UrlValue('h')==1){
 			Ready()
 		}else{
-			$('td.back4').append('<table id=pl'+pid+' style="display: none;"><tr><td id=pl'+pid+'></td></tr></table>')
+			$('td.back4').append('<table id=pl'+pid+' hidden><tr><td id=pl'+pid+'></td></tr></table>')
 			$('td#pl'+pid).load(eurl+' center:first', function(){GetPl(pid);})
 		}
 	})
@@ -890,7 +890,7 @@ function PrintRightInfo(){
 	// print link to skills page
 	var text = '<a href="javascript:void(ShowRoster())"><b>Ростер команды</b></a><br>'
 	text += (team_cur.tss!=0 ? '<a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a>' : '<b><a>Скиллы игроков</a> <font color=BABDB6>(для VIP)</font></b>')
-	text += (team_cur.my ? '<br><a href="javascript:void(ShowSU())"><b>Сверхусталость</b></a>(debug)' : '')
+	text += (team_cur.my ? '<br><a href="javascript:void(ShowSU())"><b>Сверхусталость</b></a> <font color=BABDB6>(debug)</font>' : '')
 	$('#crabright').append('<br>'+text+'<br><br>')
 
 	// print to right menu
@@ -1020,8 +1020,8 @@ function ShowPlayersValue(){
 		var pls = players.sort(sValue)
 		for(i in pls) {
 			var bgcolor = ''
-			if(i<18) bgcolor = ' bgcolor=#A3DE8F'
-			if(i<5)  bgcolor = ' bgcolor=white'
+			if(i<18) bgcolor = ' class=back3'
+			if(i<5)  bgcolor = ' class=back1'
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
 			nomtext += '<tr id="nom"'+bgcolor+'>'
@@ -1043,9 +1043,9 @@ function ShowPlayersSValue(){
 		var pls = players.sort(sSValue)
 		for(i in pls) {
 			var bgcolor = ''
-			if(i<18) bgcolor = ' bgcolor=#A3DE8F'
-			if(i<5)  bgcolor = ' bgcolor=white'
-			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
+			if(i<18) bgcolor = ' class=back3'
+			if(i<5)  bgcolor = ' class=back1'
+			var f1 = (pls[i].trash ? '<font color=#888A85>' : '') //888A85
 			var f2 = (pls[i].trash ? '</font>' : '')
 			nomtext += '<tr id="svalue"'+bgcolor+'>'
 			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
@@ -1093,7 +1093,7 @@ function ShowPlayersAge(){
 		for(i in pls) {
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
-			text += '<tr id="age"'+(pls[i].age<30 && pls[i].age>21 ? '' : ' bgcolor=#A3DE8F')+'>'
+			text += '<tr id="age"'+(pls[i].age<30 && pls[i].age>21 ? '' : ' class=back2')+'>'
 			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' 
 			text +=  f1 + ShowShortName(pls[i].name).fontsize(1) + f2
 			text += '</td>'
@@ -1196,7 +1196,7 @@ function ShowSkills(param){
 			var d = (pf[i].d==0 ? '' : ' <img width=12 valign=top src="'+pf[i].d+'"></img>')
 			var t = (pf[i].t==0 ? '' : ' <img width=12 valign=top src="'+pf[i].t+'"></img>')
 			var tr ='<tr height=20 id="'+pf[i].position+'">'
-			var trash = (pf[i].trash ? ' style="display: none;"' : '')
+			var trash = (pf[i].trash ? ' hidden' : '')
 			for(j in hd2) {
 				var tdcolor = (countSk[j] == 1 ? ' id=colw bgcolor=white' : '')
 				var skn = hd2[j]
@@ -1234,7 +1234,7 @@ function HidePl(num,fl){
 	}else{
 		$('table#tblRostSkills tr:eq('+num+') a#x').attr('href','javascript:void(HidePl('+(num)+',true))')
 		$('table#tblRostSkills tr:eq('+num+') td:gt(2)').each(function(){
-			$(this).removeAttr('style')
+			$(this).show()//.removeAttr('style')
 		})
 		players[num-1].trash = false
 	}
@@ -1274,7 +1274,7 @@ function ShowSumPlayer(p){
 	for(i in sumplarr){
 		var param = sumplarr[i]
 		var text = (param.num==0 ? ' ' : (param.sum/param.num).toFixed(sumP) + (param.num>1 ? ' ('+param.mn+':'+param.mx+')' : ''))
-		sumpl += (tr ? '<tr id="sumsk" bgcolor=#a3de8f>' : '')
+		sumpl += (tr ? '<tr id="sumsk" class=back3>' : '')
 		sumpl += '<td width=30%>'+skills[i]+'</td><td width=20%>'+text+'</td>'
 		sumpl += (tr ? '' : '</tr>')
 		tr = (tr ? false : true)
@@ -1282,7 +1282,6 @@ function ShowSumPlayer(p){
 	$('table#SumPl tr#sumhead').after(sumpl)
 	if(sumH){
 		$('table#tblRostSkills tr:gt(0):visible').each(function(){
-
 			$(this).find('td#colw').each(function(i, val){
 				$(val).attr('id','colwy').attr('bgcolor', '#E9B96E')
 			})
@@ -1331,7 +1330,7 @@ function Filter(num,p){
 
     $('table#tblRostSkillsFilter th').removeAttr('bgcolor')
 	$('table#tblRostSkillsFilter td').each(function(){
-		$(this).attr('bgcolor','a3de8f')
+		$(this).attr('class','back2')
 		var position = $(this).attr('id')
 		var kmark = 0
 		var lmark = 0
@@ -1354,8 +1353,8 @@ function Filter(num,p){
 		for (l in pos2) if(sumpos2==0 || (position.indexOf(l)>-1 && pos2[l]==1)) lmark=1
 		if((kmark==1 && lmark==1) || sumpos == 0) $(val).show()
 	})
-	$('table#tblRostSkills tr:visible:even').attr('bgcolor','a3de8f')
-	$('table#tblRostSkills tr:visible:odd').attr('bgcolor','C9F8B7')
+	$('table#tblRostSkills tr:visible:even').attr('class','back2')
+	$('table#tblRostSkills tr:visible:odd').attr('class','back1')
 	ShowSumPlayer()
 }
 
@@ -1365,7 +1364,7 @@ function CountSkills(tdid){
 	$('table#tblRostSkills tr:gt(0)').each(function(j, valj){
 		var sumsel = 0
 		$(valj).find('td').each(function(i, val){
-			$(val).removeAttr('bgcolor')
+			$(val).removeAttr('class')
 			if(countSk[i] == 1) {
 				sumsel += (isNaN(parseInt($(val).html())) ? 0 : parseInt($(val).html()))
 				$(val).attr('bgcolor','white')

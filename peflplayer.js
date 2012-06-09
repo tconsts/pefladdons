@@ -916,7 +916,7 @@ $().ready(function() {
 	// Draw left and right panels
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
-	preparedhtml += '<table id="crabrighttable" class=back1 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
+	preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 	preparedhtml += '</td></tr></table>'
 	$('body table.border:last').before(preparedhtml)
 
