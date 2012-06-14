@@ -138,8 +138,8 @@ $().ready(function() {
 		$("#crabright").html(preparedhtml)
 
 		// add tables
-		var filter = '<div id="divRostSkillsFilter" hidden><a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a></div>'
-		filter += '<table id="tblRostSkillsFilter" width=50% align=left cellspacing=1 cellpadding=1 class=back1 border=0 hidden>'
+		var filter = '<div id="divRostSkillsFilter" style="display: none;"><a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a></div>'
+		filter += '<table id="tblRostSkillsFilter" width=50% align=left cellspacing=1 cellpadding=1 class=back1 border=0 style="display: none;">'
 		filter += '<tr align=center><th width=10%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th></tr>'
 		filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td class=back2 id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
 		filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td class=back2 id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
@@ -149,17 +149,17 @@ $().ready(function() {
 		filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td class=back2 id="R AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="L AM">&nbsp;</td></tr>'
 		filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td class=back2 id="C FW">&nbsp;</td>	<td class=back2 id="C FW">&nbsp;</td>	<td class=back2 id="C FW">&nbsp;</td>	<th></th></tr>'
 		filter += '</table>'
-		filter += '<table id="SumPl" width=50% align=right hidden>'
+		filter += '<table id="SumPl" width=50% align=right style="display: none;">'
 		filter += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Суммарный игрок</th></tr>'
 		filter += '<tr id="sumlast1"><td colspan=4 align=right id="sumlast1"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></td></tr>'
 		//filter += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
 		filter += '</table>'
-		filter += '<div id="filter" hidden>&nbsp;</div>'
+		filter += '<div id="filter" style="display: none;">&nbsp;</div>'
 		$('table#tblRosterFilter').after(filter)
 
-		preparedhtml  = '<table id="tblRostSkills" width=866 class=back1 hidden>' //BFDEB3
+		preparedhtml  = '<table id="tblRostSkills" width=866 class=back1 style="display: none;">' //BFDEB3
 		preparedhtml += '</table>'
-		preparedhtml += '<div id="divRostSkills" hidden>'
+		preparedhtml += '<div id="divRostSkills" style="display: none;">'
 		preparedhtml += '<br>* - <i>нажать на значение <b>Сум</b> чтобы отключить или включить показ скиллов определенного игрока</i>'
 		preparedhtml += '<br>* - <i>нажимать на заголовки столбцов чтоб сортировать по сумме выделенных скиллов</i></div><br>'
 
@@ -382,7 +382,7 @@ function ShowSU(del) {
 			preparedhtml += '</tr>'
 		}
 		preparedhtml += '</table>'
-		preparedhtml += '<br><br><div id="divSu">'
+		preparedhtml += '<div id="divSu">'
 		preparedhtml += '<br>1. матчи за сборные не учитываются'
 		preparedhtml += '<br>2. матчи за предыдущие клубы не учитываются'
 		preparedhtml += '<br>3. минуты в матчах с получением травм и удалений считаются некорректно'
@@ -1342,7 +1342,7 @@ function Filter(num,p){
 			if(sumpos2==0 || (position.indexOf(l)>-1 && pos2[l]==1)) lmark=1
 			if(pos2[l] == 1) $('th#'+l).attr('bgcolor',selectFLcolor)
 		}
-		if(kmark==1 && lmark==1 && sumpos != 0) $(this).attr('bgcolor',selectTDcolor)
+		if(kmark==1 && lmark==1 && sumpos != 0) $(this).removeAttr('class').attr('bgcolor',selectTDcolor)
 	})
 	$('table#tblRostSkills tr:gt(0)').each(function(j,val){
 		$(val).hide()
