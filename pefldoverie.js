@@ -32,7 +32,11 @@ $().ready(function() {
 		'очень плохо',
 	]
 	var mdov1 = $('td.back4 table tr:eq(1) td').text().split('.')[0]
-	var mdov2 = $('td.back4 table tr:eq(1) td').text().split('.')[1].split('команда ')
+	var x = $('td.back4 table tr:eq(1) td').text().split(' ')
+	var mdov2 = []
+	mdov2[0] = $('td.back4 table tr:eq(1) td').text().split('. ')[1].split('команда')[0]
+	mdov2[1] = x[x.length-1].split('.')[0]
+	alert('['+mdov2+']')
     var text = ''
 
 	text += '<hr><table align=center width=100%><tr><td><table bgcolor=A3DE8F width=100%>'
@@ -41,7 +45,7 @@ $().ready(function() {
 	text += '</table></td>'
 
 	text += '<td valign=top><table bgcolor=A3DE8F width=100%>'
-	text += '<tr><th>' + mdov2[0] + ' команда</th></tr>'
+	text += '<tr><th>' + mdov2[0] + '</th></tr>'
 	for (i in dov2)	text += '<tr bgcolor=C9F8B7><td align=center ' + (mdov2[1] == dov2[i] ? ' bgcolor=white': '') + '>' + dov2[i] + '</td></tr>'
 	text += '</table></tr></td>'
 
