@@ -22,7 +22,20 @@ function CheckNewMail(){
 }
 
 function SetNumShcoolers(){
-	localStorage.schoolnum = $('td.back4 table table:eq(0) tr').length + $('td.back4 table table:eq(1) tr').length
+	var pls = ''
+	$('td.back4 table table:eq(0) tr').each(function(){
+		pls += '.'+$(this).find('td:eq(2)').text()
+	})
+	$('td.back4 table table:eq(1) tr').each(function(){
+		pls += '.'+$(this).find('td:eq(2)').text() + ':' + $(this).find('td:eq(0)').text()
+	})
+
+	localStorage.schoolnum = $('td.back4 table table:eq(0) tr').length + $('td.back4 table table:eq(1) tr').length + pls
+
+	// fix colors
+	$('td.back4 table table tr').removeAttr('bgcolor')
+	$('td.back4 table table tr:odd').addClass('back3')
+	
 }
 function SetNation(){
 	var id = parseInt(UrlValue('j',$('td.back4 a:contains(Команда)').attr('href')))
@@ -31,7 +44,7 @@ function SetNation(){
 }
 
 $().ready(function() {
-	delete localStorage.debug
+	//delete localStorage.debug
 
 	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
 
