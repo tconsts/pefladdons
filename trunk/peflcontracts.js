@@ -29,6 +29,9 @@ $().ready(function() {
 			GetTeams(parseInt(localStorage.mycountry),localStorage.mycountry.split('.')[1])
 		}
 	} else if(UrlValue('p')=='fin'){
+		// fix table colors
+		$('td.back4 table table tr[bgcolor]').addClass('back3').removeAttr('bgcolor')
+
 		var szp=0
 /**
 		$('td.back4 td').each(function(i,val){
@@ -53,7 +56,7 @@ $().ready(function() {
 		}
 
 		var txt='<br>Сумма зарплат:';
-		var newtxt = '<hr><table width=100%><tr><td width=5%></td><td width=30%></td><td width=10% ALIGN=right  bgcolor=#a3de8f><b>'+String((szp/1000).toFixed(3)).replace('.',',')+'$</b></td><td colspan=2><i>'+addtext+'</i></td></tr></table>'+txt;
+		var newtxt = '<hr><table width=100%><tr><td width=5%></td><td width=30%></td><td width=10% ALIGN=right  class=back3><b>'+String((szp/1000).toFixed(3)).replace('.',',')+'$</b></td><td colspan=2><i>'+addtext+'</i></td></tr></table>'+txt;
 
 		$('td.back4').each(function(){
 			if ($(this).html().indexOf(txt) != -1){
