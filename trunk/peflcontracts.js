@@ -41,6 +41,7 @@ $().ready(function() {
 			}
 		});
 /**/
+		// расчяет суммы увольнения
 		$('td.back4 table table tr').each(function(){
 			var wage = parseInt($(this).find('td:eq(2)').html())
 			var cnt = parseInt($(this).find('td:eq(3)').html())
@@ -48,8 +49,33 @@ $().ready(function() {
 			$(this).append('<td width=5% align=right>'+((wage*cnt*25)/1000).toFixed(3)+'$</td>')
 		})
 		$('td.back4').append('<br>*  - последняя колонка показывает сумму компенсации при увольнении')
+
+
 		var addtext = '(за каждого школьника еще по +100$)'
 		var schnum = parseInt(localStorage.schoolnum)
+		var schpls = String(localStorage.schoolnum)
+		var schtable = ''
+        if(schnum!=0 && schpls != 'undefined'){
+			schtable += '<hr>Школьники:<hr>'
+			schtable += '<table width=100% id=sch>'
+			schpls = schpls.split('.')
+			for(i=1;i<=schnum;i++){
+				if(schpls[i]!=undefined){
+					schtable += '<tr>'
+					schtable += '<td width=5%>'+i+'</td>'
+					schtable += '<td width=30%>'+(schpls[i].split(':')[1]==undefined ? 'школьник' : schpls[i].split(':')[1] )+'</td>'
+					schtable += '<td width=10% align=right>100$</td>'
+					schtable += '<td width=5%  align=center>'+(21-parseInt(schpls[i]))+'г.</td>'
+					schtable += '<td></td>'
+					schtable += '<td width=5% align=right>0$</td>'
+					schtable += '</tr>'
+				}
+			}
+			schtable += '</table>'
+		}
+		$('td.back4 table table:last').after(schtable)
+		$('table#sch tr:odd').addClass('back3')
+
 		if(!isNaN(schnum) && !UrlValue("j")){
 			addtext = '(с учетом школьников: '+schnum+(schnum>0 ? ' по 100$' : '')+')'
 			szp += schnum*100
