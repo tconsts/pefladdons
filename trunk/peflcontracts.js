@@ -40,7 +40,7 @@ $().ready(function() {
 			schtable += '<table width=100% id=sch>'
 			schpls = schpls.split('.')
 			for(i in schpls){
-				if(i>0 && schpls[i]!=undefined){
+				if(i>0 && schpls[i]!=undefined && !UrlValue('j')){
 					schtable += '<tr>'
 					schtable += '<td width=5%>'+i+'</td>'
 					schtable += '<td width=30%>'+(schpls[i].split(':')[1]==undefined ? 'школьник' : schpls[i].split(':')[1] )+'</td>'
