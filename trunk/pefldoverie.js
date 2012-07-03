@@ -36,9 +36,8 @@ $().ready(function() {
 	var mdov2 = []
 	mdov2[0] = $('td.back4 table tr:eq(1) td').text().split('. ')[1].split('команда')[0]
 	mdov2[1] = x[x.length-1].split('.')[0]
-	alert('['+mdov2+']')
-    var text = ''
 
+    var text = ''
 	text += '<hr><table align=center width=100%><tr><td><table bgcolor=A3DE8F width=100%>'
 	text += '<tr><th>Оценка управления клубом</th></tr>'
 	for (i in dov1)	text += '<tr bgcolor=C9F8B7><td ' + (mdov1==dov1[i] ? ' bgcolor=white': '') + '>' + dov1[i] + '.</td></tr>'
