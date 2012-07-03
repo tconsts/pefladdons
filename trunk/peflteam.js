@@ -700,7 +700,7 @@ function GetData(dataname){
 	}
 	if(ff) {
 		var text1 = String(localStorage[dataname])
-		if (text1 != 'undefined'){
+		if (text1 != 'undefined' && text1 != 'null'){
 			var text = text1.split('#')
 			for (i in text) {
 				var x = text[i].split('|')
@@ -792,6 +792,7 @@ function ModifyPlayers(){
 	// Check for update
 	for(i in players) {
 		var pl = players[i]
+//		debug('Check:'+pl.id+':'+typeof(players2[pl.id]))
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
 			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form || (pl.value!=0 && pl.value != pl2.value))){
@@ -801,7 +802,9 @@ function ModifyPlayers(){
 			}
 		}
 	}
+
 	// Calculate
+	debug('players:calculate')
 	for(i in players) {
 		var pl = players[i]
 		if(typeof(players2[pl.id])!='undefined'){
