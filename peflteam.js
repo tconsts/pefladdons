@@ -699,6 +699,7 @@ function GetData(dataname){
 		default: return false
 	}
 	if(ff) {
+		delete globalStorage[location.hostname][dataname]
 		var text1 = String(localStorage[dataname])
 		if (text1 != 'undefined' && text1 != 'null'){
 			var text = text1.split('#')
