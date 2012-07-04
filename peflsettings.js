@@ -12,7 +12,7 @@ var flag = '<img height=13 src="/system/img/g/tick.gif"></img>'
 var scflags = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0:0:0'.split(':')
 var scnames = [
 	{'name':'Настройки',			'desc':''},
-	{'name':'Состав +',				'desc':''},
+	{'name':'Состав +',				'desc':'',	'versions':2},
 	{'name':'Ростер игрока',		'desc':''},
 	{'name':'Страница контрактов',	'desc':''},
 	{'name':'Ростер команды',		'desc':''},
@@ -51,8 +51,8 @@ $().ready(function() {
 	for (i=1;i<scnames.length;i++) {
 		html += '<tr class=back1>'
 		html += '<td>'+i+'</td>'
-		html += '<th id="f'+i+'">'+(parseInt(scflags[i])==0 ? flag : '')+'</th>'
-		html += '<td colspan=2>'+(scnames[i].del ? scnames[i].name : '<a href="javascript:void(SwitchScFlag('+i+'))">'+scnames[i].name+'</a>')+'</td>'
+		html += '<td id="f'+i+'">'+(parseInt(scflags[i])!=1 ? flag+(parseInt(scflags[i])>1 ? 'v'+parseInt(scflags[i]): '') : '')+'</td>'
+		html += '<td colspan=2>'+(scnames[i].del ? scnames[i].name : '<a href="javascript:void(SwitchScFlag('+i+(scnames[i].versions!=undefined ? ','+parseInt(scnames[i].versions) : '')+'))">'+scnames[i].name+'</a>')+'</td>'
 		html += '<td><i>'+scnames[i].desc+(scnames[i].desc != '' ? '<br>' :'')
 		if(i==4){
 			html += 'Номинал+: <a id="nomdata" href="javascript:void(NomDataSwitch(\''+datatop+'\'))">'+datatop+'</a> (топ с данными)'
@@ -92,15 +92,24 @@ function NomDataSwitch(curtop){
 	return true
 }
 
-function SwitchScFlag(scid){
-	debug('SwitchScFlag('+scid+')')
-	if(scflags[scid]==0){
-		scflags[scid] = 1
-		$('th#f'+scid).html('')
-	}else{
+function SwitchScFlag(scid, ver){
+	debug('SwitchScFlag('+scid+','+ver+')')
+	var vmax = (isNaN(ver) ? 1 : parseInt(ver))
+	debug(vmax)
+	if(scflags[scid]==1){
 		scflags[scid] = 0
-		$('th#f'+scid).html(flag)
+		$('td#f'+scid).html(flag)
+	}else if(scflags[scid]==2){
+		scflags[scid] = 1
+		$('td#f'+scid).html('')
+	}else if(scflags[scid]==0 && vmax>1){
+		scflags[scid] = vmax
+		$('td#f'+scid).html(flag+'v'+vmax)
+	}else if(scflags[scid]==0 && vmax==1){
+		scflags[scid] = 1
+		$('td#f'+scid).html('')
 	}
+
 	localStorage.scripts = scflags.join(':')
 }
 
