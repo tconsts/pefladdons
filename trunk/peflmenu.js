@@ -60,11 +60,11 @@ $().ready(function() {
 	var crab = new String()
 	crab += '<div align=center><b>CrabVIP</b></div>'
 	crab += settingimg+	' <a href=\'/?settings\'>Настройки</a><br>'
-	if(scflag[1]==0)	crab += teamimg +	' <a href=\'/?sostav\'>Состав+(ком)</a><br>'
-	if(scflag[9]==0)	crab += teamimg2+	' <a href=\'/?team\'>На&nbsp;форум(ком)</a><br>'
-	if(scflag[1]==0 && !isNaN(parseInt(localStorage.myintid))) crab += intimg	+	' <a href=\'/?sostav_n\'>Состав+(сбр)</a><br>'
-	if(scflag[9]==0 && !isNaN(parseInt(localStorage.myintid))) crab += intimg2	+	' <a href=\'/?team_n\'>На&nbsp;форум(сбр)</a><br>'
-	if(scflag[22]==0)	crab += adaptimg+	' <a href=\'/?adaptation\'>Адаптация</a><br>'
+	if(parseInt(scflag[1])!=1)	crab += teamimg +	' <a href=\'/?sostav\'>Состав+(ком)</a><br>'
+	if(parseInt(scflag[9])!=1)	crab += teamimg2+	' <a href=\'/?team\'>На&nbsp;форум(ком)</a><br>'
+	if(parseInt(scflag[1])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg	+	' <a href=\'/?sostav_n\'>Состав+(сбр)</a><br>'
+	if(parseInt(scflag[9])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg2	+	' <a href=\'/?team_n\'>На&nbsp;форум(сбр)</a><br>'
+	if(parseInt(scflag[22])!=1)	crab += adaptimg+	' <a href=\'/?adaptation\'>Адаптация</a><br>'
 	crab += crabimg +	' <a href="/forums.php?m=posts&q=173605">Crab&nbsp;Форум</a><br>'
 	crab += '<hr>'
 	$('td.back3 table td:first span.text1 hr:eq(4)').after(crab)
