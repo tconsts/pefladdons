@@ -22,15 +22,14 @@ function CheckNewMail(){
 }
 
 function SetNumShcoolers(){
-	var pls = ''
-	$('td.back4 table table:eq(0) tr').each(function(){
-		pls += '.'+$(this).find('td:eq(2)').text()
-	})
+	var pls = $('td.back4 table table:eq(0) tr').length + $('td.back4 table table:eq(1) tr').length
 	$('td.back4 table table:eq(1) tr').each(function(){
 		pls += '.'+$(this).find('td:eq(2)').text() + ':' + $(this).find('td:eq(0)').text()
 	})
-
-	localStorage.schoolnum = $('td.back4 table table:eq(0) tr').length + $('td.back4 table table:eq(1) tr').length + pls
+	$('td.back4 table table:eq(0) tr').each(function(){
+		pls += '.'+$(this).find('td:eq(2)').text()
+	})
+	localStorage.schoolnum = pls
 
 	// fix colors
 	$('td.back4 table table tr').removeAttr('bgcolor')
