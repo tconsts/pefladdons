@@ -7,7 +7,7 @@
 // @version        2.0
 // ==/UserScript==
 
-deb = (localStorage.debug == '1' ? true : true)
+deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
