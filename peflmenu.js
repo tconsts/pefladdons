@@ -43,7 +43,7 @@ function SetNation(){
 }
 
 $().ready(function() {
-	delete localStorage.debug
+//	delete localStorage.debug
 
 	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
 
