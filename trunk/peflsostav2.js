@@ -14,30 +14,58 @@ var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var data = []
 var plkeys = []
 var players = []
-var plskillmax = 15
+var plskillmax = 5
 var tabslist = ''
 var maxtables = 25
+
+var positions = [
+	{					name:'&nbsp;'},
+/**  1 **/	{filter:'GK', 	name:'GK', 		koff:'reflexes=reflexes*3,positioning=positioning*2,heading=heading*2,handling=handling*1.5,!strength=strength*0.7,!pace=pace*0.4,secondname,srt'},
+/**  2 **/	{filter:'C SW',	name:'C SW',	koff:'positioning=positioning*2,tackling=tackling*1.5,secondname,srt'},
+/**  3 **/	{filter:'L DF',	name:'L DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt'},
+/**  4 **/	{filter:'R DF',	name:'R DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt'},
+/**  5 **/	{filter:'L DM',	name:'L DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt'},
+/**  6 **/	{filter:'R DM',	name:'R DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt'},
+/**  7 **/	{filter:'C DF',	name:'C DF',	koff:'tackling=tackling*3,positioning=positioning*3,strength=strength*1.5,pace=pace*1.5,heading=heading*1.5,secondname,srt'},
+/**  8 **/	{filter:'C DM',	name:'C DM',	koff:'positioning=positioning*3,tackling=tackling*3,vision=vision*2,workrate=workrate*2,!technique=technique*1.5,!passing=passing*1.5,secondname,srt'},
+/**  9 **/	{filter:'C M',	name:'C M',		koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*1.5,!tackling=tackling,!longshots=longshots*0.5,secondname,srt'},
+/** 10 **/	{filter:'L M',	name:'L M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt'},
+/** 11 **/	{filter:'R M',	name:'R M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt'},
+/** 12 **/	{filter:'C AM',	name:'C AM',	koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*2,!longshots=longshots,!dribbling=dribbling,secondname,srt'},
+/** 13 **/	{filter:'L AM',	name:'L AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt'},
+/** 14 **/	{filter:'R AM',	name:'R AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt'},
+/** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt'},
+			{filter:'C FW',	name:'other',	koff:'value=value,wage,contract,school,secondname,!srt'},
+]
+var selected = '0'
+	+',0,15,0'		// линия FW
+	+',0,12,0,0,14'	// линия AM
+	+',10,0,9,0,0'	// линия MF
+	+',0,0,8,0,6'	// линия DM
+	+',3,0,0,7,0'	// линия DF
+	+',2,1'			// линия SW & Gk
 
 var skillnames = {
 //s
 //f
 //сс
-srt:{rshort:'сила'},
+school:{rshort:'шкл',rlong:'Школьник'},
+srt:{rshort:'сила',rlong:'В % от идеала (игрок с профами '+plskillmax+')',type:'float'},
 //са
 //со
-nation:{rshort:'кСт',rlong:''},
-natfull:{rshort:'стр',rlong:''},
-secondname:{rshort:'Фам'},
-firstname:{rshort:'Имя'},
-age:{rshort:'взр',rlong:''},
-//id:{rshort:'id'},
+nation:{rshort:'кСт',rlong:'Код страны'},
+natfull:{rshort:'стр',rlong:'Страна',align:'left'},
+secondname:{rshort:'Фам',align:'left'},
+firstname:{rshort:'Имя',align:'left'},
+age:{rshort:'взр',rlong:'Возраст'},
+id:{rshort:'id',rlong:'id игрока'},
 internationalapps:{rshort:'иСб',rlong:''},
 internationalgoals:{rshort:'гСб',rlong:''},
 contract:{rshort:'кнт',rlong:'Контракт'},
 wage:{rshort:'зрп',rlong:'Зарплата'},
-value:{rshort:'ном',rlong:'Номинал'},
+value:{rshort:'ном',rlong:'Номинал',type:'value'},
 corners:{rshort:'уг',rlong:'Угловые'},
-crossing:{rshort:'нав',rlong:'Навесы'},
+crossing:{rshort:'нв',rlong:'Навесы'},
 dribbling:{rshort:'др',rlong:'Дриблинг'},
 finishing:{rshort:'уд',rlong:'Удары'},
 freekicks:{rshort:'шт',rlong:'Штрафные'},
@@ -58,7 +86,7 @@ workrate:{rshort:'рб',rlong:'Работоспособность'},
 technique:{rshort:'тх',rlong:'Техника'},
 morale:{rshort:'мрл',rlong:'Мораль'},
 form:{rshort:'фрм',rlong:'Форма'},
-position:{rshort:'поз',rlong:'Позиция'},
+position:{rshort:'поз',rlong:'Позиция',align:'left'},
 /**
 games
 goals
@@ -100,32 +128,6 @@ apasses
 amom
 /**/
 }
-
-var positions = [
-	{					name:'&nbsp;'},
-/**  1 **/	{filter:'GK', 	name:'GK', 		koff:'reflexes=reflexes*3,positioning=positioning*2,heading=heading*2,handling=handling*1.5,!strength=strength*0.7,!pace=pace*0.4,secondname,srt'},
-/**  2 **/	{filter:'C SW',	name:'C SW',	koff:'positioning=positioning*2,tackling=tackling*1.5,secondname,srt'},
-/**  3 **/	{filter:'L DF',	name:'L DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt'},
-/**  4 **/	{filter:'R DF',	name:'R DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt'},
-/**  5 **/	{filter:'L DM',	name:'L DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt'},
-/**  6 **/	{filter:'R DM',	name:'R DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt'},
-/**  7 **/	{filter:'C DF',	name:'C DF',	koff:'tackling=tackling*3,positioning=positioning*3,strength=strength*1.5,pace=pace*1.5,heading=heading*1.5,secondname,srt'},
-/**  8 **/	{filter:'C DM',	name:'C DM',	koff:'positioning=positioning*3,tackling=tackling*3,vision=vision*2,workrate=workrate*2,!technique=technique*1.5,!passing=passing*1.5,secondname,srt'},
-/**  9 **/	{filter:'C M',	name:'C M',		koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*1.5,!tackling=tackling,!longshots=longshots*0.5,secondname,srt'},
-/** 10 **/	{filter:'L M',	name:'L M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt'},
-/** 11 **/	{filter:'R M',	name:'R M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt'},
-/** 12 **/	{filter:'C AM',	name:'C AM',	koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*2,!longshots=longshots,!dribbling=dribbling,secondname,srt'},
-/** 13 **/	{filter:'L AM',	name:'L AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt'},
-/** 14 **/	{filter:'R AM',	name:'R AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt'},
-/** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt'}
-]
-var selected = '0,'
-	+'0,15,0,'		// линия FW
-	+'0,12,0,0,14,'	// линия AM
-	+'10,0,9,0,0,'	// линия MF
-	+'0,0,8,0,6,'	// линия DM
-	+'3,0,0,7,0,'	// линия DF
-	+'2,1'			// линия SW & Gk
 
 $().ready(function() {
 	if(deb) $('body').prepend('<div id=debug></div>')
@@ -225,6 +227,18 @@ function countStrength(plid,pkoff){
 	}
 	return res
 }
+function Print(val, sn){
+	switch(skillnames[sn.replace(/\!/g,'')].type){
+		case 'float':
+			return (val).toFixed(1)
+		case 'value':
+			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'м'
+			else if(val==0) return '??'
+			else return parseInt(val/1000)+'т'
+		default:
+			return val
+	}
+}
 
 function FillData(nt){
 	var np = $('#select'+nt+' option:selected').val()
@@ -236,10 +250,10 @@ function FillData(nt){
 		var head = true
     	for(t in positions[np].pls){
 			var pl = positions[np].pls[t]
-			var plhtml = '<tr'+(!pl.posf ? ' hidden abbr=wrong' : '')+'>'
+			var plhtml = '<tr align=right'+(!pl.posf ? ' hidden abbr=wrong' : '')+'>'
 			var font1 = (!pl.posf ? '<font color=red>' : '')
 			var font2 = (!pl.posf ? '</font>' : '')
-			if(head) var headhtml = '<tr>'
+			if(head) var headhtml = '<tr align=center>'
 			for(pp in pl) {
 				if(pp!='posf'){
 					var hidden = ''
@@ -248,8 +262,8 @@ function FillData(nt){
 						p = pp.replace(/\!/g,'')
 						hidden = ' hidden abbr=hidden'
 					}
-					plhtml += '<td'+hidden+'>'+font1
-					plhtml += (typeof(pl[pp])=='number' ? pl[pp].toFixed(1) : (pl[pp]==undefined ? '??' : pl[pp]))
+					plhtml += '<td'+(skillnames[p].align!=undefined ? ' align='+skillnames[p].align : '')+hidden+'>'+font1
+					plhtml += Print(pl[pp],pp)
 					plhtml += font2+'</td>'
 					if(head) {
 						headhtml += '<td'+hidden+(skillnames[p]!=undefined && skillnames[p].rlong!=undefined ? ' title="'+skillnames[p].rlong+'"' : '')+'>'
@@ -276,7 +290,19 @@ function getPlayers(){
 	for(i=0;i<numPlayers;i++){
 		var pl = {}
 		for(j in plkeys) {
-			pl[plkeys[j]] = data[plkeys[j]+i]
+			var name = plkeys[j]
+			var val = data[name+i]
+			switch (name){
+				case 'contract':
+					val = (parseInt(val)==0 ? 21-parseInt(data['age'+i]): parseInt(val)); break;
+				case 'wage':
+					val = (parseInt(val)==0 ? 100 : parseInt((val).replace(/\,/g,''))); break;
+				case 'value':
+					if(parseInt(val)==0) pl.school = true // значит это школьник!
+					val = parseInt((val).replace(/\,/g,''));break;
+//				default:
+			}
+			pl[name] = val
 		}
 		players[pl.id] = pl
 	}
