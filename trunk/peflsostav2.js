@@ -14,28 +14,31 @@ var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var data = []
 var plkeys = []
 var players = []
+var pid = []
+var p0 = []
+var pm0 = []
 var plskillmax = 5
 var tabslist = ''
 var maxtables = 25
 
 var positions = [
 	{					name:'&nbsp;'},
-/**  1 **/	{filter:'GK', 	name:'GK', 		koff:'reflexes=reflexes*3,positioning=positioning*2,heading=heading*2,handling=handling*1.5,!strength=strength*0.7,!pace=pace*0.4,secondname,srt'},
-/**  2 **/	{filter:'C SW',	name:'C SW',	koff:'positioning=positioning*2,tackling=tackling*1.5,secondname,srt'},
-/**  3 **/	{filter:'L DF',	name:'L DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt'},
-/**  4 **/	{filter:'R DF',	name:'R DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt'},
-/**  5 **/	{filter:'L DM',	name:'L DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt'},
-/**  6 **/	{filter:'R DM',	name:'R DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt'},
-/**  7 **/	{filter:'C DF',	name:'C DF',	koff:'tackling=tackling*3,positioning=positioning*3,strength=strength*1.5,pace=pace*1.5,heading=heading*1.5,secondname,srt'},
-/**  8 **/	{filter:'C DM',	name:'C DM',	koff:'positioning=positioning*3,tackling=tackling*3,vision=vision*2,workrate=workrate*2,!technique=technique*1.5,!passing=passing*1.5,secondname,srt'},
-/**  9 **/	{filter:'C M',	name:'C M',		koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*1.5,!tackling=tackling,!longshots=longshots*0.5,secondname,srt'},
-/** 10 **/	{filter:'L M',	name:'L M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt'},
-/** 11 **/	{filter:'R M',	name:'R M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt'},
-/** 12 **/	{filter:'C AM',	name:'C AM',	koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*2,!longshots=longshots,!dribbling=dribbling,secondname,srt'},
-/** 13 **/	{filter:'L AM',	name:'L AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt'},
-/** 14 **/	{filter:'R AM',	name:'R AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt'},
-/** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt'},
-			{filter:'C FW',	name:'other',	koff:'value=value,wage,contract,school,secondname,!srt'},
+/**  1 **/	{filter:'GK', 	name:'GK', 		koff:'reflexes=reflexes*3,positioning=positioning*2,heading=heading*2,handling=handling*1.5,!strength=strength*0.7,!pace=pace*0.4,secondname,srt,sostav'},
+/**  2 **/	{filter:'C SW',	name:'C SW',	koff:'positioning=positioning*2,tackling=tackling*1.5,secondname,srt,sostav'},
+/**  3 **/	{filter:'L DF',	name:'L DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt,sostav'},
+/**  4 **/	{filter:'R DF',	name:'R DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt,sostav'},
+/**  5 **/	{filter:'L DM',	name:'L DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt,sostav'},
+/**  6 **/	{filter:'R DM',	name:'R DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt,sostav'},
+/**  7 **/	{filter:'C DF',	name:'C DF',	koff:'tackling=tackling*3,positioning=positioning*3,strength=strength*1.5,pace=pace*1.5,heading=heading*1.5,secondname,srt,sostav'},
+/**  8 **/	{filter:'C DM',	name:'C DM',	koff:'positioning=positioning*3,tackling=tackling*3,vision=vision*2,workrate=workrate*2,!technique=technique*1.5,!passing=passing*1.5,secondname,srt,sostav'},
+/**  9 **/	{filter:'C M',	name:'C M',		koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*1.5,!tackling=tackling,!longshots=longshots*0.5,secondname,srt,sostav'},
+/** 10 **/	{filter:'L M',	name:'L M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt,sostav'},
+/** 11 **/	{filter:'R M',	name:'R M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt,sostav'},
+/** 12 **/	{filter:'C AM',	name:'C AM',	koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*2,!longshots=longshots,!dribbling=dribbling,secondname,srt,sostav'},
+/** 13 **/	{filter:'L AM',	name:'L AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt,sostav'},
+/** 14 **/	{filter:'R AM',	name:'R AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt,sostav'},
+/** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt,sostav'},
+			{filter:'C FW',	name:'other',	koff:'sostav,value=value,wage,contract,school,secondname,!srt'},
 ]
 var selected = '0'
 	+',0,15,0'		// линия FW
@@ -46,8 +49,8 @@ var selected = '0'
 	+',2,1'			// линия SW & Gk
 
 var skillnames = {
-//s
-//f
+sostav:{rshort:'s',rlong:'в заявке?'},
+flag:{rshort:'f',rlong:'информационный флаг'},
 //сс
 school:{rshort:'шкл',rlong:'Школьник'},
 srt:{rshort:'сила',rlong:'В % от идеала (игрок с профами '+plskillmax+')',type:'float'},
@@ -144,6 +147,7 @@ $().ready(function() {
 		debug('geturl')
 		var dataarray = datatext.split('&');
 		var i = 0;
+		var pid_num = 0
 		var check = false
 		while(dataarray[i] != null) {
 			tmparr = dataarray[i].split('=');
@@ -151,6 +155,15 @@ $().ready(function() {
 			var tmpkey = tmparr[0];
 			var tmpvalue = tmparr[1];
 			data[tmpkey] = tmpvalue;
+
+			// данные о заявке
+			if (tmpkey.indexOf('pid') != -1) {pid.push(tmpvalue);debug('pid:'+tmpkey+':'+tmpvalue)}
+
+			// изначальная тактика и смещения
+			if (tmpkey.indexOf('p0_') != -1) p0.push(tmpvalue)
+			if (tmpkey.indexOf('pm0_') != -1) pm0.push(tmpvalue)
+			
+			// ключи скилов игроков
 			if(tmpkey == 'nation0') check = true
 			if(tmpkey == 'nation1') check = false
 			if(check) plkeys.push(tmpkey.replace('0',''))
@@ -250,12 +263,15 @@ function FillData(nt){
 		var head = true
     	for(t in positions[np].pls){
 			var pl = positions[np].pls[t]
-			var plhtml = '<tr align=right'+(!pl.posf ? ' hidden abbr=wrong' : '')+'>'
+			var plhtml = '<tr align=right'
+			plhtml += (!pl.posf ? ' hidden abbr=wrong' : '')
+			plhtml += (pl.sostav==2 ? ' bgcolor=white' : (pl.sostav==1 ? ' bgcolor=#BABDB6' : ''))
+			plhtml += '>'
 			var font1 = (!pl.posf ? '<font color=red>' : '')
 			var font2 = (!pl.posf ? '</font>' : '')
 			if(head) var headhtml = '<tr align=center>'
 			for(pp in pl) {
-				if(pp!='posf'){
+				if(pp!='posf' && pp!='sostav'){
 					var hidden = ''
 					var p = pp
 					if(pp.indexOf('!')!=-1){
@@ -303,6 +319,13 @@ function getPlayers(){
 //				default:
 			}
 			pl[name] = val
+		}
+		for(k in pid) {
+			if(pid[k]==pl.id) {
+				pl.sostav = (k<11 ? 2 : 1)
+				debug(k+':'+pl.id+':'+pl.sostav)
+				break;
+			}
 		}
 		players[pl.id] = pl
 	}
