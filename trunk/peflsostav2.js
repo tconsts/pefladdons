@@ -7,7 +7,7 @@
 // @version        2.0
 // ==/UserScript==
 
-deb = (localStorage.debug == '1' ? true : false)
+deb = (localStorage.debug == '1' ? true : true)
 var debnum = 0
 
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
@@ -19,10 +19,10 @@ var p0 = []
 var pm0 = []
 var plskillmax = 10
 var tabslist = ''
-var maxtables = 25+8
+var maxtables = 25+10
 
 var positions = [
-	{					name:'&nbsp;'},
+	{						name:'&nbsp;'},
 /**  1 **/	{filter:'GK', 	name:'GK', 		koff:'reflexes=reflexes*3,positioning=positioning*2,heading=heading*2,handling=handling*1.5,!strength=strength*0.7,!pace=pace*0.4,secondname,srt,sostav'},
 /**  2 **/	{filter:'C SW',	name:'C SW',	koff:'positioning=positioning*2,tackling=tackling*1.5,secondname,srt,sostav'},
 /**  3 **/	{filter:'L DF',	name:'L DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt,sostav'},
@@ -38,7 +38,12 @@ var positions = [
 /** 13 **/	{filter:'L AM',	name:'L AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt,sostav'},
 /** 14 **/	{filter:'R AM',	name:'R AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt,sostav'},
 /** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt,sostav'},
-			{filter:'C FW',	name:'other',	koff:'sostav,value=value,wage,contract,school,secondname,!srt'},
+/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdat,secondname,tackling,pace,!srt'},
+/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdbk,secondname,tackling,pace,!srt'},
+/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,secondname,!srt'},
+/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,secondname,!srt'},
+/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,secondname,!srt'},
+/** 21 **/	{filter:'',		name:'other',	koff:'value=value,wage,contract,secondname,!srt'},
 ]
 var selected = ''
 	+',1,2'			// линия SW & Gk
@@ -47,6 +52,8 @@ var selected = ''
 	+',10,9,9,9,11'	// линия MF
 	+',13,12,12,12,14'	// линия AM
 	+',15,15,15'		// линия FW
+	+',16,17,18,19,20'	// доп таблицы 1
+	+',21,0,0,0,0'		// доп таблицы 2
 
 
 
@@ -56,8 +63,8 @@ flag:{rshort:'f',rlong:'информационный флаг'},
 //сс
 school:{rshort:'шкл',rlong:'Школьник'},
 srt:{rshort:'сила',rlong:'В % от идеала (игрок с профами '+plskillmax+')',type:'float'},
-//са
-//со
+stdat:{rshort:'са',rlong:'Стандарты атаки'},
+stdbk:{rshort:'со',rlong:'Стандарты обороны'},
 nation:{rshort:'кСт',rlong:'Код страны'},
 natfull:{rshort:'стр',rlong:'Страна',align:'left'},
 secondname:{rshort:'Фам',align:'left'},
@@ -161,27 +168,55 @@ $().ready(function() {
 			// данные о заявке
 			if (tmpkey.indexOf('pid') != -1) {
 				var tmpnum = parseInt(tmpkey.replace('pid',''))
-				debug('pid:'+tmpkey+':'+tmpvalue+':'+tmpnum)
+//				debug('pid:'+tmpkey+':'+tmpvalue+':'+tmpnum)
 				if(pid[tmpnum]==undefined) pid[tmpnum] = {}
 				pid[tmpnum].pid = tmpvalue;
 			}
-
-			// изначальная тактика и смещения
+			// изначальная тактика
 			if (tmpkey.indexOf('p0_') != -1) {
 				var tmpnum = parseInt(tmpkey.replace('p0_',''))
-				debug('p0:'+tmpkey+':'+tmpvalue+':'+tmpnum)
+//				debug('p0:'+tmpkey+':'+tmpvalue+':'+tmpnum)
 				pid[tmpnum].p0 = tmpvalue;
 			}
+			// смещения изначальной тактики 
 			if (tmpkey.indexOf('pm0_') != -1) {
 				var tmpnum = parseInt(tmpkey.replace('pm0_',''))
 				pid[tmpnum].pm0 = tmpvalue;
 			}
-			
+			// испольнители штрафных
+			if (tmpkey.indexOf('fre') != -1) {
+
+			}
+			// испольнители угловых
+			if (tmpkey.indexOf('cor') != -1) {
+
+			}
+			// испольнители угловых
+			if (tmpkey.indexOf('cor') != -1) {
+
+			}
+			// испольнители penalty
+			if (tmpkey.indexOf('pen') != -1) {
+
+			}
+			// капитаны
+			if (tmpkey.indexOf('cap') != -1) {
+
+			}
+
+			// собираем z0 (перс задания 1й тактики)
+			if (tmpkey.indexOf('z0') != -1) {
+				var tmpnum = parseInt(tmpkey.replace('z0_',''))
+				pid[tmpnum].z0at = (tmpvalue>=513 ? true : false)
+				pid[tmpnum].z0bk = ((tmpvalue>=213 && tmpvalue<500) || tmpvalue>=700 ? true : false)
+			}
+
 			// ключи скилов игроков
 			if(tmpkey == 'nation0') check = true
 			if(tmpkey == 'nation1') check = false
 			if(check) plkeys.push(tmpkey.replace('0',''))
 		}
+//		for(h in pid) debug(h+':'+pid[h].z0at+':'+pid[h].z0bk)
 		getPlayers()
 		getPositions()
 		FillHeaders()
@@ -232,8 +267,10 @@ function getPositions(){
 //			debug(positions[i].filter+':'+'/'+positions[i].strmax+'='+pl.srt+'%:'+players[j].secondname)
 
 			pls.push(pl)
+//			if(i==positions.length-1) debug(pl.id+':sostav='+pl.sostav+':str='+pl.srt)
 		}
 		positions[i].pls = pls.sort(sSrt)
+
 	}
 }
 function countStrength(plid,pkoff){
@@ -250,7 +287,7 @@ function countStrength(plid,pkoff){
 				}
 			}
 		}
-		//debug(count)
+//		debug(count)
 		res += (count==undefined ? 0 : eval(count))
 	}
 	return res
@@ -278,12 +315,12 @@ function FillData(nt){
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
 		var html = '<table id=table'+nt+' width=100%>'
 		var head = true
-    	for(t in positions[np].pls){
+		var nummax = (positions[np].num==undefined ? positions[np].pls.length : positions[np].num)
+    	for(t=0;t<nummax;t++){
 			var pl = positions[np].pls[t]
 			var plhtml = '<tr align=right'
-			plhtml += (!pl.posf && selpl!=pl.id ? ' hidden' : '')
-			plhtml += (!pl.posf ? ' abbr=wrong' : '')
-			plhtml += (selpl==pl.id ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''))
+			plhtml += (!pl.posf && selpl!=pl.id ? ' hidden abbr=wrong' : '')
+			plhtml += (selpl==pl.id || (positions[np].filter == '' && pl.sostav==2) ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''))
 			plhtml += '>'
 			var font1 = (!pl.posf ? '<font color=red>' : '')
 			var font2 = (!pl.posf ? '</font>' : '')
@@ -338,12 +375,14 @@ function getPlayers(){
 			}
 			pl[name] = val
 		}
+		pl.sostav = 0
 		for(k in pid) {
-			if(pid[k].pid==pl.id) {
+			if(pid[k].pid==pl.id){
 				pl.sostav = (k<12 ? 2 : 1)
-//				debug(k+':'+pl.id+':'+pl.sostav)
-				break;
+				pl.stdat = (pid[k].z0at ? '*' : '')
+				pl.stdbk = (pid[k].z0bk ? '*' : '')
 			}
+//			if(i==0) debug(k+':'+pid[k].z0at+':'+pid[k].z0bk)
 		}
 		players[pl.id] = pl
 	}
@@ -363,11 +402,8 @@ function FillHeaders(){
 		if(positions[selected[i]] !=undefined && positions[selected[i]].name != undefined) {
 			name = positions[selected[i]].name
 		}
-
-		if (sel && selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
-
+		if ((sel || i>25) && selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
 		if(sel) $('td#td'+i).attr('bgcolor','#A3DE8F')
-
 		FillData(i)
 	}
 }
@@ -404,17 +440,17 @@ function PrintTables(geturl) {
 	html += '</table><hr>'
 	html += 'Дополнительные таблицы:'
 /**/
-	html += '<table width=100% bgcolor=#C9F8B7>'
+	html += ''
 	nm = 26
-	for(i=1;i<3;i++){
-		html += '<tr id=tr'+(i+25)+' bgcolor=#BFDEB3 align=center>'
-		for(j=1;j<5;j++){
+	for(i=1;i<=2;i++){
+		html += '<table width=100% bgcolor=#A3DE8F><tr id=tr'+(i+25)+' bgcolor=#C9F8B7 align=center>'
+		for(j=1;j<=5;j++){
 			html += PrintTd(nm)
 			nm++
 		}
-		html += '</tr>'
+		html += '</tr></table>'
 	}
-	html += '</table><hr>'
+	html += '<hr>'
 /**/
 	$('td.back4').html(html)
 }
@@ -423,7 +459,6 @@ function PrintTd(num){
 	var newhtml = '<td valign=top width=20% height=90 id=td'+num+'>'
 	newhtml += '<table id=htable'+num+' width=100%><tr><td onmousedown="MouseOn(\''+num+'\')">'
 	newhtml +=  '<div id=div'+num+'>'
-//	newhtml +=  (deb ? num+' ' : '')
 	newhtml += 	 '<span id=span'+num+'>&nbsp;</span>'
 	newhtml += 	 '<select hidden id=select'+num+' onchange="FillData(\''+num+'\')">'
 	newhtml += 	 '</select>'
@@ -436,12 +471,13 @@ function PrintTd(num){
 }
 
 function showAll(nt){
-	if($('table#table'+nt+' tr[abbr*=wrong]:first').is(':visible')) {
-		$('table#table'+nt+' tr[abbr*=wrong]').hide()
-		$('table#table'+nt+' td[abbr*=hidden]').hide()
+	if($('table#table'+nt+' tr[abbr*=wrong]:first').is(':visible')
+		||$('table#table'+nt+' td[abbr*=hidden]:first').is(':visible')) {
+			$('table#table'+nt+' tr[abbr*=wrong]').hide()
+			$('table#table'+nt+' td[abbr*=hidden]').hide()
 	} else{
-		$('table#table'+nt+' tr[abbr*=wrong]').show()
-		$('table#table'+nt+' td[abbr*=hidden]').show()
+			$('table#table'+nt+' tr[abbr*=wrong]').show()
+			$('table#table'+nt+' td[abbr*=hidden]').show()
 	}
 }
 
