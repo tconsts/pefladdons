@@ -40,10 +40,10 @@ var positions = [
 /** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt,sostav'},
 /** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdat,secondname,tackling,pace,!srt'},
 /** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdbk,secondname,tackling,pace,!srt'},
-/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,secondname,!srt'},
-/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,secondname,!srt'},
-/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,secondname,!srt'},
-/** 21 **/	{filter:'',		name:'other',	koff:'value=value,wage,contract,secondname,!srt'},
+/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,corners=corners*5,crossing=crossing*2,vision,secondname,!srt'},
+/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,freekicks=freekicks*5,longshots=longshots*2,crossing=crossing*2,vision,secondname,!srt'},
+/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,age=age/10,finishing=finishing,leadership=leadership,secondname,!srt'},
+/** 21 **/	{filter:'',		name:'Сыгранность',	koff:'sostav,syg=syg,secondname,position,!srt'},
 ]
 var selected = ''
 	+',1,2'			// линия SW & Gk
