@@ -7,7 +7,7 @@
 // @version        2.0
 // ==/UserScript==
 
-deb = (localStorage.debug == '1' ? true : false)
+deb = (localStorage.debug == '1' ? true : true)
 var debnum = 0
 
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
@@ -17,7 +17,7 @@ var players = []
 var pid = []
 var p0 = []
 var pm0 = []
-var plskillmax = 5
+var plskillmax = 10
 var tabslist = ''
 var maxtables = 25
 
@@ -40,13 +40,15 @@ var positions = [
 /** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt,sostav'},
 			{filter:'C FW',	name:'other',	koff:'sostav,value=value,wage,contract,school,secondname,!srt'},
 ]
-var selected = '0'
-	+',0,15,0'		// линия FW
-	+',0,12,0,0,14'	// линия AM
-	+',10,0,9,0,0'	// линия MF
-	+',0,0,8,0,6'	// линия DM
-	+',3,0,0,7,0'	// линия DF
-	+',2,1'			// линия SW & Gk
+var selected = ''
+	+',1,2'			// линия SW & Gk
+	+',3,7,7,7,4'	// линия DF
+	+',5,8,8,8,6'	// линия DM
+	+',10,9,9,9,11'	// линия MF
+	+',13,12,12,12,14'	// линия AM
+	+',15,15,15'		// линия FW
+
+
 
 var skillnames = {
 sostav:{rshort:'s',rlong:'в заявке?'},
@@ -157,11 +159,23 @@ $().ready(function() {
 			data[tmpkey] = tmpvalue;
 
 			// данные о заявке
-			if (tmpkey.indexOf('pid') != -1) {pid.push(tmpvalue);debug('pid:'+tmpkey+':'+tmpvalue)}
+			if (tmpkey.indexOf('pid') != -1) {
+				var tmpnum = parseInt(tmpkey.replace('pid',''))
+				debug('pid:'+tmpkey+':'+tmpvalue+':'+tmpnum)
+				if(pid[tmpnum]==undefined) pid[tmpnum] = {}
+				pid[tmpnum].pid = tmpvalue;
+			}
 
 			// изначальная тактика и смещения
-			if (tmpkey.indexOf('p0_') != -1) p0.push(tmpvalue)
-			if (tmpkey.indexOf('pm0_') != -1) pm0.push(tmpvalue)
+			if (tmpkey.indexOf('p0_') != -1) {
+				var tmpnum = parseInt(tmpkey.replace('p0_',''))
+				debug('p0:'+tmpkey+':'+tmpvalue+':'+tmpnum)
+				pid[tmpnum].p0 = tmpvalue;
+			}
+			if (tmpkey.indexOf('pm0_') != -1) {
+				var tmpnum = parseInt(tmpkey.replace('pm0_',''))
+				pid[tmpnum].pm0 = tmpvalue;
+			}
 			
 			// ключи скилов игроков
 			if(tmpkey == 'nation0') check = true
@@ -195,6 +209,7 @@ function getPositions(){
 		var pos = positions[i].filter.split(' ')
 		for(j in players){
 			var pl = {}
+			pl.id = players[j].id
 			var pkoff = positions[i].koff.split(',')
 			for(h in pkoff){
 				var koff = String(pkoff[h].split('=')[0])//.replace(/\!/g,'')
@@ -254,24 +269,27 @@ function Print(val, sn){
 }
 
 function FillData(nt){
-	var np = $('#select'+nt+' option:selected').val()
-	//debug('FillData('+nt+'):'+np)
-/**/
 	$('#table'+nt).remove()
+	var np = $('#select'+nt+' option:selected').val()
+//	debug('FillData('+nt+'):'+np)
+/**/
 	if(np!=0){
+		var selpl = 0
+		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
 		var html = '<table id=table'+nt+' width=100%>'
 		var head = true
     	for(t in positions[np].pls){
 			var pl = positions[np].pls[t]
 			var plhtml = '<tr align=right'
-			plhtml += (!pl.posf ? ' hidden abbr=wrong' : '')
-			plhtml += (pl.sostav==2 ? ' bgcolor=white' : (pl.sostav==1 ? ' bgcolor=#BABDB6' : ''))
+			plhtml += (!pl.posf && selpl!=pl.id ? ' hidden' : '')
+			plhtml += (!pl.posf ? ' abbr=wrong' : '')
+			plhtml += (selpl==pl.id ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''))
 			plhtml += '>'
 			var font1 = (!pl.posf ? '<font color=red>' : '')
 			var font2 = (!pl.posf ? '</font>' : '')
 			if(head) var headhtml = '<tr align=center>'
 			for(pp in pl) {
-				if(pp!='posf' && pp!='sostav'){
+				if(pp!='posf' && pp!='sostav' && pp!='id'){
 					var hidden = ''
 					var p = pp
 					if(pp.indexOf('!')!=-1){
@@ -321,9 +339,9 @@ function getPlayers(){
 			pl[name] = val
 		}
 		for(k in pid) {
-			if(pid[k]==pl.id) {
-				pl.sostav = (k<11 ? 2 : 1)
-				debug(k+':'+pl.id+':'+pl.sostav)
+			if(pid[k].pid==pl.id) {
+				pl.sostav = (k<12 ? 2 : 1)
+//				debug(k+':'+pl.id+':'+pl.sostav)
 				break;
 			}
 		}
@@ -335,13 +353,21 @@ function getPlayers(){
 function FillHeaders(){
 	debug('FillHeaders():'+maxtables)
 	for(i=1;i<=maxtables;i++){
+//		if(i<4)	for(j in pid) debug(i+':'+j+':pid='+pid[j].pid+':p0='+pid[j].p0)
+        var sel = false
+		for(j in pid) if(pid[j].p0 == i) sel = true
+
 		for(j in positions) $('#select'+i).append('<option value='+j+'>'+positions[j].name+'</option>')
 		var name = positions[0].name
+		$('#span'+i).html(name)
 		if(positions[selected[i]] !=undefined && positions[selected[i]].name != undefined) {
 			name = positions[selected[i]].name
 		}
-		if (selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
-		$('#span'+i).html(name)
+
+		if (sel && selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
+
+		if(sel) $('td#td'+i).attr('bgcolor','#A3DE8F')
+
 		FillData(i)
 	}
 }
@@ -349,25 +375,28 @@ function FillHeaders(){
 function PrintTables(geturl) {
 	debug('PrintTables()')
 	$('td.back3:first').hide()
-	var newhtml = '<br><br>'
-	newhtml += '<table width=100% bgcolor=#C9F8B7>'
-	var num = 1
+	var html = '<br><br>'
+	html += '<table width=100% bgcolor=#C9F8B7>' //
+	var num = 25
 	for(i=1;i<8;i++){
-		newhtml += '<tr id=tr'+i+' bgcolor=#A3DE8F>'
+		html += '<tr id=tr'+i+' bgcolor=#BFDEB3>' //#C9F8B7	#A3DE8F
+		var newtr = ''
 		for(j=1;j<6;j++){
-			if(i==1 && j==1) {
-				newhtml += '<td valign=center height=90 id=td'+num+' bgcolor=#C9F8B7 align= center >'
+			var newhtml = ''
+			if(i==1 && j==5) {
+				newhtml += '<td valign=center height=90 bgcolor=#C9F8B7 align= center >'
 				newhtml += '<img height=90 src=/system/img/'
 				if(geturl=='fieldnew3_n.php') newhtml += (isNaN(parseInt(localStorage.myintid)) ? 'g/int.gif' : 'flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
 				else newhtml += (isNaN(parseInt(localStorage.myteamid)) ? 'g/team.gif' : 'club/'+localStorage.myteamid+'.gif')+'>'
-			} else if (i==1 && j==5){
-				newhtml += '<td valign=top height=90 id=td'+num+' bgcolor=#C9F8B7 align= center>'+ShowHelp()
+			} else if (i==1 && j==1){
+				newhtml += '<td valign=top height=90 bgcolor=#C9F8B7 align= center>'+ShowHelp()
 			} else if (i>5 && j!=3){
-				newhtml += '<td valign=top height=90 id=td'+num+' bgcolor=#C9F8B7 align= center>'
+				newhtml += '<td valign=top height=90 bgcolor=#C9F8B7 align= center>'
 			} else {
 				newhtml += '<td valign=top width=20% height=90 id=td'+num+'>'
 				newhtml += '<table id=htable'+num+' width=100%><tr><td onmousedown="MouseOn(\''+num+'\')">'
 				newhtml +=  '<div id=div'+num+'>'
+//				newhtml +=  (deb ? num+' ' : '')
 				newhtml += 	 '<span id=span'+num+'>&nbsp;</span>'
 				newhtml += 	 '<select hidden id=select'+num+' onchange="FillData(\''+num+'\')">'
 				newhtml += 	 '</select>'
@@ -375,17 +404,18 @@ function PrintTables(geturl) {
 				newhtml += '</td><td id=links'+num+' align=right hidden>'
 				newhtml +=  '<a href="javascript:void(showAll(\''+num+'\'))">*</a>'
 				newhtml += '</td></tr></table>'
-				num++
+				num--
 			}
 			newhtml += '</td>'
+			newtr = newhtml + newtr
 		}
-		newhtml += '</tr>'
+		html += newtr + '</tr>'
 	}
-	newhtml += '</table>'
-	newhtml += '<hr>'
-	newhtml += 'Дополнительные таблицы:'
-	newhtml += '<hr>'
-	$('td.back4').html(newhtml)
+	html += '</table>'
+	html += '<hr>'
+	html += 'Дополнительные таблицы:'
+	html += '<hr>'
+	$('td.back4').html(html)
 }
 function showAll(nt){
 	if($('table#table'+nt+' tr[abbr*=wrong]:first').is(':visible')) {
