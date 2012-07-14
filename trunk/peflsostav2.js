@@ -7,7 +7,7 @@
 // @version        2.0
 // ==/UserScript==
 
-deb = (localStorage.debug == '1' ? true : true)
+deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
@@ -19,7 +19,7 @@ var p0 = []
 var pm0 = []
 var plskillmax = 10
 var tabslist = ''
-var maxtables = 25
+var maxtables = 25+8
 
 var positions = [
 	{					name:'&nbsp;'},
@@ -376,47 +376,65 @@ function PrintTables(geturl) {
 	debug('PrintTables()')
 	$('td.back3:first').hide()
 	var html = '<br><br>'
-	html += '<table width=100% bgcolor=#C9F8B7>' //
-	var num = 25
+	html += '<table width=100% bgcolor=#C9F8B7>' //#C9F8B7	#A3DE8F
+	var nm = 25
 	for(i=1;i<8;i++){
-		html += '<tr id=tr'+i+' bgcolor=#BFDEB3>' //#C9F8B7	#A3DE8F
+		html += '<tr id=tr'+i+' bgcolor=#BFDEB3>'
 		var newtr = ''
 		for(j=1;j<6;j++){
-			var newhtml = ''
+			var htmltd = ''
 			if(i==1 && j==5) {
-				newhtml += '<td valign=center height=90 bgcolor=#C9F8B7 align= center >'
-				newhtml += '<img height=90 src=/system/img/'
-				if(geturl=='fieldnew3_n.php') newhtml += (isNaN(parseInt(localStorage.myintid)) ? 'g/int.gif' : 'flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
-				else newhtml += (isNaN(parseInt(localStorage.myteamid)) ? 'g/team.gif' : 'club/'+localStorage.myteamid+'.gif')+'>'
+				htmltd += '<td valign=center height=90 bgcolor=#C9F8B7 align=center>'
+				htmltd += '<img height=90 src=/system/img/'
+				if(geturl=='fieldnew3_n.php') htmltd += (isNaN(parseInt(localStorage.myintid)) ? 'g/int.gif' : 'flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
+				else htmltd += (isNaN(parseInt(localStorage.myteamid)) ? 'g/team.gif' : 'club/'+localStorage.myteamid+'.gif')+'>'
+				htmltd += '</td>'				
 			} else if (i==1 && j==1){
-				newhtml += '<td valign=top height=90 bgcolor=#C9F8B7 align= center>'+ShowHelp()
+				htmltd += '<td valign=top height=90 bgcolor=#C9F8B7 align=center>'+ShowHelp()+'</td>'
 			} else if (i>5 && j!=3){
-				newhtml += '<td valign=top height=90 bgcolor=#C9F8B7 align= center>'
+				htmltd += '<td valign=top height=90 bgcolor=#C9F8B7></td>'
 			} else {
-				newhtml += '<td valign=top width=20% height=90 id=td'+num+'>'
-				newhtml += '<table id=htable'+num+' width=100%><tr><td onmousedown="MouseOn(\''+num+'\')">'
-				newhtml +=  '<div id=div'+num+'>'
-//				newhtml +=  (deb ? num+' ' : '')
-				newhtml += 	 '<span id=span'+num+'>&nbsp;</span>'
-				newhtml += 	 '<select hidden id=select'+num+' onchange="FillData(\''+num+'\')">'
-				newhtml += 	 '</select>'
-				newhtml +=  '</div>'
-				newhtml += '</td><td id=links'+num+' align=right hidden>'
-				newhtml +=  '<a href="javascript:void(showAll(\''+num+'\'))">*</a>'
-				newhtml += '</td></tr></table>'
-				num--
+				htmltd += PrintTd(nm)
+				nm--
 			}
-			newhtml += '</td>'
-			newtr = newhtml + newtr
+			newtr = htmltd + newtr
 		}
 		html += newtr + '</tr>'
 	}
-	html += '</table>'
-	html += '<hr>'
+	html += '</table><hr>'
 	html += 'Дополнительные таблицы:'
-	html += '<hr>'
+/**/
+	html += '<table width=100% bgcolor=#C9F8B7>'
+	nm = 26
+	for(i=1;i<3;i++){
+		html += '<tr id=tr'+(i+25)+' bgcolor=#BFDEB3 align=center>'
+		for(j=1;j<5;j++){
+			html += PrintTd(nm)
+			nm++
+		}
+		html += '</tr>'
+	}
+	html += '</table><hr>'
+/**/
 	$('td.back4').html(html)
 }
+
+function PrintTd(num){
+	var newhtml = '<td valign=top width=20% height=90 id=td'+num+'>'
+	newhtml += '<table id=htable'+num+' width=100%><tr><td onmousedown="MouseOn(\''+num+'\')">'
+	newhtml +=  '<div id=div'+num+'>'
+//	newhtml +=  (deb ? num+' ' : '')
+	newhtml += 	 '<span id=span'+num+'>&nbsp;</span>'
+	newhtml += 	 '<select hidden id=select'+num+' onchange="FillData(\''+num+'\')">'
+	newhtml += 	 '</select>'
+	newhtml +=  '</div>'
+	newhtml += '</td><td id=links'+num+' align=right hidden>'
+	newhtml +=  '<a href="javascript:void(showAll(\''+num+'\'))">*</a>'
+	newhtml += '</td></tr></table>'
+	newhtml += '</td>'
+	return newhtml
+}
+
 function showAll(nt){
 	if($('table#table'+nt+' tr[abbr*=wrong]:first').is(':visible')) {
 		$('table#table'+nt+' tr[abbr*=wrong]').hide()
