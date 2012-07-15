@@ -207,8 +207,8 @@ $().ready(function() {
 			// собираем z0 (перс задания 1й тактики)
 			if (tmpkey.indexOf('z0') != -1) {
 				var tmpnum = parseInt(tmpkey.replace('z0_',''))
-				pid[tmpnum].z0at = (tmpvalue>=513 ? true : false)
-				pid[tmpnum].z0bk = ((tmpvalue>=213 && tmpvalue<500) || tmpvalue>=700 ? true : false)
+				pid[tmpnum].z0bk = (tmpvalue>=513 ? true : false)
+				pid[tmpnum].z0at = ((tmpvalue>=213 && tmpvalue<500) || tmpvalue>=700 ? true : false)
 			}
 
 			// ключи скилов игроков
