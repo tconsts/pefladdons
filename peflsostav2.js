@@ -17,7 +17,7 @@ var players = []
 var pid = []
 var p0 = []
 var pm0 = []
-var plskillmax = 10
+var plskillmax = 15
 var tabslist = ''
 var maxtables = 25+10
 
@@ -39,7 +39,7 @@ var positions = [
 /** 14 **/	{filter:'R AM',	name:'R AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt,sostav'},
 /** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt,sostav'},
 /** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdat,secondname,tackling,pace,!srt'},
-/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdbk,secondname,tackling,pace,!srt'},
+/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdbk,secondname,dribbling,pace,!srt'},
 /** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,corners=corners*5,crossing=crossing*2,vision,secondname,!srt'},
 /** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,freekicks=freekicks*5,longshots=longshots*2,crossing=crossing*2,vision,secondname,!srt'},
 /** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,age=age/10,finishing=finishing,leadership=leadership,secondname,!srt'},
@@ -437,8 +437,7 @@ function PrintTables(geturl) {
 		}
 		html += newtr + '</tr>'
 	}
-	html += '</table><hr>'
-	html += 'Дополнительные таблицы:'
+	html += '</table><br><br>'
 /**/
 	html += ''
 	nm = 26
