@@ -95,6 +95,13 @@ var def = '1-1=FCE94F,2-2=white,3-3=E9B96E'
 
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
+
+	var bbig = false
+	if($('table:eq(0)').attr('width')==1000) {
+		bbig = true
+		$('table:eq(3)').attr('width','800')
+	}
+
    	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
@@ -109,7 +116,7 @@ $().ready(function() {
 
 	// Draw CrabVIP panel
 	var preparedhtml = ''
-	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
+	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width='+(bbig ? 0 : 200)+' id="crabgloballeft" valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 	preparedhtml += '</td></tr></table>'
 	$('body table.border:last').before(preparedhtml)
@@ -1037,4 +1044,4 @@ function UrlValue(key,url){
 
 function check(d) {return (d<10 ? "0"+d : d)}
 
-function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}

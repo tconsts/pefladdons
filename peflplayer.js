@@ -253,7 +253,7 @@ function DBConnect(){
 	else 	{debug('Open DB PEFL ok.')}
 }
 
-function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
 function GetPlayerHistory(n,pid){
 	var stats = []
@@ -907,6 +907,13 @@ var ups = {	"a0e":"-2",
 
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
+	debug('размер0:'+$('table:eq(0)').attr('width'))
+	var bbig = false
+	if($('table:eq(0)').attr('width')==1000) {
+		bbig = true
+		$('table:eq(3)').attr('width','800')
+	}
+
 	$('td.back4 table table tr[bgcolor=#a3de8f]').removeAttr('bgcolor').addClass('back3')
 
 	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') return false
@@ -915,7 +922,10 @@ $().ready(function() {
 
 	// Draw left and right panels
 	var preparedhtml = ''
-	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width=200 id="crabgloballeft" valign=top></td><td id="crabglobalcenter"></td><td id="crabglobalright" width=200 valign=top>'
+	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr>'
+	preparedhtml += '<td id="crabgloballeft" width='+(bbig ? 0 : 200)+' valign=top></td>'
+	preparedhtml += '<td id="crabglobalcenter"></td>'
+	preparedhtml += '<td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 	preparedhtml += '</td></tr></table>'
 	$('body table.border:last').before(preparedhtml)

@@ -42,8 +42,16 @@ function SetNation(){
 	else localStorage.myintid = (id>1000 ? id-1000 : id)
 }
 
+function FixSize() {
+	if($('table:eq(0)').attr('width')==1000) {
+		$('td.back3:eq(0)').attr('width','160')
+	}
+}
+
 $().ready(function() {
 //	delete localStorage.debug
+
+	FixSize()
 
 	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
 

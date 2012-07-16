@@ -94,6 +94,12 @@ var skills = {
 	'отб':'Отбор мяча', 'вид':'Видение поля', 'рбт':'Работоспособность', 'тех':'Техника'}
 
 $().ready(function() {
+	debug('размер0:'+$('table:eq(0)').attr('width'))
+	var bbig = false
+	if($('table:eq(0)').attr('width')==1000) {
+		bbig = true
+		$('table:eq(3)').attr('width','800')
+	}
 
 	fixColors()
 
@@ -125,7 +131,7 @@ $().ready(function() {
 		//Ростер команды
 		// Draw right panel and fill data
 		var preparedhtml = ''
-		preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td id="crabgloballeft" width=200 valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
+		preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td id="crabgloballeft" width='+(bbig ? 0 : 200)+' valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
 		preparedhtml += '<table id="crabrighttable" class=back1 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 		preparedhtml += '</td></tr></table>'
 		$('body table.border:last').before(preparedhtml)
@@ -181,11 +187,12 @@ $().ready(function() {
 /**/
 //		GetData('divs')
 
-		if(deb){
+/**		if(deb){
 			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
 			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
 			$("#rg").after(preparedhtml)
 		}
+/**/
 		if(cid==parseInt(localStorage.myteamid)) {
 			GetData('matchespl')
 			GetData('matches')
@@ -195,10 +202,12 @@ $().ready(function() {
 
 function fixColors(){
 	$('td.back4 table table:eq(0)') // заголовок с именем
+		.attr('width','100%')
 		.removeAttr('background')
 		.addClass('back2')
 		.attr('style','border-top:3px double black;border-bottom:3px double black')
 	$('td.back4 table table:eq(1)') // карточка с лого клуба и инфа
+		.attr('width','100%')
 		.removeAttr('bgcolor')
 		.addClass('back1')
 		.find('td:eq(1)')
@@ -210,6 +219,7 @@ function fixColors(){
 			.css('border-bottom-right-radius','5px')
 			.end()
 		.find('td:last')
+			.attr('align','center')
 			.addClass('back2')
 //			.attr('style','border-left:1px solid black;border-top:1px solid black;border-top-left-radius:5px')
 			.css('border-left','1px solid black')
@@ -221,6 +231,7 @@ function fixColors(){
 		.find('td').removeAttr('background').end()
 //		.find('tr:first td:eq(1)').attr('width','455').end()
 	$('td.back4 table table:eq(4)') // линки отображения по турнирам
+		.attr('width','100%')
 		.removeAttr('background')
 		.addClass('back2')
 		.attr('style','border-top:3px double black;border-bottom:3px double black;')
@@ -1488,4 +1499,4 @@ function UrlValue(key,url){
 
 function check(d) {return (d<10 ? "0"+d : d)}
 
-function debug(text) {if(deb) {debnum++;$('td#crabgloballeft').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}

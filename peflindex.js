@@ -8,8 +8,12 @@
 // ==/UserScript==
 
 $().ready(function(){
-	var text = ''
 
+	if($('table:eq(0)').attr('width')==1000) {
+		$('td.back4 table:eq(0) tr:eq(0) > td:eq(1)').attr('width','250')
+	}
+
+	var text = ''
 	text = $('table.back3').html()
 		.replace(/\<br\>\&nbsp\;\<br\>/g,'<br>')
 		.replace(/\<br\>\&nbsp\;\<br\>/g,'<br>')
