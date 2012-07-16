@@ -97,9 +97,9 @@ var def = '1-1=FCE94F,2-2=white,3-3=E9B96E'
 $().ready(function() {
 
 	var bbig = false
-	if($('table:eq(0)').attr('width')==1000) {
+	if($('table:eq(0)').attr('width')>=1000) {
 		bbig = true
-		$('table:eq(3)').attr('width','800')
+		$('table:eq(3)').attr('width',$('table:eq(0)').attr('width')-200)
 	}
 
    	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)

@@ -43,7 +43,7 @@ function SetNation(){
 }
 
 function FixSize() {
-	if($('table:eq(0)').attr('width')==1000) {
+	if($('table:eq(0)').attr('width')>=1000) {
 		$('td.back3:eq(0)').attr('width','160')
 	}
 }

@@ -96,9 +96,9 @@ var skills = {
 $().ready(function() {
 	debug('размер0:'+$('table:eq(0)').attr('width'))
 	var bbig = false
-	if($('table:eq(0)').attr('width')==1000) {
+	if($('table:eq(0)').attr('width')>=1000) {
 		bbig = true
-		$('table:eq(3)').attr('width','800')
+		$('table:eq(3)').attr('width',$('table:eq(0)').attr('width')-200)
 	}
 
 	fixColors()
