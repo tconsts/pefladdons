@@ -95,6 +95,8 @@ var skills = {
 
 $().ready(function() {
 
+	fixColors()
+
 	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	cid = parseInt($('td.back4 table:first table td:first').text())
 	teams[cid] = {'tid':cid}
@@ -124,7 +126,7 @@ $().ready(function() {
 		// Draw right panel and fill data
 		var preparedhtml = ''
 		preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td id="crabgloballeft" width=200 valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
-		preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
+		preparedhtml += '<table id="crabrighttable" class=back1 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 		preparedhtml += '</td></tr></table>'
 		$('body table.border:last').before(preparedhtml)
 
@@ -190,6 +192,49 @@ $().ready(function() {
 		}
 	}
 }, false);
+
+function fixColors(){
+	$('td.back4 table table:eq(0)') // заголовок с именем
+		.removeAttr('background')
+		.addClass('back2')
+		.attr('style','border-top:3px double black;border-bottom:3px double black')
+	$('td.back4 table table:eq(1)') // карточка с лого клуба и инфа
+		.removeAttr('bgcolor')
+		.addClass('back1')
+		.find('td:eq(1)')
+			.addClass('back2')
+			.css('border-left','1px solid black')
+			.css('border-right','1px solid black')
+			.css('border-bottom','1px solid black')
+			.css('border-bottom-left-radius','5px')
+			.css('border-bottom-right-radius','5px')
+			.end()
+		.find('td:last')
+			.addClass('back2')
+//			.attr('style','border-left:1px solid black;border-top:1px solid black;border-top-left-radius:5px')
+			.css('border-left','1px solid black')
+			.css('border-right','1px solid black')
+			.css('border-top','1px solid black')
+			.css('border-top-left-radius','5px')
+			.css('border-top-right-radius','5px')
+			.end()
+		.find('td').removeAttr('background').end()
+//		.find('tr:first td:eq(1)').attr('width','455').end()
+	$('td.back4 table table:eq(4)') // линки отображения по турнирам
+		.removeAttr('background')
+		.addClass('back2')
+		.attr('style','border-top:3px double black;border-bottom:3px double black;')
+	$('td.back4 table table:eq(6)') // фильтр
+		.addClass('back1')
+		.removeAttr('cellspacing')
+		.find('tr').addClass('back1').end()
+	$('td.back4 table table:eq(7)') // управление фильром
+		.addClass('back1').removeAttr('bgcolor').end()
+	$('td.back4 table table:eq(8)') // игроки
+		.addClass('back3').removeAttr('bgcolor').end()
+		.find('tr[bgcolor*=a3de8f]').addClass('back2').removeAttr('bgcolor').end()
+		.find('tr[bgcolor*=C9F8B7]').addClass('back1').removeAttr('bgcolor').end()
+}
 
 function RelocateGetNomData(){
 	debug('RelocateGetNomData()')
@@ -1024,8 +1069,8 @@ function ShowPlayersValue(){
 		var pls = players.sort(sValue)
 		for(i in pls) {
 			var bgcolor = ''
-			if(i<18) bgcolor = ' class=back3'
-			if(i<5)  bgcolor = ' class=back1'
+			if(i<18) bgcolor = ' class=back4'//3
+			if(i<5)  bgcolor = ' class=back3'//1
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
 			nomtext += '<tr id="nom"'+bgcolor+'>'
@@ -1047,8 +1092,8 @@ function ShowPlayersSValue(){
 		var pls = players.sort(sSValue)
 		for(i in pls) {
 			var bgcolor = ''
-			if(i<18) bgcolor = ' class=back3'
-			if(i<5)  bgcolor = ' class=back1'
+			if(i<18) bgcolor = ' class=back4'
+			if(i<5)  bgcolor = ' class=back3'
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '') //888A85
 			var f2 = (pls[i].trash ? '</font>' : '')
 			nomtext += '<tr id="svalue"'+bgcolor+'>'
@@ -1097,7 +1142,7 @@ function ShowPlayersAge(){
 		for(i in pls) {
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
-			text += '<tr id="age"'+(pls[i].age<30 && pls[i].age>21 ? '' : ' class=back2')+'>'
+			text += '<tr id="age"'+(pls[i].age<30 && pls[i].age>21 ? '' : ' class=back3')+'>'
 			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' 
 			text +=  f1 + ShowShortName(pls[i].name).fontsize(1) + f2
 			text += '</td>'
