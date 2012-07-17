@@ -64,7 +64,19 @@ trains[16]	= {level:4,	tr:29,	ball:0,	name:'Тренажеры (оч.выс)'};
 trains[17]	= {level:4,	tr:30,	ball:0,	name:'Тренировочный матч (оч.выс)'};
 trains[18]	= {level:-1,tr:31,	ball:0,	name:'Отдых'};
 
+function FixColors(){
+	if(UrlValue('p') == 'trainplan') {
+		$('td.back4 table table:eq(0) > tbody:eq(0)')
+			.find('tr').removeAttr('bgcolor').end()
+			.find('tr:odd').addClass('back2').end()
+
+	}
+}
+
 $().ready(function() {
+
+	if(deb) FixColors()
+
 	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 
 	var text = ''
@@ -179,13 +191,13 @@ function showData(){
 	if(UrlValue('p') == 'training') {
 		debug('showData go')
 
-		var xtr = '<br><table id="trn" width=100% bgcolor=A3DE8F></td></tr>'
-		xtr += '<tr><td bgcolor=C9F8B7 colspan=15><b>Тренировка основы:</b>'
-		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>гр1</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр2</th><th bgcolor=A3DE8F></th><th colspan=3 width=13%>гр3</th><th bgcolor=A3DE8F></th><th width=5%>наг</th><th width=70%>тренировка</th>'
+		var xtr = '<br><table id="trn" width=100% class=back1></td></tr>'
+		xtr += '<tr><td class=back1 colspan=15><b>Тренировка основы:</b>'
+		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>гр1</th><th class=back1></th><th colspan=3 width=13%>гр2</th><th class=back1></th><th colspan=3 width=13%>гр3</th><th class=back1></th><th width=5%>наг</th><th width=70%>тренировка</th>'
 //		xtr += '<th width=30%>тренер(гр)</th>'
 		xtr += '</tr>'
-		xtr += '<tr id="ind1"><td bgcolor=C9F8B7 colspan=15><b>Индивидуальные:</b></td></tr>'
-		xtr += '<tr id="ind2" bgcolor=white><th colspan=3>гр1</th><th bgcolor=A3DE8F></th><th colspan=3>гр2</th><th bgcolor=A3DE8F></th><th colspan=3>гр3</th><th bgcolor=A3DE8F></th><th>наг</th><th>тренировка</th>'
+		xtr += '<tr id="ind1"><td class=back1 colspan=15><b>Индивидуальные:</b></td></tr>'
+		xtr += '<tr id="ind2" bgcolor=white><th colspan=3>гр1</th><th class=back1></th><th colspan=3>гр2</th><th class=back1></th><th colspan=3>гр3</th><th class=back1></th><th>наг</th><th>тренировка</th>'
 //		xtr += '<th>тренер(гр)</th>'
 		xtr += '</tr>'
 		xtr += '</table>'
@@ -207,14 +219,14 @@ function showData(){
 //						tcolor = gcolor[trnman[t].group] = ' bgcolor=D3D7CF'
 //					}
 //				}
-				xtr = '<tr'+(p==4 ? ' id="ind1"' : '')+' bgcolor=C9F8B7 align=center>'
+				xtr = '<tr'+(p==4 ? ' id="ind1"' : '')+' class=back2 align=center>'
 				for(j=1;j<=3;j++) {
 					for(m=1;m<=3;m++) {
 						xtr += '<td'+gcolor[j]+'>'
 						xtr += (tp['count'+j+m]!=0 ? tp['count'+j+m] : "&nbsp;")
 						xtr += '</td>'
 					}
-					xtr += '<td bgcolor=A3DE8F></td>'
+					xtr += '<td class=back1></td>'
 				}
 				xtr += '<td>' + (p==4 ? "&nbsp;" : tp.level) + '</td>'
 				xtr += '<td align=left>'+i1 + tp.name + i2 +'</td>'
@@ -245,14 +257,14 @@ function showData(){
 //						tcolor = gcolor[trnman[t].group] = ' bgcolor=D3D7CF'
 //					}
 //				}
-				xtr = '<tr bgcolor=C9F8B7 align=center>'
+				xtr = '<tr class=back2 align=center>'
 				for(j=1;j<=3;j++) {
 					for(m=1;m<=3;m++) {
 						xtr += '<td'+gcolor[j]+'>' 
 						xtr += (itp['count'+j+m]!=0 ? itp['count'+j+m] : "&nbsp;")
 						xtr += '</td>'
 					}
-					xtr += '<td bgcolor=A3DE8F></td>'
+					xtr += '<td class=back1></td>'
 				}
 				xtr += '<td>' + (p==1 ? "&nbsp;" : itp.level) + '</td>'
 				xtr += '<td align=left><i>' + itp.name + '</i></td>'
@@ -268,12 +280,13 @@ function showData(){
 		$('td.back4 table table:eq(1)')
 			.before('<div align=right><a id="end" href="javascript:void(ShowEnd())">Показать -20%</a>&nbsp;</div>')
 			.attr('width',"100%")
-			.attr("bgcolor","A3DE8F")
+//			.attr("bgcolor","A3DE8F")
+			.addClass('back2')
 			.prepend('<tr bgcolor=white><th>На '+ num_players +' игроков</th><th>' + ($('img[src="system/img/g/ball1.gif"]').length-1) + ' мч</th></tr>')
 
 		$('td.back4 table table:eq(1) tr').each(function(i,val){
 			if (i>0) {
-				$(val).attr('bgcolor','C9F8B7')
+				$(val).addClass('back1')
 				var ctn1 = 0
 				var ctn2 = 0
 				var ctn3 = 0
