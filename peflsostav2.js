@@ -142,7 +142,6 @@ amom
 }
 
 $().ready(function() {
-	if(deb) $('body').prepend('<div id=debug></div>')
 
 	if(localStorage.selected != undefined){
 		debug('selected from lS')
@@ -223,7 +222,7 @@ $().ready(function() {
 	})
 })
 
-function debug(text) {if(deb) {debnum++;$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
 function sSrt(i, ii) { // по убыванию
 	var s = (i.srt!=undefined ? 'srt' : '!srt')
@@ -403,16 +402,59 @@ function FillHeaders(){
 			name = positions[selected[i]].name
 		}
 		if ((sel || i>25) && selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
-		if(sel) $('td#td'+i).attr('bgcolor','#A3DE8F')
+		if(sel) $('td#td'+i).attr('class','back2')
 		FillData(i)
 	}
+}
+
+function fillPosEdit(){
+	var html = '<table width=98% class=back1 align=center>'
+	html += '<tr align=left><th>Max</th><th>Название</th><th>Фильтр</th><th>Коэффициенты</th></tr>'
+	for(i in positions){
+		var ps = positions[i]
+		if(i>0) html += '<tr valign=top class=back2 height=30><td>'+(ps.num==undefined ? '' : ps.num)+'</td><td>'+ps.name+'</td><td nowrap>'+ps.filter+'</td><td>'+ps.koff+'</td></tr>'
+	}
+	html += '</table>'
+	$('div#divedit').html(html)
+}
+
+function chMenu(mid){
+	debug('chMenu('+mid+')')
+	switch (mid){
+		case 'tdedit':
+			$('th#tdsost,th#tddopt').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tdedit').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
+			$('table#tablesost, table#tabledopt').hide()
+			fillPosEdit()
+			$('div#divedit').show()
+			break;
+		case 'tddopt':
+			$('th#tdsost,th#tdedit').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tddopt').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
+			$('table#tablesost, div#divedit').hide()
+			$('table#tabledopt').show()
+			break;
+		default:
+			$('th#tdedit,th#tddopt').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tdsost').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
+			$('table#tabledopt, div#divedit').hide()
+			$('table#tablesost').show()
+	}
+
 }
 
 function PrintTables(geturl) {
 	debug('PrintTables()')
 	$('td.back3:first').hide()
-	var html = '<br><br>'
-	html += '<table width=100% bgcolor=#C9F8B7>' //#C9F8B7	#A3DE8F
+
+	var html = '<br>'
+	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px"><tr height=25>'
+	html += '<th id=tdsost width=150 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
+	html += '<th id=tddopt width=150 onmousedown="javascript:void(chMenu(\'tddopt\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Доп. таблицы</th>'
+	html += '<th id=tdedit width=150 onmousedown="javascript:void(chMenu(\'tdedit\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Настроить кофы</th>'
+	html += '<td style="border-bottom:1px solid;">&nbsp;</td><tr>'
+	html += '<tr><td style="border-left:1px solid;border-right:1px solid;border-bottom:1px solid;" colspan=4>'
+	html += '<br><table id=tablesost width=100% class=back1>' //#C9F8B7	#A3DE8F
 	var nm = 25
 	for(i=1;i<8;i++){
 		html += '<tr id=tr'+i+' bgcolor=#BFDEB3>'
@@ -420,15 +462,15 @@ function PrintTables(geturl) {
 		for(j=1;j<6;j++){
 			var htmltd = ''
 			if(i==1 && j==5) {
-				htmltd += '<td valign=center height=90 bgcolor=#C9F8B7 align=center>'
+				htmltd += '<td valign=center height=90 class=back1 align=center>'
 				htmltd += '<img height=90 src=/system/img/'
 				if(geturl=='fieldnew3_n.php') htmltd += (isNaN(parseInt(localStorage.myintid)) ? 'g/int.gif' : 'flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
 				else htmltd += (isNaN(parseInt(localStorage.myteamid)) ? 'g/team.gif' : 'club/'+localStorage.myteamid+'.gif')+'>'
 				htmltd += '</td>'				
 			} else if (i==1 && j==1){
-				htmltd += '<td valign=top height=90 bgcolor=#C9F8B7 align=center>'+ShowHelp()+'</td>'
+				htmltd += '<td valign=top height=90 class=back1 align=center>'+ShowHelp()+'</td>'
 			} else if (i>5 && j!=3){
-				htmltd += '<td valign=top height=90 bgcolor=#C9F8B7></td>'
+				htmltd += '<td valign=top height=90 class=back1></td>'
 			} else {
 				htmltd += PrintTd(nm)
 				nm--
@@ -437,19 +479,21 @@ function PrintTables(geturl) {
 		}
 		html += newtr + '</tr>'
 	}
-	html += '</table><br><br>'
+	html += '</table>'
 /**/
 	html += ''
 	nm = 26
 	for(i=1;i<=2;i++){
-		html += '<table width=100% bgcolor=#A3DE8F><tr id=tr'+(i+25)+' bgcolor=#C9F8B7 align=center>'
+		html += '<table hidden id=tabledopt width=100% class=back1><tr id=tr'+(i+25)+' class=back2 align=center>'
 		for(j=1;j<=5;j++){
 			html += PrintTd(nm)
 			nm++
 		}
 		html += '</tr></table>'
 	}
-	html += '<hr>'
+
+	html += '<div id=divedit hidden></div>'
+	html += '<br></td></tr></table><br><br>'
 /**/
 	$('td.back4').html(html)
 }
@@ -500,7 +544,7 @@ function MouseOff(num){
 
 function ShowHelp(){
 	var html = ''
-	html += '<table bgcolor=#A3DE8F >'
+	html += '<table class=back2>'
 	html += '<tr><th colspan=4>'+'HELP'.fontsize(1)+'</th></tr>'
 	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'основа'.fontsize(1)+'</td>'
 	html += '<td bgcolor=#BABDB6 colspan=2>'+'в заявке'.fontsize(1)+'</td></tr>'
