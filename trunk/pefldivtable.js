@@ -81,6 +81,11 @@ var list2 = {
 		'curtour':{'num':11, 'name':'CurTour'}}
 }
 
+function FixColors(){
+	$('td.back4 table table:first tr').removeAttr('bgcolor')
+	$('td.back4 table table tr:odd').addClass(fixclass)		          
+}
+
 var tasks	= ['','Чемпионство','Выйти в высший Д.','Медали','Зона Судамерикана','Зона УЕФА','Попасть в 3А','Попасть в пятерку','Попасть в десятку','15 место','Не вылететь']
 var schools	= ['','очень слабая','слабая','средняя','хорошая','отличная','мирового уровня','одна из лучших в мире']
 
@@ -96,6 +101,9 @@ var def = '1-1=FCE94F,2-2=white,3-3=E9B96E'
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
 
+	fixclass = 'back2' // заменятся все bgcolor=#a3de8f на этот класс
+    FixColors()
+	
 	var bbig = false
 	if($('table:eq(0)').attr('width')>=1000) {
 		bbig = true
@@ -134,11 +142,11 @@ $().ready(function() {
 	text += '<table width=100%>'
 	text += '<tr id="showteams"><td colspan=4><a id="teams_cur" href="javascript:void(Print(\'teams\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
 	text += '</table><br>'
-	if(deb){
+/**	if(deb){
 		text += '<table width=100% class="debug">'
 		text += '<tr id="showdivs"><td><a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a></td></tr>'
 		text += '</table>'
-	}
+	}/**/
 	$("#crabright").html(text)
 
 	GetData('teams')
@@ -765,8 +773,8 @@ function DeleteCookie(name) {
 }
 
 function ColorIt(){
-	debug('ColorIt:'+div_cur.did)
-	debug('ColorIt:'+divs[div_cur.did].color)
+	debug('ColorIt div_cur.did:'+div_cur.did)
+	debug('ColorIt divs[div_cur.did].color:'+divs[div_cur.did].color)
 //	for( i in divs) debug('ColorIt:'+divs[i].did+':'+divs[i].nname)
 	diap[div_cur.did] = []	
 
@@ -789,7 +797,7 @@ function ColorIt(){
 
 	if(divs[div_cur.did].color == '' || divs[div_cur.did].color==null){
 		var dr = (divs[div_cur.did].drotate!='' ? divs[div_cur.did]['drotate'].split(',') : false)
-		debug('ColorIt:'+dr)
+		debug('ColorIt dr:'+dr)
 		if(dr!=false){
 			if(dr[0]==0) {
 //				debug('ColorIt:'+'champ')
@@ -818,7 +826,7 @@ function ColorTable(tableid){
 			for (var j in diap[tableid]) {
 				var d = diap[tableid][j]
 				if (i>= +d.split('=')[0].split('-')[0] && i <= +d.split('=')[0].split('-')[1]) {
-					$(val).attr("bgcolor", d.split('=')[1])
+					$(val).removeClass(fixclass).attr("bgcolor", d.split('=')[1])
 				}
 			}
 		})
@@ -833,8 +841,9 @@ function ColorGet(curVal){
 	if (retVal != null) {
 		divs[div_cur.did].color = retVal
 		diap[div_cur.did] = retVal.split(',');
-		$('td.back4 table table:first tr').removeAttr('bgcolor')
-		$('td.back4 table table:first tr:odd').attr('bgcolor','#a3de8f')
+//		$('td.back4 table table:first tr').removeAttr('bgcolor')
+		FixColors()
+//		$('td.back4 table table:first tr:odd').attr('bgcolor','#a3de8f')
    		ColorIt()
 		SaveData('divs')
 	}
@@ -843,8 +852,7 @@ function ColorGet(curVal){
 
 function ColorDel(){
 	debug('ColorDel:'+div_cur.did)
-	$('td.back4 table table:first tr').removeAttr('bgcolor')
-	$('td.back4 table table:first tr:odd').attr('bgcolor','#a3de8f')
+	FixColors()
 	divs[div_cur.did].color = ''
 	diap[div_cur.did] = ''
 	ColorIt()
