@@ -22,27 +22,27 @@ var maxtables = 25+10
 
 var positions = [
 	{						name:'&nbsp;'},
-/**  1 **/	{filter:'GK', 	name:'GK', 		koff:'reflexes=reflexes*3,positioning=positioning*2,heading=heading*2,handling=handling*1.5,!strength=strength*0.7,!pace=pace*0.4,secondname,srt,sostav'},
-/**  2 **/	{filter:'C SW',	name:'C SW',	koff:'positioning=positioning*2,tackling=tackling*1.5,secondname,srt,sostav'},
-/**  3 **/	{filter:'L DF',	name:'L DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt,sostav'},
-/**  4 **/	{filter:'R DF',	name:'R DF',	koff:'positioning=positioning*2,tackling=tackling*1.5,pace=pace*1.5,crossing=crossing,secondname,srt,sostav'},
-/**  5 **/	{filter:'L DM',	name:'L DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt,sostav'},
-/**  6 **/	{filter:'R DM',	name:'R DM',	koff:'tackling=tackling*1.5,pace=pace*1.5,vision=vision,crossing=crossing,secondname,srt,sostav'},
-/**  7 **/	{filter:'C DF',	name:'C DF',	koff:'tackling=tackling*3,positioning=positioning*3,strength=strength*1.5,pace=pace*1.5,heading=heading*1.5,secondname,srt,sostav'},
-/**  8 **/	{filter:'C DM',	name:'C DM',	koff:'positioning=positioning*3,tackling=tackling*3,vision=vision*2,workrate=workrate*2,!technique=technique*1.5,!passing=passing*1.5,secondname,srt,sostav'},
-/**  9 **/	{filter:'C M',	name:'C M',		koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*1.5,!tackling=tackling,!longshots=longshots*0.5,secondname,srt,sostav'},
-/** 10 **/	{filter:'L M',	name:'L M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt,sostav'},
-/** 11 **/	{filter:'R M',	name:'R M',		koff:'pace=pace*2,dribbling=dribbling*2,passing=passing*2,vision=vision*2,!crossing=crossing*1.5,!tackling=tackling*1.5,!technique=technique,secondname,srt,sostav'},
-/** 12 **/	{filter:'C AM',	name:'C AM',	koff:'positioning=positioning*2,vision=vision*2,passing=passing*2,technique=technique*2,!longshots=longshots,!dribbling=dribbling,secondname,srt,sostav'},
-/** 13 **/	{filter:'L AM',	name:'L AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt,sostav'},
-/** 14 **/	{filter:'R AM',	name:'R AM',	koff:'pace=pace*3,dribbling=dribbling*2.5,crossing=crossing*2,vision=vision*1.5,!passing=passing*1.5,!technique=technique,secondname,srt,sostav'},
-/** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt,sostav'},
-/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdat,secondname,tackling,pace,!srt'},
-/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdbk,secondname,dribbling,pace,!srt'},
-/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,corners=corners*10,crossing=crossing*2,vision,secondname,pcor,!srt'},
-/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,freekicks=freekicks*10,longshots=longshots,crossing=crossing,vision,secondname,pfre,!srt'},
-/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,age=age,finishing=finishing*0.3,leadership=leadership*0.3,secondname,ppen,!srt'},
-/** 21 **/	{filter:'',		name:'Сыгранность',	koff:'sostav,syg=syg,secondname,position,!srt'},
+/**  1 **/	{filter:'GK', 	name:'GK', 		koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,Фам,сила,sostav'},
+/**  2 **/	{filter:'C SW',	name:'C SW',	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,Фам,сила,sostav'},
+/**  3 **/	{filter:'L DF',	name:'L DF',	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
+/**  4 **/	{filter:'R DF',	name:'R DF',	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
+/**  5 **/	{filter:'L DM',	name:'L DM',	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
+/**  6 **/	{filter:'R DM',	name:'R DM',	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
+/**  7 **/	{filter:'C DF',	name:'C DF',	koff:'от=от*3,вп=вп*3,мщ=мщ*1.5,ск=ск*1.5,гл=гл*1.5,Фам,сила,sostav'},
+/**  8 **/	{filter:'C DM',	name:'C DM',	koff:'вп=вп*3,от=от*3,ви=ви*2,рб=рб*2,!тх=тх*1.5,!пс=пс*1.5,Фам,сила,sostav'},
+/**  9 **/	{filter:'C M',	name:'C M',		koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*1.5,!от=от,!ду=ду*0.5,Фам,сила,sostav'},
+/** 10 **/	{filter:'L M',	name:'L M',		koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
+/** 11 **/	{filter:'R M',	name:'R M',		koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
+/** 12 **/	{filter:'C AM',	name:'C AM',	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*2,!ду=ду,!др=др,Фам,сила,sostav'},
+/** 13 **/	{filter:'L AM',	name:'L AM',	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
+/** 14 **/	{filter:'R AM',	name:'R AM',	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
+/** 15 **/	{filter:'C FW',	name:'C FW',	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,Фам,сила,sostav'},
+/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdat,Фам,от,ск,!сила'},
+/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdbk,Фам,др,ск,!сила'},
+/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,уг=уг*10,нв=нв*2,ви,Фам,иу,!сила'},
+/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,шт=шт*10,ду=ду,нв=нв,ви,Фам,иш,!сила'},
+/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,взр=взр,уд=уд*0.3,лд=лд*0.3,Фам,пн,!сила'},
+/** 21 **/	{filter:'',		name:'Сыгранность',	koff:'sostav,сыг=сыг,Фам,поз,!сила'},
 ]
 var selected = ''
 	+',1,2'			// линия SW & Gk
@@ -57,8 +57,8 @@ var selected = ''
 
 
 var skillnames = {
-sostav:{rshort:'s',rlong:'в заявке?'},
-flag:{rshort:'f',rlong:'информационный флаг'},
+sostav:{rshort:'зя',rlong:'в заявке?'},
+flag:{rshort:'фл',rlong:'информационный флаг'},
 pfre:{rshort:'иш',rlong:'Исполнители штрафных'},
 pcor:{rshort:'иу',rlong:'Исполнители угловых'},
 ppen:{rshort:'пн',rlong:'Исполнители пенальти'},
@@ -73,7 +73,7 @@ natfull:{rshort:'стр',rlong:'Страна',align:'left'},
 secondname:{rshort:'Фам',align:'left'},
 firstname:{rshort:'Имя',align:'left'},
 age:{rshort:'взр',rlong:'Возраст'},
-id:{rshort:'id',rlong:'id игрока'},
+id:{rshort:'ид',rlong:'id игрока'},
 internationalapps:{rshort:'иСб',rlong:''},
 internationalgoals:{rshort:'гСб',rlong:''},
 contract:{rshort:'кнт',rlong:'Контракт'},
@@ -245,7 +245,8 @@ function getPositions(){
 			pl.id = players[j].id
 			var pkoff = positions[i].koff.split(',')
 			for(h in pkoff){
-				var koff = String(pkoff[h].split('=')[0])//.replace(/\!/g,'')
+				var koff = String(pkoff[h].split('=')[0])
+				if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l)
 				pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
 			}
 			var	pos0 = false
@@ -272,6 +273,7 @@ function getPositions(){
 	}
 }
 function countStrength(plid,pkoff){
+//	debug('countStrength:'+plid+':'+pkoff)
 	var pl = (plid==0 ? players[players.length-1] : players[plid])
 	pkoff = pkoff.split(',')
 	var res = 0
@@ -279,19 +281,22 @@ function countStrength(plid,pkoff){
 		var koff = pkoff[n].split('=')
 		if(koff[1]!=undefined){
 			for(p in pl){
-				if(koff[1].indexOf(p)!=-1 && !isNaN(pl[p])){
+				var p2 = (skillnames[p]!=undefined ? skillnames[p].rshort : ' ')
+				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && !isNaN(pl[p])){
 					var reg = new RegExp(p, "g")
-					var count = koff[1].replace(reg,(plid==0 ? plskillmax : pl[p]))
+					var reg2 = new RegExp(p2, "g")
+					var count = koff[1].replace(reg,(plid==0 ? plskillmax : pl[p])).replace(reg2,(plid==0 ? plskillmax : pl[p]))
+//					debug('p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
 				}
 			}
 		}
-//		debug(count)
 		res += (count==undefined ? 0 : eval(count))
 	}
 	return res
 }
-function Print(val, sn){
-	switch(skillnames[sn.replace(/\!/g,'')].type){
+function Print(val,sn){
+//	debug('Print('+val+','+sn+')')
+	switch(skillnames[sn].type){
 		case 'float':
 			return (val).toFixed(1)
 		case 'value':
@@ -331,8 +336,9 @@ function FillData(nt){
 						p = pp.replace(/\!/g,'')
 						hidden = ' hidden abbr=hidden'
 					}
+//					debug(nt+':'+pp+':'+p)
 					plhtml += '<td'+(skillnames[p].align!=undefined ? ' align='+skillnames[p].align : '')+hidden+'>'+font1
-					plhtml += Print(pl[pp],pp)
+					plhtml += Print(pl[pp],p)
 					plhtml += font2+'</td>'
 					if(head) {
 						headhtml += '<td'+hidden+(skillnames[p]!=undefined && skillnames[p].rlong!=undefined ? ' title="'+skillnames[p].rlong+'"' : '')+'>'
@@ -412,7 +418,9 @@ function fillPosEdit(){
 	html += '<tr align=left><th>Max</th><th>Название</th><th>Фильтр</th><th>Коэффициенты</th></tr>'
 	for(i in positions){
 		var ps = positions[i]
-		if(i>0) html += '<tr valign=top class=back2 height=30><td>'+(ps.num==undefined ? '' : ps.num)+'</td><td>'+ps.name+'</td><td nowrap>'+ps.filter+'</td><td>'+ps.koff+'</td></tr>'
+		if(i>0) {
+			html += '<tr valign=top class=back2 height=30><td>'+(ps.num==undefined ? '' : ps.num)+'</td><td>'+ps.name+'</td><td nowrap>'+ps.filter+'</td><td>'+ps.koff+'</td></tr>'
+		}
 	}
 	html += '</table>'
 	$('div#divedit').html(html)
