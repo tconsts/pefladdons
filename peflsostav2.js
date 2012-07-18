@@ -15,8 +15,7 @@ var data = []
 var plkeys = []
 var players = []
 var pid = []
-var p0 = []
-var pm0 = []
+var stds = {fre:[],cor:[],cap:[],pen:[]}
 var plskillmax = 15
 var tabslist = ''
 var maxtables = 25+10
@@ -40,9 +39,9 @@ var positions = [
 /** 15 **/	{filter:'C FW',	name:'C FW',	koff:'finishing=finishing*3,positioning=positioning*2,pace=pace*2,dribbling=dribbling*1.5,!heading=heading*1.5,!strength=strength*1.5,secondname,srt,sostav'},
 /** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdat,secondname,tackling,pace,!srt'},
 /** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,heading=heading*5,positioning=positioning,strength=strength*0.5,stdbk,secondname,dribbling,pace,!srt'},
-/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,corners=corners*5,crossing=crossing*2,vision,secondname,!srt'},
-/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,freekicks=freekicks*5,longshots=longshots*2,crossing=crossing*2,vision,secondname,!srt'},
-/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,age=age/10,finishing=finishing,leadership=leadership,secondname,!srt'},
+/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,corners=corners*5,crossing=crossing*2,vision,secondname,cor,!srt'},
+/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,freekicks=freekicks*5,longshots=longshots*2,crossing=crossing*2,vision,secondname,fre,!srt'},
+/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,age=age/10,finishing=finishing,leadership=leadership,secondname,pen,!srt'},
 /** 21 **/	{filter:'',		name:'Сыгранность',	koff:'sostav,syg=syg,secondname,position,!srt'},
 ]
 var selected = ''
@@ -60,6 +59,10 @@ var selected = ''
 var skillnames = {
 sostav:{rshort:'s',rlong:'в заявке?'},
 flag:{rshort:'f',rlong:'информационный флаг'},
+fre:{rshort:'иш',rlong:'Исполнители штрафных'},
+cor:{rshort:'иу',rlong:'Исполнители угловых'},
+pen:{rshort:'пн',rlong:'Исполнители пенальти'},
+cap:{rshort:'кп',rlong:'Капитаны'},
 //сс
 school:{rshort:'шкл',rlong:'Школьник'},
 srt:{rshort:'сила',rlong:'В % от идеала (игрок с профами '+plskillmax+')',type:'float'},
@@ -184,23 +187,19 @@ $().ready(function() {
 			}
 			// испольнители штрафных
 			if (tmpkey.indexOf('fre') != -1) {
-
+				stds.fre[tmpvalue] = parseInt(tmpkey.replace('fre',''))
 			}
 			// испольнители угловых
 			if (tmpkey.indexOf('cor') != -1) {
-
-			}
-			// испольнители угловых
-			if (tmpkey.indexOf('cor') != -1) {
-
+				stds.cor[tmpvalue] = parseInt(tmpkey.replace('cor',''))
 			}
 			// испольнители penalty
 			if (tmpkey.indexOf('pen') != -1) {
-
+				stds.pen[tmpvalue] = parseInt(tmpkey.replace('pen',''))
 			}
 			// капитаны
 			if (tmpkey.indexOf('cap') != -1) {
-
+				stds.cap[tmpvalue] = parseInt(tmpkey.replace('cap',''))
 			}
 
 			// собираем z0 (перс задания 1й тактики)
@@ -383,6 +382,7 @@ function getPlayers(){
 			}
 //			if(i==0) debug(k+':'+pid[k].z0at+':'+pid[k].z0bk)
 		}
+		for(k in stds) pl[k] = (stds[k][pl.id]!=undefined ? stds[k][pl.id] : 0)
 		players[pl.id] = pl
 	}
 	//for(i in players[9677]) debug(i+':'+players[9677][i])
