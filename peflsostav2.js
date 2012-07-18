@@ -57,7 +57,7 @@ var selected = ''
 
 
 var skillnames = {
-sostav:{rshort:'зя',rlong:'в заявке?'},
+sostav:{rshort:'зв',rlong:'в заявке?'},
 flag:{rshort:'фл',rlong:'информационный флаг'},
 pfre:{rshort:'иш',rlong:'Исполнители штрафных'},
 pcor:{rshort:'иу',rlong:'Исполнители угловых'},
@@ -419,7 +419,7 @@ function fillPosEdit(){
 	for(i in positions){
 		var ps = positions[i]
 		if(i>0) {
-			html += '<tr valign=top class=back2 height=30><td>'+(ps.num==undefined ? '' : ps.num)+'</td><td>'+ps.name+'</td><td nowrap>'+ps.filter+'</td><td>'+ps.koff+'</td></tr>'
+			html += '<tr valign=top class=back2><td>'+(ps.num==undefined ? '' : ps.num)+'</td><td>'+ps.name+'</td><td nowrap>'+ps.filter+'</td><td>'+ps.koff+'</td></tr>'
 		}
 	}
 	html += '</table>'
