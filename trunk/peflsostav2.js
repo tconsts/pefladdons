@@ -413,17 +413,41 @@ function FillHeaders(){
 	}
 }
 
-function fillPosEdit(){
-	var html = '<table width=98% class=back1 align=center>'
-	html += '<tr align=left><th>Max</th><th>Название</th><th>Фильтр</th><th>Коэффициенты</th></tr>'
-	for(i in positions){
-		var ps = positions[i]
-		if(i>0) {
-			html += '<tr valign=top class=back2><td>'+(ps.num==undefined ? '' : ps.num)+'</td><td>'+ps.name+'</td><td nowrap>'+ps.filter+'</td><td>'+ps.koff+'</td></tr>'
-		}
-	}
+function fillPosEdit(num){
+	var html = ''
+	html += '<table width=100% class=back1><tr valign=top><td width=150 rowspan=5>'
+	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
+	for(i in positions)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
+	html += '</select></td>'
+
+	html += '<th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td><td></td></tr>'
+	html += '<tr><th width=10% align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="40" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"></td><td></td></tr>'
+	html += '<tr><th width=10% align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="40" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"></td><td></td></tr>'
+	html += '<tr><th width=10% align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=koff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td><td></td></tr>'
+	html += '<tr><th width=10% align=right></th><td>'+'</td><td></td></tr>'
 	html += '</table>'
 	$('div#divedit').html(html)
+}
+
+function PosChange(){
+	var selnum = $('#selpos').val()
+	debug('PosChange():'+$('#selpos').val())
+	fillPosEdit(selnum)
+}
+function PosSave(num){
+		// провалидировать поля
+
+		if(num==0) {
+			// добавить в список
+		}
+
+		// сохранить в localStorage
+
+		// пересчитать силу
+
+		// отобразить если выбрана где-то для показа
+
+		fillPosEdit(num)
 }
 
 function chMenu(mid){
@@ -433,7 +457,7 @@ function chMenu(mid){
 			$('th#tdsost,th#tddopt').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
 			$('th#tdedit').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
 			$('table#tablesost, table#tabledopt').hide()
-			fillPosEdit()
+			fillPosEdit(0)
 			$('div#divedit').show()
 			break;
 		case 'tddopt':
@@ -456,7 +480,7 @@ function PrintTables(geturl) {
 	$('td.back3:first').hide()
 
 	var html = '<br>'
-	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px"><tr height=25>'
+	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
 	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
 	html += '<th id=tdsost width=150 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
 	html += '<th id=tddopt width=150 onmousedown="javascript:void(chMenu(\'tddopt\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Доп. таблицы</th>'
@@ -493,7 +517,8 @@ function PrintTables(geturl) {
 	html += ''
 	nm = 26
 	for(i=1;i<=2;i++){
-		html += '<table hidden id=tabledopt width=100% class=back1><tr id=tr'+(i+25)+' class=back2 align=center>'
+		html += '<table id=tabledopt width=100% class=back1 style="display:none;">'
+		html += '<tr id=tr'+(i+25)+' class=back2 align=center>'
 		for(j=1;j<=5;j++){
 			html += PrintTd(nm)
 			nm++
@@ -501,7 +526,7 @@ function PrintTables(geturl) {
 		html += '</tr></table>'
 	}
 
-	html += '<div id=divedit hidden></div>'
+	html += '<div id=divedit style="display:none;"></div>'
 	html += '<br></td></tr></table><br><br>'
 /**/
 	$('td.back4').html(html)
@@ -512,7 +537,7 @@ function PrintTd(num){
 	newhtml += '<table id=htable'+num+' width=100%><tr><td onmousedown="MouseOn(\''+num+'\')">'
 	newhtml +=  '<div id=div'+num+'>'
 	newhtml += 	 '<span id=span'+num+'>&nbsp;</span>'
-	newhtml += 	 '<select hidden id=select'+num+' onchange="FillData(\''+num+'\')">'
+	newhtml += 	 '<select hidden id=select'+num+' onchange="FillData(\''+num+'\')" class=back1 style="border:1px solid">'
 	newhtml += 	 '</select>'
 	newhtml +=  '</div>'
 	newhtml += '</td><td id=links'+num+' align=right hidden>'
