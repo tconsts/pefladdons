@@ -101,7 +101,7 @@ $().ready(function() {
 		$('table:eq(3)').attr('width',$('table:eq(0)').attr('width')-200)
 	}
 
-	fixColors()
+//	fixColors()
 
 	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	cid = parseInt($('td.back4 table:first table td:first').text())
