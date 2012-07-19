@@ -218,6 +218,7 @@ $().ready(function() {
 		getPlayers()
 		getPositions()
 		FillHeaders()
+		fillPosEdit(0)
 	})
 })
 
@@ -415,16 +416,17 @@ function FillHeaders(){
 
 function fillPosEdit(num){
 	var html = ''
-	html += '<table width=100% class=back1><tr valign=top><td width=150 rowspan=5>'
+	html += '<table width=100% class=back1><tr valign=top><td width=150 rowspan=6>'
 	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
 	for(i in positions)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
 	html += '</select></td>'
 
 	html += '<th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td><td></td></tr>'
-	html += '<tr><th width=10% align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="40" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"></td><td></td></tr>'
-	html += '<tr><th width=10% align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="40" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"></td><td></td></tr>'
-	html += '<tr><th width=10% align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=koff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td><td></td></tr>'
-	html += '<tr><th width=10% align=right></th><td>'+'</td><td></td></tr>'
+	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="40" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"></td><td></td></tr>'
+	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="40" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"></td><td></td></tr>'
+	html += '<tr><th align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=koff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td><td></td></tr>'
+	if(deb)	html += '<tr><th class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td><td></td></tr>'
+	html += '<tr><th></th><td></td><td></td></tr>'
 	html += '</table>'
 	$('div#divedit').html(html)
 }
@@ -434,11 +436,17 @@ function PosChange(){
 	debug('PosChange():'+$('#selpos').val())
 	fillPosEdit(selnum)
 }
-function PosSave(num){
+function PosSave(){
+		var num = 2
+
 		// провалидировать поля
+		debug('name='+$('#iname').val())
 
 		if(num==0) {
 			// добавить в список
+		}else{
+			// внести изменения
+			positions[num].name = $('#iname').val()
 		}
 
 		// сохранить в localStorage
@@ -457,7 +465,7 @@ function chMenu(mid){
 			$('th#tdsost,th#tddopt').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
 			$('th#tdedit').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
 			$('table#tablesost, table#tabledopt').hide()
-			fillPosEdit(0)
+//			fillPosEdit(0)
 			$('div#divedit').show()
 			break;
 		case 'tddopt':
