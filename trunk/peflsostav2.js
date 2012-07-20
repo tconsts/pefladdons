@@ -22,27 +22,27 @@ var maxtables = 25+10
 
 var positions = [
 	{						name:'&nbsp;'},
-/**  1 **/	{filter:'GK', 	name:'GK', 		koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,Фам,сила,sostav'},
-/**  2 **/	{filter:'C SW',	name:'C SW',	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,Фам,сила,sostav'},
-/**  3 **/	{filter:'L DF',	name:'L DF',	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
-/**  4 **/	{filter:'R DF',	name:'R DF',	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
-/**  5 **/	{filter:'L DM',	name:'L DM',	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
-/**  6 **/	{filter:'R DM',	name:'R DM',	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
-/**  7 **/	{filter:'C DF',	name:'C DF',	koff:'от=от*3,вп=вп*3,мщ=мщ*1.5,ск=ск*1.5,гл=гл*1.5,Фам,сила,sostav'},
-/**  8 **/	{filter:'C DM',	name:'C DM',	koff:'вп=вп*3,от=от*3,ви=ви*2,рб=рб*2,!тх=тх*1.5,!пс=пс*1.5,Фам,сила,sostav'},
-/**  9 **/	{filter:'C M',	name:'C M',		koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*1.5,!от=от,!ду=ду*0.5,Фам,сила,sostav'},
-/** 10 **/	{filter:'L M',	name:'L M',		koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
-/** 11 **/	{filter:'R M',	name:'R M',		koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
-/** 12 **/	{filter:'C AM',	name:'C AM',	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*2,!ду=ду,!др=др,Фам,сила,sostav'},
-/** 13 **/	{filter:'L AM',	name:'L AM',	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
-/** 14 **/	{filter:'R AM',	name:'R AM',	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
-/** 15 **/	{filter:'C FW',	name:'C FW',	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,Фам,сила,sostav'},
+/**  1 **/	{filter:'GK', 	name:'GK', 		num:0,	koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,Фам,сила,sostav'},
+/**  2 **/	{filter:'C SW',	name:'C SW',	num:0,	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,Фам,сила,sostav'},
+/**  3 **/	{filter:'L DF',	name:'L DF',	num:0,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
+/**  4 **/	{filter:'R DF',	name:'R DF',	num:0,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
+/**  5 **/	{filter:'L DM',	name:'L DM',	num:0,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
+/**  6 **/	{filter:'R DM',	name:'R DM',	num:0,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
+/**  7 **/	{filter:'C DF',	name:'C DF',	num:0,	koff:'от=от*3,вп=вп*3,мщ=мщ*1.5,ск=ск*1.5,гл=гл*1.5,Фам,сила,sostav'},
+/**  8 **/	{filter:'C DM',	name:'C DM',	num:0,	koff:'вп=вп*3,от=от*3,ви=ви*2,рб=рб*2,!тх=тх*1.5,!пс=пс*1.5,Фам,сила,sostav'},
+/**  9 **/	{filter:'C M',	name:'C M',		num:0,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*1.5,!от=от,!ду=ду*0.5,Фам,сила,sostav'},
+/** 10 **/	{filter:'L M',	name:'L M',		num:0,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
+/** 11 **/	{filter:'R M',	name:'R M',		num:0,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
+/** 12 **/	{filter:'C AM',	name:'C AM',	num:0,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*2,!ду=ду,!др=др,Фам,сила,sostav'},
+/** 13 **/	{filter:'L AM',	name:'L AM',	num:0,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
+/** 14 **/	{filter:'R AM',	name:'R AM',	num:0,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
+/** 15 **/	{filter:'C FW',	name:'C FW',	num:0,	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,Фам,сила,sostav'},
 /** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdat,Фам,от,ск,!сила'},
 /** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdbk,Фам,др,ск,!сила'},
 /** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,уг=уг*10,нв=нв*2,ви,Фам,иу,!сила'},
 /** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,шт=шт*10,ду=ду,нв=нв,ви,Фам,иш,!сила'},
 /** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,взр=взр,уд=уд*0.3,лд=лд*0.3,Фам,пн,!сила'},
-/** 21 **/	{filter:'',		name:'Сыгранность',	koff:'sostav,сыг=сыг,Фам,поз,!сила'},
+/** 21 **/	{filter:'',		name:'Сыгранность',	num:0,	koff:'sostav,сыг=сыг,Фам,поз,!сила'},
 ]
 var selected = ''
 	+',1,2'			// линия SW & Gk
@@ -236,43 +236,46 @@ function getPositions(){
 	debug('getPositions()')
 	// TODO: + custom positions(from forum)
 
-
-	for(i=1;i<positions.length;i++){
-		if(positions[i].strmax==undefined) positions[i].strmax = countStrength(0,positions[i].koff)
-		var pls = []
-		var pos = positions[i].filter.split(' ')
-		for(j in players){
-			var pl = {}
-			pl.id = players[j].id
-			var pkoff = positions[i].koff.split(',')
-			for(h in pkoff){
-				var koff = String(pkoff[h].split('=')[0])
-				if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l)
-				pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
-			}
-			var	pos0 = false
-			var pos1 = false
-			var plpos = players[j].position
-			if(pos[1]==undefined) {
-				pos1 = true
-				if(plpos.indexOf(pos[0]) != -1) pos0 = true
-			} else {
-				for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
-				pos1arr = pos[1].split('/')
-				for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
-			}
-			pl.posf = (pos0 && pos1 ? true : false)
-			var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined!=undefined ? '!srt' : ''))
-			if(s!='' && pl[s]!=undefined) pl[s] = (positions[i].strmax==0 ? 0 : (countStrength(j,positions[i].koff)/positions[i].strmax)*100)
-//			debug(positions[i].filter+':'+'/'+positions[i].strmax+'='+pl.srt+'%:'+players[j].secondname)
-
-			pls.push(pl)
-//			if(i==positions.length-1) debug(pl.id+':sostav='+pl.sostav+':str='+pl.srt)
-		}
-		positions[i].pls = pls.sort(sSrt)
-
-	}
+	for(i=1;i<positions.length;i++) countPosition(i)
 }
+
+function countPosition(posnum){
+	var ps = positions[posnum]
+	ps.strmax = countStrength(0,ps.koff)
+	var pls = []
+	var pos = ps.filter.split(' ')
+	for(j in players){
+		var pl = {}
+		pl.id = players[j].id
+		var pkoff = ps.koff.split(',')
+		for(h in pkoff){
+			var koff = String(pkoff[h].split('=')[0])
+			if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l)
+			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
+		}
+		var	pos0 = false
+		var pos1 = false
+		var plpos = players[j].position
+		if(pos[1]==undefined) {
+			pos1 = true
+			if(plpos.indexOf(pos[0]) != -1) pos0 = true
+		} else {
+			for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
+			pos1arr = pos[1].split('/')
+			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
+		}
+		pl.posf = (pos0 && pos1 ? true : false)
+		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined!=undefined ? '!srt' : ''))
+		if(s!='' && pl[s]!=undefined) pl[s] = (ps.strmax==0 ? 0 : (countStrength(j,ps.koff)/ps.strmax)*100)
+//		debug(ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
+
+		pls.push(pl)
+//		if(i==positions.length-1) debug(pl.id+':sostav='+pl.sostav+':str='+pl.srt)
+	}
+	positions[posnum].pls = pls.sort(sSrt)
+	debug('ps.strmax('+posnum+')='+ps.strmax)
+}
+
 function countStrength(plid,pkoff){
 //	debug('countStrength:'+plid+':'+pkoff)
 	var pl = (plid==0 ? players[players.length-1] : players[plid])
@@ -319,7 +322,7 @@ function FillData(nt){
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
 		var html = '<table id=table'+nt+' width=100%>'
 		var head = true
-		var nummax = (positions[np].num==undefined ? positions[np].pls.length : positions[np].num)
+		var nummax = (positions[np].num==0 ? positions[np].pls.length : positions[np].num)
     	for(t=0;t<nummax;t++){
 			var pl = positions[np].pls[t]
 			var plhtml = '<tr align=right'
@@ -402,6 +405,7 @@ function FillHeaders(){
         var sel = false
 		for(j in pid) if(pid[j].p0 == i) sel = true
 
+		$('#select'+i).empty()
 		for(j in positions) $('#select'+i).append('<option value='+j+'>'+positions[j].name+'</option>')
 		var name = positions[0].name
 		$('#span'+i).html(name)
@@ -424,38 +428,44 @@ function fillPosEdit(num){
 	html += '<th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td><td></td></tr>'
 	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="40" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"></td><td></td></tr>'
 	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="40" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"></td><td></td></tr>'
-	html += '<tr><th align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=koff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td><td></td></tr>'
-	if(deb)	html += '<tr><th class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td><td></td></tr>'
+	html += '<tr><th align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td><td></td></tr>'
+	html += '<tr><th class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td><td></td></tr>'
 	html += '<tr><th></th><td></td><td></td></tr>'
 	html += '</table>'
 	$('div#divedit').html(html)
 }
 
 function PosChange(){
-	var selnum = $('#selpos').val()
-	debug('PosChange():'+$('#selpos').val())
+	var selnum = $('#selpos option:selected').val()
+	debug('PosChange():'+selnum)
 	fillPosEdit(selnum)
 }
 function PosSave(){
-		var num = 2
+	var num = $('#selpos option:selected').val()
+	if(num==0) num = positions.length
+	debug('PosSave():'+num)
+	var ps = {
+		name: 	$('#iname').val(),
+		num: 	($('#inum').val() == '' ? 0 : $('#inum').val()),
+		filter: $('#ifilter').val(),
+		koff: 	$('#ikoff').val(),
+	}
+	// провалидировать поля и обновить
+	if(ps.num!=parseInt(ps.num) ||
+		ps.name == '' ||
+		ps.koff == ''){
+			alert('Неправильно введены параметры!')
+			return false
+	}
+	positions[num] = ps
+	countPosition(num)
+	fillPosEdit(num)
+	FillHeaders()
+	StorageSave()
+}
+function StorageSave(){
+	debug('StorageSave()')
 
-		// провалидировать поля
-		debug('name='+$('#iname').val())
-
-		if(num==0) {
-			// добавить в список
-		}else{
-			// внести изменения
-			positions[num].name = $('#iname').val()
-		}
-
-		// сохранить в localStorage
-
-		// пересчитать силу
-
-		// отобразить если выбрана где-то для показа
-
-		fillPosEdit(num)
 }
 
 function chMenu(mid){
@@ -465,7 +475,6 @@ function chMenu(mid){
 			$('th#tdsost,th#tddopt').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
 			$('th#tdedit').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
 			$('table#tablesost, table#tabledopt').hide()
-//			fillPosEdit(0)
 			$('div#divedit').show()
 			break;
 		case 'tddopt':
@@ -480,7 +489,6 @@ function chMenu(mid){
 			$('table#tabledopt, div#divedit').hide()
 			$('table#tablesost').show()
 	}
-
 }
 
 function PrintTables(geturl) {
@@ -521,8 +529,7 @@ function PrintTables(geturl) {
 		html += newtr + '</tr>'
 	}
 	html += '</table>'
-/**/
-	html += ''
+
 	nm = 26
 	for(i=1;i<=2;i++){
 		html += '<table id=tabledopt width=100% class=back1 style="display:none;">'
@@ -533,10 +540,8 @@ function PrintTables(geturl) {
 		}
 		html += '</tr></table>'
 	}
-
 	html += '<div id=divedit style="display:none;"></div>'
 	html += '<br></td></tr></table><br><br>'
-/**/
 	$('td.back4').html(html)
 }
 
