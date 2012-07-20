@@ -390,7 +390,6 @@ function DBConnect(){
 
 function getData(){
 	if(ff){
-		delete globalStorage[location.hostname]['training']
 		var trnnum = 1
 		var x = localStorage['training']
 		debug('Get from GS ')
