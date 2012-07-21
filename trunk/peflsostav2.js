@@ -42,7 +42,7 @@ var positions = [
 /** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,уг=уг*10,нв=нв*2,ви,Фам,иу,!сила'},
 /** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,шт=шт*10,ду=ду,нв=нв,ви,Фам,иш,!сила'},
 /** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,взр=взр,уд=уд*0.3,лд=лд*0.3,Фам,пн,!сила'},
-/** 21 **/	{filter:'',		name:'Сыгранность',	num:0,	koff:'sostav,сыг=сыг,Фам,поз,!сила'},
+/** 21 **/	{filter:'',		name:'Сыгранность',	num:0,	koff:'sostav,сыг=сыг,Фам,Поз,!сила'},
 ]
 var selected = ''
 	+',1,2'			// линия SW & Gk
@@ -65,15 +65,15 @@ ppen:{rshort:'пн',rlong:'Исполнители пенальти'},
 pcap:{rshort:'кп',rlong:'Капитаны'},
 //сс
 school:{rshort:'шкл',rlong:'Школьник?'},
-srt:{rshort:'сила',rlong:'В % от идеала (игрок с профами '+plskillmax+')',type:'float'},
-stdat:{rshort:'са',rlong:'Стандарты атаки'},
-stdbk:{rshort:'со',rlong:'Стандарты обороны'},
+srt:{rshort:'сила',rlong:'В % от идеала (профы '+plskillmax+')',type:'float'},
+stdat:{rshort:'са',rlong:'Идет на стд. атаки'},
+stdbk:{rshort:'со',rlong:'Идет на стд. обороны'},
 nation:{rshort:'кСт',rlong:'Код страны'},
-natfull:{rshort:'стр',rlong:'Страна',align:'left'},
-secondname:{rshort:'Фам',rlong:'Фамилия',align:'left'},
-firstname:{rshort:'Имя',rlong:'Имя',align:'left'},
+natfull:{rshort:'стр',rlong:'Страна',align:'left',nowrap:'1'},
+secondname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
+firstname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
 age:{rshort:'взр',rlong:'Возраст'},
-id:{rshort:'ид',rlong:'id игрока'},
+id:{rshort:'id',rlong:'id игрока'},
 internationalapps:{rshort:'иСб',rlong:'Игр за сборную'},
 internationalgoals:{rshort:'гСб',rlong:'Голов за сборную'},
 contract:{rshort:'кнт',rlong:'Контракт'},
@@ -85,7 +85,7 @@ dribbling:{rshort:'др',rlong:'Дриблинг'},
 finishing:{rshort:'уд',rlong:'Удары'},
 freekicks:{rshort:'шт',rlong:'Штрафные'},
 handling:{rshort:'ру',rlong:'Игра руками'},
-heading:{rshort:'гл',rlong:'Игра головой/Игра на выходах'},
+heading:{rshort:'гл',rlong:'Игра головой/на выходах'},
 leadership:{rshort:'лд',rlong:'Лидерство'},
 longshots:{rshort:'ду',rlong:'Дальние удары'},
 marking:{rshort:'по',rlong:'Персональная опека'},
@@ -101,7 +101,7 @@ workrate:{rshort:'рб',rlong:'Работоспособность'},
 technique:{rshort:'тх',rlong:'Техника'},
 morale:{rshort:'мрл',rlong:'Мораль'},
 form:{rshort:'фрм',rlong:'Форма'},
-position:{rshort:'поз',rlong:'Позиция',align:'left'},
+position:{rshort:'Поз',rlong:'Позиция',align:'left',nowrap:'1'},
 /**
 games
 goals
@@ -134,7 +134,7 @@ vratingav
 training
 /**/
 inj:{rshort:'трв',rlong:'Травма'},
-sus:{rshort:'дск',rlong:'Дисквалификация'},
+sus:{rshort:'дсв',rlong:'Дисквалификация'},
 syg:{rshort:'сыг',rlong:'Сыгранность'},
 /**
 agames
@@ -340,13 +340,16 @@ function FillData(nt){
 						p = pp.replace(/\!/g,'')
 						hidden = ' hidden abbr=hidden'
 					}
+					var skp = skillnames[p]
+					var align = (skp!=undefined && skp.align!=undefined ? ' align='+skp.align : '')
+					var nowrap = (skp!=undefined && skp.nowrap!=undefined ? ' nowrap' : '')
 //					debug(nt+':'+pp+':'+p)
-					plhtml += '<td'+(skillnames[p].align!=undefined ? ' align='+skillnames[p].align : '')+hidden+'>'+font1
+					plhtml += '<td'+align+hidden+nowrap+'>'+font1
 					plhtml += Print(pl[pp],p)
 					plhtml += font2+'</td>'
 					if(head) {
-						headhtml += '<td'+hidden+(skillnames[p]!=undefined && skillnames[p].rlong!=undefined ? ' title="'+skillnames[p].rlong+'"' : '')+'>'
-						headhtml += (skillnames[p]!=undefined && skillnames[p].rshort!=undefined ? skillnames[p].rshort : p)
+						headhtml += '<td'+hidden+(skp!=undefined && skp.rlong!=undefined ? ' title="'+skp.rlong+'"' : '')+'>'
+						headhtml += (skp!=undefined && skp.rshort!=undefined ? skp.rshort : p)
 						headhtml += '</td>'
 					}
 				}
