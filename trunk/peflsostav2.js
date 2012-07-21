@@ -57,25 +57,25 @@ var selected = ''
 
 
 var skillnames = {
-sostav:{rshort:'зв',rlong:'в заявке?'},
-flag:{rshort:'фл',rlong:'информационный флаг'},
+sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
+flag:{rshort:'фл',rlong:'Информационный флаг'},
 pfre:{rshort:'иш',rlong:'Исполнители штрафных'},
 pcor:{rshort:'иу',rlong:'Исполнители угловых'},
 ppen:{rshort:'пн',rlong:'Исполнители пенальти'},
 pcap:{rshort:'кп',rlong:'Капитаны'},
 //сс
-school:{rshort:'шкл',rlong:'Школьник'},
+school:{rshort:'шкл',rlong:'Школьник?'},
 srt:{rshort:'сила',rlong:'В % от идеала (игрок с профами '+plskillmax+')',type:'float'},
 stdat:{rshort:'са',rlong:'Стандарты атаки'},
 stdbk:{rshort:'со',rlong:'Стандарты обороны'},
 nation:{rshort:'кСт',rlong:'Код страны'},
 natfull:{rshort:'стр',rlong:'Страна',align:'left'},
-secondname:{rshort:'Фам',align:'left'},
-firstname:{rshort:'Имя',align:'left'},
+secondname:{rshort:'Фам',rlong:'Фамилия',align:'left'},
+firstname:{rshort:'Имя',rlong:'Имя',align:'left'},
 age:{rshort:'взр',rlong:'Возраст'},
 id:{rshort:'ид',rlong:'id игрока'},
-internationalapps:{rshort:'иСб',rlong:''},
-internationalgoals:{rshort:'гСб',rlong:''},
+internationalapps:{rshort:'иСб',rlong:'Игр за сборную'},
+internationalgoals:{rshort:'гСб',rlong:'Голов за сборную'},
 contract:{rshort:'кнт',rlong:'Контракт'},
 wage:{rshort:'зрп',rlong:'Зарплата'},
 value:{rshort:'ном',rlong:'Номинал',type:'value'},
@@ -420,17 +420,22 @@ function FillHeaders(){
 
 function fillPosEdit(num){
 	var html = ''
-	html += '<table width=100% class=back1><tr valign=top><td width=150 rowspan=6>'
+	html += '<table width=100% class=back1><tr valign=top><td width=150 rowspan=8>'
 	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
 	for(i in positions)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
 	html += '</select></td>'
 
-	html += '<th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td><td></td></tr>'
-	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="40" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"></td><td></td></tr>'
-	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="40" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"></td><td></td></tr>'
-	html += '<tr><th align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td><td></td></tr>'
-	html += '<tr><th class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td><td></td></tr>'
-	html += '<tr><th></th><td></td><td></td></tr>'
+	html += '<th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td>'
+	html += '<td rowspan=8><table width=100%>'
+	for(m in skillnames) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
+	html += '</table></td></tr>'
+	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="40" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"></td></tr>'
+	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="40" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"></td></tr>'
+	html += '<tr><th align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td></tr>'
+	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
+	html += '<tr><th></th><td></td></tr>'
+	html += '<tr><th></th><td></td></tr>'
+	html += '<tr><th></th><td></td></tr>'
 	html += '</table>'
 	$('div#divedit').html(html)
 }
