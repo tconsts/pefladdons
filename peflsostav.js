@@ -4,479 +4,661 @@
 // @description    Display sostav
 // @include        http://*pefl.*/*?sostav
 // @include        http://*pefl.*/*?sostav_n
-// @version			1.2
+// @version        2.0
 // ==/UserScript==
 
-function getPairValue(str,def,delim) {
-	def	= (def ? def : '')
-	delim	= (delim ? delim : '=')
-	arr	= str.split(delim)
-	return (arr[1] == undefined ? def : arr[1])
+deb = (localStorage.debug == '1' ? true : false)
+var debnum = 0
+
+var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+positions = []
+var data = []
+var plkeys = []
+var players = []
+var pid = []
+var stds = {pfre:[],pcor:[],pcap:[],ppen:[]}
+var plskillmax = 15
+var tabslist = ''
+var maxtables = 25+10
+var list = {
+	positions: 'id,filter,name,num,koff'
+}
+var selected = ''
+	+',1,2'			// линия SW & Gk
+	+',3,7,7,7,4'	// линия DF
+	+',5,8,8,8,6'	// линия DM
+	+',10,9,9,9,11'	// линия MF
+	+',13,12,12,12,14'	// линия AM
+	+',15,15,15'		// линия FW
+	+',16,17,18,19,20'	// доп таблицы 1
+	+',21,0,0,0,0'		// доп таблицы 2
+
+var skillnames = {
+sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
+flag:{rshort:'фл',rlong:'Информационный флаг'},
+pfre:{rshort:'иш',rlong:'Исполнители штрафных'},
+pcor:{rshort:'иу',rlong:'Исполнители угловых'},
+ppen:{rshort:'пн',rlong:'Исполнители пенальти'},
+pcap:{rshort:'кп',rlong:'Капитаны'},
+//сс
+school:{rshort:'шкл',rlong:'Школьник?'},
+srt:{rshort:'сила',rlong:'В % от идеала (профы '+plskillmax+')',type:'float'},
+stdat:{rshort:'са',rlong:'Идет на стд. атаки'},
+stdbk:{rshort:'со',rlong:'Идет на стд. обороны'},
+nation:{rshort:'кСт',rlong:'Код страны'},
+natfull:{rshort:'стр',rlong:'Страна',align:'left',nowrap:'1'},
+secondname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
+firstname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
+age:{rshort:'взр',rlong:'Возраст'},
+id:{rshort:'id',rlong:'id игрока'},
+internationalapps:{rshort:'иСб',rlong:'Игр за сборную'},
+internationalgoals:{rshort:'гСб',rlong:'Голов за сборную'},
+contract:{rshort:'кнт',rlong:'Контракт'},
+wage:{rshort:'зрп',rlong:'Зарплата'},
+value:{rshort:'ном',rlong:'Номинал',type:'value'},
+corners:{rshort:'уг',rlong:'Угловые'},
+crossing:{rshort:'нв',rlong:'Навесы'},
+dribbling:{rshort:'др',rlong:'Дриблинг'},
+finishing:{rshort:'уд',rlong:'Удары'},
+freekicks:{rshort:'шт',rlong:'Штрафные'},
+handling:{rshort:'ру',rlong:'Игра руками'},
+heading:{rshort:'гл',rlong:'Игра головой/на выходах'},
+leadership:{rshort:'лд',rlong:'Лидерство'},
+longshots:{rshort:'ду',rlong:'Дальние удары'},
+marking:{rshort:'по',rlong:'Персональная опека'},
+pace:{rshort:'ск',rlong:'Скорость'},
+passing:{rshort:'пс',rlong:'Пас'},
+positioning:{rshort:'вп',rlong:'Выбор позиции'},
+reflexes:{rshort:'ре',rlong:'Реакция'},
+stamina:{rshort:'вн',rlong:'Выносливость'},
+strength:{rshort:'мщ',rlong:'Мощь'},
+tackling:{rshort:'от',rlong:'Отбор'},
+vision:{rshort:'ви',rlong:'Видение'},
+workrate:{rshort:'рб',rlong:'Работоспособность'},
+technique:{rshort:'тх',rlong:'Техника'},
+morale:{rshort:'мрл',rlong:'Мораль'},
+form:{rshort:'фрм',rlong:'Форма'},
+position:{rshort:'Поз',rlong:'Позиция',align:'left',nowrap:'1'},
+/**
+games
+goals
+passes
+mom
+ratingav
+cgames
+cgoals
+cpasses
+cmom
+cratingav
+egames
+egoals
+epasses
+emom
+eratingav
+
+wgames
+wgoals
+wpasses
+wmom
+wratingav
+
+fgames
+fgoals
+fpasses
+fmom
+fratingav
+vratingav
+training
+/**/
+inj:{rshort:'трв',rlong:'Травма'},
+sus:{rshort:'дсв',rlong:'Дисквалификация'},
+syg:{rshort:'сыг',rlong:'Сыгранность'},
+/**
+agames
+agoals
+apasses
+amom
+/**/
 }
 
-function getPairKeyNum(str,delim) {
-	delim = (delim ? delim : '=')
-	arr = str.split(delim)
-	return (isNaN(+arr[0]) ? 0 : +arr[0])
-}
+$().ready(function() {
 
-function getPairKey(str,def,delim) {
-	def	= (def ? def : '')
-	delim	= (delim ? delim : '=')
-	arr	= str.split(delim)
-	return (arr[0] == str ? def : arr[0])
-}
-
-function setCookie(name, value) {
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() + 356); // +1 year
-	if (!name || !value) return false;
-	document.cookie = name + '=' + encodeURIComponent(value) + '; expires='+ exdate.toUTCString() + '; path=/'
-	return true
-}
-function getCookie(name) {
-	    var pattern = "(?:; )?" + name + "=([^;]*);?"
-	    var regexp  = new RegExp(pattern)
-	     
-	    if (regexp.test(document.cookie)) return decodeURIComponent(RegExp["$1"])
-	    return false
+	if(localStorage.selected != undefined){
+		debug('selected from lS')
+		selected = String(localStorage.selected)
 	}
+	selected = selected.split(',')
 
-function sSkills(i, ii) { // По SumSkills (убыванию)
-    if 		(i[0] < ii[0])	return  1
-    else if	(i[0] > ii[0])	return -1
-    else					return  0
+	var geturl = (location.search.substring(1) == 'sostav' ? 'fieldnew3.php' : 'fieldnew3_n.php')
+	PrintTables(geturl)
+	$.get(geturl, {}, function(datatext){
+		debug('geturl')
+		var dataarray = datatext.split('&');
+		var i = 0;
+		var pid_num = 0
+		var check = false
+		while(dataarray[i] != null) {
+			tmparr = dataarray[i].split('=');
+			i++;
+			var tmpkey = tmparr[0];
+			var tmpvalue = tmparr[1];
+			data[tmpkey] = tmpvalue;
+
+			// данные о заявке
+			if (tmpkey.indexOf('pid') != -1) {
+				var tmpnum = parseInt(tmpkey.replace('pid',''))
+//				debug('pid:'+tmpkey+':'+tmpvalue+':'+tmpnum)
+				if(pid[tmpnum]==undefined) pid[tmpnum] = {}
+				pid[tmpnum].pid = tmpvalue;
+			}
+			// изначальная тактика
+			if (tmpkey.indexOf('p0_') != -1) {
+				var tmpnum = parseInt(tmpkey.replace('p0_',''))
+//				debug('p0:'+tmpkey+':'+tmpvalue+':'+tmpnum)
+				pid[tmpnum].p0 = tmpvalue;
+			}
+			// смещения изначальной тактики 
+			if (tmpkey.indexOf('pm0_') != -1) {
+				var tmpnum = parseInt(tmpkey.replace('pm0_',''))
+				pid[tmpnum].pm0 = tmpvalue;
+			}
+			// испольнители штрафных
+			if (tmpkey.indexOf('fre') != -1) {
+				stds.pfre[tmpvalue] = parseInt(tmpkey.replace('fre',''))
+			}
+			// испольнители угловых
+			if (tmpkey.indexOf('cor') != -1) {
+				stds.pcor[tmpvalue] = parseInt(tmpkey.replace('cor',''))
+			}
+			// испольнители penalty
+			if (tmpkey.indexOf('pen') != -1) {
+				stds.ppen[tmpvalue] = parseInt(tmpkey.replace('pen',''))
+			}
+			// капитаны
+			if (tmpkey.indexOf('cap') != -1) {
+				stds.pcap[tmpvalue] = parseInt(tmpkey.replace('cap',''))
+			}
+
+			// собираем z0 (перс задания 1й тактики)
+			if (tmpkey.indexOf('z0') != -1) {
+				var tmpnum = parseInt(tmpkey.replace('z0_',''))
+				pid[tmpnum].z0bk = (tmpvalue>=513 ? true : false)
+				pid[tmpnum].z0at = ((tmpvalue>=213 && tmpvalue<500) || tmpvalue>=700 ? true : false)
+			}
+
+			// ключи скилов игроков
+			if(tmpkey == 'nation0') check = true
+			if(tmpkey == 'nation1') check = false
+			if(check) plkeys.push(tmpkey.replace('0',''))
+		}
+//		for(h in pid) debug(h+':'+pid[h].z0at+':'+pid[h].z0bk)
+		getPlayers()
+		GetData('positions')
+	})
+})
+
+function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+
+function sSrt(i, ii) { // по убыванию
+	var s = (i.srt!=undefined ? 'srt' : '!srt')
+    if 		(i[s] < ii[s])	return  1
+    else if	(i[s] > ii[s])	return -1
+    return  0
 }
 
-function getValue(pname,cname,curVal){
-	// Загружаем куки
-	var currentCookie = getCookie(cname);
-	// если куки существует - используем ее в промпте
-	if (currentCookie!=false ) curVal = currentCookie;
-	var retVal = prompt('Введите новые значения для ' + pname + ', варианты(через запятую без пробелов):\n \ s,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСБ,кнт,зрп,ном,пн,иш,иу,кп,идл,ИдлПоз\n уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,трв,дск,сыг\n\nЗначения до ":", имя и кол-во записей в таблице (0=все) \n коэф. скилов для сортировки задавать через "=" и операция, например лд=*2\n! - не показывать, f - флаг состояния, s - попадания в состав', curVal);
+function GetData(dataname){
+	// TODO: + custom positions(from forum)
 
-	if (retVal != null) setCookie(cname,retVal)
-	return true
-	} 
+	debug(dataname+':GetData')
+	var data = []
+	var head = list[dataname].split(',')
+	var text1 = String(localStorage[dataname])
+	if (text1 != 'undefined' && text1 != 'null'){
+		var text = text1.split('#')
+		var numpos = 0
+		for (i in text) {
+			var x = text[i].split('|')
+			var curt = {}
+			var num = 0
+			for(j in head){
+				curt[head[j]] = (x[num]!=undefined ? x[num] : '')
+				num++
+			}
+			data[numpos] = curt
+			numpos++
+		}
+	}else{
+		data = [
+			{filter:'',		name:'&nbsp;',	num:0,	koff:''},
+/**  1 **/	{filter:'GK', 	name:'GK', 		num:0,	koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,Фам,сила,sostav'},
+/**  2 **/	{filter:'C SW',	name:'C SW',	num:0,	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,Фам,сила,sostav'},
+/**  3 **/	{filter:'L DF',	name:'L DF',	num:0,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
+/**  4 **/	{filter:'R DF',	name:'R DF',	num:0,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
+/**  5 **/	{filter:'L DM',	name:'L DM',	num:0,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
+/**  6 **/	{filter:'R DM',	name:'R DM',	num:0,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
+/**  7 **/	{filter:'C DF',	name:'C DF',	num:0,	koff:'от=от*3,вп=вп*3,мщ=мщ*1.5,ск=ск*1.5,гл=гл*1.5,Фам,сила,sostav'},
+/**  8 **/	{filter:'C DM',	name:'C DM',	num:0,	koff:'вп=вп*3,от=от*3,ви=ви*2,рб=рб*2,!тх=тх*1.5,!пс=пс*1.5,Фам,сила,sostav'},
+/**  9 **/	{filter:'C M',	name:'C M',		num:0,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*1.5,!от=от,!ду=ду*0.5,Фам,сила,sostav'},
+/** 10 **/	{filter:'L M',	name:'L M',		num:0,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
+/** 11 **/	{filter:'R M',	name:'R M',		num:0,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
+/** 12 **/	{filter:'C AM',	name:'C AM',	num:0,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*2,!ду=ду,!др=др,Фам,сила,sostav'},
+/** 13 **/	{filter:'L AM',	name:'L AM',	num:0,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
+/** 14 **/	{filter:'R AM',	name:'R AM',	num:0,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
+/** 15 **/	{filter:'C FW',	name:'C FW',	num:0,	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,Фам,сила,sostav'},
+/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdat,Фам,от,ск,!сила'},
+/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdbk,Фам,др,ск,!сила'},
+/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,уг=уг*10,нв=нв*2,ви,Фам,иу,!сила'},
+/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,шт=шт*10,ду=ду,нв=нв,ви,Фам,иш,!сила'},
+/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,взр=взр,уд=уд*0.3,лд=лд*0.3,Фам,пн,!сила'},
+/** 21 **/	{filter:'',		name:'Сыгранность',	num:0,	koff:'sostav,сыг=сыг,Фам,Поз,!сила'},
+		]
+	}
+	switch (dataname){
+		case 'positions':  positions = data;break
+		default: return false
+	}
+	for(i=1;i<positions.length;i++) {
+		countPosition(i)
+	}
+	FillHeaders()
+	fillPosEdit(0)
+}
 
-function ShowPos(pfarr, psarr){
-	var fonselectpos= ' bgcolor=#A3DE8F'
-	var fonschool 	= ' bgcolor=#729FCF'
-	var fonmorale 	= ' bgcolor=#E9B96E'
-	var fonform 	= ' bgcolor=#FCE94F'
-	var fonsus 		= ' bgcolor=#A40000'
-	var foninj 		= ' bgcolor=#EF2929'
-	var fonsostav	= ' bgcolor=#FFFFFF'
-	var fоnsostavw	= ' bgcolor=red'
-	var fоnzamena	= ' bgcolor=#BABDB6'
-	var table2	= 'table width=100% height=100%'
-	var tr2		= 'tr'
-	var tr2f	= 'tr'
-	var td2		= 'td'
-	var td2f	= 'td'
-	var html	= ''
-	var colspan = pfarr[0].length
-	if (pfarr[1] && pfarr[1]!='')	table2 += ' bgcolor=#C9F8B7'
-	else 							table2 += ' bgcolor=#A3DE8F'
- 
-	var pf = pfarr.sort(sSkills)
-	var num = (psarr[4]==0 ? pfarr.length : psarr[4])
+function SaveData(dataname){
+	debug(dataname+':SaveData')
+	var data = []
+	var head = list[dataname].split(',')
+	switch (dataname){
+		case 'positions':	data = positions;		break
+		default: return false
+	}
+	var text = ''
+	for (var i in data) {
+		text += (text!='' ? '#' : '')
+		if(typeof(data[i])!='undefined') {
+			var dti = data[i]
+			var dtid = []
+			for(var j in head){
+				dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+			}
+			text += dtid.join('|')
+		}
+	}
+	localStorage[dataname] = text
+}
 
-	html+='<'+table2+'>'
-	var cnum =0;
-	for (var i in pf) {
-		var pfi0 = pf[i][0]
-		td2f = td2
-		tr2f = tr2
-		if (i==0) html += '<'+tr2+'><th colspan='+colspan+'><a href="javascript:void(getValue(\''+psarr[0]+'\',\''+psarr[1]+'\',\''+psarr[0]+','+psarr[4]+':'+psarr[5]+'\'))">' + psarr[0] + '</a></th></tr>'
+function countPosition(posnum){
+	var ps = positions[posnum]
+	ps.strmax = countStrength(0,ps.koff)
+	var pls = []
+	var pos = ps.filter.split(' ')
+	for(j in players){
+		var pl = {}
+		pl.id = players[j].id
+		var pkoff = ps.koff.split(',')
+		for(h in pkoff){
+			var koff = String(pkoff[h].split('=')[0])
+			if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l)
+			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
+		}
+		var	pos0 = false
+		var pos1 = false
+		var plpos = players[j].position
+		if(pos[1]==undefined) {
+			pos1 = true
+			if(plpos.indexOf(pos[0]) != -1) pos0 = true
+		} else {
+			for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
+			pos1arr = pos[1].split('/')
+			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
+		}
+		pl.posf = (pos0 && pos1 ? true : false)
+		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined!=undefined ? '!srt' : ''))
+		if(s!='' && pl[s]!=undefined) pl[s] = (ps.strmax==0 ? 0 : (countStrength(j,ps.koff)/ps.strmax)*100)
+//		debug(ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
 
-		for (var j in pf[0]){
-			var pf0j = String(pf[0][j])
-			var pfij = pf[i][j]
-			if (pf0j.replace(/!/g,'') == 's'){
-				switch (+pfij){
-					case 1:  tr2f += fоnzamena;break
-					case 2:  tr2f += fonsostav;break
-					case 3:  tr2f += fоnsostavw;break
-					default: tr2f += ''
+		pls.push(pl)
+//		if(i==positions.length-1) debug(pl.id+':sostav='+pl.sostav+':str='+pl.srt)
+	}
+	positions[posnum].pls = pls.sort(sSrt)
+	debug('ps.strmax('+posnum+')='+ps.strmax)
+}
+
+function countStrength(plid,pkoff){
+//	debug('countStrength:'+plid+':'+pkoff)
+	var pl = (plid==0 ? players[players.length-1] : players[plid])
+	pkoff = pkoff.split(',')
+	var res = 0
+	for(n in pkoff){
+		var koff = pkoff[n].split('=')
+		if(koff[1]!=undefined){
+			for(p in pl){
+				var p2 = (skillnames[p]!=undefined ? skillnames[p].rshort : ' ')
+				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && !isNaN(pl[p])){
+					var reg = new RegExp(p, "g")
+					var reg2 = new RegExp(p2, "g")
+					var count = koff[1].replace(reg,(plid==0 ? plskillmax : pl[p])).replace(reg2,(plid==0 ? plskillmax : pl[p]))
+//					debug('p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
 				}
 			}
 		}
-		if (cnum<=num && (isNaN(pfi0) || pfi0>-10000)) {
-			html += '<'+tr2f+'>';
-			for (var j=0;j<pf[i].length;j++) {
-				var pf0j = String(pf[0][j])
-				var pfij = pf[i][j]
-				if (pf0j.replace(/!/g,'') == 'f'){
-					switch (+pfij){
-						case 1:  td2f += foninj;break;		//травма
-						case 2:  td2f += fonsus;break;		//дисква
-						case 3:  td2f += fonform;break;		//форма
-						case 4:  td2f += fonmorale;break;	//мораль
-						case 5:  td2f += fonschool;break;	//школяр
-						default: td2f += ''
+		res += (count==undefined ? 0 : eval(count))
+	}
+	return res
+}
+function Print(val,sn){
+//	debug('Print('+val+','+sn+')')
+	switch(skillnames[sn].type){
+		case 'float':
+			return (val).toFixed(1)
+		case 'value':
+			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'м'
+			else if(val==0) return '??'
+			else return parseInt(val/1000)+'т'
+		default:
+			return val
+	}
+}
+
+function FillData(nt){
+	$('#table'+nt).remove()
+	var np = $('#select'+nt+' option:selected').val()
+//	debug('FillData('+nt+'):'+np)
+/**/
+	if(np!=0){
+		var selpl = 0
+		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
+		var html = '<table id=table'+nt+' width=100%>'
+		var head = true
+		var nummax = (positions[np].num==0 ? positions[np].pls.length : positions[np].num)
+    	for(t=0;t<nummax;t++){
+			var pl = positions[np].pls[t]
+			var plhtml = '<tr align=right'
+			plhtml += (!pl.posf && selpl!=pl.id ? ' hidden abbr=wrong' : '')
+			plhtml += (selpl==pl.id || (positions[np].filter == '' && pl.sostav==2) ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''))
+			plhtml += '>'
+			var font1 = (!pl.posf ? '<font color=red>' : '')
+			var font2 = (!pl.posf ? '</font>' : '')
+			if(head) var headhtml = '<tr align=center>'
+			for(pp in pl) {
+				if(pp!='posf' && pp!='sostav' && pp!='id'){
+					var hidden = ''
+					var p = pp
+					if(pp.indexOf('!')!=-1){
+						p = pp.replace(/\!/g,'')
+						hidden = ' hidden abbr=hidden'
 					}
-					if (i>0) pfij = ''
-				}
-    			if (pf0j.search('!') == -1){
-					html += '<'+(pf0j == 'f' ? td2f : td2)+'>'
-					switch (pfij){
-						case 'f':	html += '';break;
-						default:	html += String(pfij).fontsize(1)
+					var skp = skillnames[p]
+					var align = (skp!=undefined && skp.align!=undefined ? ' align='+skp.align : '')
+					var nowrap = (skp!=undefined && skp.nowrap!=undefined ? ' nowrap' : '')
+//					debug(nt+':'+pp+':'+p)
+					plhtml += '<td'+align+hidden+nowrap+'>'+font1
+					plhtml += Print(pl[pp],p)
+					plhtml += font2+'</td>'
+					if(head) {
+						headhtml += '<td'+hidden+(skp!=undefined && skp.rlong!=undefined ? ' title="'+skp.rlong+'"' : '')+'>'
+						headhtml += (skp!=undefined && skp.rshort!=undefined ? skp.rshort : p)
+						headhtml += '</td>'
 					}
-					html += '</td>'
 				}
 			}
-			html += '</tr>'
+			plhtml += '</tr>'
+			if(head) headhtml += '</tr>'
+			html += (head ? headhtml : '') + plhtml
+			head = false
 		}
-		cnum++
+		html += '</table>'
+		$('#htable'+nt).after(html)
+	}
+	MouseOff(nt)
+/**/
+}
+
+function getPlayers(){
+	var numPlayers = parseInt(data['n'])
+	debug('numPlayers:'+numPlayers)
+	for(i=0;i<numPlayers;i++){
+		var pl = {}
+		for(j in plkeys) {
+			var name = plkeys[j]
+			var val = data[name+i]
+			switch (name){
+				case 'contract':
+					val = (parseInt(val)==0 ? 21-parseInt(data['age'+i]): parseInt(val)); break;
+				case 'wage':
+					val = (parseInt(val)==0 ? 100 : parseInt((val).replace(/\,/g,''))); break;
+				case 'value':
+					if(parseInt(val)==0) pl.school = true // значит это школьник!
+					val = parseInt((val).replace(/\,/g,''));break;
+//				default:
+			}
+			pl[name] = val
+		}
+		pl.sostav = 0
+		for(k in pid) {
+			if(pid[k].pid==pl.id){
+				pl.sostav = (k<12 ? 2 : 1)
+				pl.stdat = (pid[k].z0at ? '*' : '')
+				pl.stdbk = (pid[k].z0bk ? '*' : '')
+			}
+//			if(i==0) debug(k+':'+pid[k].z0at+':'+pid[k].z0bk)
+		}
+		for(k in stds) pl[k] = (stds[k][pl.id]!=undefined ? stds[k][pl.id] : '')
+		players[pl.id] = pl
+	}
+	//for(i in players[9677]) debug(i+':'+players[9677][i])
+}
+
+function FillHeaders(){
+	debug('FillHeaders():'+maxtables)
+	for(i=1;i<=maxtables;i++){
+//		if(i<4)	for(j in pid) debug(i+':'+j+':pid='+pid[j].pid+':p0='+pid[j].p0)
+        var sel = false
+		for(j in pid) if(pid[j].p0 == i) sel = true
+
+		$('#select'+i).empty()
+		for(j in positions) $('#select'+i).append('<option value='+j+'>'+positions[j].name+'</option>')
+		var name = positions[0].name
+		$('#span'+i).html(name)
+		if(positions[selected[i]] !=undefined && positions[selected[i]].name != undefined) {
+			name = positions[selected[i]].name
+		}
+		if ((sel || i>25) && selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
+		if(sel) $('td#td'+i).attr('class','back2')
+		FillData(i)
+	}
+}
+
+function fillPosEdit(num){
+	var html = ''
+	html += '<table width=100% class=back1><tr valign=top><td width=150>'
+	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
+	for(i in positions)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
+	html += '</select></td>'
+	html += '<td><table width=100%><tr><th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td>'
+	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="40" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"></td></tr>'
+	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="40" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"></td></tr>'
+	html += '<tr><th align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td></tr>'
+	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
+	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сбросить</th><td></td></tr>'
+	html += '</table></td>'
+	html += '<td><table width=100% align=top>'
+	for(m in skillnames) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
+	html += '</table></td></tr>'
+	html += '</table>'
+	$('div#divedit').html(html)
+}
+
+function PosChange(){
+	var selnum = $('#selpos option:selected').val()
+	debug('PosChange():'+selnum)
+	fillPosEdit(selnum)
+}
+function PosDel(){
+	delete localStorage.positions
+	chMenu('tdsost')
+	GetData('positions')
+}
+
+function PosSave(){
+	var num = $('#selpos option:selected').val()
+	if(num==0) num = positions.length
+	debug('PosSave():'+num)
+	var ps = {
+		name: 	$('#iname').val(),
+		num: 	($('#inum').val() == '' ? 0 : $('#inum').val()),
+		filter: $('#ifilter').val(),
+		koff: 	$('#ikoff').val(),
+	}
+	// провалидировать поля и обновить
+	if(ps.num!=parseInt(ps.num) ||
+		ps.name == '' ||
+		ps.koff == ''){
+			alert('Неправильно введены параметры!')
+			return false
+	}
+	positions[num] = ps
+	countPosition(num)
+	chMenu('tdsost')
+	fillPosEdit(num)
+	FillHeaders()
+	SaveData('positions')
+}
+
+function chMenu(mid){
+	debug('chMenu('+mid+')')
+	switch (mid){
+		case 'tdedit':
+			$('th#tdsost,th#tddopt').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tdedit').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
+			$('table#tablesost, table#tabledopt').hide()
+			$('div#divedit').show()
+			break;
+		case 'tddopt':
+			$('th#tdsost,th#tdedit').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tddopt').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
+			$('table#tablesost, div#divedit').hide()
+			$('table#tabledopt').show()
+			break;
+		default:
+			$('th#tdedit,th#tddopt').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tdsost').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
+			$('table#tabledopt, div#divedit').hide()
+			$('table#tablesost').show()
+	}
+}
+
+function PrintTables(geturl) {
+	debug('PrintTables()')
+	$('td.back3:first').hide()
+
+	var html = '<br>'
+	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
+	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
+	html += '<th id=tdsost width=150 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
+	html += '<th id=tddopt width=150 onmousedown="javascript:void(chMenu(\'tddopt\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Доп. таблицы</th>'
+	html += '<th id=tdedit width=150 onmousedown="javascript:void(chMenu(\'tdedit\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Настроить кофы</th>'
+	html += '<td style="border-bottom:1px solid;">&nbsp;</td><tr>'
+	html += '<tr><td style="border-left:1px solid;border-right:1px solid;border-bottom:1px solid;" colspan=5>'
+	html += '<br><table id=tablesost width=100% class=back1>' //#C9F8B7	#A3DE8F
+	var nm = 25
+	for(i=1;i<8;i++){
+		html += '<tr id=tr'+i+' bgcolor=#BFDEB3>'
+		var newtr = ''
+		for(j=1;j<6;j++){
+			var htmltd = ''
+			if(i==1 && j==5) {
+				htmltd += '<td valign=center height=90 class=back1 align=center>'
+				htmltd += '<img height=90 src=/system/img/'
+				if(geturl=='fieldnew3_n.php') htmltd += (isNaN(parseInt(localStorage.myintid)) ? 'g/int.gif' : 'flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
+				else htmltd += (isNaN(parseInt(localStorage.myteamid)) ? 'g/team.gif' : 'club/'+localStorage.myteamid+'.gif')+'>'
+				htmltd += '</td>'				
+			} else if (i==1 && j==1){
+				htmltd += '<td valign=top height=90 class=back1 align=center>'+ShowHelp()+'</td>'
+			} else if (i>5 && j!=3){
+				htmltd += '<td valign=top height=90 class=back1></td>'
+			} else {
+				htmltd += PrintTd(nm)
+				nm--
+			}
+			newtr = htmltd + newtr
+		}
+		html += newtr + '</tr>'
 	}
 	html += '</table>'
-	return html
+
+	nm = 26
+	for(i=1;i<=2;i++){
+		html += '<table id=tabledopt width=100% class=back1 style="display:none;">'
+		html += '<tr id=tr'+(i+25)+' class=back2 align=center>'
+		for(j=1;j<=5;j++){
+			html += PrintTd(nm)
+			nm++
+		}
+		html += '</tr></table>'
+	}
+	html += '<div id=divedit style="display:none;"></div>'
+	html += '<br></td></tr></table><br><br>'
+	$('td.back4').html(html)
+}
+
+function PrintTd(num){
+	var newhtml = '<td valign=top width=20% height=90 id=td'+num+'>'
+	newhtml += '<table id=htable'+num+' width=100%><tr><td onmousedown="MouseOn(\''+num+'\')">'
+	newhtml +=  '<div id=div'+num+'>'
+	newhtml += 	 '<span id=span'+num+'>&nbsp;</span>'
+	newhtml += 	 '<select hidden id=select'+num+' onchange="FillData(\''+num+'\')" class=back1 style="border:1px solid">'
+	newhtml += 	 '</select>'
+	newhtml +=  '</div>'
+	newhtml += '</td><td id=links'+num+' align=right hidden>'
+	newhtml +=  '<a href="javascript:void(showAll(\''+num+'\'))">*</a>'
+	newhtml += '</td></tr></table>'
+	newhtml += '</td>'
+	return newhtml
+}
+
+function showAll(nt){
+	if($('table#table'+nt+' tr[abbr*=wrong]:first').is(':visible')
+		||$('table#table'+nt+' td[abbr*=hidden]:first').is(':visible')) {
+			$('table#table'+nt+' tr[abbr*=wrong]').hide()
+			$('table#table'+nt+' td[abbr*=hidden]').hide()
+	} else{
+			$('table#table'+nt+' tr[abbr*=wrong]').show()
+			$('table#table'+nt+' td[abbr*=hidden]').show()
+	}
+}
+
+function MouseOn(num){
+//	if($('#select'+num).is(':visible'))
+		$('#span'+num).hide()
+		$('#links'+num).hide()
+		$('#select'+num).show().select()
+}
+function MouseOff(num){
+	if($('#select'+num).val()!=0) {
+		$('#span'+num).html('<b>'+$('#select'+num+' option:selected').text()+'</b>')
+		$('#links'+num).show()
+	} else {
+		$('#span'+num).html(positions[0].name)
+	}
+	$('#select'+num).hide()
+	$('#span'+num).show()
+
 }
 
 function ShowHelp(){
 	var html = ''
-	html += '<table bgcolor=#A3DE8F>'
+	html += '<table class=back2>'
 	html += '<tr><th colspan=4>'+'HELP'.fontsize(1)+'</th></tr>'
 	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'основа'.fontsize(1)+'</td>'
-	html += '<td bgcolor=#BABDB6 colspan=2>'+'замена'.fontsize(1)+'</td></tr>'
-	html += '<tr bgcolor=red><td colspan=4>'+'не своя позиция'.fontsize(1)+'</td></tr>'
+	html += '<td bgcolor=#BABDB6 colspan=2>'+'в заявке'.fontsize(1)+'</td></tr>'
+	html += '<tr><td colspan=4><font color=red size=1>не своя позиция</font></td></tr>'
 	html += '<tr><td bgcolor=#EF2929></td><td>'+'трв'.fontsize(1)+'</td>'
 	html += '<td bgcolor=#A40000></td><td>'+'дск'.fontsize(1)+'</td></tr>'
 	html += '<tr><td bgcolor=#FCE94F></td><td>'+'фрм<90'.fontsize(1)+'</td>'
 	html += '<td bgcolor=#E9B96E></td><td>'+'мрл<80'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor=#729FCF></td><td>'+'шкл'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor=#729FCF></td><td>'+'шкл'.fontsize(1)+'</td>'
+	html += '<td bgcolor=#green></td><td>'+'чужой'.fontsize(1)+'</td></tr>'
 	html += '</table>'
 	return html
 }
-
-$().ready(function() {
-	var geturl = (location.search.substring(1) == 'sostav' ? 'fieldnew3.php' : 'fieldnew3_n.php')
-	var text = ''
-	var posfilter = []
-	var forumcode = []
-	var poss = [['','','',''],
-		['GK','skillsgk',  '', 'GK',0,				'!сст,!s=*0,ре=*2,вп=*2,вх=*2,ру=*1.5,мщ=*1.5,ск=*1,пс=*0.5,f=*0,Фам'],
-		['SW(либеро)','skillssw',  'C','SW',0,		'!сст,!s=*0,от=*2,вп=*2,гл=*1.6,ск=*1.5,мщ=*1.4,f=*0,Фам'],
-		['L DF','skillsldf', 'L','DF',0,			'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб=*1,f=*0,Фам'],
-		['C DF(защитник)','skillslcdf','C','DF',0,	'!сст,!s=*0,от=*3,мщ=*1.7,вп=*1.5,ск=*1.3,f=*0,Фам'],
-		['C DF(персональщик)','skillsccdf','C','DF',0,'!сст,!s=*0,по=*3,от=*3,мщ=*1.7,вп=*1.5,ск=*1.3,f=*0,Фам'],
-		['C DF(головастик)','skillsrcdf','C','DF',0,'!сст,!s=*0,гл=*3,вп=*2.1,от=*2,мщ=*1.9,ск=*1.3,ви=*1,f=*0,Фам'],
-		['R DF','skillsrdf', 'R','DF',0,			'!сст,!s=*0,от=*3,вп=*1.5,пс=*1.5,ск=*1.3,нв=*1.3,рб=*1,f=*0,Фам'],
-		['L DM','skillsldm', 'L','DM',0,			'!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп=*1,ск=*1,ви=*1,f=*0,Фам'],
-		['C DM(стоппер)','skillslcdm','C','DM',0,	'!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви=*1,тх=*1,f=*0,Фам'],
-		['C DM(персональщик)','skillsccmd','C','DM',0,'!сст,!s=*0,по=*3,от=*2.5,вп=*1.5,мщ=*1.5,ск=*1,f=*0,Фам'],
-		['C DM(стоппер)','skillsrcdm','C','DM',0,	'!сст,!s=*0,от=*2.5,пс=*2.5,гл=*2,вп=*1.5,мщ=*1.5,ви=*1,тх=*1,f=*0,Фам'],
-		['R DM','skillsrdm', 'R','DM',0,			'!сст,!s=*0,от=*2.5,нв=*2,рб=*2,пс=*2,вп=*1,ск=*1,ви=*1,f=*0,Фам'],
-		['L MF','skillslmf', 'L','M',0,				'!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам'],
-		['C MF(дальнобойщик)','skillslcmf','C','M',0,'!сст,!s=*0,ду=*3,пс=*2,тх=*2,уд=*2,ви=*1.5,др=*1.5,f=*0,Фам'],
-		['C MF(диспетчер)','skillsccmf','C','M',0,	'!сст,!s=*0,ви=*3,пс=*2,тх=*2,ду=*1.5,др=*1.5,f=*0,Фам'],
-		['C MF(стоппер)','skillsrcmf','C','M',0,	'!сст,!s=*0,от=*2.5,вп=*2,пс=*2,тх=*2,ви=*1.5,f=*0,Фам'],
-		['R MF','skillsrmf', 'R','M',0,				'!сст,!s=*0,нв=*2.5,тх=*2,др=*2,ви=*2,пс=*2,f=*0,Фам'],
-		['L AM','skillslam', 'L','AM',0,			'!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=*2,ви=*1.5,пс=*1.5,f=*0,Фам'],
-		['C AM(дальнобойщик)','skillslcam','C','AM',0,'!сст,!s=*0,ду=*3,пс=*2,тх=*2,уд=*2,ви=*1.5,др=*1.5,f=*0,Фам'],
-		['C AM(диспетчер)','skillsccam','C','AM',0,	'!сст,!s=*0,ви=*3,пс=*2,тх=*2,др=*2,ду=*1,f=*0,Фам'],
-		['C AM(оттянутый FW)','skillsrcam','C','AM',0,'!сст,!s=*0,тх=*2.5,др=*2.5,уд=*2,ду=*2,ви=*1,пс=*1,f=*0,Фам'],
-		['R AM','skillsram', 'R','AM',0,			'!сст,!s=*0,др=*2.5,нв=*2.5,тх=*2,уд=*2,ви=*1.5,пс=*1.5,f=*0,Фам'],
-		['C FW(офсайды)','skillslcfw','C','FW',0,	'!сст,!s=*0,вп=*3,уд=*2,ск=*2,тх=*1.5,др=*1,f=*0,Фам'],
-		['C FW(дриблер)','skillsccfw','C','FW',0,	'!сст,!s=*0,др=*3,уд=*2,тх=*2,ск=*1,f=*0,Фам'],
-		['C FW(головастик)','skillsrcfw','C','FW',0,'!сст,!s=*0,гл=*3,уд=*2,мщ=*2,вп=*2,ск=*1,f=*0,Фам'],
-		['Стд. атаки','skillsstda','','',18,'!сст,!s=*100,гл=*5,вп=*1,мщ=*1,ск=*0.5,са,f=*0,Фам,ск=*0,от=*0'],
-		['Стд. обороны','skillsstdd','','',18,'!сст,!s=*100,гл=*5,вп=*1,мщ=*1,ск=*0.5,со,f=*0,Фам,ск=*0,др=*0,уд=*0'],
-		['Исп. угловых','skillscor','','',18,'!сст,!s=*100,уг=*1.5,нв=*1,ви=*1,f=*0,Фам,иу=*0'],
-		['Исп. штрафных','skillsfre','','',18,'!сст,!s=*100,шт=*2,нв=*1.1,ду=*1.2,ви=*1.1,f=*0,Фам,иш=*0'],
-		['Исп. пенальти','skillspen','','',18,'!сст,!s=*100,взр=/10,уд,лд,f=*0,Фам,пн=*0'],
-		['Капитаны','skillscap','','',18,'!сст,!s=*100,лд=*3-5*3,рб=/2,мрл=/2-45,фрм=-90,взр=*5/10-23*5/10+10,орт=*4-6*4,f=*0,Фам,кп=*0'],
-		['Команда','skillstm','','',0,'!сст,ном=*1,сс=*0,стр,взр=*0,f=*0,Фам'],
-		['Физ. состояние','skillsc1','','',0,'!сст,!s=*0,дск=*-100,трв=*-100,фрм=-100,мрл=/2-50,f=*0,Фам'],
-		['Зарплаты','skillsc2','','',0,'!сст,зрп=*1,кнт=*0.1,f=*0,Фам'],
-		['Сыгранность','skillsc3','','',0,'!сст,!s=*0,Фам,f=*0,поз,сыг=*1'],
-		['Идеальная позиция(%)','skillsc4','','',0,'!сст,Фам,идл,ИдлПоз'],
-		['GK скилы','skillsc5','','',0,'!сст,!s=*0,ре=*2,ру=*1.5,вп=*2,вх=*2,f=*0,Фам'],
-	]
-
-	// прописывается заголовок в posfilter из poss
-	for (var i in poss) {
-		var psi = poss[i]
-		// если есть такая куки, то данные берем оттуда
-		if (getCookie(psi[1])) {
-			var x = getCookie(psi[1])
-			var y = getPairKey(x,'none',':')
-			if (y != 'none' && y != ''){
-				psi[0] = getPairKey(y,psi[0],',').replace(/ /g,'&nbsp;')
-				psi[4] = +getPairValue(y,psi[4],',')
-			}
-			psi[5] = getPairValue(x,psi[5],':')
-		}
-		posfilter[i] = [psi[5].split(',')]
-
-		//вырезаем коффициенты и операции
-		var pfi0 = posfilter[i][0]
-		for (var p in pfi0) posfilter[i][0][p] = getPairKey(pfi0[p],pfi0[p])
-	}
-	$('.back4').html('<table border="0" cellspacing="0" cellpadding="10" width="100%" height="100%"><tr><td valign="top" class="contentframer"></td></tr></table>')
-
-	$.get(geturl, {}, function(data){
-		var dataarray = data.split('&');
-		var pid = [];		// id игроков заявленых в состав
-		var p0 = [];		// тактика1, всего 5 тактик.
-		var z0 = [];		// задания в тактике
-		var pen = [];		// 
-		var fre = [];		// 
-		var cor = [];		// 
-		var cap = [];		// 
-
-		var sto = 's,f,сс,сст,са,со,КСт,стр,Фам,Имя,взр,id,иСб,гСБ,кнт,зрп,ном,уг,нв,др,уд,шт,ру,гл,вх,лд,ду,по,ск,пс,вп,ре,вн,мщ,от,ви,рб,тх,мрл,фрм,поз,оиг,огл,опс,оим,орт,тре,трв,дск,сыг,пн,иш,иу,кп,идл,ИдлПоз'.split(',');
-		var st = {}
-		var k = 0
-		for (var i in sto) {
-			if (sto[i] == 'вх') {
-				st[sto[i]] = st['гл']
-			} else {
-				st[sto[i]] = k
-				k++
-			}
-		}
-
-		var players = []
-		var i = 0
-		var p0num = 0
-		var z0num = 0
-		var pnum = 0
-		var capnum = 1
-		var frenum = 1
-		var cornum = 1
-		var pennum = 1
-		while(dataarray[i] != null) {
-			var cur = dataarray[i]
-			var curval = getPairValue(cur)
-			var stcc = st["сс"]
-			var stcor = st["уг"]
-			var sttex = st["тх"]
-			var stln = 41
-
-			//  автосос? 0/1
-			if (cur.indexOf('new') != -1) var auto = +curval
-
-			// собираем id игроков заявленых в состав
-			if (cur.indexOf('pid') != -1) {
-				
-				pid.push(curval)
-				players[curval] = []
-				players[curval][st["s"]] = [(pnum < 11 ? 2 : 1)]
-				pnum++
-			}
-
-			// сопоставить позицию игроков начальной тактики 
-			if (cur.indexOf('p0_') != -1) {
-				p0.push(getPairValue(cur))
-
-				// указываем id игрока играющего на данной позиции
-				posfilter[getPairValue(cur)][1] = [-pid[p0num]]
-				p0num++
-			}
-
-			// собираем z0 (перс задания 1й тактики)
-			if (cur.indexOf('z0') != -1) {
-				z0.push(curval);
-				if (+curval >= 513) players[pid[z0num]][st["со"]] = '*'
-				if (+curval >= 700 || (+curval>=213 && +curval < 500)) players[pid[z0num]][st["са"]] = '*'
-				z0num++
-			}
-
-			// собираем капитанов
-			if (cur.indexOf('cap') != -1) {
-				cap.push(curval)
-				if (curval != 0) players[curval][st["кп"]] = capnum
-				capnum++
-			}
-
-			// собираем fre
-			if (cur.indexOf('fre') != -1) {
-				fre.push(curval)
-				if (curval != 0) players[curval][st["иш"]] = frenum
-				frenum++
-			}
-
-			// собираем cor
-			if (cur.indexOf('cor') != -1) {
-				cor.push(curval)
-				if (curval != 0) players[curval][st["иу"]] = cornum
-				cornum++
-			}
-
-			// собираем pen
-			if (cur.indexOf('pen') != -1) {
-				pen.push(curval)
-				if (curval != 0) players[curval][st["пн"]] = pennum
-				pennum++
-			}
-
-			//прописываем чтоб прочие таблички цвет имели как в состав
-			for (p=26;p<posfilter.length;p++) posfilter[p][1] = [-10000]
-
-			// получить данные на игроков
-			if (cur.indexOf('secondname') != -1) {
-				var id = getPairValue(dataarray[i+3])
-				if (!players[id]) {
-					players[id] = []
-					players[id][st["s"]] = 0
-				}
-
-				var plid = players[id]
-				plid[st["f"]] = 0
-				plid[stcc] = 0
-				plid[st["сст"]] = 0
-
-				if (!players[id][st["со"]]) players[id][st["со"]] = ''
-				if (!players[id][st["са"]]) players[id][st["са"]] = ''
-
-				// собираем данные
-				for (var x=0; x<=stln-3; x++) plid.push(getPairValue(dataarray[i+x-2]))
-				plid.push(getPairValue(dataarray[i+58]))	// инфа о тренировке
-				plid.push(getPairValue(dataarray[i+59]))	// инфа о травме
-				plid.push(getPairValue(dataarray[i+60]))	// инфа о дискве
-				plid.push(getPairValue(dataarray[i+61]))	// инфа о сыгранности
-
-				if (!players[id][st["кп"]]) players[id][st["кп"]] = ''
-				if (!players[id][st["иш"]]) players[id][st["иш"]] = ''
-				if (!players[id][st["иу"]]) players[id][st["иу"]] = ''
-				if (!players[id][st["пн"]]) players[id][st["пн"]] = ''
-
-				// сичтаем сумму скилов (включая вратарские у полевых).
-				for (var x=st["уг"]; x<=st["тх"]; x++) plid[stcc] += +plid[x]
-
-
-				//проставляем зп=100 у школяров и контракт до истечения срока (21-взр)
-				if (plid[st["кнт"]]==0) plid[st["кнт"]] = 21-plid[st["взр"]]
-				if (plid[st["зрп"]]==0) plid[st["зрп"]] = 100;
-
-				// назначить флаг отображения
-				if		(plid[st["трв"]] >  0) 	plid[st["f"]] = 1 // травма
-				else if	(plid[st["дск"]] >  0) 	plid[st["f"]] = 2 // дисквалификация
-				else if	(plid[st["фрм"]] < 90) 	plid[st["f"]] = 3 // плохая форма
-				else if	(plid[st["мрл"]] < 80) 	plid[st["f"]] = 4 // плохая мораль
-				else if	(plid[st["ном"]] == 0) 	plid[st["f"]] = 5 // школьник
-
-				i = i + 59;
-			}
-			i++;
-		}
-
-		for (var i in posfilter){
-			var pfi0 = poss[i][5].split(',')
-			if (posfilter[i][1] && i<26 && auto == 0) posfilter[i][1][0] = ''
-			var pfi1 = (posfilter[i][1] ? posfilter[i][1][0] : '')
-			var psi = poss[i]
-			var koff = 1
-
-			for (var p in players){
-			  if (players[p][st['поз']]){
-				var pl = players[p]
-				var plpos = pl[st['поз']]
-				var plid = pl[st['id']]
-				var osnova = 0
-				if (auto == 0) {
-					pl[st["s"]] = 0
-					pl[st["са"]] = ''
-					pl[st["со"]] = ''
-				}
-				// пометить игрока не своей позиции назначеного в состав
-				if (((plpos.indexOf(psi[2]) == -1) || (plpos.indexOf(psi[3]) == -1)) && +pfi1 == -plid) {
-					osnova = 3
-					koff = 0.5
-				}
-				if (((plpos.indexOf(psi[2]) != -1) && (plpos.indexOf(psi[3]) != -1)) || +pfi1 == -plid) {
-					var ss = 0;
-					posfilter[i][p] = []
-
-					// 	добавить информацию об основе только на нужную позицию
-					if (pl[st["s"]] == 1)	osnova = 1 
-					else if (((+pfi1 == -plid) || pfi1==-10000) && pl[st["s"]] == 2 && osnova != 3)	osnova = 2
-					else if (osnova == 3)	osnova = 3
-					else osnova = 0
-
-					var sstnum = -1
-					var sum = 0
-					var summax = 0
-					var mx = 15
-					for (j in pfi0) {
-						var zagolovok = getPairKey(pfi0[j],pfi0[j]).replace(/!/g,'')
-						var sk = String(pl[st[zagolovok]]).replace(/ /g,'&nbsp;')
-						var skv = getPairValue(pfi0[j],'')
-						var ske = sk.replace(/,/g,'')
-						var sks = (isNaN(parseFloat(ske)) ? 0 : eval(parseFloat(ske)+skv))
-
-						if (st[zagolovok] >= st['уг'] && st[zagolovok] <= st['тх']) {
-							sum += +sks
-							summax += eval(mx+skv)
-						}
-						switch (zagolovok) {
-							case 'сст':	sstnum = +j
-							case 's':	sk = osnova
-							//case 'Фам':	sk = pl[st['Имя']].charAt(0)+'.'+sk	// подписать первую букву имени к фамилии
-							default:						
-								posfilter[i][p].push(sk)
-								ss += +sks
-						}
-					}
-					var sila = sum/summax*100
-					if (i>0 && i<=25 && (!pl[st['идл']] || pl[st['идл']]<sila)) {
-						pl[st['идл']] = sila.toFixed(1)
-						pl[st['ИдлПоз']] = psi[0]
-					}
-
-					// добавляем сумму выделенных скилов
-					ss = +ss*koff
-					if (sstnum!=-1) posfilter[i][p][sstnum] = +ss.toFixed(1)
-				}				
-			  }
-			}
-		}
-
-		//for (var p in players) text += players[p] + '<br>'
-		text += '<br>'
-
-		var table1 = 'table frame="void" cellpadding=5'
-		var tr1 = 'tr'
-		var td1 = 'td valign=top bgcolor=#A3DE8F'
-		var td1e = 'td'
-		if(geturl=='fieldnew3_n.php'){
-	    	var img = '<img src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
-		}else{
-		    var img = '<img src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>'
-		}
-		text += '<' +table1+'>'
-/**/	text += '<'+tr1+'><'+td1e+' valign=top>'+img+'</td><'+td1+'>' +ShowPos(posfilter[23],poss[23])+ '</td><'+td1+'>' +ShowPos(posfilter[24],poss[24])+ '</td><'+td1+'>' +ShowPos(posfilter[25],poss[25])+ '</td><'+td1e+' valign=top align=center>' + ShowHelp() + '</td></tr>'
-		text += '<'+tr1+'><'+td1+'>' +ShowPos(posfilter[18],poss[18])+ '</td><'+td1+'>' +ShowPos(posfilter[19],poss[19])+ '</td><'+td1+'>' +ShowPos(posfilter[20],poss[20])+ '</td><'+td1+'>' +ShowPos(posfilter[21],poss[21])+ '</td><'+td1+'>' +ShowPos(posfilter[22],poss[22])+ '</td></tr>'
-		text += '<'+tr1+'><'+td1+'>' +ShowPos(posfilter[13],poss[13])+ '</td><'+td1+'>' +ShowPos(posfilter[14],poss[14])+ '</td><'+td1+'>' +ShowPos(posfilter[15],poss[15])+ '</td><'+td1+'>' +ShowPos(posfilter[16],poss[16])+ '</td><'+td1+'>' +ShowPos(posfilter[17],poss[17])+ '</td></tr>'
-		text += '<'+tr1+'><'+td1+'>' +ShowPos(posfilter[8],poss[8])+ '</td><'+td1+'>' +ShowPos(posfilter[9],poss[9])+ '</td><'+td1+'>' +ShowPos(posfilter[10],poss[10])+ '</td><'+td1+'>' +ShowPos(posfilter[11],poss[11])+ '</td><'+td1+'>' +ShowPos(posfilter[12],poss[12])+ '</td></tr>'
-/**/	text += '<'+tr1+'><'+td1+'>' +ShowPos(posfilter[3],poss[3])+ '</td><'+td1+'>' +ShowPos(posfilter[4],poss[4])+ '</td><'+td1+'>' +ShowPos(posfilter[5],poss[5])+ '</td><'+td1+'>' +ShowPos(posfilter[6],poss[6])+ '</td><'+td1+'>' +ShowPos(posfilter[7],poss[7])+ '</td></tr>'
-		text += '<'+tr1+'><'+td1e+'></td><'+td1e+'></td><'+td1+'>' +ShowPos(posfilter[2],poss[2])+ '</td><'+td1e+'></td><'+td1e+'></td></tr>'
-		text += '<'+tr1+'><'+td1e+'></td><'+td1e+'></td><'+td1+'>' +ShowPos(posfilter[1],poss[1])+ '</td><'+td1e+'></td><'+td1e+'></td></tr>'
-		text += '</table>'
-
-		text += '<br><br> <table bgcolor=#A3DE8F><tr>'
-		text += '<td valign=top>' +ShowPos(posfilter[26],poss[26])+ '</td>'
-		text += '<td valign=top>' +ShowPos(posfilter[27],poss[27])+ '</td>'
-		text += '<td valign=top>' +ShowPos(posfilter[28],poss[28])+ '</td>'
-		text += '<td valign=top>' +ShowPos(posfilter[29],poss[29])+ '</td>'
-/**/	text += '<td valign=top>' +ShowPos(posfilter[30],poss[30])+ '</td>'
-		text += '<td valign=top>' +ShowPos(posfilter[31],poss[31])+ '</td>'
-		text += '<td></td></tr></table>'
-		text += '<br><br> <table bgcolor=#A3DE8F><tr>'
-		text += '<td valign=top>' +ShowPos(posfilter[32],poss[32])+ '</td>'
-		text += '<td valign=top>' +ShowPos(posfilter[33],poss[33])+ '</td>'
-		if(geturl!='fieldnew3_n.php') text += '<td valign=top>' +ShowPos(posfilter[34],poss[34])+ '</td>'
-		if(geturl!='fieldnew3_n.php') text += '<td valign=top>' +ShowPos(posfilter[35],poss[35])+ '</td>'
-		text += '<td valign=top>' +ShowPos(posfilter[36],poss[36])+ '</td>'
-		text += '<td valign=top>' +ShowPos(posfilter[37],poss[37])+ '</td>'
-		text += '<td></td></tr></table>'
-
-		text += '<br><br><table bgcolor=#A3DE8F><tr><td><img src="http://pefladdons.googlecode.com/svn/trunk/img/crab1.png"></td><td>'
-		text += '<a href="forums.php?m=posts&q=173605">Cостав v1.3</a> (c) <a href="users.php?m=details&id=661">const</a></td></tr></table>'
-/**/	$('.contentframer').html(text)
-	})
-
-})

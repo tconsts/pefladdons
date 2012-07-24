@@ -39,12 +39,6 @@ if(scflag[1]==0 && (url2=='sostav' || url2=='sostav_n')){
 	newScriptSostav.src = source+'peflsostav.js';
 	headID.appendChild(newScriptSostav);
 }
-if(scflag[1]==2 && (url2=='sostav' || url2=='sostav_n')){
-	var newScriptSostav = document.createElement('script');
-	newScriptSostav.type = 'text/javascript';
-	newScriptSostav.src = source+'peflsostav2.js';
-	headID.appendChild(newScriptSostav);
-}
 
 // 2 Player
 if(scflag[2]==0 && (url2.indexOf('p=refl&t=p')!=-1 || url2.indexOf('p=refl&t=yp')!=-1)){
