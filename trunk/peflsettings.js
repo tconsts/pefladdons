@@ -12,7 +12,7 @@ var flag = '<img height=13 src="/system/img/g/tick.gif"></img>'
 var scflags = '0:0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:1:0:0:0'.split(':')
 var scnames = [
 	{'name':'Настройки',			'desc':''},
-	{'name':'Состав +',				'desc':'',	'versions':2},
+	{'name':'Состав +',				'desc':''},
 	{'name':'Ростер игрока',		'desc':''},
 	{'name':'Страница контрактов',	'desc':''},
 	{'name':'Ростер команды',		'desc':''},
