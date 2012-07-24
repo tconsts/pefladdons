@@ -370,21 +370,21 @@ function FillData(nt){
 	if(np!=0){
 		var selpl = 0
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
-		var html = '<table id=table'+nt+' width=100%>'
+		var html = '<table id=table'+nt+' width=100% style="border:0px">'
 		var head = true
 		var nummax = (positions[np].num==0 ? positions[np].pls.length : positions[np].num)
     	for(t=0;t<nummax;t++){
 			var pl = positions[np].pls[t]
+			var trbgcolor = (selpl==pl.id || (positions[np].filter == '' && pl.sostav==2) ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''))
 			var plhtml = '<tr align=right'
 			plhtml += (!pl.posf && selpl!=pl.id ? ' hidden abbr=wrong' : '')
-			plhtml += (selpl==pl.id || (positions[np].filter == '' && pl.sostav==2) ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''))
-			plhtml += '>'
+			plhtml += trbgcolor+'>'
 			var font1 = (!pl.posf ? '<font color=red>' : '')
 			var font2 = (!pl.posf ? '</font>' : '')
 			if(head) var headhtml = '<tr align=center>'
 			for(pp in pl) {
 				if(pp=='flag'){
-					plhtml += '<td bgcolor='+fl[pl[pp]]+'></td>'
+					plhtml += '<td'+(pl[pp]>0 ? ' bgcolor='+fl[pl[pp]] : trbgcolor)+'></td>'
 					if(head) headhtml += '<td width=1%></td>'
 				}else if(pp!='posf' && pp!='sostav' && pp!='id'){
 					var hidden = ''
