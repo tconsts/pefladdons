@@ -24,7 +24,7 @@ var list = {
 	positions: 'id,filter,name,num,koff'
 }
 
-var fl = ['','#EF2929','#A40000','#FCE94F','#E9B96E','#729FCF','green']
+var fl = ['','#EF2929','#A40000','#FCE94F','#E9B96E','green','black']
 var selected = ''
 	+',1,2'			// линия SW & Gk
 	+',3,7,7,7,4'	// линия DF
@@ -453,6 +453,9 @@ function getPlayers(){
 		pl.flag = 0
 		if(data['inj'+i]>0) pl.flag = 1
 		else if(data['sus'+i]>0) pl.flag = 2
+		else if(data['form'+i]<90) pl.flag = 3
+		else if(data['morale'+i]<80) pl.flag = 4
+		else if(data['value'+i]==0) pl.flag = 5
 
 		debug(pl.secondname+':'+pl.flag)
 		players[pl.id] = pl
@@ -664,12 +667,13 @@ function ShowHelp(){
 	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'основа'.fontsize(1)+'</td>'
 	html += '<td bgcolor=#BABDB6 colspan=2>'+'в заявке'.fontsize(1)+'</td></tr>'
 	html += '<tr><td colspan=4><font color=red size=1>не своя позиция</font></td></tr>'
-	html += '<tr><td bgcolor=#EF2929></td><td>'+'трв'.fontsize(1)+'</td>'
-	html += '<td bgcolor=#A40000></td><td>'+'дск'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor=#FCE94F></td><td>'+'фрм<90'.fontsize(1)+'</td>'
-	html += '<td bgcolor=#E9B96E></td><td>'+'мрл<80'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor=#729FCF></td><td>'+'шкл'.fontsize(1)+'</td>'
-	html += '<td bgcolor=#green></td><td>'+'чужой'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor='+fl[1]+'></td><td>'+'трв'.fontsize(1)+'</td>'
+	html += '<td bgcolor='+fl[2]+'></td><td>'+'дск'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor='+fl[3]+'></td><td>'+'фрм<90'.fontsize(1)+'</td>'
+	html += '<td bgcolor='+fl[4]+'></td><td>'+'мрл<80'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor='+fl[5]+'></td><td>'+'шкл'.fontsize(1)+'</td>'
+//	html += '<td bgcolor='+fl[6]+'></td><td>'+'чужой'.fontsize(1)+'</td>'
+	html += '</tr>'
 	html += '</table>'
 	return html
 }
