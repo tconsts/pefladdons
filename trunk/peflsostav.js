@@ -23,6 +23,8 @@ var maxtables = 25+10
 var list = {
 	positions: 'id,filter,name,num,koff'
 }
+
+var fl = ['','#EF2929','#A40000','#FCE94F','#E9B96E','#729FCF','green']
 var selected = ''
 	+',1,2'			// линия SW & Gk
 	+',3,7,7,7,4'	// линия DF
@@ -381,7 +383,10 @@ function FillData(nt){
 			var font2 = (!pl.posf ? '</font>' : '')
 			if(head) var headhtml = '<tr align=center>'
 			for(pp in pl) {
-				if(pp!='posf' && pp!='sostav' && pp!='id'){
+				if(pp=='flag'){
+					plhtml += '<td bgcolor='+fl[pl[pp]]+'></td>'
+					if(head) headhtml += '<td width=1%></td>'
+				}else if(pp!='posf' && pp!='sostav' && pp!='id'){
 					var hidden = ''
 					var p = pp
 					if(pp.indexOf('!')!=-1){
