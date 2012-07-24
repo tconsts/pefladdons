@@ -1294,13 +1294,14 @@ $().ready(function() {
 	text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
 	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить игрока').fontsize(1)+'</a><br>'
 	text3 += '<div id="compare"></div>'
-	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br>'
-	text3 += '<br><b>Сила&nbsp;игрока</b>'
-	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
+	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br><br>'
+//	text3 += '<b>Сила&nbsp;игрока</b>'
+//	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
 
 	var hidden = 0
 	var pfs3pre = ''
 	var pflinkpre = ''
+/**
 	for (var s in posfilter) {
 		if (!isNaN(posfilter[s][2])) {
 			var linktext = String(posfilter[s][2]+':'+posfilter[s][1].replace(' ','&nbsp;'))
@@ -1316,7 +1317,7 @@ $().ready(function() {
 		var pflinkpre = linktext
 	}
 	text3 += '</div>'
-
+/**/
 	// Modify page and fill data
 	$('td.back4 script').remove()
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
