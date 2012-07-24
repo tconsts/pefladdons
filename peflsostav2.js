@@ -11,6 +11,7 @@ deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+positions = []
 var data = []
 var plkeys = []
 var players = []
@@ -19,31 +20,9 @@ var stds = {pfre:[],pcor:[],pcap:[],ppen:[]}
 var plskillmax = 15
 var tabslist = ''
 var maxtables = 25+10
-
-var positions = [
-	{						name:'&nbsp;'},
-/**  1 **/	{filter:'GK', 	name:'GK', 		num:0,	koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,Фам,сила,sostav'},
-/**  2 **/	{filter:'C SW',	name:'C SW',	num:0,	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,Фам,сила,sostav'},
-/**  3 **/	{filter:'L DF',	name:'L DF',	num:0,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
-/**  4 **/	{filter:'R DF',	name:'R DF',	num:0,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
-/**  5 **/	{filter:'L DM',	name:'L DM',	num:0,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
-/**  6 **/	{filter:'R DM',	name:'R DM',	num:0,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
-/**  7 **/	{filter:'C DF',	name:'C DF',	num:0,	koff:'от=от*3,вп=вп*3,мщ=мщ*1.5,ск=ск*1.5,гл=гл*1.5,Фам,сила,sostav'},
-/**  8 **/	{filter:'C DM',	name:'C DM',	num:0,	koff:'вп=вп*3,от=от*3,ви=ви*2,рб=рб*2,!тх=тх*1.5,!пс=пс*1.5,Фам,сила,sostav'},
-/**  9 **/	{filter:'C M',	name:'C M',		num:0,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*1.5,!от=от,!ду=ду*0.5,Фам,сила,sostav'},
-/** 10 **/	{filter:'L M',	name:'L M',		num:0,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
-/** 11 **/	{filter:'R M',	name:'R M',		num:0,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
-/** 12 **/	{filter:'C AM',	name:'C AM',	num:0,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*2,!ду=ду,!др=др,Фам,сила,sostav'},
-/** 13 **/	{filter:'L AM',	name:'L AM',	num:0,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
-/** 14 **/	{filter:'R AM',	name:'R AM',	num:0,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
-/** 15 **/	{filter:'C FW',	name:'C FW',	num:0,	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,Фам,сила,sostav'},
-/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdat,Фам,от,ск,!сила'},
-/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdbk,Фам,др,ск,!сила'},
-/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,уг=уг*10,нв=нв*2,ви,Фам,иу,!сила'},
-/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,шт=шт*10,ду=ду,нв=нв,ви,Фам,иш,!сила'},
-/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,взр=взр,уд=уд*0.3,лд=лд*0.3,Фам,пн,!сила'},
-/** 21 **/	{filter:'',		name:'Сыгранность',	num:0,	koff:'sostav,сыг=сыг,Фам,Поз,!сила'},
-]
+var list = {
+	positions: 'id,filter,name,num,koff'
+}
 var selected = ''
 	+',1,2'			// линия SW & Gk
 	+',3,7,7,7,4'	// линия DF
@@ -53,8 +32,6 @@ var selected = ''
 	+',15,15,15'		// линия FW
 	+',16,17,18,19,20'	// доп таблицы 1
 	+',21,0,0,0,0'		// доп таблицы 2
-
-
 
 var skillnames = {
 sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
@@ -216,9 +193,7 @@ $().ready(function() {
 		}
 //		for(h in pid) debug(h+':'+pid[h].z0at+':'+pid[h].z0bk)
 		getPlayers()
-		getPositions()
-		FillHeaders()
-		fillPosEdit(0)
+		GetData('positions')
 	})
 })
 
@@ -231,12 +206,85 @@ function sSrt(i, ii) { // по убыванию
     return  0
 }
 
-
-function getPositions(){
-	debug('getPositions()')
+function GetData(dataname){
 	// TODO: + custom positions(from forum)
 
-	for(i=1;i<positions.length;i++) countPosition(i)
+	debug(dataname+':GetData')
+	var data = []
+	var head = list[dataname].split(',')
+	var text1 = String(localStorage[dataname])
+	if (text1 != 'undefined' && text1 != 'null'){
+		var text = text1.split('#')
+		var numpos = 0
+		for (i in text) {
+			var x = text[i].split('|')
+			var curt = {}
+			var num = 0
+			for(j in head){
+				curt[head[j]] = (x[num]!=undefined ? x[num] : '')
+				num++
+			}
+			data[numpos] = curt
+			numpos++
+		}
+	}else{
+		data = [
+			{filter:'',		name:'&nbsp;',	num:0,	koff:''},
+/**  1 **/	{filter:'GK', 	name:'GK', 		num:0,	koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,Фам,сила,sostav'},
+/**  2 **/	{filter:'C SW',	name:'C SW',	num:0,	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,Фам,сила,sostav'},
+/**  3 **/	{filter:'L DF',	name:'L DF',	num:0,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
+/**  4 **/	{filter:'R DF',	name:'R DF',	num:0,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,Фам,сила,sostav'},
+/**  5 **/	{filter:'L DM',	name:'L DM',	num:0,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
+/**  6 **/	{filter:'R DM',	name:'R DM',	num:0,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,Фам,сила,sostav'},
+/**  7 **/	{filter:'C DF',	name:'C DF',	num:0,	koff:'от=от*3,вп=вп*3,мщ=мщ*1.5,ск=ск*1.5,гл=гл*1.5,Фам,сила,sostav'},
+/**  8 **/	{filter:'C DM',	name:'C DM',	num:0,	koff:'вп=вп*3,от=от*3,ви=ви*2,рб=рб*2,!тх=тх*1.5,!пс=пс*1.5,Фам,сила,sostav'},
+/**  9 **/	{filter:'C M',	name:'C M',		num:0,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*1.5,!от=от,!ду=ду*0.5,Фам,сила,sostav'},
+/** 10 **/	{filter:'L M',	name:'L M',		num:0,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
+/** 11 **/	{filter:'R M',	name:'R M',		num:0,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,Фам,сила,sostav'},
+/** 12 **/	{filter:'C AM',	name:'C AM',	num:0,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*2,!ду=ду,!др=др,Фам,сила,sostav'},
+/** 13 **/	{filter:'L AM',	name:'L AM',	num:0,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
+/** 14 **/	{filter:'R AM',	name:'R AM',	num:0,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,Фам,сила,sostav'},
+/** 15 **/	{filter:'C FW',	name:'C FW',	num:0,	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,Фам,сила,sostav'},
+/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdat,Фам,от,ск,!сила'},
+/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'sostav=sostav*100,гл=гл*5,вп=вп,мщ=мщ*0.5,stdbk,Фам,др,ск,!сила'},
+/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'sostav=sostav*100,уг=уг*10,нв=нв*2,ви,Фам,иу,!сила'},
+/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'sostav=sostav*100,шт=шт*10,ду=ду,нв=нв,ви,Фам,иш,!сила'},
+/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'sostav=sostav*100,взр=взр,уд=уд*0.3,лд=лд*0.3,Фам,пн,!сила'},
+/** 21 **/	{filter:'',		name:'Сыгранность',	num:0,	koff:'sostav,сыг=сыг,Фам,Поз,!сила'},
+		]
+	}
+	switch (dataname){
+		case 'positions':  positions = data;break
+		default: return false
+	}
+	for(i=1;i<positions.length;i++) {
+		countPosition(i)
+	}
+	FillHeaders()
+	fillPosEdit(0)
+}
+
+function SaveData(dataname){
+	debug(dataname+':SaveData')
+	var data = []
+	var head = list[dataname].split(',')
+	switch (dataname){
+		case 'positions':	data = positions;		break
+		default: return false
+	}
+	var text = ''
+	for (var i in data) {
+		text += (text!='' ? '#' : '')
+		if(typeof(data[i])!='undefined') {
+			var dti = data[i]
+			var dtid = []
+			for(var j in head){
+				dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+			}
+			text += dtid.join('|')
+		}
+	}
+	localStorage[dataname] = text
 }
 
 function countPosition(posnum){
@@ -423,22 +471,20 @@ function FillHeaders(){
 
 function fillPosEdit(num){
 	var html = ''
-	html += '<table width=100% class=back1><tr valign=top><td width=150 rowspan=8>'
+	html += '<table width=100% class=back1><tr valign=top><td width=150>'
 	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
 	for(i in positions)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
 	html += '</select></td>'
-
-	html += '<th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td>'
-	html += '<td rowspan=8><table width=100%>'
-	for(m in skillnames) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
-	html += '</table></td></tr>'
+	html += '<td><table width=100%><tr><th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td>'
 	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="40" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"></td></tr>'
 	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="40" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"></td></tr>'
 	html += '<tr><th align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td></tr>'
 	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
-	html += '<tr><th></th><td></td></tr>'
-	html += '<tr><th></th><td></td></tr>'
-	html += '<tr><th></th><td></td></tr>'
+	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сбросить</th><td></td></tr>'
+	html += '</table></td>'
+	html += '<td><table width=100% align=top>'
+	for(m in skillnames) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
+	html += '</table></td></tr>'
 	html += '</table>'
 	$('div#divedit').html(html)
 }
@@ -448,6 +494,12 @@ function PosChange(){
 	debug('PosChange():'+selnum)
 	fillPosEdit(selnum)
 }
+function PosDel(){
+	delete localStorage.positions
+	chMenu('tdsost')
+	GetData('positions')
+}
+
 function PosSave(){
 	var num = $('#selpos option:selected').val()
 	if(num==0) num = positions.length
@@ -467,13 +519,10 @@ function PosSave(){
 	}
 	positions[num] = ps
 	countPosition(num)
+	chMenu('tdsost')
 	fillPosEdit(num)
 	FillHeaders()
-	StorageSave()
-}
-function StorageSave(){
-	debug('StorageSave()')
-
+	SaveData('positions')
 }
 
 function chMenu(mid){
