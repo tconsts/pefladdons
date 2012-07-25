@@ -1295,7 +1295,8 @@ $().ready(function() {
 	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить игрока').fontsize(1)+'</a><br>'
 	text3 += '<div id="compare"></div>'
 	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br><br>'
-//	text3 += '<b>Сила&nbsp;игрока</b>'
+	text3 += '<b>Сила&nbsp;игрока</b>'
+	text3 += '<br><i>временно отключено...</i>'
 //	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
 
 	var hidden = 0
