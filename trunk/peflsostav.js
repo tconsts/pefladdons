@@ -199,7 +199,13 @@ $().ready(function() {
 	})
 })
 
-function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+function debug(text) {
+	if(deb) {
+		if(debnum==1) $('body').append('<div id=debug></div>')
+		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
+		debnum++;
+	}
+}
 
 function sSrt(i, ii) { // по убыванию
 	var s = (i.srt!=undefined ? 'srt' : '!srt')
@@ -210,6 +216,7 @@ function sSrt(i, ii) { // по убыванию
 
 function GetData(dataname){
 	debug(dataname+':GetData')
+	var needsave = false
 	var data = []
 	var head = list[dataname].split(',')
 	var text1 = String(localStorage[dataname])
@@ -228,6 +235,7 @@ function GetData(dataname){
 			numpos++
 		}
 	}else{
+		needsave = true
 	// TODO: загрузить дефоултные positions(from forum) вместо констант тут.
 		data = [
 			{filter:'',		name:'&nbsp;',	num:0,	koff:''},
@@ -261,6 +269,7 @@ function GetData(dataname){
 	for(i=1;i<positions.length;i++) {
 		countPosition(i)
 	}
+	if(needsave) SaveData('positions')
 	FillHeaders()
 	fillPosEdit(0)
 }
@@ -290,7 +299,7 @@ function SaveData(dataname){
 
 function countPosition(posnum){
 	var ps = positions[posnum]
-	ps.strmax = countStrength(0,ps.koff)
+	ps.strmax = countStrength('ideal',ps.koff)
 	var pls = []
 	var pos = ps.filter.split(' ')
 	for(j in players){
@@ -326,8 +335,7 @@ function countPosition(posnum){
 }
 
 function countStrength(plid,pkoff){
-//	debug('countStrength:'+plid+':'+pkoff)
-	var pl = (plid==0 ? players[players.length-1] : players[plid])
+	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
@@ -338,13 +346,14 @@ function countStrength(plid,pkoff){
 				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && !isNaN(pl[p])){
 					var reg = new RegExp(p, "g")
 					var reg2 = new RegExp(p2, "g")
-					var count = koff[1].replace(reg,(plid==0 ? plskillmax : pl[p])).replace(reg2,(plid==0 ? plskillmax : pl[p]))
+					var count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : pl[p])).replace(reg2,(plid=='ideal' ? plskillmax : pl[p]))
 //					debug('p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
 				}
 			}
 		}
 		res += (count==undefined ? 0 : eval(count))
 	}
+	//debug('countStrength:'+res+':'+plid+':'+pl.secondname+':'+pkoff)
 	return res
 }
 function Print(val,sn){
@@ -456,7 +465,7 @@ function getPlayers(){
 		else if(data['morale'+i]<80) pl.flag = 4
 		else if(data['value'+i]==0) pl.flag = 5
 
-		debug(pl.secondname+':'+pl.flag)
+//		debug(pl.secondname+':'+pl.flag)
 		players[pl.id] = pl
 	}
 	// Подгрузить игроков из списка мониторинга если их тут нету еще с флагом "чужой".
