@@ -375,6 +375,7 @@ function FillData(nt){
 	var np = $('#select'+nt+' option:selected').val()
 //	debug('FillData('+nt+'):'+np)
 /**/
+	//if(deb && np==22){for (i in positions[np].pls[0]) debug(i+':'+positions[np].pls[0][i])}
 	if(np!=0){
 		var selpl = 0
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
@@ -401,10 +402,14 @@ function FillData(nt){
 						p = pp.replace(/\!/g,'')
 						hidden = ' hidden abbr=hidden'
 					}
+					if(skillnames[p] == undefined) {
+						debug('FillData:wrong param:'+p)
+						break;
+					}
 					var skp = skillnames[p]
 					var align = (skp!=undefined && skp.align!=undefined ? ' align='+skp.align : '')
 					var nowrap = (skp!=undefined && skp.nowrap!=undefined ? ' nowrap' : '')
-//					debug(nt+':'+pp+':'+p)
+					//debug('FillData:'+nt+':'+pp+':'+p)
 					plhtml += '<td'+align+hidden+nowrap+'>'+font1
 					plhtml += Print(pl[pp],p)
 					plhtml += font2+'</td>'
