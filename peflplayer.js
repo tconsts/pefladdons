@@ -140,6 +140,7 @@ function countStrength(plid,pkoff){
 	var res = 0
 	for(n in pkoff){
 		var koff = pkoff[n].split('=')
+		var count = 0
 		if(koff[1]!=undefined){
 //			debug('-- koff[1]='+koff[1])
 			for(p in pl){
@@ -148,7 +149,7 @@ function countStrength(plid,pkoff){
 				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && !isNaN(parseInt(pl[p])) && p!=''){
 					var reg = new RegExp(p, "g")
 					var reg2 = new RegExp(p2, "g")
-					var count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : parseInt(pl[p]))).replace(reg2,(plid=='ideal' ? plskillmax : parseInt(pl[p])))
+					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : parseInt(pl[p]))).replace(reg2,(plid=='ideal' ? plskillmax : parseInt(pl[p])))
 //					debug('----- p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
 				}
 			}

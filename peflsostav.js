@@ -349,14 +349,14 @@ function countStrength(plid,pkoff){
 					var reg = new RegExp(p, "g")
 					var reg2 = new RegExp(p2, "g")
 					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : pl[p])).replace(reg2,(plid=='ideal' ? plskillmax : pl[p]))
-					debug('--- p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
+					//debug('--- p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
 				}
 			}
 		}
 		res += (count==undefined ? 0 : eval(count))
-		debug('- res:'+res+'('+eval(count)+')')
+		//debug('- res:'+res+'('+eval(count)+')')
 	}
-	debug('countStrength res:'+res)
+	//debug('countStrength res:'+res)
 	return res
 }
 function Print(val,sn){
