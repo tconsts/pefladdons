@@ -336,24 +336,27 @@ function countPosition(posnum){
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
+	debug('<br>countStrength:'+plid+':'+(plid=='ideal' ? '' : pl.secondname)+':'+pkoff)
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
 		var koff = pkoff[n].split('=')
+		var count = 0
 		if(koff[1]!=undefined){
 			for(p in pl){
 				var p2 = (skillnames[p]!=undefined ? skillnames[p].rshort : ' ')
 				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && !isNaN(pl[p])){
 					var reg = new RegExp(p, "g")
 					var reg2 = new RegExp(p2, "g")
-					var count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : pl[p])).replace(reg2,(plid=='ideal' ? plskillmax : pl[p]))
-//					debug('p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
+					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : pl[p])).replace(reg2,(plid=='ideal' ? plskillmax : pl[p]))
+					debug('--- p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
 				}
 			}
 		}
 		res += (count==undefined ? 0 : eval(count))
+		debug('- res:'+res+'('+eval(count)+')')
 	}
-	//debug('countStrength:'+res+':'+plid+':'+pl.secondname+':'+pkoff)
+	debug('countStrength res:'+res)
 	return res
 }
 function Print(val,sn){
