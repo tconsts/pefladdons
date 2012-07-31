@@ -606,12 +606,25 @@ function chMenu(mid){
 			$('table#tablesost').show()
 	}
 }
+function close(){
+	$('td#sostavplus').hide()
+	$('td.back3:first').show()
+	$('td.back4:first').show()
+}
+
+function open(){
+	$('td#sostavplus').show()
+	$('td.back3:first').hide()
+	$('td.back4:first').hide()
+	if(sostavteam) $('a#sostav').attr('href','javascript:void(open())')
+	else $('a#sostav_n').attr('href','javascript:void(open())')
+}
 
 function PrintTables(geturl) {
 	debug('PrintTables()')
-	$('td.back3:first').hide()
+	open()
 
-	var html = '<br>'
+	var html = '<div align=right><a href="javascript:void(close())">закрыть</a>&nbsp;</div>'
 	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
 	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
 	html += '<th id=tdsost width=150 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
@@ -658,7 +671,7 @@ function PrintTables(geturl) {
 	}
 	html += '<div id=divedit style="display:none;"></div>'
 	html += '<br></td></tr></table><br><br>'
-	$('td.back4').html(html)
+	$('td.back4').after('<td class=back4 id=sostavplus>'+html+'</td>')
 }
 
 function PrintTd(num){
