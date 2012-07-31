@@ -7,10 +7,11 @@
 // @version        2.0
 // ==/UserScript==
 
-deb = (localStorage.debug == '1' ? true : false)
-var debnum = 0
-
+var deb = (localStorage.debug == '1' ? true : false)
+var debnum = 1
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+var sostavteam = (location.search.substring(1) == 'sostav' ? true : false)
+
 positions = []
 var data = []
 var plkeys = []
@@ -26,14 +27,6 @@ var list = {
 
 var fl = ['','#EF2929','#A40000','#FCE94F','#E9B96E','green','black']
 var selected = ''
-	+',1,2'			// линия SW & Gk
-	+',3,7,7,7,4'	// линия DF
-	+',5,8,8,8,6'	// линия DM
-	+',10,9,9,9,11'	// линия MF
-	+',13,12,12,12,14'	// линия AM
-	+',15,15,15'		// линия FW
-	+',16,17,18,19,20'	// доп таблицы 1
-	+',21,0,0,0,0'		// доп таблицы 2
 
 var skillnames = {
 sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
@@ -125,13 +118,9 @@ amom
 
 $().ready(function() {
 
-	if(localStorage.selected != undefined){
-		debug('selected from lS')
-		selected = String(localStorage.selected)
-	}
-	selected = selected.split(',')
+	selected = getDataSelected().split(',')
 
-	var geturl = (location.search.substring(1) == 'sostav' ? 'fieldnew3.php' : 'fieldnew3_n.php')
+	var geturl = (sostavteam ? 'fieldnew3.php' : 'fieldnew3_n.php')
 	PrintTables(geturl)
 	$.get(geturl, {}, function(datatext){
 		debug('geturl')
@@ -199,9 +188,34 @@ $().ready(function() {
 	})
 })
 
+function getDataSelected(){
+	var dataname = (sostavteam ? 'selected' : 'selectedn')
+	var datavalue = String(localStorage[dataname])
+	debug('getDataSelected:'+ dataname +':'+datavalue)
+	if(datavalue == 'undefined'){
+		datavalue = ''
+			+',1,2'			// линия Gk & SW
+			+',3,7,7,7,4'	// линия DF
+			+',5,8,8,8,6'	// линия DM
+			+',10,9,9,9,11'	// линия MF
+			+',13,12,12,12,14'	// линия AM
+			+',15,15,15'		// линия FW
+			+',16,17,18,19,20'	// доп таблицы 1
+			+',21,0,0,0,0'		// доп таблицы 2
+	}
+	return datavalue
+}
+
+function saveDataSelected(){
+	var dataname = (sostavteam ? 'selected' : 'selectedn')
+	var datavalue = selected.join(',')	
+	debug('saveDataSelected:'+datavalue)
+	localStorage[dataname] = datavalue
+}
+
 function debug(text) {
 	if(deb) {
-		if(debnum==1) $('body').append('<div id=debug></div>')
+		if(debnum==1) $('body').append('<div id=debug>DEBUG INFROMATION<hr></div>')
 		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
 		debnum++;
 	}
@@ -297,11 +311,25 @@ function SaveData(dataname){
 	localStorage[dataname] = text
 }
 
+function filterPosition(plpos,flpos){
+		var pos = flpos.split(' ')
+		var	pos0 = false
+		var pos1 = false
+		if(pos[1]==undefined) {
+			pos1 = true
+			if(plpos.indexOf(pos[0]) != -1) pos0 = true
+		} else {
+			for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
+			pos1arr = pos[1].split('/')
+			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
+		}
+		return (pos0 && pos1 ? true : false)
+}
+
 function countPosition(posnum){
 	var ps = positions[posnum]
 	ps.strmax = countStrength('ideal',ps.koff)
 	var pls = []
-	var pos = ps.filter.split(' ')
 	for(j in players){
 		var pl = {}
 		pl.id = players[j].id
@@ -311,32 +339,21 @@ function countPosition(posnum){
 			if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l)
 			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
 		}
-		var	pos0 = false
-		var pos1 = false
-		var plpos = players[j].position
-		if(pos[1]==undefined) {
-			pos1 = true
-			if(plpos.indexOf(pos[0]) != -1) pos0 = true
-		} else {
-			for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
-			pos1arr = pos[1].split('/')
-			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
-		}
-		pl.posf = (pos0 && pos1 ? true : false)
+		pl.posf = filterPosition(players[j].position, ps.filter)
 		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined!=undefined ? '!srt' : ''))
 		if(s!='' && pl[s]!=undefined) pl[s] = (ps.strmax==0 ? 0 : (countStrength(j,ps.koff)/ps.strmax)*100)
-//		debug(ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
+//		debug('countPosition:'+ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
 
 		pls.push(pl)
-//		if(i==positions.length-1) debug(pl.id+':sostav='+pl.sostav+':str='+pl.srt)
+//		if(i==positions.length-1) debug('countPosition:'+pl.id+':sostav='+pl.sostav+':str='+pl.srt)
 	}
 	positions[posnum].pls = pls.sort(sSrt)
-	debug('ps.strmax('+posnum+')='+ps.strmax)
+//	debug('countPosition:ps.strmax('+posnum+')='+ps.strmax)
 }
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
-	debug('<br>countStrength:'+plid+':'+(plid=='ideal' ? '' : pl.secondname)+':'+pkoff)
+//	debug('countStrength:'+plid+':'+(plid=='ideal' ? '' : pl.secondname)+':'+pkoff)
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
@@ -349,14 +366,14 @@ function countStrength(plid,pkoff){
 					var reg = new RegExp(p, "g")
 					var reg2 = new RegExp(p2, "g")
 					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : pl[p])).replace(reg2,(plid=='ideal' ? plskillmax : pl[p]))
-					//debug('--- p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
+					//debug('countStrength:--- p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
 				}
 			}
 		}
 		res += (count==undefined ? 0 : eval(count))
-		//debug('- res:'+res+'('+eval(count)+')')
+		//debug('countStrength:- res:'+res+'('+eval(count)+')')
 	}
-	//debug('countStrength res:'+res)
+//	debug('countStrength:res:'+res)
 	return res
 }
 function Print(val,sn){
@@ -376,6 +393,8 @@ function Print(val,sn){
 function FillData(nt){
 	$('#table'+nt).remove()
 	var np = $('#select'+nt+' option:selected').val()
+	//debug('FillHeaders:nt='+nt+':np='+np)
+
 //	debug('FillData('+nt+'):'+np)
 /**/
 	//if(deb && np==22){for (i in positions[np].pls[0]) debug(i+':'+positions[np].pls[0][i])}
@@ -431,6 +450,11 @@ function FillData(nt){
 		html += '</table>'
 		$('#htable'+nt).after(html)
 	}
+	if(selected[nt]!=np && np!=0) {
+		selected[nt] = np
+		saveDataSelected()
+//		debug('FillData('+nt+') -- '+selected[nt]+':selected='+selected.join(','))
+	}
 	MouseOff(nt)
 /**/
 }
@@ -480,7 +504,8 @@ function getPlayers(){
 }
 
 function FillHeaders(){
-	debug('FillHeaders():'+maxtables)
+//	debug('FillHeaders:maxtables='+maxtables)
+//	debug('FillHeaders:-- selected='+selected)
 	for(i=1;i<=maxtables;i++){
 //		if(i<4)	for(j in pid) debug(i+':'+j+':pid='+pid[j].pid+':p0='+pid[j].p0)
         var sel = false
@@ -602,8 +627,8 @@ function PrintTables(geturl) {
 			if(i==1 && j==5) {
 				htmltd += '<td valign=center height=90 class=back1 align=center>'
 				htmltd += '<img height=90 src=/system/img/'
-				if(geturl=='fieldnew3_n.php') htmltd += (isNaN(parseInt(localStorage.myintid)) ? 'g/int.gif' : 'flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
-				else htmltd += (isNaN(parseInt(localStorage.myteamid)) ? 'g/team.gif' : 'club/'+localStorage.myteamid+'.gif')+'>'
+				if(sostavteam)	htmltd += (isNaN(parseInt(localStorage.myteamid)) ? 'g/team.gif' : 'club/'+localStorage.myteamid+'.gif')+'>'
+				else 			htmltd += (isNaN(parseInt(localStorage.myintid)) ? 'g/int.gif' : 'flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
 				htmltd += '</td>'				
 			} else if (i==1 && j==1){
 				htmltd += '<td valign=top height=90 class=back1 align=center>'+ShowHelp()+'</td>'
