@@ -342,6 +342,7 @@ function countPosition(posnum){
 			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
 		}
 		pl.posf = filterPosition(players[j].position, ps.filter)
+		if(ps.filter=='') pl.posfempty = true
 		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined!=undefined ? '!srt' : ''))
 		if(s!='' && pl[s]!=undefined) pl[s] = (ps.strmax==0 ? 0 : (countStrength(j,ps.koff)/ps.strmax)*100)
 //		debug('countPosition:'+ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
@@ -418,7 +419,7 @@ function FillData(nt){
 				if(pp=='flag'){
 					plhtml += '<td'+(pl[pp]>0 ? ' bgcolor='+fl[pl[pp]] : trbgcolor)+'></td>'
 					if(head) headhtml += '<td width=1%></td>'
-				}else if(pp!='posf' && pp!='sostav' && pp!='id'){
+				}else if(pp!='posf' && pp!='posfempty' && pp!='sostav' && pp!='id'){
 					var hidden = ''
 					var p = pp
 					if(pp.indexOf('!')!=-1){

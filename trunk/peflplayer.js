@@ -28,10 +28,12 @@ function printStrench(){
 	for(i in positions){
 		for(j in positions[i].pls){
 			if(positions[i].pls[j].id0){
+//				var srt = positions[i].pls[j].srt
+				var srt = (positions[i].pls[j].srt!=undefined ? positions[i].pls[j].srt :positions[i].pls[j]['!srt'])
 				var plx = {}
 				plx.name = positions[i].name
-				plx.srt = positions[i].pls[j].srt + (positions[i].pls[j].posf ? 1000 : 0)
-				plx.strench = positions[i].pls[j].srt
+				plx.srt = srt + (positions[i].pls[j].posf ? 1000 : 0) + (positions[i].pls[j].posfempty ? -2000 : 0)
+				plx.strench = srt
 				debug('printStrench:name='+plx.name+':srt='+plx.srt+':strench='+plx.strench)
 				if(!isNaN(plx.srt)) poses.push(plx)
 			}
@@ -46,7 +48,11 @@ function printStrench(){
 			hidden = 2
 			txt += '<a id="mya" href="javascript:void(OpenAll())">...</a><br><div id="mydiv" style="display: none;">'
 		}
-		txt += '<a>'+(poses[i].strench).toFixed(2)+':'+(poses[i].name).replace(/\s/g,'&nbsp;')+'</a><br>'
+		if(poses[i].srt<0 && hidden==2) {
+			hidden = 3
+			txt += '-----<br>'
+		}
+		txt += (poses[i].strench==0 ? '' : '<a>'+(poses[i].strench).toFixed(2)+':'+(poses[i].name).replace(/\s/g,'&nbsp;')+'</a><br>')
 	}
 	txt += '</div>'
 	$('div#str').html(txt)
@@ -119,9 +125,11 @@ function countPosition(posnum){
 			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
 		}
 		pl.posf = filterPosition(players[j].position, ps.filter)
-		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined!=undefined ? '!srt' : ''))
+		if(ps.filter=='') pl.posfempty = true
+		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined ? '!srt' : ''))
+//		debug('countPosition:s='+s+':pl[s]='+pl[s])
 		if(s!='' && pl[s]!=undefined) pl[s] = (ps.strmax==0 ? 0 : (countStrength(j,ps.koff)/ps.strmax)*100)
-//		debug('countPosition:'+ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
+//		debug('countPosition:filter='+ps.filter+':strmax='+ps.strmax+':!srt='+pl['!srt']+'%:name='+players[j].secondname)
 
 		pls.push(pl)
 //		if(i==positions.length-1) debug('countPosition:'+pl.id+':sostav='+pl.sostav+':str='+pl.srt)
