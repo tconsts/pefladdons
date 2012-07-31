@@ -139,7 +139,7 @@ function countStrength(plid,pkoff){
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
-		var koff = pkoff[n].split('=')
+		var koff = pkoff[n].replace(/\s/g,'').split('=')
 		var count = 0
 		if(koff[1]!=undefined){
 //			debug('-- koff[1]='+koff[1])
@@ -1126,7 +1126,7 @@ $().ready(function() {
 	var preparedhtml = ''
 	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr>'
 	preparedhtml += '<td id="crabgloballeft" width='+(bbig ? 0 : 200)+' valign=top></td>'
-	preparedhtml += '<td id="crabglobalcenter"></td>'
+	preparedhtml += '<td id="crabglobalcenter" valign=top></td>'
 	preparedhtml += '<td id="crabglobalright" width=200 valign=top>'
 	preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
 	preparedhtml += '</td></tr></table>'
