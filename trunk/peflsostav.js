@@ -398,11 +398,7 @@ function Print(val,sn){
 function FillData(nt){
 	$('#table'+nt).remove()
 	var np = $('#select'+nt+' option:selected').val()
-	//debug('FillHeaders:nt='+nt+':np='+np)
-
-//	debug('FillData('+nt+'):'+np)
-/**/
-	//if(deb && np==22){for (i in positions[np].pls[0]) debug(i+':'+positions[np].pls[0][i])}
+	//debug('FillData('+nt+'):'+np)
 	if(np!=0){
 		var selpl = 0
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
@@ -430,19 +426,22 @@ function FillData(nt){
 						hidden = ' hidden abbr=hidden'
 					}
 					if(skillnames[p] == undefined) {
-						debug('FillData:wrong param:'+p)
-						break;
+						debug('FillData:p='+p+'(add custom parametr)')
+						skillnames[p] = {}
+						skillnames[p].rshort = p
+						skillnames[p].rlong = 'Custom параметр'
+						skillnames[p].type = 'custom'
 					}
 					var skp = skillnames[p]
-					var align = (skp!=undefined && skp.align!=undefined ? ' align='+skp.align : '')
-					var nowrap = (skp!=undefined && skp.nowrap!=undefined ? ' nowrap' : '')
+					var align = (skp.align!=undefined ? ' align='+skp.align : '')
+					var nowrap = (skp.nowrap!=undefined ? ' nowrap' : '')
 					//debug('FillData:'+nt+':'+pp+':'+p)
 					plhtml += '<td'+align+hidden+nowrap+'>'+font1
 					plhtml += Print(pl[pp],p)
 					plhtml += font2+'</td>'
 					if(head) {
-						headhtml += '<td'+hidden+(skp!=undefined && skp.rlong!=undefined ? ' title="'+skp.rlong+'"' : '')+'>'
-						headhtml += (skp!=undefined && skp.rshort!=undefined ? skp.rshort : p)
+						headhtml += '<td'+hidden+(skp.rlong!=undefined ? ' title="'+skp.rlong+'"' : '')+'>'
+						headhtml += (skp.rshort!=undefined ? skp.rshort : p)
 						headhtml += '</td>'
 					}
 				}
@@ -530,6 +529,7 @@ function FillHeaders(){
 }
 
 function fillPosEdit(num){
+	debug('fillPosEdit:num='+num)
 	var html = ''
 	html += '<table width=100% class=back1><tr valign=top><td width=150>'
 	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
