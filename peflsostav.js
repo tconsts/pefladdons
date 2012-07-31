@@ -353,25 +353,27 @@ function countPosition(posnum){
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
-//	debug('countStrength:'+plid+':'+(plid=='ideal' ? '' : pl.secondname)+':'+pkoff)
+	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? '' : pl.secondname)+':pkoff='+pkoff)
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
-		var koff = pkoff[n].split('=')
+		var koff = pkoff[n].replace(/\s/g,'').split('=')
 		var count = 0
+		//debug('countStrength:- koff1='+koff[1])
 		if(koff[1]!=undefined){
 			for(p in pl){
 				var p2 = (skillnames[p]!=undefined ? skillnames[p].rshort : ' ')
+				//debug('countStrength:-- p='+p+':p2='+p2)
 				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && !isNaN(pl[p])){
-					var reg = new RegExp(p, "g")
-					var reg2 = new RegExp(p2, "g")
+					var reg  = new RegExp(p, "g")
+					var reg2 = new RegExp(p2,"g")
 					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : pl[p])).replace(reg2,(plid=='ideal' ? plskillmax : pl[p]))
-					//debug('countStrength:--- p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
+					//debug('countStrength:--- reg='+reg+':reg2='+reg2+':count='+count)
 				}
 			}
 		}
 		res += (count==undefined ? 0 : eval(count))
-		//debug('countStrength:- res:'+res+'('+eval(count)+')')
+		//debug('countStrength:---- res:'+res+'('+eval(count)+')')
 	}
 //	debug('countStrength:res:'+res)
 	return res
