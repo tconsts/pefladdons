@@ -23,16 +23,17 @@ var peflnation ={'Афганистан':0,'Албания':1,'Алжир':2,'В�
 var peflcountry={1:0,2:1,8:2,9:3,11:4,12:5,13:6,18:7,19:8,24:9,25:10,27:11,30:12,41:13,42:14,44:15,47:16,48:17,50:18,51:19,53:20,58:21,59:22,61:23,64:24,66:25,69:26,70:27,73:28,74:29,76:30,84:31,87:32,88:33,91:34,93:35,94:36,95:37,98:38,100:39,105:40,111:41,122:42,123:43,126:44,129:45,137:46,139:47,145:48,147:49,149:50,150:51,152:52,154:53,155:54,160:55,161:56,166:57,167:58,170:59,171:60,172:61,180:62,181:63,191:64,192:65,195:66,196:67,200:68,201:69,202:70,204:71,96:72,207:73,209:74,214:75}
 
 function printStrench(){
+	if(positions.length==0) return false
 	var poses = []
 	for(i in positions){
 		for(j in positions[i].pls){
-			if(positions[i].pls[j].id==players[0].id) {
+			if(positions[i].pls[j].id0){
 				var plx = {}
 				plx.name = positions[i].name
 				plx.srt = positions[i].pls[j].srt + (positions[i].pls[j].posf ? 1000 : 0)
 				plx.strench = positions[i].pls[j].srt
-				debug(plx.name+':'+plx.srt+':'+plx.strench)
-				if(!isNaN(plx.srt))poses.push(plx)
+				debug('printStrench:name='+plx.name+':srt='+plx.srt+':strench='+plx.strench)
+				if(!isNaN(plx.srt)) poses.push(plx)
 			}
 		}
 	}
@@ -48,7 +49,7 @@ function printStrench(){
 		txt += '<a>'+(poses[i].strench).toFixed(2)+':'+(poses[i].name).replace(/\s/g,'&nbsp;')+'</a><br>'
 	}
 	txt += '</div>'
-	$('div#str').append(txt)
+	$('div#str').html(txt)
 }
 
 function sSrt(i, ii) { // по убыванию
@@ -87,26 +88,10 @@ function GetData(dataname){
 		}
 	}
 }
-function countPosition(posnum){
-	var ps = positions[posnum]
-	ps.strmax = countStrength('ideal',ps.koff)
-	var pls = []
-	var pos = ps.filter.split(' ')
-	for(j in players){
-		var pl = {}
-		pl.id = players[j].id
-
-		if(pl.id==undefined) break;
-
-		var pkoff = ps.koff.split(',')
-		for(h in pkoff){
-			var koff = String(pkoff[h].split('=')[0])
-			if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l)
-			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
-		}
+function filterPosition(plpos,flpos){
+		var pos = flpos.split(' ')
 		var	pos0 = false
 		var pos1 = false
-		var plpos = players[j].position
 		if(pos[1]==undefined) {
 			pos1 = true
 			if(plpos.indexOf(pos[0]) != -1) pos0 = true
@@ -115,16 +100,34 @@ function countPosition(posnum){
 			pos1arr = pos[1].split('/')
 			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
 		}
-		pl.posf = (pos0 && pos1 ? true : false)
+		return (pos0 && pos1 ? true : false)
+}
+
+function countPosition(posnum){
+	var ps = positions[posnum]
+	ps.strmax = countStrength('ideal',ps.koff)
+	var pls = []
+	for(j in players){
+		var pl = {}
+		if(j==0) pl.id0 = true
+		pl.id = players[j].id
+		if(pl.id==undefined) break
+		var pkoff = ps.koff.split(',')
+		for(h in pkoff){
+			var koff = String(pkoff[h].split('=')[0])
+			if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l)
+			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
+		}
+		pl.posf = filterPosition(players[j].position, ps.filter)
 		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined!=undefined ? '!srt' : ''))
 		if(s!='' && pl[s]!=undefined) pl[s] = (ps.strmax==0 ? 0 : (countStrength(j,ps.koff)/ps.strmax)*100)
-//		debug(ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
+//		debug('countPosition:'+ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
 
 		pls.push(pl)
-//		if(i==positions.length-1) debug(pl.id+':sostav='+pl.sostav+':str='+pl.srt)
+//		if(i==positions.length-1) debug('countPosition:'+pl.id+':sostav='+pl.sostav+':str='+pl.srt)
 	}
-	positions[posnum].pls = pls//.sort(sSrt)
-//	debug('ps.strmax('+posnum+')='+ps.strmax)
+	positions[posnum].pls = pls.sort(sSrt)
+//	debug('countPosition:ps.strmax('+posnum+')='+ps.strmax)
 }
 
 function sSrt(i, ii) { // по убыванию
@@ -136,27 +139,29 @@ function sSrt(i, ii) { // по убыванию
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[0] : players[plid])
+	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
 		var koff = pkoff[n].replace(/\s/g,'').split('=')
 		var count = 0
 		if(koff[1]!=undefined){
-//			debug('-- koff[1]='+koff[1])
 			for(p in pl){
-//				debug('--- '+pl.id+':'+p+'='+pl[p])
+				var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
 				var p2 = (skillnames[p]!=undefined ? skillnames[p].rshort : ' ')
-				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && !isNaN(parseInt(pl[p])) && p!=''){
-					var reg = new RegExp(p, "g")
-					var reg2 = new RegExp(p2, "g")
-					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : parseInt(pl[p]))).replace(reg2,(plid=='ideal' ? plskillmax : parseInt(pl[p])))
-//					debug('----- p='+p+':'+reg+':'+reg2+':'+koff[1]+':'+count)
+				//debug('countStrength:---- p='+p+':p2='+p2+':plp='+plp)
+				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && p!=''){
+					var reg  = new RegExp(p, "g")
+					var reg2 = new RegExp(p2,"g")
+					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : plp)).replace(reg2,(plid=='ideal' ? plskillmax : plp))
+					//debug('countStrength:--- reg='+reg+':reg2='+reg2+':count='+count)
 				}
 			}
 		}
 		res += (count==undefined ? 0 : eval(count))
+		//debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 	}
-//	debug('countStrength:'+plid+':'+res+':'+pkoff)
+	//debug('countStrength:- res='+res)
 	return res
 }
 
@@ -1153,6 +1158,9 @@ $().ready(function() {
 		skillsum += (isNaN(skillvalue) ? 0 : skillvalue);
 		if(sklfr[skillname]!=undefined) players[0][sklfr[skillname].elong] = skillvalue + skillarrow;
 	})
+	if(players[0].heading==undefined) players[0].heading = '??'
+	if(players[0].handling==undefined) players[0].handling = '??'
+	if(players[0].reflexes==undefined) players[0].reflexes = '??'
 	players[0].sumskills = skillsum
 
 	//add sum of skills to page
@@ -1321,7 +1329,7 @@ $().ready(function() {
 	text3 += '<div id="compare"></div>'
 	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br><br>'
 	text3 += '<b>Сила&nbsp;игрока</b><div id=str>'
-	//text3 += '<i>временно отключено...</i>'
+	text3 += '<i><font size=1>сходите в Состав+</font></i>'
 	text3 += '</div>'
 //	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
 

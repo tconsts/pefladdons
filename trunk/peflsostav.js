@@ -332,7 +332,9 @@ function countPosition(posnum){
 	var pls = []
 	for(j in players){
 		var pl = {}
+		if(j==0) pl.id0 = true
 		pl.id = players[j].id
+		if(pl.id==undefined) break
 		var pkoff = ps.koff.split(',')
 		for(h in pkoff){
 			var koff = String(pkoff[h].split('=')[0])
@@ -353,31 +355,32 @@ function countPosition(posnum){
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
-	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? '' : pl.secondname)+':pkoff='+pkoff)
+	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
 		var koff = pkoff[n].replace(/\s/g,'').split('=')
 		var count = 0
-		//debug('countStrength:- koff1='+koff[1])
 		if(koff[1]!=undefined){
 			for(p in pl){
+				var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
 				var p2 = (skillnames[p]!=undefined ? skillnames[p].rshort : ' ')
-				//debug('countStrength:-- p='+p+':p2='+p2)
-				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && !isNaN(pl[p])){
+				//debug('countStrength:---- p='+p+':p2='+p2+':plp='+plp)
+				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && p!=''){
 					var reg  = new RegExp(p, "g")
 					var reg2 = new RegExp(p2,"g")
-					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : pl[p])).replace(reg2,(plid=='ideal' ? plskillmax : pl[p]))
+					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : plp)).replace(reg2,(plid=='ideal' ? plskillmax : plp))
 					//debug('countStrength:--- reg='+reg+':reg2='+reg2+':count='+count)
 				}
 			}
 		}
 		res += (count==undefined ? 0 : eval(count))
-		//debug('countStrength:---- res:'+res+'('+eval(count)+')')
+		//debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 	}
-//	debug('countStrength:res:'+res)
+	//debug('countStrength:- res='+res)
 	return res
 }
+
 function Print(val,sn){
 //	debug('Print('+val+','+sn+')')
 	switch(skillnames[sn].type){
