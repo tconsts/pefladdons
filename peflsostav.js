@@ -44,35 +44,35 @@ nation:{rshort:'кСт',rlong:'Код страны'},
 natfull:{rshort:'стр',rlong:'Страна',align:'left',nowrap:'1'},
 secondname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
 firstname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
-age:{rshort:'взр',rlong:'Возраст'},
+age:{rshort:'взр',rlong:'Возраст',str:true,strmax:40},
 id:{rshort:'id',rlong:'id игрока'},
-internationalapps:{rshort:'иСб',rlong:'Игр за сборную'},
-internationalgoals:{rshort:'гСб',rlong:'Голов за сборную'},
+internationalapps:{rshort:'иСб',rlong:'Игр за сборную',str:true,strmax:500},
+internationalgoals:{rshort:'гСб',rlong:'Голов за сборную',str:true,strmax:500},
 contract:{rshort:'кнт',rlong:'Контракт'},
 wage:{rshort:'зрп',rlong:'Зарплата'},
 value:{rshort:'ном',rlong:'Номинал',type:'value'},
-corners:{rshort:'уг',rlong:'Угловые'},
-crossing:{rshort:'нв',rlong:'Навесы'},
-dribbling:{rshort:'др',rlong:'Дриблинг'},
-finishing:{rshort:'уд',rlong:'Удары'},
-freekicks:{rshort:'шт',rlong:'Штрафные'},
-handling:{rshort:'ру',rlong:'Игра руками'},
-heading:{rshort:'гл',rlong:'Игра головой/на выходах'},
-leadership:{rshort:'лд',rlong:'Лидерство'},
-longshots:{rshort:'ду',rlong:'Дальние удары'},
-marking:{rshort:'по',rlong:'Персональная опека'},
-pace:{rshort:'ск',rlong:'Скорость'},
-passing:{rshort:'пс',rlong:'Пас'},
-positioning:{rshort:'вп',rlong:'Выбор позиции'},
-reflexes:{rshort:'ре',rlong:'Реакция'},
-stamina:{rshort:'вн',rlong:'Выносливость'},
-strength:{rshort:'мщ',rlong:'Мощь'},
-tackling:{rshort:'от',rlong:'Отбор'},
-vision:{rshort:'ви',rlong:'Видение'},
-workrate:{rshort:'рб',rlong:'Работоспособность'},
-technique:{rshort:'тх',rlong:'Техника'},
-morale:{rshort:'мрл',rlong:'Мораль'},
-form:{rshort:'фрм',rlong:'Форма'},
+corners:{rshort:'уг',rlong:'Угловые',str:true},
+crossing:{rshort:'нв',rlong:'Навесы',str:true},
+dribbling:{rshort:'др',rlong:'Дриблинг',str:true},
+finishing:{rshort:'уд',rlong:'Удары',str:true},
+freekicks:{rshort:'шт',rlong:'Штрафные',str:true},
+handling:{rshort:'ру',rlong:'Игра руками',str:true},
+heading:{rshort:'гл',rlong:'Игра головой/на выходах',str:true},
+leadership:{rshort:'лд',rlong:'Лидерство',str:true},
+longshots:{rshort:'ду',rlong:'Дальние удары',str:true},
+marking:{rshort:'по',rlong:'Персональная опека',str:true},
+pace:{rshort:'ск',rlong:'Скорость',str:true},
+passing:{rshort:'пс',rlong:'Пас',str:true},
+positioning:{rshort:'вп',rlong:'Выбор позиции',str:true},
+reflexes:{rshort:'ре',rlong:'Реакция',str:true},
+stamina:{rshort:'вн',rlong:'Выносливость',str:true},
+strength:{rshort:'мщ',rlong:'Мощь',str:true},
+tackling:{rshort:'от',rlong:'Отбор',str:true},
+vision:{rshort:'ви',rlong:'Видение',str:true},
+workrate:{rshort:'рб',rlong:'Работоспособность',str:true},
+technique:{rshort:'тх',rlong:'Техника',str:true},
+morale:{rshort:'мрл',rlong:'Мораль',str:true,strmax:100},
+form:{rshort:'фрм',rlong:'Форма',str:true,strmax:100},
 position:{rshort:'Поз',rlong:'Позиция',align:'left',nowrap:'1'},
 /**
 games
@@ -370,7 +370,8 @@ function countStrength(plid,pkoff){
 				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && p!=''){
 					var reg  = new RegExp(p, "g")
 					var reg2 = new RegExp(p2,"g")
-					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : plp)).replace(reg2,(plid=='ideal' ? plskillmax : plp))
+					var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
+					count = koff[1].replace(reg,skill).replace(reg2,skill)
 					//debug('countStrength:--- reg='+reg+':reg2='+reg2+':count='+count)
 				}
 			}
@@ -406,11 +407,14 @@ function FillData(nt){
 		var html = '<table id=table'+nt+' width=100% style="border:0px">'
 		var head = true
 		var nummax = (positions[np].num==0 ? positions[np].pls.length : positions[np].num)
-    	for(t=0;t<nummax;t++){
+		var numshow = 0
+    	for(t=0;t<positions[np].pls.length;t++){
 			var pl = positions[np].pls[t]
 			var trbgcolor = (selpl==pl.id || (positions[np].filter == '' && pl.sostav==2) ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''))
 			var plhtml = '<tr align=right'
-			plhtml += (!pl.posf && selpl!=pl.id ? ' hidden abbr=wrong' : '')
+			if((!pl.posf || numshow>=nummax) && selpl!=pl.id) 	plhtml += ' hidden abbr=wrong'
+			else numshow++
+
 			plhtml += trbgcolor+'>'
 			var font1 = (!pl.posf ? '<font color=red>' : '')
 			var font2 = (!pl.posf ? '</font>' : '')
