@@ -353,6 +353,27 @@ function countPosition(posnum){
 	positions[posnum].pls = pls.sort(sSrt)
 //	debug('countPosition:ps.strmax('+posnum+')='+ps.strmax)
 }
+function checkKoff(kf0){
+	var res = kf0.replace(/!/g,'')
+	if(skillnames[res]==undefined){
+		var custom = true
+		for(h in skillnames){
+			if(skillnames[h].rshort==res) {
+				custom = false
+				res = h
+			}
+		}
+		if(custom){
+			debug('checkKoff:kf0='+res+'(add custom parametr)')
+			skillnames[res] = {}
+			skillnames[res].rshort = res
+			skillnames[res].rlong = 'Custom параметр'
+			skillnames[res].type = 'custom'
+		}
+	}
+//	debug('checkKoff:kf0='+kf0+':res='+res)
+	return res
+}
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
@@ -360,8 +381,9 @@ function countStrength(plid,pkoff){
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
-		var koff = pkoff[n].replace(/\s/g,'').split('=')
 		var count = 0
+		var koff = pkoff[n].replace(/\s/g,'').split('=')
+		var koffname = checkKoff(koff[0])
 		if(koff[1]!=undefined){
 			for(p in pl){
 				var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
@@ -375,9 +397,14 @@ function countStrength(plid,pkoff){
 					//debug('countStrength:--- reg='+reg+':reg2='+reg2+':count='+count)
 				}
 			}
+			var countval = (count==undefined ? 0 : eval(count))
+			if(plid!='ideal' && skillnames[koffname].type=='custom') {
+				players[plid][koffname] = countval
+				debug('countStrength:'+koffname+'='+countval+'(новый параметр игрока '+players[plid].secondname+')')
+			}
+			res += countval
+			//debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 		}
-		res += (count==undefined ? 0 : eval(count))
-		//debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 	}
 	//debug('countStrength:- res='+res)
 	return res
@@ -400,7 +427,7 @@ function Print(val,sn){
 function FillData(nt){
 	$('#table'+nt).remove()
 	var np = $('#select'+nt+' option:selected').val()
-	//debug('FillData('+nt+'):'+np)
+	debug('FillData('+nt+'):'+np)
 	if(np!=0){
 		var selpl = 0
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
@@ -429,13 +456,6 @@ function FillData(nt){
 					if(pp.indexOf('!')!=-1){
 						p = pp.replace(/\!/g,'')
 						hidden = ' hidden abbr=hidden'
-					}
-					if(skillnames[p] == undefined) {
-						debug('FillData:p='+p+'(add custom parametr)')
-						skillnames[p] = {}
-						skillnames[p].rshort = p
-						skillnames[p].rlong = 'Custom параметр'
-						skillnames[p].type = 'custom'
 					}
 					var skp = skillnames[p]
 					var align = (skp.align!=undefined ? ' align='+skp.align : '')
