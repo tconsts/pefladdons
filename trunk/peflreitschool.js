@@ -12,7 +12,7 @@ var debnum = 0
 
 function debug(text) {
 	if(deb) {
-		if(debnum==0) $('body').prepend('<div id=debug></div>')
+		if(debnum==0) $('body').append('<div id=debug></div>')
 		debnum++;
 		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
 	}
@@ -33,11 +33,7 @@ function SaveData(){
 		var rep = (teams[i]['rep'] ? teams[i]['rep'] : ' ')
 		teamslist += i + ':'+ bud + ':' + rep + ','
 	}
-	if (navigator.userAgent.indexOf('Firefox') != -1){
-		localStorage.peflcountryteams = teamslist
-	} else {	
-		sessionStorage.peflcountryteams = teamslist
-	}
+	localStorage.peflcountryteams = teamslist
 }
 
 function check(d) {return (d<10 ? "0"+d : d)}
@@ -123,7 +119,9 @@ function MarkMyTeam(myteamid){
 	if(myteamid==undefined) return true
 	$('td.back4 table table tr').each(function(){
 		if(parseInt(UrlValue('j',$(this).find('td:eq(2) a').attr('href')))==myteamid) {
-			var newline = '<tr bgcolor=#D3D7CF>'+$(this).attr('bgcolor','#D3D7CF').html()+'</tr><tr><td colspan=3><hr></td></tr>'
+			var newline = '<tr bgcolor=#D3D7CF>'
+			newline += $(this).removeAttr('class').attr('bgcolor','#D3D7CF').html()
+			newline += '</tr><tr><td colspan=3><hr></td></tr>'
 			$('td.back4 table table').prepend(newline)
 		}
 	})
@@ -238,18 +236,19 @@ var TableToForum = {
 	
 }
 
+function fixColor(){
+	$('td.back4 table table tr').removeAttr('bgcolor')
+	$('td.back4 table table tr:odd').addClass('back2')
+}
 
 $().ready(function() {
 	var myteamid = localStorage.myteamid
 	debug('myteamid:'+myteamid)
+
+	fixColor()
 /**/
 	// Get info fom Global or Session Storage
-	var text1 = ''
-	if (navigator.userAgent.indexOf('Firefox') != -1){
-		text1 = String(localStorage.peflcountryteams)
-	} else {
-		text1 = String(sessionStorage.peflcountryteams)
-	}
+	var text1 = String(localStorage.peflcountryteams)
 	if (text1 != 'undefined'){
 //		alert('a')
 		var data = text1.split(',');
@@ -298,7 +297,7 @@ $().ready(function() {
 		repid = 1
 		$('td.back4 table table tr').each(function(i, val){
 			if(i>reputations[repid].fn) repid++
-			if(i==reputations[repid].st) $(val).attr('bgcolor','white')
+			if(i==reputations[repid].st) $(val).removeAttr('class').attr('bgcolor','white')
 			$(val).find('td:eq(0)').append(' '+reputations[repid].name)
 		})
 //		for(i in reputations) $('td.back4 table table tr:gt(0):eq('+(reputations[i].st-1)+')').attr('bgcolor','white').find('td:first').append(' '+reputations[i].name)
