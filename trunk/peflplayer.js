@@ -145,14 +145,37 @@ function sSrt(i, ii) { // по убыванию
     return  0
 }
 
+function checkKoff(kf0){
+	var res = kf0.replace(/!/g,'')
+	if(skillnames[res]==undefined){
+		var custom = true
+		for(h in skillnames){
+			if(skillnames[h].rshort==res) {
+				custom = false
+				res = h
+			}
+		}
+		if(custom){
+			debug('checkKoff:kf0='+res+'(add custom parametr)')
+			skillnames[res] = {}
+			skillnames[res].rshort = res
+			skillnames[res].rlong = 'Custom параметр'
+			skillnames[res].type = 'custom'
+		}
+	}
+//	debug('checkKoff:kf0='+kf0+':res='+res)
+	return res
+}
+
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[0] : players[plid])
-	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
+	debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
-		var koff = pkoff[n].replace(/\s/g,'').split('=')
 		var count = 0
+		var koff = pkoff[n].replace(/\s/g,'').split('=')
+		var koffname = checkKoff(koff[0])
 		if(koff[1]!=undefined){
 			for(p in pl){
 				var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
@@ -161,15 +184,21 @@ function countStrength(plid,pkoff){
 				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && p!=''){
 					var reg  = new RegExp(p, "g")
 					var reg2 = new RegExp(p2,"g")
-					count = koff[1].replace(reg,(plid=='ideal' ? plskillmax : plp)).replace(reg2,(plid=='ideal' ? plskillmax : plp))
+					var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
+					count = koff[1].replace(reg,skill).replace(reg2,skill)
 					//debug('countStrength:--- reg='+reg+':reg2='+reg2+':count='+count)
 				}
 			}
+			var countval = (count==undefined ? 0 : eval(count))
+			if(plid!='ideal' && skillnames[koffname].type=='custom') {
+				players[plid][koffname] = countval
+				debug('countStrength:'+koffname+'='+countval+'(новый параметр игрока '+players[plid].secondname+')')
+			}
+			res += countval
+			debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 		}
-		res += (count==undefined ? 0 : eval(count))
-		//debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 	}
-	//debug('countStrength:- res='+res)
+	debug('countStrength:- res='+res)
 	return res
 }
 
@@ -1048,35 +1077,35 @@ nation:{rshort:'кСт',rlong:'Код страны'},
 natfull:{rshort:'стр',rlong:'Страна',align:'left',nowrap:'1'},
 secondname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
 firstname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
-age:{rshort:'взр',rlong:'Возраст'},
+age:{rshort:'взр',rlong:'Возраст',str:true,strmax:40},
 id:{rshort:'id',rlong:'id игрока'},
-internationalapps:{rshort:'иСб',rlong:'Игр за сборную'},
-internationalgoals:{rshort:'гСб',rlong:'Голов за сборную'},
-contract:{rshort:'кнт',rlong:'Контракт'},
-wage:{rshort:'зрп',rlong:'Зарплата'},
-value:{rshort:'ном',rlong:'Номинал',type:'value'},
-corners:{rshort:'уг',rlong:'Угловые'},
-crossing:{rshort:'нв',rlong:'Навесы'},
-dribbling:{rshort:'др',rlong:'Дриблинг'},
-finishing:{rshort:'уд',rlong:'Удары'},
-freekicks:{rshort:'шт',rlong:'Штрафные'},
-handling:{rshort:'ру',rlong:'Игра руками'},
-heading:{rshort:'гл',rlong:'Игра головой'},
-leadership:{rshort:'лд',rlong:'Лидерство'},
-longshots:{rshort:'ду',rlong:'Дальние удары'},
-marking:{rshort:'по',rlong:'Перс. опека'},
-pace:{rshort:'ск',rlong:'Скорость'},
-passing:{rshort:'пс',rlong:'Игра в пас'},
-positioning:{rshort:'вп',rlong:'Выбор позиции'},
-reflexes:{rshort:'ре',rlong:'Реакция'},
-stamina:{rshort:'вн',rlong:'Выносливость'},
-strength:{rshort:'мщ',rlong:'Мощь'},
-tackling:{rshort:'от',rlong:'Отбор мяча'},
-vision:{rshort:'ви',rlong:'Видение поля'},
-workrate:{rshort:'рб',rlong:'Работоспособность'},
-technique:{rshort:'тх',rlong:'Техника'},
-morale:{rshort:'мрл',rlong:'Мораль'},
-form:{rshort:'фрм',rlong:'Форма'},
+internationalapps:{rshort:'иСб',rlong:'Игр за сборную',str:true,strmax:500},
+internationalgoals:{rshort:'гСб',rlong:'Голов за сборную',str:true,strmax:500},
+contract:{rshort:'кнт',rlong:'Контракт',strmax:5},
+wage:{rshort:'зрп',rlong:'Зарплата',strmax:0},
+value:{rshort:'ном',rlong:'Номинал',type:'value',strmax:50000000},
+corners:{rshort:'уг',rlong:'Угловые',str:true},
+crossing:{rshort:'нв',rlong:'Навесы',str:true},
+dribbling:{rshort:'др',rlong:'Дриблинг',str:true},
+finishing:{rshort:'уд',rlong:'Удары',str:true},
+freekicks:{rshort:'шт',rlong:'Штрафные',str:true},
+handling:{rshort:'ру',rlong:'Игра руками',str:true},
+heading:{rshort:'гл',rlong:'Игра головой',str:true},
+leadership:{rshort:'лд',rlong:'Лидерство',str:true},
+longshots:{rshort:'ду',rlong:'Дальние удары',str:true},
+marking:{rshort:'по',rlong:'Перс. опека',str:true},
+pace:{rshort:'ск',rlong:'Скорость',str:true},
+passing:{rshort:'пс',rlong:'Игра в пас',str:true},
+positioning:{rshort:'вп',rlong:'Выбор позиции',str:true},
+reflexes:{rshort:'ре',rlong:'Реакция',str:true},
+stamina:{rshort:'вн',rlong:'Выносливость',str:true},
+strength:{rshort:'мщ',rlong:'Мощь',str:true},
+tackling:{rshort:'от',rlong:'Отбор мяча',str:true},
+vision:{rshort:'ви',rlong:'Видение поля',str:true},
+workrate:{rshort:'рб',rlong:'Работоспособность',str:true},
+technique:{rshort:'тх',rlong:'Техника',str:true},
+morale:{rshort:'мрл',rlong:'Мораль',str:true,strmax:100},
+form:{rshort:'фрм',rlong:'Форма',str:true,strmax:100},
 position:{rshort:'Поз',rlong:'Позиция',align:'left',nowrap:'1'},
 /**
 games
