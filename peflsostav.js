@@ -410,8 +410,8 @@ function countStrength(plid,pkoff){
 	return res
 }
 
-function Print(val,sn){
-//	debug('Print('+val+','+sn+')')
+function krPrint(val,sn){
+//	debug('rkPrint('+val+','+sn+')')
 	switch(skillnames[sn].type){
 		case 'float':
 			return (val).toFixed(1)
@@ -462,7 +462,7 @@ function FillData(nt){
 					var nowrap = (skp.nowrap!=undefined ? ' nowrap' : '')
 					//debug('FillData:'+nt+':'+pp+':'+p)
 					plhtml += '<td'+align+hidden+nowrap+'>'+font1
-					plhtml += Print(pl[pp],p)
+					plhtml += rkPrint(pl[pp],p)
 					plhtml += font2+'</td>'
 					if(head) {
 						headhtml += '<td'+hidden+(skp.rlong!=undefined ? ' title="'+skp.rlong+'"' : '')+'>'
@@ -640,17 +640,17 @@ function close(){
 	$('td.back4:first').show()
 }
 
-function open(){
+function rkOpen(){
 	$('td#sostavplus').show()
 	$('td.back3:first').hide()
 	$('td.back4:first').hide()
-	if(sostavteam) $('a#sostav').attr('href','javascript:void(open())')
-	else $('a#sostav_n').attr('href','javascript:void(open())')
+	if(sostavteam) $('a#sostav').attr('href','javascript:void(rkOpen())')
+	else $('a#sostav_n').attr('href','javascript:void(rkOpen())')
 }
 
 function PrintTables(geturl) {
 	debug('PrintTables()')
-	open()
+	rkOpen()
 
 	var html = '<div align=right><a href="javascript:void(close())">закрыть</a>&nbsp;</div>'
 	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
