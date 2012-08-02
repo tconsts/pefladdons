@@ -49,7 +49,7 @@ id:{rshort:'id',rlong:'id игрока'},
 internationalapps:{rshort:'иСб',rlong:'Игр за сборную',str:true,strmax:500},
 internationalgoals:{rshort:'гСб',rlong:'Голов за сборную',str:true,strmax:500},
 contract:{rshort:'кнт',rlong:'Контракт',strmax:5},
-wage:{rshort:'зрп',rlong:'Зарплата',strmax:0},
+wage:{rshort:'зрп',rlong:'Зарплата',strmax:100,strinvert:100100},
 value:{rshort:'ном',rlong:'Номинал',type:'value',strmax:50000000},
 corners:{rshort:'уг',rlong:'Угловые',str:true},
 crossing:{rshort:'нв',rlong:'Навесы',str:true},
@@ -393,6 +393,7 @@ function countStrength(plid,pkoff){
 					var reg  = new RegExp(p, "g")
 					var reg2 = new RegExp(p2,"g")
 					var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
+					skill = '('+(skill-(skillnames[p]!=undefined && skillnames[p].strinvert!=undefined ? skillnames[p].strinvert : 0))+')'
 					count = koff[1].replace(reg,skill).replace(reg2,skill)
 					//debug('countStrength:--- reg='+reg+':reg2='+reg2+':count='+count)
 				}
