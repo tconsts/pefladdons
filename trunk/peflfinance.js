@@ -429,7 +429,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 			$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
 			$('table#4').after(divpriztext+'<br>')
 		}else if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10){
-			var spraz = parseInt((sponsors - cur.sponsors/fin.fid)/1000)
+			var spraz = parseInt((sponsors - (cur.sponsors-cur.bonus)/fin.fid)/1000)
 			if(spraz != 0){
 				var prev_sp = last_sp-spraz
 				debug('spraz='+spraz+', last_sp='+last_sp+', prev_sp='+prev_sp)
