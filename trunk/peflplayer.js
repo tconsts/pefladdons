@@ -167,39 +167,48 @@ function checkKoff(kf0){
 	return res
 }
 
+function changeValue(formula,name,value){
+	//debug('changeValue:formula='+formula+':name='+name+':value='+value)
+	if(formula.indexOf(name)!=-1 && name!=''){
+		var reg  = new RegExp(name, "g")
+		formula = formula.replace(reg,value)
+	}
+	return formula
+}
+
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[0] : players[plid])
-	debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
+	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
 		var count = 0
-		var koff = pkoff[n].replace(/\s/g,'').split('=')
+		var koff = pkoff[n].split('=')
 		var koffname = checkKoff(koff[0])
 		if(koff[1]!=undefined){
+			count = koff[1].replace(/\s/g,'')
 			for(p in pl){
 				var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
-				var p2 = (skillnames[p]!=undefined ? skillnames[p].rshort : ' ')
-				//debug('countStrength:---- p='+p+':p2='+p2+':plp='+plp)
-				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && p!=''){
-					var reg  = new RegExp(p, "g")
-					var reg2 = new RegExp(p2,"g")
-					var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
-					skill = '('+(skill-(skillnames[p]!=undefined && skillnames[p].strinvert!=undefined ? skillnames[p].strinvert : 0))+')'
-					count = koff[1].replace(reg,skill).replace(reg2,skill)
-					//debug('countStrength:--- reg='+reg+':reg2='+reg2+':count='+count)
-				}
+				var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
+				skill = '('+(skill-(skillnames[p]!=undefined && skillnames[p].strinvert!=undefined ? skillnames[p].strinvert : 0))+')'
+				count = changeValue(count,p,skill)
+				count = (skillnames[p]!=undefined ? changeValue(count,skillnames[p].rshort,skill) : count)
 			}
+			for(p in skillnames){
+				count = changeValue(count,p,0)
+				count = changeValue(count,skillnames[p].rshort,0)
+			}
+			//debug('countStrength:------ count='+count)
 			var countval = (count==undefined ? 0 : eval(count))
 			if(plid!='ideal' && skillnames[koffname].type=='custom') {
 				players[plid][koffname] = countval
 				debug('countStrength:'+koffname+'='+countval+'(новый параметр игрока '+players[plid].secondname+')')
 			}
 			res += countval
-			debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
+			//debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 		}
 	}
-	debug('countStrength:- res='+res)
+	//debug('countStrength:- res='+res)
 	return res
 }
 
@@ -1199,6 +1208,7 @@ $().ready(function() {
 	if(players[0].heading==undefined) players[0].heading = '??'
 	if(players[0].handling==undefined) players[0].handling = '??'
 	if(players[0].reflexes==undefined) players[0].reflexes = '??'
+
 	players[0].sumskills = skillsum
 
 	//add sum of skills to page

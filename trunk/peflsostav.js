@@ -13,7 +13,7 @@ var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var sostavteam = (location.search.substring(1) == 'sostav' ? true : false)
 
 positions = []
-var data = []
+var dataall = []
 var plkeys = []
 var players = []
 var pid = []
@@ -133,7 +133,7 @@ $().ready(function() {
 			i++;
 			var tmpkey = tmparr[0];
 			var tmpvalue = tmparr[1];
-			data[tmpkey] = tmpvalue;
+			dataall[tmpkey] = tmpvalue;
 
 			// данные о заявке
 			if (tmpkey.indexOf('pid') != -1) {
@@ -248,6 +248,8 @@ function GetData(dataname){
 			data[numpos] = curt
 			numpos++
 		}
+		//translate all to rshort
+		for(i in data) for(j in skillnames) changeValue(data[i].koff,j,skillnames[j].rshort)
 	}else{
 		needsave = true
 	// TODO: загрузить дефоултные positions(from forum) вместо констант тут.
@@ -375,6 +377,15 @@ function checkKoff(kf0){
 	return res
 }
 
+function changeValue(formula,name,value){
+	//debug('changeValue:formula='+formula+':name='+name+':value='+value)
+	if(formula.indexOf(name)!=-1 && name!=''){
+		var reg  = new RegExp(name, "g")
+		formula = formula.replace(reg,value)
+	}
+	return formula
+}
+
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
 	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
@@ -382,22 +393,22 @@ function countStrength(plid,pkoff){
 	var res = 0
 	for(n in pkoff){
 		var count = 0
-		var koff = pkoff[n].replace(/\s/g,'').split('=')
+		var koff = pkoff[n].split('=')
 		var koffname = checkKoff(koff[0])
 		if(koff[1]!=undefined){
+			count = koff[1].replace(/\s/g,'')
 			for(p in pl){
 				var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
-				var p2 = (skillnames[p]!=undefined ? skillnames[p].rshort : ' ')
-				//debug('countStrength:---- p='+p+':p2='+p2+':plp='+plp)
-				if((koff[1].indexOf(p)!=-1 || koff[1].indexOf(p2)!=-1) && p!=''){
-					var reg  = new RegExp(p, "g")
-					var reg2 = new RegExp(p2,"g")
-					var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
-					skill = '('+(skill-(skillnames[p]!=undefined && skillnames[p].strinvert!=undefined ? skillnames[p].strinvert : 0))+')'
-					count = koff[1].replace(reg,skill).replace(reg2,skill)
-					//debug('countStrength:--- reg='+reg+':reg2='+reg2+':count='+count)
-				}
+				var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
+				skill = '('+(skill-(skillnames[p]!=undefined && skillnames[p].strinvert!=undefined ? skillnames[p].strinvert : 0))+')'
+				count = changeValue(count,p,skill)
+				count = (skillnames[p]!=undefined ? changeValue(count,skillnames[p].rshort,skill) : count)
 			}
+			for(p in skillnames){
+				count = changeValue(count,p,0)
+				count = changeValue(count,skillnames[p].rshort,0)
+			}
+			//debug('countStrength:------ count='+count)
 			var countval = (count==undefined ? 0 : eval(count))
 			if(plid!='ideal' && skillnames[koffname].type=='custom') {
 				players[plid][koffname] = countval
@@ -490,16 +501,16 @@ function FillData(nt){
 }
 
 function getPlayers(){
-	var numPlayers = parseInt(data['n'])
+	var numPlayers = parseInt(dataall['n'])
 	debug('numPlayers:'+numPlayers)
 	for(i=0;i<numPlayers;i++){
 		var pl = {}
 		for(j in plkeys) {
 			var name = plkeys[j]
-			var val = data[name+i]
+			var val = dataall[name+i]
 			switch (name){
 				case 'contract':
-					val = (parseInt(val)==0 ? 21-parseInt(data['age'+i]): parseInt(val)); break;
+					val = (parseInt(val)==0 ? 21-parseInt(dataall['age'+i]): parseInt(val)); break;
 				case 'wage':
 					val = (parseInt(val)==0 ? 100 : parseInt((val).replace(/\,/g,''))); break;
 				case 'value':
@@ -521,11 +532,11 @@ function getPlayers(){
 		for(k in stds) pl[k] = (stds[k][pl.id]!=undefined ? stds[k][pl.id] : '')
 
 		pl.flag = 0
-		if(data['inj'+i]>0) pl.flag = 1
-		else if(data['sus'+i]>0) pl.flag = 2
-		else if(data['form'+i]<90) pl.flag = 3
-		else if(data['morale'+i]<80) pl.flag = 4
-		else if(data['value'+i]==0) pl.flag = 5
+		if(dataall['inj'+i]>0) pl.flag = 1
+		else if(dataall['sus'+i]>0) pl.flag = 2
+		else if(dataall['form'+i]<90) pl.flag = 3
+		else if(dataall['morale'+i]<80) pl.flag = 4
+		else if(dataall['value'+i]==0) pl.flag = 5
 
 //		debug(pl.secondname+':'+pl.flag)
 		players[pl.id] = pl
@@ -566,7 +577,8 @@ function fillPosEdit(num){
 	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="10" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"> Формат: "LC DF/DM"(пусто=все)</td></tr>'
 	html += '<tr><th align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td></tr>'
 	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
-	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сбросить</th><td></td></tr>'
+	html += '<tr><th></th><td></td></tr>'
+//	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сбросить</th><td></td></tr>'
 	html += '</table></td>'
 	html += '<td><table width=100% align=top>'
 	html += '<tr><td>!</td><td colspan=2>значит по дефоулту поле не отображать</td></tr>'
@@ -654,6 +666,7 @@ function PrintTables(geturl) {
 	krOpen()
 
 	var html = '<div align=right><a href="javascript:void(close())">закрыть</a>&nbsp;</div>'
+	html += '<div align=right><a href="javascript:void(PosDel())" >сбросить кофы</a>&nbsp;</div>'
 	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
 	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
 	html += '<th id=tdsost width=150 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
