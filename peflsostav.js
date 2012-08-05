@@ -18,9 +18,10 @@ var plkeys = []
 var players = []
 var pid = []
 var stds = {pfre:[],pcor:[],pcap:[],ppen:[]}
+var getforumid = 9107892
 var plskillmax = 15
 var tabslist = ''
-var maxtables = 25+10
+var maxtables = 25//25+10
 var list = {
 	positions: 'id,filter,name,num,koff'
 }
@@ -37,7 +38,7 @@ ppen:{rshort:'пн',rlong:'Исполнители пенальти'},
 pcap:{rshort:'кп',rlong:'Капитаны'},
 //сс
 school:{rshort:'шкл',rlong:'Школьник?'},
-srt:{rshort:'сила',rlong:'В % от идеала (профы '+plskillmax+')',type:'float'},
+srt:{rshort:'сила',rlong:'В % от идеала',type:'float'},
 stdat:{rshort:'са',rlong:'Идет на стд. атаки'},
 stdbk:{rshort:'со',rlong:'Идет на стд. обороны'},
 nation:{rshort:'кСт',rlong:'Код страны'},
@@ -254,7 +255,7 @@ function GetData(dataname){
 		needsave = true
 	// TODO: загрузить дефоултные positions(from forum) вместо констант тут.
 		data = [
-			{filter:'',		name:'&nbsp;',	num:0,	koff:''},
+			{filter:'',		name:'&nbsp;',	num:0,	koff:'data=9107892,idealsk=15,idealage=40,idealval=50000000,idealnat=500,maxt=10'},
 /**  1 **/	{filter:'GK', 	name:'GK', 		num:5,	koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,фл,Фам,сила,зв'},
 /**  2 **/	{filter:'C SW',	name:'C SW',	num:5,	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,фл,Фам,сила,зв'},
 /**  3 **/	{filter:'L DF',	name:'L DF',	num:5,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,фл,Фам,сила,зв'},
@@ -284,12 +285,38 @@ function GetData(dataname){
 		case 'positions':  positions = data;break
 		default: return false
 	}
+	getParams()
+	PrintAdditionalTables()
 	for(i=1;i<positions.length;i++) {
 		countPosition(i)
 	}
 	if(needsave) SaveData('positions')
 	FillHeaders()
 	fillPosEdit(0)
+}
+function getParams(){
+	var params = positions[0].koff.split(',')
+	for(k in params){
+		var pname = params[k].split('=')[0]
+		var pvalue = parseInt(params[k].split('=')[1])
+		debug('getParams:param='+pname+':value='+pvalue)
+		switch (pname){
+			case 'data': break;
+			case 'idealsk': plskillmax=pvalue; break;
+			case 'idealage':skillnames.age.strmax = pvalue;break;
+			case 'idealval':skillnames.value.strmax = pvalue;break;
+			case 'maxt':	maxtables += pvalue
+							for(l=1;l<=maxtables;l++){
+								if(selected[l]==undefined) selected[l] = 0
+							}
+							for(l=selected.length-1;l>0;l--) if(l>maxtables) selected.pop()
+							saveDataSelected()
+							break;
+			case 'idealnat':skillnames.internationalapps.strmax = pvalue;
+							skillnames.internationalgoals.strmax = pvalue;break;
+			default: debug('getParams:param='+pname+':value='+pvalue+'(Unknown!)')
+		}
+	}
 }
 
 function SaveData(dataname){
@@ -441,7 +468,7 @@ function krPrint(val,sn){
 function FillData(nt){
 	$('#table'+nt).remove()
 	var np = $('#select'+nt+' option:selected').val()
-	debug('FillData('+nt+'):'+np)
+	//debug('FillData('+nt+'):'+np)
 	if(np!=0){
 		var selpl = 0
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
@@ -547,7 +574,7 @@ function getPlayers(){
 }
 
 function FillHeaders(){
-//	debug('FillHeaders:maxtables='+maxtables)
+	debug('FillHeaders:maxtables='+maxtables)
 //	debug('FillHeaders:-- selected='+selected)
 	for(i=1;i<=maxtables;i++){
 //		if(i<4)	for(j in pid) debug(i+':'+j+':pid='+pid[j].pid+':p0='+pid[j].p0)
@@ -572,14 +599,18 @@ function fillPosEdit(num){
 	var html = ''
 	html += '<table width=100% class=back1><tr valign=top><td width=150>'
 	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
-	for(i in positions)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
+	html += '<option value=0'+(num==0 ? ' selected' :'')+'>--- Создать ---</option>'
+	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
 	html += '</select></td>'
-	html += '<td><table width=100%><tr><th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td>'
+	html += '<td><table width=100%>'
+	html += '<tr><th colspan=2 class=back2>Коэффициент</th></tr>'
+	html += '<tr><th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td></tr>'
 	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"> Сколько max отображать игроков(0=все)</td></tr>'
 	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="10" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"> Формат: "LC DF/DM"(пусто=все)</td></tr>'
-	html += '<tr><th align=right>Коэффициенты:</th><td><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="40" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td></tr>'
-	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
-	html += '<tr><th></th><td></td></tr>'
+	html += '<tr><td colspan=2><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="50" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td></tr>'
+	html += '<tr><th colspan=2>&nbsp;</th></tr>'
+	html += '</table><br><table>'
+	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
 //	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сбросить</th><td></td></tr>'
 	html += '</table></td>'
 	html += '<td><table width=100% align=top>'
@@ -588,7 +619,29 @@ function fillPosEdit(num){
 	for(m in skillnames) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
 	html += '</table></td></tr>'
 	html += '</table>'
+	$('div#divkoff').html(html)
+
+	html = '<table width=100% class=back1><tr valign=top>'
+	html += '<td width=50%><table width=100%>'
+	html += '<tr><th colspan=2 class=back2>Основные</th></tr>'
+	html += '<tr><th width=15% align=right nowrap>С форума:</th><td><input class=back1 style="border:1px solid;" id=iforum name="iforum" type="text" size="10" value="'+getforumid+'"></td></tr>'
+	html += '<tr><th width=15% align=right>Таблиц:</th><td><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (Кол-во доп. таблиц)</td></tr>'
+	html += '<tr><th colspan=2>&nbsp;</th></tr>'
+	html += '</table></td>'
+	html += '<td width=50%><table width=100%>'
+	html += '<tr><th colspan=2 class=back2>Идеальный игрок</th></tr>'
+	html += '<tr><th width=15% align=right>Скиллы:</th><td><input class=back1 style="border:1px solid;" id=iskills name="iskills" type="text" size="10" value="'+plskillmax+'"></td></tr>'
+	html += '<tr><th width=15% align=right>Номинал:</th><td><input class=back1 style="border:1px solid;" id=inominal name="inominal" type="text" size="10" value="'+skillnames.value.strmax+'"></td></tr>'
+	html += '<tr><th width=15% align=right>Возраст:</th><td><input class=back1 style="border:1px solid;" id=iage name="iage" type="text" size="10" value="'+skillnames.age.strmax+'"></td></tr>'
+	html += '<tr><th width=15% align=right>Сборная:</th><td><input class=back1 style="border:1px solid;" id=inational name="inational" type="text" size="10" value="'+skillnames.internationalapps.strmax+'"> (Игр и голов)</td></tr>'
+	html += '<tr><th colspan=2>&nbsp;</th></tr>'
+	html += '</table></td><tr>'
+	html += '<tr><td clospan=2><table>'
+	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
+	html += '</table></td><tr>'
+	html += '</table>'
 	$('div#divedit').html(html)
+
 }
 
 function PosChange(){
@@ -601,11 +654,38 @@ function PosDel(){
 	chMenu('tdsost')
 	GetData('positions')
 }
+function PosSaveAll(){
+	var pr = {
+		iforum: ($('#iforum').val() == '' ? getforumid : $('#iforum').val()),
+		itables: ($('#itables').val() == '' ? 0 : $('#itables').val()),
+		iskills: ($('#iskills').val() == '' ? 15 : $('#iskills').val()),
+		inominal: ($('#inominal').val() == '' ? 50000000 : $('#inominal').val()),
+		iage: ($('#iage').val() == '' ? 40 : $('#iage').val()),
+		inational: ($('#inational').val() == '' ? 500 : $('#inational').val()),
+	}
+	for(g in pr) debug('PosSave:g='+g+':pr[g]='+pr[g])
+
+	if(pr.iforum!=parseInt(pr.iforum) ||
+		pr.itables!=parseInt(pr.itables) ||
+		pr.iskills!=parseInt(pr.iskills) ||
+		pr.inominal!=parseInt(pr.inominal) ||
+		pr.iage!=parseInt(pr.iage) ||
+		pr.inational!=parseInt(pr.inational)){
+			debug('PosSave:pr wrong!')
+			alert('Неправильно введены параметры!')
+			return false
+	}
+	positions[0].koff = 'data='+pr.iforum+',idealsk='+pr.iskills+',idealage='+pr.iage+',idealval='+pr.inominal+',idealnat='+pr.inational+',maxt='+pr.itables
+	SaveData('positions')
+	maxtables = 25
+	chMenu('tdsost')
+	GetData('positions')
+}
 
 function PosSave(){
 	var num = $('#selpos option:selected').val()
 	if(num==0) num = positions.length
-	debug('PosSave():'+num)
+	debug('PosSave:num='+num)
 	var ps = {
 		name: 	$('#iname').val(),
 		num: 	($('#inum').val() == '' ? 0 : $('#inum').val()),
@@ -631,21 +711,27 @@ function chMenu(mid){
 	debug('chMenu('+mid+')')
 	switch (mid){
 		case 'tdedit':
-			$('th#tdsost,th#tddopt').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tdsost,th#tddopt,th#tdkoff').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
 			$('th#tdedit').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
-			$('table#tablesost, table#tabledopt').hide()
+			$('table#tablesost, table#tabledopt, div#divkoff').hide()
 			$('div#divedit').show()
 			break;
+		case 'tdkoff':
+			$('th#tdsost,th#tddopt,th#tdedit').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tdkoff').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
+			$('table#tablesost, table#tabledopt, div#divedit').hide()
+			$('div#divkoff').show()
+			break;
 		case 'tddopt':
-			$('th#tdsost,th#tdedit').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tdsost,th#tdedit,th#tdkoff').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
 			$('th#tddopt').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
-			$('table#tablesost, div#divedit').hide()
+			$('table#tablesost, div#divedit, div#divkoff').hide()
 			$('table#tabledopt').show()
 			break;
 		default:
-			$('th#tdedit,th#tddopt').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
+			$('th#tdedit,th#tddopt,th#tdkoff').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
 			$('th#tdsost').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
-			$('table#tabledopt, div#divedit').hide()
+			$('table#tabledopt, div#divedit, div#divkoff').hide()
 			$('table#tablesost').show()
 	}
 }
@@ -671,11 +757,12 @@ function PrintTables(geturl) {
 	html += '<div align=right><a href="javascript:void(PosDel())" >сбросить кофы</a>&nbsp;</div>'
 	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
 	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
-	html += '<th id=tdsost width=150 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
-	html += '<th id=tddopt width=150 onmousedown="javascript:void(chMenu(\'tddopt\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Доп. таблицы</th>'
-	html += '<th id=tdedit width=150 onmousedown="javascript:void(chMenu(\'tdedit\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Настроить кофы</th>'
+	html += '<th id=tdsost width=130 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
+	html += '<th id=tddopt width=130 onmousedown="javascript:void(chMenu(\'tddopt\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Доп. таблицы</th>'
+	html += '<th id=tdkoff width=130 onmousedown="javascript:void(chMenu(\'tdkoff\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Коэфициенты</th>'
+	html += '<th id=tdedit width=130 onmousedown="javascript:void(chMenu(\'tdedit\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Настройки</th>'
 	html += '<td style="border-bottom:1px solid;">&nbsp;</td><tr>'
-	html += '<tr><td style="border-left:1px solid;border-right:1px solid;border-bottom:1px solid;" colspan=5>'
+	html += '<tr><td style="border-left:1px solid;border-right:1px solid;border-bottom:1px solid;" colspan=6>'
 	html += '<br><table id=tablesost width=100% class=back1>' //#C9F8B7	#A3DE8F
 	var nm = 25
 	for(i=1;i<8;i++){
@@ -702,20 +789,21 @@ function PrintTables(geturl) {
 		html += newtr + '</tr>'
 	}
 	html += '</table>'
-
-	nm = 26
-	for(i=1;i<=2;i++){
-		html += '<table id=tabledopt width=100% class=back1 style="display:none;">'
-		html += '<tr id=tr'+(i+25)+' class=back2 align=center>'
-		for(j=1;j<=5;j++){
-			html += PrintTd(nm)
-			nm++
-		}
-		html += '</tr></table>'
-	}
+	html += '<table id=tabledopt width=100% class=back1 style="display:none;"></table>'
+	html += '<div id=divkoff style="display:none;"></div>'
 	html += '<div id=divedit style="display:none;"></div>'
 	html += '<br></td></tr></table><br><br>'
 	$('td.back4').after('<td class=back4 id=sostavplus>'+html+'</td>')
+}
+function PrintAdditionalTables(){
+	var html = '<tr class=back2 align=center>'
+	for(i=26;i<=maxtables;i++){
+		//debug('PrintAdditionalTables:i='+i+':i%5='+(i%5)+':mt='+maxtables)
+		html += PrintTd(i)
+		if(i%5==0 && i!=25 && i!=(maxtables)) html += '</tr><tr class=back2 align=center>'
+	}
+	html += '</tr>'
+	$('table#tabledopt').html(html)
 }
 
 function PrintTd(num){
