@@ -520,9 +520,13 @@ function FillData(nt){
 		html += '</table>'
 		$('#htable'+nt).after(html)
 	}
-	if(selected[nt]!=np && np!=0) {
-		selected[nt] = np
-		saveDataSelected()
+	if(selected[nt]!=np) {
+		if(np==0 && nt<=25){
+			debug('FillData:np=0 nt='+nt+'(selected ненадо записывать)')
+		}else{
+			selected[nt] = np
+			saveDataSelected()
+		}
 //		debug('FillData('+nt+') -- '+selected[nt]+':selected='+selected.join(','))
 	}
 	MouseOff(nt)
