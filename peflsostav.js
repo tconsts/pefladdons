@@ -106,9 +106,9 @@ fratingav
 vratingav
 training
 /**/
-inj:{rshort:'трв',rlong:'Травма'},
-sus:{rshort:'дсв',rlong:'Дисквалификация'},
-syg:{rshort:'сыг',rlong:'Сыгранность'},
+inj:{rshort:'трв',rlong:'Травма',strmax:0,strinvert:85},
+sus:{rshort:'дсв',rlong:'Дисквалификация',strmax:0,strinvert:40},
+syg:{rshort:'сыг',rlong:'Сыгранность',str:true,strmax:20},
 /**
 agames
 agoals
