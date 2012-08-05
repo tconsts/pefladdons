@@ -663,6 +663,7 @@ function PosSaveAll(){
 		iage: ($('#iage').val() == '' ? 40 : $('#iage').val()),
 		inational: ($('#inational').val() == '' ? 500 : $('#inational').val()),
 	}
+	if(pr.itables>30) pr.itables = 30
 	for(g in pr) debug('PosSave:g='+g+':pr[g]='+pr[g])
 
 	if(pr.iforum!=parseInt(pr.iforum) ||
