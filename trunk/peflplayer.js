@@ -1165,7 +1165,7 @@ $().ready(function() {
 	var bbig = false
 	if($('table:eq(0)').attr('width')>=1000) {
 		bbig = true
-		$('table:eq(3)').attr('width',$('table:eq(0)').attr('width')-200)
+		$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200)
 	}
 
 	$('td.back4 table table tr[bgcolor=#a3de8f]').removeAttr('bgcolor').addClass('back3')
