@@ -30,6 +30,7 @@ var fl = ['','#EF2929','#A40000','#FCE94F','#E9B96E','green','black']
 var selected = ''
 
 var skillnames = {
+sor:{rshort:'срт',rlong:'Сортировка',hidden:true},
 sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
 flag:{rshort:'фл',rlong:'Информационный флаг'},
 pfre:{rshort:'иш',rlong:'Исполнители штрафных'},
@@ -49,9 +50,9 @@ age:{rshort:'взр',rlong:'Возраст',str:true,strmax:40},
 id:{rshort:'id',rlong:'id игрока'},
 internationalapps:{rshort:'иСб',rlong:'Игр за сборную',str:true,strmax:500},
 internationalgoals:{rshort:'гСб',rlong:'Голов за сборную',str:true,strmax:500},
-contract:{rshort:'кнт',rlong:'Контракт',strmax:5},
-wage:{rshort:'зрп',rlong:'Зарплата',strmax:100,strinvert:100100},
-value:{rshort:'ном',rlong:'Номинал',type:'value',strmax:50000000},
+contract:{rshort:'кнт',rlong:'Контракт',str:true,strmax:5},
+wage:{rshort:'зрп',rlong:'Зарплата',str:true,strmax:100,strinvert:100100},
+value:{rshort:'ном',rlong:'Номинал',type:'value',str:true,strmax:50000000},
 corners:{rshort:'уг',rlong:'Угловые',str:true},
 crossing:{rshort:'нв',rlong:'Навесы',str:true},
 dribbling:{rshort:'др',rlong:'Дриблинг',str:true},
@@ -106,8 +107,8 @@ fratingav
 vratingav
 training
 /**/
-inj:{rshort:'трв',rlong:'Травма',strmax:0,strinvert:85},
-sus:{rshort:'дсв',rlong:'Дисквалификация',strmax:0,strinvert:40},
+inj:{rshort:'трв',rlong:'Травма',str:true,strmax:0,strinvert:85},
+sus:{rshort:'дсв',rlong:'Дисквалификация',str:true,strmax:0,strinvert:40},
 syg:{rshort:'сыг',rlong:'Сыгранность',str:true,strmax:20},
 /**
 agames
@@ -223,7 +224,7 @@ function debug(text) {
 }
 
 function sSrt(i, ii) { // по убыванию
-	var s = (i.srt!=undefined ? 'srt' : '!srt')
+	var s = 'sor'
     if 		(i[s] < ii[s])	return  1
     else if	(i[s] > ii[s])	return -1
     return  0
@@ -359,7 +360,9 @@ function filterPosition(plpos,flpos){
 
 function countPosition(posnum){
 	var ps = positions[posnum]
-	ps.strmax = countStrength('ideal',ps.koff)
+	var sf = countStrength('ideal',ps.koff).split(':')
+	ps.strmax = sf[0]
+	ps.sormax = sf[1]
 	var pls = []
 	for(j in players){
 		var pl = {}
@@ -374,8 +377,12 @@ function countPosition(posnum){
 		}
 		pl.posf = filterPosition(players[j].position, ps.filter)
 		if(ps.filter=='') pl.posfempty = true
-		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined!=undefined ? '!srt' : ''))
-		if(s!='' && pl[s]!=undefined) pl[s] = (ps.strmax==0 ? 0 : (countStrength(j,ps.koff)/ps.strmax)*100)
+		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined ? '!srt' : ''))
+		if(s!='' && pl[s]!=undefined) {
+			var sfp = countStrength(j,ps.koff).split(':')
+			pl[s] = (ps.strmax==0 ? 0 : (sfp[0]/ps.strmax)*100)
+			pl.sor = (ps.sormax==0 ? 0 : (sfp[1]/ps.sormax)*100)
+		}
 //		debug('countPosition:'+ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
 
 		pls.push(pl)
@@ -419,36 +426,46 @@ function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
 	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
 	pkoff = pkoff.split(',')
-	var res = 0
+	var res  = 0
+	var res2 = 0
 	for(n in pkoff){
-		var count = 0
+		var count = 0		// filter
+		var count2 = 0		// strench
 		var koff = pkoff[n].split('=')
 		var koffname = checkKoff(koff[0])
 		if(koff[1]!=undefined){
-			count = koff[1].replace(/\s/g,'')
+			count  = koff[1].replace(/\s/g,'')
+			count2 = koff[1].replace(/\s/g,'')
 			for(p in pl){
 				var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
 				var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
 				skill = '('+(skill-(skillnames[p]!=undefined && skillnames[p].strinvert!=undefined ? skillnames[p].strinvert : 0))+')'
 				count = changeValue(count,p,skill)
 				count = (skillnames[p]!=undefined ? changeValue(count,skillnames[p].rshort,skill) : count)
+				if(skillnames[p]!=undefined && !skillnames[p].str) skill = 0
+				count2 = changeValue(count2,p,skill)
+				count2 = (skillnames[p]!=undefined ? changeValue(count2,skillnames[p].rshort,skill) : count2)
 			}
 			for(p in skillnames){
 				count = changeValue(count,p,0)
 				count = changeValue(count,skillnames[p].rshort,0)
+				count2 = changeValue(count2,p,0)
+				count2 = changeValue(count2,skillnames[p].rshort,0)
 			}
 			//debug('countStrength:------ count='+count)
-			var countval = (count==undefined ? 0 : eval(count))
+			var countval  = (count==undefined ? 0 : eval(count))
+			var countval2 = (count2==undefined ? 0 : eval(count2))
 			if(plid!='ideal' && skillnames[koffname].type=='custom') {
 				players[plid][koffname] = countval
 				debug('countStrength:'+koffname+'='+countval+'(новый параметр игрока '+players[plid].secondname+')')
 			}
-			res += countval
+			res  += countval
+			res2 += countval2
 			//debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 		}
 	}
 	//debug('countStrength:- res='+res)
-	return res
+	return res2+':'+res
 }
 
 function krPrint(val,sn){
@@ -491,7 +508,7 @@ function FillData(nt){
 				if(pp=='flag'){
 					plhtml += '<td'+(pl[pp]>0 ? ' bgcolor='+fl[pl[pp]] : trbgcolor)+'></td>'
 					if(head) headhtml += '<td width=1%></td>'
-				}else if(pp!='posf' && pp!='posfempty' && pp!='sostav' && pp!='id'){
+				}else if(pp!='posf' && pp!='posfempty' && pp!='sostav' && pp!='id' && pp!='sor'){
 					var hidden = ''
 					var p = pp
 					if(pp.indexOf('!')!=-1){
@@ -620,7 +637,7 @@ function fillPosEdit(num){
 	html += '<td><table width=100% align=top>'
 	html += '<tr><td>!</td><td colspan=2>значит по дефоулту поле не отображать</td></tr>'
 	html += '<tr><td>=</td><td colspan=2>эти скилы учавствуют в подсчете силы</td></tr>'
-	for(m in skillnames) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
+	for(m in skillnames) if(!skillnames[m].hidden) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
 	html += '</table></td></tr>'
 	html += '</table>'
 	$('div#divkoff').html(html)
