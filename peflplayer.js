@@ -50,9 +50,9 @@ function printStrench(){
 		}
 		if(poses[i].srt<0 && hidden==2) {
 			hidden = 3
-			txt += '-----<br>'
+			txt += '</div><div><br>'
 		}
-		txt += (poses[i].strench==0 ? '' : '<a>'+(poses[i].strench).toFixed(2)+':'+(poses[i].name).replace(/\s/g,'&nbsp;')+'</a><br>')
+		txt += (poses[i].strench==0 || String(poses[i].name)[0]=='!' ? '' : '<a>'+(poses[i].strench).toFixed(2)+':'+(poses[i].name).replace(/\s/g,'&nbsp;')+'</a><br>')
 	}
 	txt += '</div>'
 	$('div#str').html(txt)
