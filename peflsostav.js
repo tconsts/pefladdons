@@ -202,8 +202,8 @@ function getDataSelected(){
 			+',10,9,9,9,11'	// линия MF
 			+',13,12,12,12,14'	// линия AM
 			+',15,15,15'		// линия FW
-			+',16,17,18,19,20'	// доп таблицы 1
-			+',21,0,0,22,23'	// доп таблицы 2
+			+',16,17,18,19,0'	// доп таблицы 1
+			+',20,21,22,23,0'	// доп таблицы 2
 	}
 	return datavalue
 }
@@ -272,14 +272,14 @@ function GetData(dataname){
 /** 13 **/	{filter:'L AM',	name:'L AM',	num:5,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,фл,Фам,сила,зв'},
 /** 14 **/	{filter:'R AM',	name:'R AM',	num:5,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,фл,Фам,сила,зв'},
 /** 15 **/	{filter:'C FW',	name:'C FW',	num:5,	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,фл,Фам,сила,зв'},
-/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,са,фл,Фам,от,ск,!сила'},
-/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,со,фл,Фам,др,ск,!сила'},
-/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'зв=зв*200,уг=уг*10,нв=нв*2,ви,фл,Фам,иу,!сила'},
-/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'зв=зв*200,шт=шт*10,ду=ду,нв=нв,ви,фл,Фам,иш,!сила'},
-/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'зв=зв*200,взр=взр,уд=уд*0.3,лд=лд*0.3,фл,Фам,пн,!сила'},
-/** 21 **/	{filter:'',		name:'Сыгранность',	num:0,	koff:'зв,сыг=сыг,фл,Фам,Поз,!сила'},
-/** 22 **/	{filter:'',		name:'Зарплаты',	num:0,	koff:'зрп=зрп,кнт=-кнт*100,фл,Фам,!сила'},
-/** 23 **/	{filter:'',		name:'Номиналы',	num:0,	koff:'ном=ном,взр,фл,Фам,!сила'}
+/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,са,сила,фл,Фам,от,ск'},
+/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,со,сила,фл,Фам,др,ск'},
+/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'зв=зв*200,уг=уг*10,нв=нв*2,ви,фл,Фам,иу,сила'},
+/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'зв=зв*200,шт=шт*10,ду=ду,нв=нв,ви,фл,Фам,иш,сила'},
+/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'зв=зв*200,взр=взр,уд=уд*0.3,лд=лд*0.3,фл,Фам,пн,сила'},
+/** 21 **/	{filter:'',		name:'!Сыгранность',	num:0,	koff:'зв,сыг=сыг,фл,Фам,Поз,!сила'},
+/** 22 **/	{filter:'',		name:'!Зарплаты',	num:0,	koff:'зрп=зрп,кнт=-кнт*100,фл,Фам,!сила'},
+/** 23 **/	{filter:'',		name:'!Номиналы',	num:0,	koff:'ном=ном,взр,фл,Фам,!сила'}
 		]
 	}
 	switch (dataname){
@@ -672,6 +672,7 @@ function PosChange(){
 }
 function PosDel(){
 	delete localStorage.positions
+	maxtables = 25
 	chMenu('tdsost')
 	GetData('positions')
 }
@@ -818,13 +819,15 @@ function PrintTables(geturl) {
 	$('td.back4').after('<td class=back4 id=sostavplus>'+html+'</td>')
 }
 function PrintAdditionalTables(){
-	var html = '<tr class=back2 align=center>'
+	var html = '<tr><td>'
+	html += '<table witdh=100% bgcolor=black><tr class=back2 align=center>'
 	for(i=26;i<=maxtables;i++){
 		//debug('PrintAdditionalTables:i='+i+':i%5='+(i%5)+':mt='+maxtables)
 		html += PrintTd(i)
-		if(i%5==0 && i!=25 && i!=(maxtables)) html += '</tr><tr class=back2 align=center>'
+		if(i%5==0 && i!=25 && i!=(maxtables)) html += '</tr></table><br><table witdh=100% bgcolor=black><tr class=back2 align=center>'
 	}
-	html += '</tr>'
+	html += '</tr></table>'
+	html += '</td></tr>'
 	$('table#tabledopt').html(html)
 }
 
