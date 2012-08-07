@@ -52,7 +52,7 @@ function printStrench(){
 			hidden = 3
 			txt += '</div><div><br>'
 		}
-		txt += (poses[i].strench==0 || String(poses[i].name)[0]=='!' ? '' : '<a>'+(poses[i].strench).toFixed(2)+':'+(poses[i].name).replace(/\s/g,'&nbsp;')+'</a><br>')
+		txt += (String(poses[i].name)[0]=='!' ? '' : '<a>'+(poses[i].strench).toFixed(2)+':'+(poses[i].name).replace(/\s/g,'&nbsp;')+'</a><br>')
 	}
 	txt += '</div>'
 	$('div#str').html(txt)
@@ -199,7 +199,15 @@ function countStrength(plid,pkoff){
 				count = changeValue(count,skillnames[p].rshort,0)
 			}
 			//debug('countStrength:------ count='+count)
-			var countval = (count==undefined ? 0 : eval(count))
+			var countval  = 0
+			if(count!=undefined){
+				try{
+					countval = eval(count)
+				}catch(e){
+					debug('EVAL_ERROR:eval('+count+'):'+e)
+					return 0
+				}
+			}
 			if(plid!='ideal' && skillnames[koffname].type=='custom') {
 				players[plid][koffname] = countval
 				debug('countStrength:'+koffname+'='+countval+'(новый параметр игрока '+players[plid].secondname+')')
