@@ -421,6 +421,14 @@ function changeValue(formula,name,value){
 	}
 	return formula
 }
+function tryEval(formula){
+	try{
+		return eval(formula)
+	}catch(e){
+		debug('tryEval:error:'+formula+':'+e)
+		return false
+	}
+}
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
@@ -453,27 +461,12 @@ function countStrength(plid,pkoff){
 				count2 = changeValue(count2,skillnames[p].rshort,0)
 			}
 			//debug('countStrength:------ count='+count)
-			var countval  = 0
-			if(count!=undefined){
-				try{
-					countval = eval(count)
-				}catch(e){
-					debug('EVAL_ERROR:eval('+count+'):'+e)
-					countval = 0
-					return '0:0'
-				}
+			var countval  = tryEval(count)
+			var countval2 = tryEval(count2)
+			if(!countval) {
+				if(plid=='ideal') alert('!!Ошибка подсчета в "'+pkoff[n]+'":('+koff[1]+')')
+				return '0:0'
 			}
-			var countval2  = 0
-			if(count2!=undefined){
-				try{
-					countval2 = eval(count2)
-				}catch(e){
-					debug('EVAL_ERROR:eval('+count2+'):'+e)
-					countval2 = 0
-					return '0:0'
-				}
-			}
-
 			if(plid!='ideal' && skillnames[koffname].type=='custom') {
 				players[plid][koffname] = countval
 				debug('countStrength:'+koffname+'='+countval+'(новый параметр игрока '+players[plid].secondname+')')
