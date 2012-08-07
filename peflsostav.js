@@ -22,6 +22,7 @@ var getforumid = 9107892
 var plskillmax = 15
 var tabslist = ''
 var maxtables = 25//25+10
+var refresh = false
 var list = {
 	positions: 'id,filter,name,num,koff'
 }
@@ -232,6 +233,7 @@ function sSrt(i, ii) { // по убыванию
 
 function GetData(dataname){
 	debug(dataname+':GetData')
+	refresh = false
 	var needsave = false
 	var data = []
 	var head = list[dataname].split(',')
@@ -287,13 +289,13 @@ function GetData(dataname){
 		default: return false
 	}
 	getParams()
+	fillPosEdit(0)
 	PrintAdditionalTables()
 	for(i=1;i<positions.length;i++) {
 		countPosition(i)
 	}
-	if(needsave) SaveData('positions')
 	FillHeaders()
-	fillPosEdit(0)
+	if(needsave) SaveData('positions')
 }
 function getParams(){
 	var params = positions[0].koff.split(',')
@@ -485,8 +487,12 @@ function krPrint(val,sn){
 function FillData(nt){
 	$('#table'+nt).remove()
 	var np = $('#select'+nt+' option:selected').val()
-	//debug('FillData('+nt+'):'+np)
+	debug('FillData('+nt+'):'+np)
 	if(np!=0){
+		if(positions[np].pls==undefined) {
+			refresh = true
+			return false
+		}
 		var selpl = 0
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
 		var html = '<table id=table'+nt+' width=100% style="border:0px">'
@@ -612,6 +618,13 @@ function FillHeaders(){
 		if ((sel || i>25) && selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
 		if(sel) $('td#td'+i).attr('class','back2')
 		FillData(i)
+		if(refresh){
+			break
+		}
+	}
+	if(refresh) {
+		maxtables = 25
+		GetData('positions')
 	}
 }
 
@@ -723,11 +736,11 @@ function PosSave(){
 			return false
 	}
 	positions[num] = ps
+	fillPosEdit(num)
 	countPosition(num)
 	chMenu('tdsost')
-	fillPosEdit(num)
-	FillHeaders()
 	SaveData('positions')
+	FillHeaders()
 }
 
 function chMenu(mid){
