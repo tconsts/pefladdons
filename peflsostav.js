@@ -110,7 +110,7 @@ training
 /**/
 inj:{rshort:'трв',rlong:'Травма',str:true,strmax:0,strinvert:85},
 sus:{rshort:'дсв',rlong:'Дисквалификация',str:true,strmax:0,strinvert:40},
-syg:{rshort:'сыг',rlong:'Сыгранность',str:true,strmax:20},
+syg:{rshort:'сыг',rlong:'Сыгранность',str:true,strmax:20}
 /**
 agames
 agoals
@@ -291,9 +291,7 @@ function GetData(dataname){
 	getParams()
 	fillPosEdit(0)
 	PrintAdditionalTables()
-	for(i=1;i<positions.length;i++) {
-		countPosition(i)
-	}
+	//for(i=1;i<positions.length;i++) countPosition(i)
 	FillHeaders()
 	if(needsave) SaveData('positions')
 }
@@ -391,7 +389,7 @@ function countPosition(posnum){
 //		if(i==positions.length-1) debug('countPosition:'+pl.id+':sostav='+pl.sostav+':str='+pl.srt)
 	}
 	positions[posnum].pls = pls.sort(sSrt)
-//	debug('countPosition:ps.strmax('+posnum+')='+ps.strmax)
+	debug('countPosition:ps.strmax('+posnum+')='+ps.strmax)
 }
 function checkKoff(kf0){
 	var res = kf0.replace(/!/g,'')
@@ -426,7 +424,7 @@ function changeValue(formula,name,value){
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
-	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
+	debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
 	pkoff = pkoff.split(',')
 	var res  = 0
 	var res2 = 0
@@ -487,11 +485,13 @@ function krPrint(val,sn){
 function FillData(nt){
 	$('#table'+nt).remove()
 	var np = $('#select'+nt+' option:selected').val()
-	debug('FillData('+nt+'):'+np)
+	//debug('FillData('+nt+'):'+np)
 	if(np!=0){
 		if(positions[np].pls==undefined) {
-			refresh = true
-			return false
+//			refresh = true
+//			debug('FillData:positions['+np+'].pls=undefined (need refresh)')
+//			return false
+			countPosition(np)
 		}
 		var selpl = 0
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
@@ -618,9 +618,7 @@ function FillHeaders(){
 		if ((sel || i>25) && selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
 		if(sel) $('td#td'+i).attr('class','back2')
 		FillData(i)
-		if(refresh){
-			break
-		}
+		if(refresh) break
 	}
 	if(refresh) {
 		maxtables = 25
@@ -835,7 +833,7 @@ function PrintAdditionalTables(){
 	var html = '<tr><td>'
 	html += '<table witdh=100% bgcolor=black><tr class=back2 align=center>'
 	for(i=26;i<=maxtables;i++){
-		//debug('PrintAdditionalTables:i='+i+':i%5='+(i%5)+':mt='+maxtables)
+		debug('PrintAdditionalTables:i='+i+':i%5='+(i%5)+':mt='+maxtables)
 		html += PrintTd(i)
 		if(i%5==0 && i!=25 && i!=(maxtables)) html += '</tr></table><br><table witdh=100% bgcolor=black><tr class=back2 align=center>'
 	}
