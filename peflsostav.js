@@ -18,13 +18,14 @@ var plkeys = []
 var players = []
 var pid = []
 var stds = {pfre:[],pcor:[],pcap:[],ppen:[]}
+var posmaxorder = 0
 var getforumid = 9107892
 var plskillmax = 15
 var tabslist = ''
 var maxtables = 25//25+10
 var refresh = false
 var list = {
-	positions: 'id,filter,name,num,koff'
+	positions: 'id,filter,name,num,koff,order'
 }
 
 var fl = ['','#EF2929','#A40000','#FCE94F','#E9B96E','green','black']
@@ -252,8 +253,6 @@ function GetData(dataname){
 			data[numpos] = curt
 			numpos++
 		}
-		//translate all to rshort
-		for(i in data) for(j in skillnames) changeValue(data[i].koff,j,skillnames[j].rshort)
 	}else{
 		needsave = true
 	// TODO: загрузить дефоултные positions(from forum) вместо констант тут.
@@ -283,6 +282,12 @@ function GetData(dataname){
 /** 22 **/	{filter:'',		name:'!Зарплаты',	num:0,	koff:'зрп=зрп,кнт=-кнт*100,фл,Фам,!сила'},
 /** 23 **/	{filter:'',		name:'!Номиналы',	num:0,	koff:'ном=ном,взр,фл,Фам,!сила'}
 		]
+	}
+	//translate all to rshort and fix order
+	for(i in data) {
+		for(j in skillnames) changeValue(data[i].koff,j,skillnames[j].rshort)
+		if(data[i].order == ''|| data[i].order ==undefined) data[i].order = i
+		if(posmaxorder<data[i].order) posmaxorder = data[i].order
 	}
 	switch (dataname){
 		case 'positions':  positions = data;break
@@ -496,8 +501,14 @@ function krPrint(val,sn){
 
 function FillData(nt){
 	$('#table'+nt).remove()
-	var np = $('#select'+nt+' option:selected').val()
-	//debug('FillData('+nt+'):'+np)
+	var ns = $('#select'+nt+' option:selected').val()
+	var np = 0
+	for(g in positions)	if(parseInt(positions[g].order) == parseInt(ns)) {
+		np = g
+		break
+	}
+	//debug('FillData:nt='+nt+':ns='+ns+':np='+np)
+
 	if(np!=0){
 		if(positions[np].pls==undefined) {
 //			refresh = true
@@ -618,16 +629,20 @@ function FillHeaders(){
 	for(i=1;i<=maxtables;i++){
 //		if(i<4)	for(j in pid) debug(i+':'+j+':pid='+pid[j].pid+':p0='+pid[j].p0)
         var sel = false
+		var selnum = selected[i]
 		for(j in pid) if(pid[j].p0 == i) sel = true
 
 		$('#select'+i).empty()
-		for(j in positions) $('#select'+i).append('<option value='+j+'>'+positions[j].name+'</option>')
-		var name = positions[0].name
-		$('#span'+i).html(name)
-		if(positions[selected[i]] !=undefined && positions[selected[i]].name != undefined) {
-			name = positions[selected[i]].name
+		for(j in positions) {
+			var psj = positions[j]
+			$('#select'+i).append('<option value='+psj.order+'>'+psj.name+'</option>')
 		}
-		if ((sel || i>25) && selected[i]!=undefined) $('#select'+i+' option:eq('+selected[i]+')').attr('selected', 'yes')
+		var name = '&nbsp;'
+		$('#span'+i).html(name)
+		if(positions[selnum] !=undefined && positions[selnum].name != undefined) {
+			name = positions[selnum].name
+		}
+		if ((sel || i>25) && selnum!=undefined) $('#select'+i+' option:eq('+selnum+')').attr('selected', 'yes')
 		if(sel) $('td#td'+i).attr('class','back2')
 		FillData(i)
 		if(refresh) break
@@ -737,6 +752,7 @@ function PosSave(){
 		num: 	($('#inum').val() == '' ? 0 : $('#inum').val()),
 		filter: $('#ifilter').val(),
 		koff: 	$('#ikoff').val(),
+		order:	posmaxorder+1
 	}
 	// провалидировать поля и обновить
 	if(ps.num!=parseInt(ps.num) ||
