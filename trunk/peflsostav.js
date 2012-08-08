@@ -501,13 +501,13 @@ function krPrint(val,sn){
 
 function FillData(nt){
 	$('#table'+nt).remove()
-	var ns = $('#select'+nt+' option:selected').val()
+	var ns = ($('#select'+nt+' option:selected').length>0 ? $('#select'+nt+' option:selected').val() : 0)
 	var np = 0
 	for(g in positions)	if(parseInt(positions[g].order) == parseInt(ns)) {
 		np = g
 		break
 	}
-	//debug('FillData:nt='+nt+':ns='+ns+':np='+np)
+	debug('FillData:nt='+nt+':ns='+ns+':np='+np+':length='+$('#select'+nt+' option:selected').length)
 
 	if(np!=0){
 		if(positions[np].pls==undefined) {
@@ -566,11 +566,11 @@ function FillData(nt){
 		html += '</table>'
 		$('#htable'+nt).after(html)
 	}
-	if(selected[nt]!=np) {
+	if(selected[nt]!=positions[np].order) {
 		if(np==0 && nt<=25){
 			debug('FillData:np=0 nt='+nt+'(selected ненадо записывать)')
 		}else{
-			selected[nt] = np
+			selected[nt] = positions[np].order
 			saveDataSelected()
 		}
 //		debug('FillData('+nt+') -- '+selected[nt]+':selected='+selected.join(','))
@@ -670,7 +670,7 @@ function fillPosEdit(num){
 	html += '<tr><th colspan=2>&nbsp;</th></tr>'
 	html += '</table><br><table>'
 	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
-//	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сбросить</th><td></td></tr>'
+//	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Удалить</th><td></td></tr>'
 	html += '</table></td>'
 	html += '<td><table width=100% align=top>'
 	html += '<tr><td>!</td><td colspan=2>значит по дефоулту поле не отображать</td></tr>'
@@ -709,6 +709,17 @@ function PosChange(){
 	fillPosEdit(selnum)
 }
 function PosDel(){
+	var selnum = $('#selpos option:selected').val()
+	debug('PosDel:'+selnum)
+	if(selnum==0) {debug('PosDel:cancel');return false}
+	positions.splice(selnum,1)
+	SaveData('positions')
+	chMenu('tdsost')
+	maxtables = 25
+	GetData('positions')
+}
+
+function PosDrop(){
 	delete localStorage.positions
 	maxtables = 25
 	chMenu('tdsost')
@@ -816,7 +827,7 @@ function PrintTables(geturl) {
 	krOpen()
 
 	var html = '<div align=right><a href="javascript:void(close())">закрыть</a>&nbsp;</div>'
-	html += '<div align=right><a href="javascript:void(PosDel())" >сбросить кофы</a>&nbsp;</div>'
+	html += '<div align=right><a href="javascript:void(PosDrop())" >сбросить кофы</a>&nbsp;</div>'
 	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
 	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
 	html += '<th id=tdsost width=130 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
