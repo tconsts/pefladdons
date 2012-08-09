@@ -287,7 +287,10 @@ function GetData(dataname){
 	for(i in data) {
 		for(j in skillnames) changeValue(data[i].koff,j,skillnames[j].rshort)
 		if(data[i].order == ''|| data[i].order ==undefined) data[i].order = i
-		if(posmaxorder<data[i].order) posmaxorder = data[i].order
+		if(posmaxorder<data[i].order) {
+			posmaxorder = data[i].order
+			debug('new posmaxorder='+posmaxorder)
+		}
 	}
 	switch (dataname){
 		case 'positions':  positions = data;break
@@ -717,12 +720,14 @@ function PosDel(){
 	SaveData('positions')
 	chMenu('tdsost')
 	maxtables = 25
+	posmaxorder = 0
 	GetData('positions')
 }
 
 function PosDrop(){
 	delete localStorage.positions
 	maxtables = 25
+	posmaxorder = 0
 	chMenu('tdsost')
 	GetData('positions')
 }
@@ -751,6 +756,7 @@ function PosSaveAll(){
 	positions[0].koff = 'data='+pr.iforum+',idealsk='+pr.iskills+',idealage='+pr.iage+',idealval='+pr.inominal+',idealnat='+pr.inational+',maxt='+pr.itables
 	SaveData('positions')
 	maxtables = 25
+	posmaxorder = 0
 	chMenu('tdsost')
 	GetData('positions')
 }
@@ -764,7 +770,7 @@ function PosSave(){
 		num: 	($('#inum').val() == '' ? 0 : $('#inum').val()),
 		filter: $('#ifilter').val(),
 		koff: 	$('#ikoff').val(),
-		order:	posmaxorder+1
+		order:	(num==0 ? posmaxorder+1 : positions[num].order)
 	}
 	// провалидировать поля и обновить
 	if(ps.num!=parseInt(ps.num) ||
