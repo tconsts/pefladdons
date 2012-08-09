@@ -762,15 +762,16 @@ function PosSaveAll(){
 }
 
 function PosSave(){
-	var num = $('#selpos option:selected').val()
-	if(num==0) num = positions.length
+	var num1 = $('#selpos option:selected').val()
+	var num = num1
+	if(num1==0) num = positions.length
 	debug('PosSave:num='+num)
 	var ps = {
 		name: 	$('#iname').val(),
 		num: 	($('#inum').val() == '' ? 0 : $('#inum').val()),
 		filter: $('#ifilter').val(),
 		koff: 	$('#ikoff').val(),
-		order:	(num==0 ? posmaxorder+1 : positions[num].order)
+		order:	(num1==0 ? parseInt(posmaxorder)+1 : positions[num].order)
 	}
 	// провалидировать поля и обновить
 	if(ps.num!=parseInt(ps.num) ||
