@@ -431,7 +431,7 @@ function tryEval(formula){
 		return eval(formula)
 	}catch(e){
 		debug('tryEval:error:'+formula+':'+e)
-		return false
+		return 'x'
 	}
 }
 
@@ -468,7 +468,8 @@ function countStrength(plid,pkoff){
 			//debug('countStrength:------ count='+count)
 			var countval  = tryEval(count)
 			var countval2 = tryEval(count2)
-			if(!countval) {
+			if(countval=='x') {
+				debug('countStrength:countval==x, ERROR EXIT!')
 				if(plid=='ideal') alert('!!Ошибка подсчета в "'+pkoff[n]+'":('+koff[1]+')')
 				return '0:0'
 			}
