@@ -517,7 +517,7 @@ function GetFinish(type, res){
 	debug(type + ' ' + res + ' ')
 	m[type] = res;
 
-	if(m.checksu==undefined && m.pg_players){
+	if(m.checksu==undefined && m.pg_players && UrlValue('h')!=1){
 		m.checksu = true
 		checkDeleteMatches()
 	}
