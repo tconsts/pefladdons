@@ -287,10 +287,11 @@ function GetData(dataname){
 	for(i in data) {
 		for(j in skillnames) changeValue(data[i].koff,j,skillnames[j].rshort)
 		if(data[i].order == ''|| data[i].order ==undefined) data[i].order = i
-		if(posmaxorder<data[i].order) {
-			posmaxorder = data[i].order
+		if(posmaxorder<parseInt(data[i].order)) {
+			posmaxorder = parseInt(data[i].order)
 			debug('new posmaxorder='+posmaxorder)
 		}
+
 	}
 	switch (dataname){
 		case 'positions':  positions = data;break
