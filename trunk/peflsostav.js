@@ -765,14 +765,20 @@ function PosSaveAll(){
 function PosSave(){
 	var num1 = $('#selpos option:selected').val()
 	var num = num1
-	if(num1==0) num = positions.length
+	var order = 0
+	if(num1==0) {
+		num = positions.length
+		order = posmaxorder = parseInt(posmaxorder)+1
+	}else{
+		order = positions[num].order
+	}
 	debug('PosSave:num='+num)
 	var ps = {
 		name: 	$('#iname').val(),
 		num: 	($('#inum').val() == '' ? 0 : $('#inum').val()),
 		filter: $('#ifilter').val(),
 		koff: 	$('#ikoff').val(),
-		order:	(num1==0 ? parseInt(posmaxorder)+1 : positions[num].order)
+		order:	order
 	}
 	// провалидировать поля и обновить
 	if(ps.num!=parseInt(ps.num) ||
