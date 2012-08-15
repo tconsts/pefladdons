@@ -517,6 +517,11 @@ function GetFinish(type, res){
 	debug(type + ' ' + res + ' ')
 	m[type] = res;
 
+	if(m.checksu==undefined && m.pg_players){
+		m.checksu = true
+		checkDeleteMatches()
+	}
+
 	if(m.savenomdata==undefined && m.getnomdata){
 		m.savenomdata = true
 /**/
@@ -797,6 +802,37 @@ function GetData(dataname){
 	}
 }
 
+function checkDeleteMatches(){
+	debug('checkDeleteMatches()')
+	var checksu = 0
+	for (i in players) checksu += parseInt(players[i].games)
+	debug('checkDeleteMatches:checksu='+checksu)
+	if(checksu==0){
+		debug('checkDeleteMatches:true')
+		matches.length = 0
+		matchespl.length = 0
+		plsu.length = 0
+		ShowSU(true)
+		ShowRoster()
+		if(ff) {
+			delete localStorage.matches
+			delete localStorage.matchespl
+		}else{	
+			if(!db) DBConnect()
+			db.transaction(function(tx) {
+				tx.executeSql("DROP TABLE IF EXISTS matches",[],
+					function(tx, result){},
+						function(tx, error) {debug('matches:drop error:' + error.message)}
+				);
+				tx.executeSql("DROP TABLE IF EXISTS matchespl",[],
+					function(tx, result){},
+						function(tx, error) {debug('matchespl:drop error:' + error.message)}
+				);                                           
+			});
+		}
+	}
+}
+
 function GetInfoPagePl(){
 	$('tr[id^=tblRosterTr]').each(function(i,val){
 		var eurl= $(val).find('a[trp="1"]').attr('href')
@@ -884,6 +920,7 @@ function ModifyPlayers(){
 	}
 	// Update page
 	debug('players:UpdatePage ')
+
 
 	for(i in players) {
 		var pl = players[i]
