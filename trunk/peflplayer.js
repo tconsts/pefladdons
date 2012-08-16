@@ -23,6 +23,7 @@ var peflnation ={'Афганистан':0,'Албания':1,'Алжир':2,'В�
 var peflcountry={1:0,2:1,8:2,9:3,11:4,12:5,13:6,18:7,19:8,24:9,25:10,27:11,30:12,41:13,42:14,44:15,47:16,48:17,50:18,51:19,53:20,58:21,59:22,61:23,64:24,66:25,69:26,70:27,73:28,74:29,76:30,84:31,87:32,88:33,91:34,93:35,94:36,95:37,98:38,100:39,105:40,111:41,122:42,123:43,126:44,129:45,137:46,139:47,145:48,147:49,149:50,150:51,152:52,154:53,155:54,160:55,161:56,166:57,167:58,170:59,171:60,172:61,180:62,181:63,191:64,192:65,195:66,196:67,200:68,201:69,202:70,204:71,96:72,207:73,209:74,214:75}
 
 function printStrench(){
+	debug('printStrench()')
 	if(positions.length==0) return false
 	var poses = []
 	for(i in positions){
@@ -353,11 +354,12 @@ function ShowValueFormat(value){
 }
 
 function GetAd(){
-	if(String(localStorage.mycountry)!='undefined'){
+	debug('GetAd:natfull='+players[0].natfull)
+	if(String(localStorage.mycountry)!='undefined' && players[0].natfull!=undefined && players[0].natfull!=' '){
 		var ad = adaptationMap[peflnation[players[0].natfull]][peflcountry[parseInt(localStorage.mycountry)]]+'0%'
 		var txt = players[0].natfull+' > '+localStorage.mycountry.split('.')[1]+': вероятность адаптации '+ad+'<br><br>'
 		$('a:contains(История)').parent().before(txt)
-	}else debug('mycountry:'+localStorage.mycountry)
+	}
 }
 
 function SetValue(vl,vlch){
