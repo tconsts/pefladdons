@@ -32,8 +32,8 @@ function SetNumShcoolers(){
 	localStorage.schoolnum = pls
 
 	// fix colors
-	$('td.back4 table table tr').removeAttr('bgcolor')
-	$('td.back4 table table tr:odd').addClass('back3')
+	//$('td.back4 table table tr').removeAttr('bgcolor')
+	//$('td.back4 table table tr:odd').addClass('back3')
 	
 }
 function SetNation(){
