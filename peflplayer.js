@@ -48,7 +48,7 @@ function printStrench(){
 			hidden = 2
 			txt += '<a id="mya" href="javascript:void(OpenAll())">...</a><br><div id="mydiv" style="display: none;">'
 		}
-		if(poses[i].srt<0 && hidden==2) {
+		if(poses[i].srt<-500 && hidden==2) {
 			hidden = 3
 			txt += '</div><div><br>'
 		}
