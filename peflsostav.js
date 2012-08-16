@@ -284,9 +284,15 @@ function GetData(dataname){
 		]
 	}
 	//translate all to rshort and fix order
+	var fixorder = ':'
 	for(i in data) {
 		for(j in skillnames) changeValue(data[i].koff,j,skillnames[j].rshort)
 		if(data[i].order == ''|| data[i].order ==undefined) data[i].order = i
+		if(fixorder.indexOf(':'+data[i].order+':') !=-1) {
+			debug('fixed order:'+data[i].order+'->'+(posmaxorder + 1))
+			data[i].order = posmaxorder + 1
+		}
+		fixorder += data[i].order+':'
 		if(posmaxorder<parseInt(data[i].order)) {
 			posmaxorder = parseInt(data[i].order)
 			debug('new posmaxorder='+posmaxorder)
