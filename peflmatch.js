@@ -15,7 +15,7 @@ var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
-	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash',
+	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
 	'matchespl':'nameid,name,minute',
 }
 var match1	= {}
@@ -59,6 +59,7 @@ $().ready(function() {
 /**/
 		// запоминаем таблицу оценок
 		match1.weather = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
+		match1.minutes = parseInt($('p.key:last').text().split(' ')[0])
 
 		var otcharr = []
 		$('td.back4 table:eq(2) center p').each(function(){
