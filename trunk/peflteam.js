@@ -26,7 +26,7 @@ var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
 	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale,tsvalue',
-	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash',
+	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
 	'matchespl':'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
 }
 var skl = {}
@@ -174,6 +174,7 @@ $().ready(function() {
 		$('table#tblRoster').after(preparedhtml)
 
 		countSostavMax  = $('tr[id^=tblRosterTr]').length
+		debug('countSostavMax='+countSostavMax)
 		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
 
 		EditFinance();
@@ -401,6 +402,10 @@ function ShowSU(del) {
 		$('table#tblSuM').show()
 		$('div#divSu').show()
 	}else{
+		var plexl = String(localStorage.plexl)
+		var teamminutes = 0
+		//for(i in matches) teamminutes += parseInt(matches[i].minutes)
+		//var teammatches = 0
 		for(i in matchespl){
 			for (j in matchespl[i]){
 				//debug(i+'_'+j+'_'+matchespl[i][j])
@@ -409,23 +414,29 @@ function ShowSU(del) {
 				if(field[1] != undefined && field[1]!=0) {
 					for(p in plsu) if(plsu[p].name && plsu[p].name == field[0]) num = p
 					if(plsu[num]==undefined || plsu[num].name==undefined){
-						if(matches[i].su) 	plsu[num] = {'name':field[0], 'minute':parseInt(field[1]),'matches':1, 'matches2':0,'mlist':i}
-						else 				plsu[num] = {'name':field[0], 'minute':0,'matches':0, 'matches2':1,'mlist':i}
+						var del = false
+						if(plexl.indexOf('|'+field[0]+'|') != -1) del = true
+
+						if(matches[i].su) 	plsu[num] = {'name':field[0], 'minutesu':parseInt(field[1]),'minute':parseInt(field[1]),'matches':1, 'matches2':0,'mlist':i,'del':del}
+						else 				plsu[num] = {'name':field[0], 'minutesu':0,'minute':parseInt(field[1]),'matches':0, 'matches2':1,'mlist':i,'del':del}
 					}else{
 						if(matches[i].su){
-							plsu[num].minute	+= parseInt(field[1])
+							plsu[num].minutesu	+= parseInt(field[1])
 							plsu[num].matches	+= 1
 						}else{
 							plsu[num].matches2	+= 1
 						}
 						plsu[num].mlist		+= ','+i
+						plsu[num].minute	+= parseInt(field[1])
 					}
+					if(!plsu[num].del) teamminutes += parseInt(field[1])
 				}
 			}
 		}
+		for(i in plsu) plsu[i].tilda = (plsu[i].del ? 0 : parseFloat(plsu[i].minute/(teamminutes/countSostavMax)*100))
 
 		var preparedhtml = '<table id="tblSu" class=back1 width=100%>' //BFDEB3
-		preparedhtml += '<tr align=left><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th></tr>'
+		preparedhtml += '<tr align=left><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th><th>мин в %</th></tr>'
 		var pls = plsu.sort(function(a,b){return b.minute - a.minute})
 		for(i in pls) {
 			var ost = sumax - pls[i].minute
@@ -435,6 +446,8 @@ function ShowSU(del) {
 			preparedhtml += '<td>'+pls[i].minute+'</td>'
 			preparedhtml += '<td>'+pls[i].matches+(pls[i].matches2>0 ? '('+pls[i].matches2+')' : '')+'</td>'
 			preparedhtml += '<td>'+ost+'('+(ost/93).toFixed(1)+')</td>'
+			preparedhtml += '<td width=10%'+(pls[i].tilda<=40 && pls[i].tilda!=0? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+i+'\'))">'+(pls[i].tilda==0 ? '&nbsp;&nbsp;&nbsp;' : (pls[i].tilda).toFixed(1))+'</a></td>'
+//			preparedhtml += '<td align=center width=5%>'+(pls[i].del ? '<b><font color=red>X</font></b>': '')+'</td>'
 			preparedhtml += '</tr>'
 		}
 		preparedhtml += '</table>'
@@ -453,6 +466,17 @@ function ShowSU(del) {
 		$('table#tblSu tr:even').attr('class','back2')
 		$('table#tblSu tr:odd').attr('class','back1')
 	}
+}
+function suMarkDel(plid){
+	if(plsu[plid].del) {
+		plsu[plid].del = false
+		localStorage.plexl = String(localStorage.plexl).replace(plsu[plid].name+'|','')
+	}else{
+		plsu[plid].del = true
+		localStorage.plexl = (String(localStorage.plexl)=='undefined' ? '|' : String(localStorage.plexl)) + plsu[plid].name+'|'
+	}
+	ShowSU(true)
+	$('table#tblSuM tr').remove()
 }
 function ShowPlM(plid){
 	debug('ShowPlM('+plid+')')
