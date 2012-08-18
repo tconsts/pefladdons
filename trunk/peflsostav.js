@@ -23,6 +23,7 @@ var getforumid = 9107892
 var plskillmax = 15
 var tabslist = ''
 var maxtables = 25//25+10
+var showscout = true
 var refresh = false
 var list = {
 	positions: 'id,filter,name,num,koff,order'
@@ -365,7 +366,7 @@ function filterPosition(plpos,flpos){
 		if(pos[1]==undefined) {
 			pos1 = true
 			if(plpos.indexOf(pos[0]) != -1) pos0 = true
-		} else {
+		}else{
 			for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
 			pos1arr = pos[1].split('/')
 			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
@@ -390,7 +391,8 @@ function countPosition(posnum){
 			if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l)
 			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
 		}
-		pl.posf = filterPosition(players[j].position, ps.filter)
+		pl.posf = filterPosition(String(players[j].position), ps.filter)
+		//debug('countPosition:pl='+j+':pos='+players[j].position+':filter='+ps.filter+':posf='+pl.posf)
 		if(ps.filter=='') pl.posfempty = true
 		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined ? '!srt' : ''))
 		if(s!='' && pl[s]!=undefined) {
@@ -506,7 +508,7 @@ function krPrint(val,sn){
 			else if(val==0) return '??'
 			else return parseInt(val/1000)+'т'
 		default:
-			return val
+			return (skillnames[sn].str ? parseInt(val) : val)
 	}
 }
 
@@ -529,7 +531,7 @@ function FillData(nt){
 		}
 		var selpl = 0
 		for(h in pid) if(pid[h].p0 == nt) selpl = pid[h].pid
-		var html = '<table id=table'+nt+' width=100% style="border:0px">'
+		var html = '<table id=table'+nt+' width=100% border=0 rules=none>'
 		var head = true
 		var nummax = (positions[np].num==0 ? positions[np].pls.length : positions[np].num)
 		var numshow = 0
@@ -541,8 +543,8 @@ function FillData(nt){
 			else numshow++
 
 			plhtml += trbgcolor+'>'
-			var font1 = (!pl.posf ? '<font color=red>' : '')
-			var font2 = (!pl.posf ? '</font>' : '')
+			var font1 = (!pl.posf ? '<font color=red>' : (pl.flag==6 ? '<font color=888A85>' : ''))
+			var font2 = (!pl.posf || pl.flag==6 ? '</font>' : '')
 			if(head) var headhtml = '<tr align=center>'
 			for(pp in pl) {
 				if(pp=='flag'){
@@ -630,8 +632,30 @@ function getPlayers(){
 
 //		debug(pl.secondname+':'+pl.flag)
 		players[pl.id] = pl
+		//debug('pl1:id='+pl.id+':name'+pl.secondname+':position='+pl.position)
 	}
 	// Подгрузить игроков из списка мониторинга если их тут нету еще с флагом "чужой".
+	if(showscout){
+		var text1 = String(localStorage.peflplayer)
+		var pl2 = []
+		if (text1 != 'undefined'){
+			var pl = text1.split(',');
+			for (i in pl) {
+				var key = pl[i].split('=')
+				var pn = (key[0].split('_')[1] == undefined ? 2 : key[0].split('_')[1])
+				if(pl2[pn]==undefined) pl2[pn] = {}
+				pl2[pn][key[0].split('_')[0]] = [key[1]]
+			}
+		}
+		for(k in pl2){
+			var pl2id = pl2[k].id
+			if(players[pl2id]==undefined){
+				players[pl2id] = pl2[k]
+				players[pl2id].flag = 6
+			}
+			//debug('pl2:id='+pl2[k].id+':name='+pl2[k].secondname+':position='+pl2[k].position)
+		}
+	}
 }
 
 function FillHeaders(){
@@ -958,7 +982,7 @@ function ShowHelp(){
 	html += '<tr><td bgcolor='+fl[3]+'></td><td>'+'фрм<90'.fontsize(1)+'</td>'
 	html += '<td bgcolor='+fl[4]+'></td><td>'+'мрл<80'.fontsize(1)+'</td></tr>'
 	html += '<tr><td bgcolor='+fl[5]+'></td><td>'+'шкл'.fontsize(1)+'</td>'
-//	html += '<td bgcolor='+fl[6]+'></td><td>'+'чужой'.fontsize(1)+'</td>'
+	html += '<td bgcolor='+fl[6]+'></td><td><font color=888A85>'+'чужой'.fontsize(1)+'</font></td>'
 	html += '</tr>'
 	html += '</table>'
 	return html
