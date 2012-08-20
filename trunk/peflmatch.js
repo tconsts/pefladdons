@@ -193,10 +193,6 @@ function MatchGet(){
 					MatchSave()
 				}
 			)
-			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
-				function(tx, result){},
-				function(tx, error) {debug(dataname+':' + error.message)}
-			);
 		})
 	}else{
 		MatchSave()
@@ -350,32 +346,32 @@ function SavePlayers(mid) {
 		for (j in plmatch[i]) players['n'+plmatch[i][j].num] = plmatch[i][j].nameid + ':' + plmatch[i][j].minute
 		data[i] = players
 	}
-	if(ff){
-		var text = String(localStorage[dataname])
-		text = (text=='undefined' ? '' : text)
-    	if((text=='' || (text.indexOf('#'+mid+'|')==-1 && text.split('|',1)[0]!=mid))) {
-			debug(dataname+':add')
-			for (var i in data) {
-				text += (text!='' ? '#' : '')
-				if(typeof(data[i])!='undefined') {
-					var dti = data[i]
-					var dtid = []
-					for(var j in head){
-						dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
-					}
-					text += dtid.join('|')
+	var text = String(localStorage[dataname])
+	text = (text=='undefined' ? '' : text)
+   	if((text=='' || (text.indexOf('#'+mid+'|')==-1 && text.split('|',1)[0]!=mid))) {
+		debug(dataname+':add')
+		for (var i in data) {
+			text += (text!='' ? '#' : '')
+			if(typeof(data[i])!='undefined') {
+				var dti = data[i]
+				var dtid = []
+				for(var j in head){
+					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
 				}
+				text += dtid.join('|')
 			}
-			localStorage[dataname] = text
 		}
+		localStorage[dataname] = text
+	}
+/**
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			/**
+
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
 				function(tx, result){},
 				function(tx, error) {debug(dataname+':' + error.message)}
-			);/**/
+			);
 			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head.join(',').replace('id','id UNIQUE')+")", [],
 				function(tx, result){},
 				function(tx, error) {debug(dataname+':create:'+error.message)}
@@ -396,9 +392,10 @@ function SavePlayers(mid) {
 					function(tx, error) {debug(dataname+':insert:'+error.message)}
 				);
 			}
-/**/
+
 		});
 	}
+/**/
 }
 
 function DBConnect(){
