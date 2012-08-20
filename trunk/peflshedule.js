@@ -216,5 +216,5 @@ $().ready(function() {
 		})
 		$('td.now').css("border", "1px solid green");//#a3de8f
 	}
-	showMatches()
+	if(deb) showMatches()
 })
