@@ -196,7 +196,7 @@ $().ready(function() {
 /**/
 		if(cid==parseInt(localStorage.myteamid)) {
 			GetData('matchespl')
-			GetData('matches')
+			GetData2('matches')
 		}
 	}
 }, false);
@@ -521,7 +521,7 @@ function SuDelMatch(mid, type, plid){
 		//поставить флаг сверхусталости
 		matches[mid].su = true
 	}
-	SaveData('matches')
+	SaveData2('matches')
 	ShowSU(true)
 	ShowPlM(plid)
 }
@@ -712,6 +712,37 @@ function Print(dataname){
 	$('td.back4').prepend(text)
 }
 
+function SaveData2(dataname){
+	debug(dataname+':SaveData2')
+	if(!save || UrlValue('h')==1 || (dataname=='players' && UrlValue('j')!=99999)){
+		debug(dataname+':SaveData2 false')
+		return false
+	}
+
+	var data = []
+	var head = list[dataname].split(',')
+	switch (dataname){
+//		case 'players':	data = players;		break
+//		case 'teams': 	data = teams;		break
+		case 'matches':	 data = matches;	break
+//		case 'matchespl':data = matchespl;	break
+		default: return false
+	}
+	var text = ''
+	for (var i in data) {
+		text += (text!='' ? '#' : '')
+		if(typeof(data[i])!='undefined') {
+			var dti = data[i]
+			var dtid = []
+			for(var j in head){
+				dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+			}
+			text += dtid.join('|')
+		}
+	}
+	localStorage[dataname] = text
+}
+
 function SaveData(dataname){
 	debug(dataname+':SaveData')
 	if(!save || UrlValue('h')==1 || (dataname=='players' && UrlValue('j')!=99999)){
@@ -772,6 +803,36 @@ function SaveData(dataname){
 	}
 }
 
+
+function GetData2(dataname){
+	debug(dataname+':GetData2')
+	var data = []
+	var head = list[dataname].split(',')
+	switch (dataname){
+		case 'matches':	 data = matches;	break
+//		case 'matchespl':data = matchespl;	break
+		default: return false
+	}
+	var text1 = String(localStorage[dataname])
+	if (text1 != 'undefined' && text1 != 'null'){
+		var text = text1.split('#')
+		for (i in text) {
+			var x = text[i].split('|')
+			var curt = {}
+			var num = 0
+			for(j in head){
+				curt[head[j]] = (x[num]!=undefined ? x[num] : '')
+				num++
+			}
+			data[curt[head[0]]] = {}
+			if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
+		}
+		GetFinish('get_'+dataname, true)
+	} else {
+		GetFinish('get_'+dataname, false)
+	}
+}
+
 function GetData(dataname){
 	debug(dataname+':GetData')
 	var data = []
@@ -779,7 +840,7 @@ function GetData(dataname){
 	switch (dataname){
 		case 'players':  data = players2;	break
 		case 'teams': 	 data = teams;		break
-		case 'matches':	 data = matches;	break
+//		case 'matches':	 data = matches;	break
 		case 'matchespl':data = matchespl;	break
 		default: return false
 	}
