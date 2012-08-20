@@ -151,35 +151,30 @@ $().ready(function() {
 
 function MatchGet(){
 	debug('MatchGet()')
+	var getfalse = true
 	var dataname = 'matches'
 	var data = matches
 	var head = list[dataname].split(',')
-	if(ff){/**/
-		var text1 = String(localStorage[dataname])
-		if(text1 != 'undefined'){
-			var text = text1.split('#')
-			for (i in text) {
-				var x = text[i].split('|')
-				var curt = {}
-				var num = 0
-				for(j in head){
-					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
-					num++
-				}
-				data[curt[head[0]]] = {}
-				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
+
+	var text1 = String(localStorage[dataname])
+	if(text1 != 'undefined'){
+		getfalse = false
+		var text = text1.split('#')
+		for (i in text) {
+			var x = text[i].split('|')
+			var curt = {}
+			var num = 0
+			for(j in head){
+				curt[head[j]] = (x[num]!=undefined ? x[num] : '')
+				num++
 			}
+			data[curt[head[0]]] = {}
+			if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 		}
-		MatchSave()
-	/**/
-	}else{
+	}
+	if(getfalse && !ff){
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
-			/**
-			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
-				function(tx, result){},
-				function(tx, error) {debug(dataname+':' + error.message)}
-			);/**/
 			tx.executeSql("SELECT * FROM "+dataname, [],
 				function(tx, result){
 					debug(dataname+':select:ok')
@@ -198,7 +193,13 @@ function MatchGet(){
 					MatchSave()
 				}
 			)
+			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
+				function(tx, result){},
+				function(tx, error) {debug(dataname+':' + error.message)}
+			);
 		})
+	}else{
+		MatchSave()
 	}
 }
 
@@ -208,21 +209,20 @@ function MatchSave(){
 	var dataname = 'matches'
 	var head = list[dataname].split(',')
 	var data = matches
-	if(ff){/**/
-		var text = ''
-		for (var i in data) {
-			text += (text!='' ? '#' : '')
-			if(typeof(data[i])!='undefined') {
-				var dti = data[i]
-				var dtid = []
-				for(var j in head){
-					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
-				}
-				text += dtid.join('|')
+	var text = ''
+	for (var i in data) {
+		text += (text!='' ? '#' : '')
+		if(typeof(data[i])!='undefined') {
+			var dti = data[i]
+			var dtid = []
+			for(var j in head){
+				dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
 			}
+			text += dtid.join('|')
 		}
-		localStorage[dataname] = text
-	/**/
+	}
+	localStorage[dataname] = text
+/**
 	}else{
 		if(!db) DBConnect()
 		db.transaction(function(tx) {
@@ -250,9 +250,9 @@ function MatchSave(){
 					function(tx, error) {debug(dataname+':'+error.message)}
 				);
 			}
-/**/
 		});
 	}
+/**/
 }
 
 function UrlValue(key,url){
