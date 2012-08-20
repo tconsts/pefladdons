@@ -1019,44 +1019,44 @@ function PrintRightInfo(){
 //	if(sumvaluechange != 0) 
 //	thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
 	thtml += '</td></tr>'
-	thtml += '<tr id="ossvalue"><th align=left width=50%><a'
+	thtml += '<tr id="ossvalue"><th align=left width=50% nowrap><a'
 	thtml += (team_cur.tsvalue!=0 ? ' href="javascript:void(ShowPlayersSValue())"' : '')
-	thtml += '>номиналы+</a>:</th><th align=right>'
+	thtml += '>номиналы+</a>:</th><th align=right nowrap>'
 	thtml += (team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : '<font color=BABDB6>для VIP</font>')
-	thtml += '</th><td width=10% id="svaluech">&nbsp;<a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a>'
+	thtml += '</th><td width=10% id="svaluech" nowrap>&nbsp;<a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a>'
 //	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
 	thtml += '</td></tr>'
 
 
-	thtml += '<tr id="osnom"><th align=left width=50%><a'
+	thtml += '<tr id="osnom"><th align=left width=50% nowrap><a'
 	thtml += (team_cur.tvalue!=0 ? ' href="javascript:void(ShowPlayersValue())"' : '')
-	thtml += '>номиналы</a>:</th><th align=right>'
+	thtml += '>номиналы</a>:</th><th align=right nowrap>'
 	thtml += (team_cur.tvalue!=0 ? ShowValueFormat(team_cur.tvalue)+'т' : '<font color=BABDB6>для VIP</font>')
 	thtml += '</th><td width=10% id="nomch">&nbsp;'
 	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
 	thtml += '</td></tr>'
 
-	thtml += '<tr id="oszp"><th align=left><a'
+	thtml += '<tr id="oszp"><th align=left nowrap><a'
 	thtml += (team_cur.twage!=0 ? ' href="javascript:void(ShowPlayersZp())"' : '')
-	thtml += '>зарплаты</a>:</th><th align=right>'
+	thtml += '>зарплаты</a>:</th><th align=right nowrap>'
 	thtml += (team_cur.twage!=0 ? ShowValueFormat(team_cur.twage)+'&nbsp;' : '<font color=BABDB6>для VIP</font>')
 	thtml += '</th></tr>'
 
-	thtml += '<tr id="osskills"><td><b><a'
+	thtml += '<tr id="osskills"><td nowrap><b><a'
 	thtml += (team_cur.tss!=0 ? ' href="javascript:void(ShowPlayersSkillChange())"' : '')
-	thtml += '>скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += '>скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right nowrap>'
 	thtml += (team_cur.tss!=0 ? team_cur.tss + '&nbsp;' :  '<font color=BABDB6>для VIP</font>')
 	thtml += '</th><td></td></tr>'
 
-	thtml += '<tr id="osage"><td><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += '<tr id="osage"><td nowrap><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right nowrap>'
 	thtml += team_cur.age + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 
-	thtml += '<tr id="osform"><td><b>форма</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += '<tr id="osform"><td nowrap><b>форма</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right nowrap>'
 	thtml += team_cur.tform + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 
-	thtml += '<tr id="osmorale"><td><b>мораль</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right>'
+	thtml += '<tr id="osmorale"><td nowrap><b>мораль</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right nowrap>'
 	thtml += team_cur.tmorale + '&nbsp;'
 	thtml += '</th><td></td></tr>'
 
