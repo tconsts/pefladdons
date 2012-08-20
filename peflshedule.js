@@ -55,6 +55,12 @@ function CheckInt(ddn, fl){
 var int = 	'17.01.12!31.01.12!14.02.12!28.02.12!13.03.12!27.03.12!10.04.12!24.04.12!08.05.12!22.05.12!05.06.12!19.06.12!'
 
 var matches = []
+var list = {
+	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
+	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
+	'matchespl':'nameid,name,minute',
+}
+
 function GetData(dataname){
 	debug(dataname+':GetData')
 	var data = []
@@ -84,14 +90,24 @@ function GetData(dataname){
 }
 
 function showMatches(){
+	GetData('matches')
 	debug('showMatches()')
+	for(p in matches)
 	$('td.back4 table:first table:eq(1) tr').each(function(val){
 		if(val==0){
-			$(this).append('<td>id</td>')
+			$(this).prepend('<td title="Идет в зачет сверхусталости">СУ</td><td></td>')
 		}else{
 			//get match id
-			var matchid = UrlValue('j',$(this).find('td:eq(1) a').attr('href'))
-			$(this).append('<td>'+matchid+'</td>')
+			var matchid = parseInt(UrlValue('j',$(this).find('td:eq(1) a').attr('href')))
+			if(matches[matchid]!=undefined) {
+				var mch = matches[matchid]
+				$(this).find('td:eq(3)').append('&nbsp;<img height=15 src="/system/img/w'+mch.weather+'.png"></img>&nbsp;'+mch.ref)
+				if(mch.pen!='') $(this).find('td:eq(1)').append('&nbsp;(п&nbsp;'+mch.pen+')')
+				$(this).prepend('<td width=1%>'+(mch.place.split('.')[1]=='n' ? 'N' : '')+'</td>')
+				$(this).prepend('<td width=1%>'+(mch.su ? '<img src="system/img/g/tick.gif" height=12></img>' : '')+'</td>')
+			} else {
+				$(this).prepend('<td></td><td></td>')
+			}
 		}
 	})
 }
