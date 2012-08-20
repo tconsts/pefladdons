@@ -195,7 +195,7 @@ $().ready(function() {
 		}
 /**/
 		if(cid==parseInt(localStorage.myteamid)) {
-			GetData('matchespl')
+			GetData2('matchespl')
 			GetData2('matches')
 		}
 	}
@@ -513,7 +513,7 @@ function SuDelMatch(mid, type, plid){
 		//удалить матч из базы
 		delete matches[mid]
 		delete matchespl[mid]
-		SaveData('matchespl')
+		SaveData2('matchespl')
 	}else if(type=='suoff'){
 		//снять флаг сверхусталости
 		delete matches[mid].su
@@ -725,7 +725,7 @@ function SaveData2(dataname){
 //		case 'players':	data = players;		break
 //		case 'teams': 	data = teams;		break
 		case 'matches':	 data = matches;	break
-//		case 'matchespl':data = matchespl;	break
+		case 'matchespl':data = matchespl;	break
 		default: return false
 	}
 	var text = ''
@@ -755,8 +755,8 @@ function SaveData(dataname){
 	switch (dataname){
 		case 'players':	data = players;		break
 		case 'teams': 	data = teams;		break
-		case 'matches':	 data = matches;	break
-		case 'matchespl':data = matchespl;	break
+//		case 'matches':	 data = matches;	break
+//		case 'matchespl':data = matchespl;	break
 		default: return false
 	}
 	if(ff) {
@@ -803,14 +803,15 @@ function SaveData(dataname){
 	}
 }
 
-
 function GetData2(dataname){
 	debug(dataname+':GetData2')
 	var data = []
 	var head = list[dataname].split(',')
 	switch (dataname){
+//		case 'players':  data = players2;	break
+//		case 'teams': 	 data = teams;		break
 		case 'matches':	 data = matches;	break
-//		case 'matchespl':data = matchespl;	break
+		case 'matchespl':data = matchespl;	break
 		default: return false
 	}
 	var text1 = String(localStorage[dataname])
@@ -831,6 +832,16 @@ function GetData2(dataname){
 	} else {
 		GetFinish('get_'+dataname, false)
 	}
+	if(!ff) {
+		if(!db) DBConnect()
+		db.transaction(function(tx) {
+			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
+				function(tx, result){},
+				function(tx, error) {debug(dataname+':' + error.message)}
+			);
+
+		})
+	}
 }
 
 function GetData(dataname){
@@ -841,7 +852,7 @@ function GetData(dataname){
 		case 'players':  data = players2;	break
 		case 'teams': 	 data = teams;		break
 //		case 'matches':	 data = matches;	break
-		case 'matchespl':data = matchespl;	break
+//		case 'matchespl':data = matchespl;	break
 		default: return false
 	}
 	if(ff) {
