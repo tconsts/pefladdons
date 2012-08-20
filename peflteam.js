@@ -910,10 +910,10 @@ function checkDeleteMatches(){
 		plsu.length = 0
 		ShowSU(true)
 		ShowRoster()
-		if(ff) {
-			delete localStorage.matches
-			delete localStorage.matchespl
-		}else{	
+		delete localStorage.matches
+		delete localStorage.matchespl
+		// чуть позже - убрать этот код что ниже
+		if(!ff) {
 			if(!db) DBConnect()
 			db.transaction(function(tx) {
 				tx.executeSql("DROP TABLE IF EXISTS matches",[],
