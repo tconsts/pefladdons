@@ -92,7 +92,8 @@ function GetData(dataname){
 function showMatches(){
 	GetData('matches')
 	debug('showMatches()')
-	for(p in matches)
+	//for(p in matches)
+
 	$('td.back4 table:first table:eq(1) tr').each(function(val){
 		if(val==0){
 			$(this).prepend('<td title="Идет в зачет сверхусталости">СУ</td><td></td>')

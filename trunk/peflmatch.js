@@ -172,31 +172,7 @@ function MatchGet(){
 			if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 		}
 	}
-	if(getfalse && !ff){
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-			tx.executeSql("SELECT * FROM "+dataname, [],
-				function(tx, result){
-					debug(dataname+':select:ok')
-					for(var i = 0; i < result.rows.length; i++) {
-						var row = result.rows.item(i)
-						var id = row[head[0]]
-						var curt = {}
-						for(j in row) curt[j] = row[j]
-						data[curt.id] = curt
-						//debug(dataname+':g'+id+':'+curt.schet)
-					}
-					MatchSave()
-				},
-				function(tx, error){
-					debug(dataname+':'+error.message)
-					MatchSave()
-				}
-			)
-		})
-	}else{
-		MatchSave()
-	}
+	MatchSave()
 }
 
 function MatchSave(){
@@ -218,37 +194,6 @@ function MatchSave(){
 		}
 	}
 	localStorage[dataname] = text
-/**
-	}else{
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
-				function(tx, result){},
-				function(tx, error) {debug(dataname+':' + error.message)}
-			);
-			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head+")", [],
-				function(tx, result){},
-				function(tx, error) {debug(dataname+':'+error.message)}
-			);
-			for(var i in data) {
-				var dti = data[i]
-				var x1 = []
-				var x2 = []
-				var x3 = []
-				for(var j in head){
-					x1.push(head[j])
-					x2.push('?')
-					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
-				}
-				//debug('insert:'+x3)
-				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
-					function(tx, result){},
-					function(tx, error) {debug(dataname+':'+error.message)}
-				);
-			}
-		});
-	}
-/**/
 }
 
 function UrlValue(key,url){
@@ -363,43 +308,4 @@ function SavePlayers(mid) {
 		}
 		localStorage[dataname] = text
 	}
-/**
-	}else{
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-
-			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
-				function(tx, result){},
-				function(tx, error) {debug(dataname+':' + error.message)}
-			);
-			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head.join(',').replace('id','id UNIQUE')+")", [],
-				function(tx, result){},
-				function(tx, error) {debug(dataname+':create:'+error.message)}
-			);
-			for(var i in data) {
-				var dti = data[i]
-				var x1 = []
-				var x2 = []
-				var x3 = []
-				for(var j in head){
-					x1.push(head[j])
-					x2.push('?')
-					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
-				}
-				//debug(dataname+':insert3:'+x3)
-				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
-					function(tx, result){},
-					function(tx, error) {debug(dataname+':insert:'+error.message)}
-				);
-			}
-
-		});
-	}
-/**/
-}
-
-function DBConnect(){
-	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
-	if(!db) {debug('Open DB PEFL fail.');return false;} 
-	else 	{debug('Open DB PEFL ok.')}
 }
