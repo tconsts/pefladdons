@@ -13,9 +13,23 @@
 // ==/UserScript==
 
 deb = (localStorage.debug == '1' ? true : false)
-var debnum = 0
+var debnum = 1
 
-function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+function debug(text) {
+	if(deb) {
+		if(debnum==1) $('body').append('<div id=debug>DEBUG INFROMATION<hr></div>')
+		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
+		debnum++;
+	}
+}
+
+function UrlValue(key,url){
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
+	for (n in pf) {
+		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
+	}
+	return false
+}
 
 function filter(criteria){
 		$('.back4 tr').each(function(index,value){
@@ -39,6 +53,48 @@ function CheckInt(ddn, fl){
 }
 
 var int = 	'17.01.12!31.01.12!14.02.12!28.02.12!13.03.12!27.03.12!10.04.12!24.04.12!08.05.12!22.05.12!05.06.12!19.06.12!'
+
+var matches = []
+function GetData(dataname){
+	debug(dataname+':GetData')
+	var data = []
+	var head = list[dataname].split(',')
+	switch (dataname){
+		case 'matches':	 data = matches;	break
+		default: return false
+	}
+	var text1 = String(localStorage[dataname])
+	if (text1 != 'undefined' && text1 != 'null'){
+		var text = text1.split('#')
+		for (i in text) {
+			var x = text[i].split('|')
+			var curt = {}
+			var num = 0
+			for(j in head){
+				curt[head[j]] = (x[num]!=undefined ? x[num] : '')
+				num++
+			}
+			data[curt[head[0]]] = {}
+			if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
+		}
+		debug('GetData:'+dataname+':true')
+	} else {
+		debug('GetData:'+dataname+':false')
+	}
+}
+
+function showMatches(){
+	debug('showMatches()')
+	$('td.back4 table:first table:eq(1) tr').each(function(val){
+		if(val==0){
+			$(this).append('<td>id</td>')
+		}else{
+			//get match id
+			var matchid = UrlValue('j',$(this).find('td:eq(1) a').attr('href'))
+			$(this).append('<td>'+matchid+'</td>')
+		}
+	})
+}
 
 $().ready(function() {
 
@@ -160,6 +216,5 @@ $().ready(function() {
 		})
 		$('td.now').css("border", "1px solid green");//#a3de8f
 	}
-	
-	
+	showMatches()
 })
