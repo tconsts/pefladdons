@@ -471,6 +471,7 @@ function ShowSU(del) {
 		$('table#tblSu tr:even').attr('class','back2')
 		$('table#tblSu tr:odd').attr('class','back1')
 	}
+	ShowPlM(0)
 }
 function suMarkDel(plid){
 	if(plsu[plid].del) {
@@ -485,23 +486,45 @@ function suMarkDel(plid){
 }
 function ShowPlM(plid){
 	debug('ShowPlM('+plid+')')
-	var mlistpl = ''
-	var prehtml = '<tr><th colspan=5 align=left>'+plid+':</th></tr>'
-	prehtml += '<tr><td>del</td><td>СУ</td><td>N</td><td>мин</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
-	for(i in plsu) if(plsu[i].name==plid) mlistpl = plsu[i].mlist.split(',');debug(plsu[i].mlist)
 	$('table#tblSuM tr').remove()
+
+	var mlistpl = ''
+	var prehtml = '<tr><th colspan=10 align=left><font size=3>'+(plid==0 ? 'Все матчи' : plid)+'</font>:</th></tr>'
+	prehtml += '<tr id=zagolovok class=back2><td>&nbsp;N</td><td>мин</td><td>del</td><td>СУ</td><td>&nbsp;N</td><td>мин</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
+	for(i in plsu){
+		if(plsu[i].name==plid) {
+			//mlistpl = plsu[i].mlist.split(',');
+			mlistpl = plsu[i].mlist;
+			debug(plsu[i].mlist)
+		}
+	}
+	$('table#tblSuM').html(prehtml)
+
 	// 'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash'
 	var num = 1
-	for(j in mlistpl){
-		var mch = matches[mlistpl[j]]
+	var num2 = 1
+	for(j in matches){
+		prehtml = ''
+		var mch = matches[j]
 		var t1 = t2 = '<b>'+team_cur.tname+'</b>'
 		if(mch.place.split('.')[0]=='a') t1 = TrimString(mch.ename)
 		else 							 t2 = TrimString(mch.ename)
 		prehtml += '<tr id="tr'+mch.id+'">'
+		prehtml += '<th>'+num+'</th>'
+		prehtml += '<td>'+mch.minutes+'\'</td>'
 		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
 		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;</a>')+'</th>'
-		prehtml += '<th>'+num+'</th>'
-		for(p in matchespl[mch.id]) if(String(matchespl[mch.id][p]).split(':')[0]==plid) prehtml += '<td align=right>'+String(matchespl[mch.id][p]).split(':')[1]+'</td>'
+		if(plid!=0){
+			if(mlistpl.indexOf(j)!=-1){
+				for(p in matchespl[mch.id]) if(String(matchespl[mch.id][p]).split(':')[0]==plid){
+					prehtml += '<td align=right>'+num2+'</td>'
+					prehtml += '<td align=right>'+String(matchespl[mch.id][p]).split(':')[1]+'\'</td>'
+				}
+				num2++
+			}else{
+				prehtml += '<td></td><td></td>'
+			}
+		}else prehtml += '<td></td><td></td>'
 		prehtml += '<td align=right>'+t1+'</td>'
 		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.hash+'">'+mch.schet+'</a>'+(mch.pen!='' ? '(п'+mch.pen+')' : '')+'</td>'
 		prehtml += '<td>'+t2+'</td>'
@@ -509,8 +532,29 @@ function ShowPlM(plid){
 		prehtml += '<td>'+mch.ref+'</td>'
 		prehtml += '</tr>'
 		num++
+		$('table#tblSuM tr#zagolovok').after(prehtml)
 	}
-	$('table#tblSuM').html(prehtml)
+
+/**
+	for(j=mlistpl.length-1; j>=0; j--){
+		var mch = matches[mlistpl[j]]
+		var t1 = t2 = '<b>'+team_cur.tname+'</b>'
+		if(mch.place.split('.')[0]=='a') t1 = TrimString(mch.ename)
+		else 							 t2 = TrimString(mch.ename)
+		prehtml += '<tr id="tr'+mch.id+'">'
+		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
+		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;</a>')+'</th>'
+		prehtml += '<th>'+(j+1)+''+'</th>'
+		for(p in matchespl[mch.id]) if(String(matchespl[mch.id][p]).split(':')[0]==plid) prehtml += '<td align=right>'+String(matchespl[mch.id][p]).split(':')[1]+'\'</td>'
+		prehtml += '<td align=right>'+t1+'</td>'
+		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.hash+'">'+mch.schet+'</a>'+(mch.pen!='' ? '(п'+mch.pen+')' : '')+'</td>'
+		prehtml += '<td>'+t2+'</td>'
+		prehtml += '<td><img height=15 src="/system/img/w'+mch.weather+'.png"></img></td>'
+		prehtml += '<td>'+mch.ref+'</td>'
+		prehtml += '</tr>'
+	}
+/**/
+	//$('table#tblSuM').html(prehtml)
 }
 function SuDelMatch(mid, type, plid){
 	debug('SuDelMatch('+mid+','+type+','+plid+')')
