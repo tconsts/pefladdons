@@ -437,15 +437,20 @@ function ShowSU(del) {
 
 		var preparedhtml = '<table id="tblSu" class=back1 width=100%>' //BFDEB3
 		preparedhtml += '<tr align=left><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th><th>мин в %</th></tr>'
-		var pls = plsu.sort(function(a,b){return b.minute - a.minute})
+		var pls = plsu.sort(function(a,b){return ((b.minutesu + b.minute*0.001) - (a.minutesu + a.minute*0.001))})
 		for(i in pls) {
-			var ost = sumax - pls[i].minute
+			var plsi = pls[i]
+			var ost = sumax - plsi.minutesu
+			var ostmatch = Math.floor(ost/93)
+			var ostminute = ost - ostmatch*93
 			preparedhtml += '<tr>'
 			preparedhtml += '<td>'+(parseInt(i)+1)+'</td>'
-			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+pls[i].name+'\'))"><b>'+pls[i].name+'</b></a></td>'
-			preparedhtml += '<td>'+pls[i].minute+'</td>'
-			preparedhtml += '<td>'+pls[i].matches+(pls[i].matches2>0 ? '('+pls[i].matches2+')' : '')+'</td>'
-			preparedhtml += '<td>'+ost+'('+(ost/93).toFixed(1)+')</td>'
+			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+plsi.name+'\'))"><b>'+plsi.name+'</b></a></td>'
+			preparedhtml += '<td><b>'+plsi.minutesu+'</b>'+(plsi.minute>0 ? '<font size=1> ('+plsi.minute+')</font>' : '')+'</td>'
+			preparedhtml += '<td><b>'+pls[i].matches+'</b>'+(pls[i].matches2>0 ? '<font size=1> ('+pls[i].matches2+')</font>' : '')+'</td>'
+			preparedhtml += '<td><b>'+ost+'</b>'
+			preparedhtml += (ost>0 ? '<font size=1> ('+(ostmatch>0 ? '93мин*'+ostmatch+' + ' : '')+ostminute+'мин)</font>' : '')
+			preparedhtml += '</td>'
 			preparedhtml += '<td width=10%'+(pls[i].tilda<=40 && pls[i].tilda!=0? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+i+'\'))">'+(pls[i].tilda==0 ? '&nbsp;&nbsp;&nbsp;' : (pls[i].tilda).toFixed(1))+'</a></td>'
 //			preparedhtml += '<td align=center width=5%>'+(pls[i].del ? '<b><font color=red>X</font></b>': '')+'</td>'
 			preparedhtml += '</tr>'
