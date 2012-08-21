@@ -1306,7 +1306,11 @@ function ShowPlayersZp(){
 		zp = false
 		var text = ''
 		var pls = players.sort(sZp)
+		var sumzp = 0
+		var plsnum = 0
 		for(i in pls) {
+			sumzp += pls[i].wage
+			plsnum++
 			var bgcolor = ''
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
@@ -1319,6 +1323,8 @@ function ShowPlayersZp(){
 			text += '<td'+bgcolor+'>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
 			text += '</tr>'
 		}
+		debug('ShowPlayersZp:sumzp='+sumzp)
+		text += '<tr id="zp"><td><i>'+('средняя').fontsize(1)+'</i></td><td align=right><i>'+(ShowValueFormat(sumzp/plsnum) + '&nbsp;').fontsize(1)+'</i></td><td></td><tr>'
 		$('#oszp').after(text + '<tr id="zp"><td>&nbsp;</td></tr>')
 	}else{
 		zp = true
