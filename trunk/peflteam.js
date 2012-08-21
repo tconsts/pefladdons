@@ -1275,7 +1275,7 @@ function ShowPlayersValue(){
 			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
 			nomtext += '</tr>'
 		}
-		nomtext += '<tr id="nom"><td><i>'+('средняя').fontsize(1)+'</i></td><td align=right><i>'+(ShowValueFormat(sumval/numpl/1000) + 'т').fontsize(1)+'</i></td><td></td><tr>'
+		nomtext += '<tr id="nom"><td><i>'+('средняя').fontsize(1)+'</i></td><td align=right><i>'+(ShowValueFormat(parseInt(sumval/numpl)/1000) + 'т').fontsize(1)+'</i></td><td></td><tr>'
 		$('#osnom').after(nomtext + '<tr id="nom"><td>&nbsp;</td></tr>')
 	} else {
 		nom = true
@@ -1329,7 +1329,7 @@ function ShowPlayersZp(){
 			text += '</tr>'
 		}
 		debug('ShowPlayersZp:sumzp='+sumzp)
-		text += '<tr id="zp"><td><i>'+('средняя').fontsize(1)+'</i></td><td align=right><i>'+(ShowValueFormat(sumzp/plsnum) + '&nbsp;').fontsize(1)+'</i></td><td></td><tr>'
+		text += '<tr id="zp"><td><i>'+('средняя').fontsize(1)+'</i></td><td align=right><i>'+(ShowValueFormat(parseInt(sumzp/plsnum)) + '&nbsp;').fontsize(1)+'</i></td><td></td><tr>'
 		$('#oszp').after(text + '<tr id="zp"><td>&nbsp;</td></tr>')
 	}else{
 		zp = true
