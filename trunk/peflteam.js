@@ -1259,18 +1259,23 @@ function ShowPlayersValue(){
 		nom = false
 		var nomtext = ''
 		var pls = players.sort(sValue)
+		var sumval = 0
+		var numpl = 0
 		for(i in pls) {
+			numpl++
+			sumval += pls[i].value
 			var bgcolor = ''
 			if(i<18) bgcolor = ' class=back4'//3
 			if(i<5)  bgcolor = ' class=back3'//1
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
 			nomtext += '<tr id="nom"'+bgcolor+'>'
-			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
+			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+' nowrap>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
 			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
 			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
 			nomtext += '</tr>'
 		}
+		nomtext += '<tr id="nom"><td><i>'+('средняя').fontsize(1)+'</i></td><td align=right><i>'+(ShowValueFormat(sumval/numpl/1000) + 'т').fontsize(1)+'</i></td><td></td><tr>'
 		$('#osnom').after(nomtext + '<tr id="nom"><td>&nbsp;</td></tr>')
 	} else {
 		nom = true
@@ -1289,7 +1294,7 @@ function ShowPlayersSValue(){
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '') //888A85
 			var f2 = (pls[i].trash ? '</font>' : '')
 			nomtext += '<tr id="svalue"'+bgcolor+'>'
-			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
+			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+' nowrap>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
 			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].svalue/1000) + 'т').fontsize(1) + '</td>'
 //			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
 			nomtext += '</tr>'
@@ -1318,7 +1323,7 @@ function ShowPlayersZp(){
 			if(pls[i].contract==2) bgcolor = ' bgcolor=#FCE93B' //yellow
 			if(pls[i].contract==5) bgcolor = ' bgcolor=#A3DE8F' //green
 			text += '<tr id="zp">'
-			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
+			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+' nowrap>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
 			text += '<td align=right>' + (ShowValueFormat(pls[i].wage) + '&nbsp;').fontsize(1) + '</td>'
 			text += '<td'+bgcolor+'>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
 			text += '</tr>'
@@ -1341,7 +1346,7 @@ function ShowPlayersAge(){
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
 			text += '<tr id="age"'+(pls[i].age<30 && pls[i].age>21 ? '' : ' class=back3')+'>'
-			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' 
+			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+' nowrap>' 
 			text +=  f1 + ShowShortName(pls[i].name).fontsize(1) + f2
 			text += '</td>'
 			text += '<td align=right>'+f1 + (pls[i].age+'&nbsp;').fontsize(1) + f2+'</td>'
@@ -1363,7 +1368,7 @@ function ShowPlayersSkillChange(){
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
 			text += '<tr id="skills">'
-			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+'>' 
+			text += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+' nowrap>' 
 			text +=  f1 + ShowShortName(pls[i].name).fontsize(1) + f2
 			text += '</td>'
 			text += '<td align=right>'+f1 + (pls[i].sumskills + '&nbsp;').fontsize(1) + f2 +'</td>'
