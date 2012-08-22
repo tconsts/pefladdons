@@ -95,6 +95,7 @@ function showMatches(){
 	//for(p in matches)
 
 	$('td.back4 table:first table:eq(1) tr').each(function(val){
+		$(this).find('td').attr('nowrap','')
 		if(val==0){
 			$(this).prepend('<td title="Идет в зачет сверхусталости">СУ</td><td></td>')
 		}else{
@@ -104,8 +105,8 @@ function showMatches(){
 				var mch = matches[matchid]
 				$(this).find('td:eq(3)').append('&nbsp;<img height=15 src="/system/img/w'+mch.weather+'.png"></img>&nbsp;'+mch.ref)
 				if(mch.pen!='') $(this).find('td:eq(1)').append('&nbsp;(п&nbsp;'+mch.pen+')')
-				$(this).prepend('<td width=1%>'+(mch.place.split('.')[1]=='n' ? 'N' : '')+'</td>')
-				$(this).prepend('<td width=1%>'+(mch.su ? '<img src="system/img/g/tick.gif" height=12></img>' : '')+'</td>')
+				$(this).prepend('<td>'+(mch.place.split('.')[1]=='n' ? 'N' : '')+'</td>')
+				$(this).prepend('<td>'+(mch.su ? '<img src="system/img/g/tick.gif" height=12></img>' : '')+'</td>')
 			} else {
 				$(this).prepend('<td></td><td></td>')
 			}
@@ -233,5 +234,5 @@ $().ready(function() {
 		})
 		$('td.now').css("border", "1px solid green");//#a3de8f
 	}
-	if(deb) showMatches()
+	if(parseInt(localStorage.myteamid)==parseInt(UrlValue('j'))) showMatches()
 })
