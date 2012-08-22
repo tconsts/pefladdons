@@ -12,6 +12,8 @@ deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
+var mid = parseInt(UrlValue('j'))
+var myteamid = localStorage.myteamid
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
@@ -21,13 +23,16 @@ var list = {
 var match1	= {}
 var matches	= []
 var plmatch	= []
+var matchespl  = []
+var matchespl1 = []
+var matchespl2 = []
 var plhead	= 'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
 //var pldbase	= []
 //var plteam	= []
 var sshort = false
 
 $().ready(function() {
-	if(deb) $('body').prepend('<div id=debug></div>')
+	if(deb) $('body').append('<div id=debug></div>')
 //	$('td.back4 table:first').attr('border','5')	// расстановка
 //	$('td.back4 table:eq(1)').attr('border','5')	// все вместе кроме расстановки
 //	$('td.back4 table:eq(2)').attr('border','5')	// отчет
@@ -35,11 +40,6 @@ $().ready(function() {
 //	$('td.back4 table:eq(4)').attr('border','5')	// голы\лого
 //	$('td.back4 table:eq(5)').attr('border','5')	// стата
 //	$('td.back4 table:eq(6)').attr('border','5')	// оценки
-
-	var mid = parseInt(UrlValue('j'))
-	match1.id = mid
-	match1.hash = UrlValue('z')
-	match1.su = ((mid>559098 && mid<601685) || mid>602078 ? true : false)
 
 	//дорисовываем оценки в код для форума(t=code) и редактируем страницу матча (t=if)
 	if(UrlValue('t') == 'code') {
@@ -51,103 +51,133 @@ $().ready(function() {
 			)
 		}
 	}else{
-		var myteamid = localStorage.myteamid
-		debug('myteamid='+myteamid)
-
 		// даем возможность скрыть отчет
 		$('td.back4 table:eq(2)').before('<br><a id="a2" href="javascript:void(ShowTable(2))">&ndash;</a> <b>Отчет</b><br>')
-/**/
-		// запоминаем таблицу оценок
-		match1.weather = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
-		match1.minutes = parseInt($('p.key:last').text().split(' ')[0])
+		// собираем инфо матча
+		getMatchInfo()
 
-		var otcharr = []
-		$('td.back4 table:eq(2) center p').each(function(){
-			otcharr.push($(this).html())
-		})
-		match1.ust = ''
-		match1.sshort = ''
-		for(i in otcharr) {
-			if(String(otcharr[i]).indexOf('предельно настроенными') != -1 || String(otcharr[i]).indexOf('активно начинает') != -1) match1.ust = otcharr[i].replace('1 минута','')
-			if(String(otcharr[i]).indexOf('(*)') != -1 || String(otcharr[i]).indexOf('СЧЕТ') != -1) match1.sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
-		}
-
-		debug('уст:'+match1.ust)
-
-		var otch = $('td.back4 table:eq(2)').html()
-		match1.ref = ( otch.indexOf('Главный арбитр:') ==-1 ? '???' : otch.split('Главный арбитр:')[1].split(').')[0] + ')')
-		debug('Ref:'+match1.ref)
-		match1.schet = $('td.back4 table:eq(3) td:eq(1)').text()
-		var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
-		match1.fschet = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
-
-		var finschet = ''
-		if(finschetarr[1]!=undefined && match1.fschet!=match1.schet) {
-			finschet = ' [center]По пенальти [b][color=red]'+ match1.fschet + '[/color][/b][/center]'
-			match1.pen = match1.fschet
-		}
-		// /system/img/club/1455.gif - club
-		// /system/img/flags/155.gif - national
 		if(myteamid!=undefined && $('td.back4 table:eq(4) td:first img').attr('src').indexOf('club')!=-1 ){
 			debug('check my team')
 			var mark = 'none'
 			if(myteamid==parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])) {
 				mark =  true
-				match1.place = 'h'
+//				match1.place = 'h'
 				match1.eid = parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])
 				match1.ename = $('td.back4 table:eq(3) tr:first td:eq(2)').text()
 				match1.emanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
-				// player
-				localStorage.fp_uniform = $('td.back4 center:first table:first tr:first td.field_left:first img').attr('src')
-				// gk
-				localStorage.gk_uniform = $('td.back4 center:first table:first tr:first td:eq(2) img').attr('src')
 			}
 			if(myteamid==parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])) {
 				mark = false
-				match1.place = 'a'
+//				match1.place = 'a'
 				match1.eid = parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])
 				match1.ename = $('td.back4 table:eq(3) tr:first td:eq(0)').text()
 				match1.emanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(0)').text()
-				// player
-				localStorage.fp_uniform = $('td.back4 center:first table:first tr:last td.field_left:first img').attr('src')
-				// gk
-				localStorage.gk_uniform = $('td.back4 center:first table:first tr:last td:eq(2) img').attr('src')
 			}
 			if(mark!='none') {
-				if($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined) match1.place += '.n'
-				PlayerTime(mid,parseInt($('p.key:last').text().split(' ')[0]),mark,myteamid)
+				PlayerTime(mid,match1.minutes,mark,myteamid)
 				MatchGet()
 			}
 		}
-
-		$('td.back4 table:eq(6)')
-			.find('td').removeAttr('width').end()
-			.find('td').removeAttr('bgcolor').end()
-			.find('tr:odd').attr('bgcolor','#a3de8f').end() //#a3de8f #c9f8b7
-			.find('tr:eq(10)').after('<tr bgcolor=white><td colspan=10> </td></tr>')
-
-		sessionStorage['match'+mid] = finschet + $('td.back4 table:eq(6)')
-//		var x = finschet + $('td.back4 table:eq(6)')
-			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
-			.prepend('<tr><td colspan=5 width=50%> </td><td colspan=5 width=50%> </td></tr>')
-			.html()
-			.replace(/<tbody>/g,'<table width=100% bgcolor=c9f8b7>')
-			.replace(/tbody/g,'table')
-			.replace(/\<a href=\"javascript\:void\(ShowPlayer\(\'(.*)\'\)\)\"\>(.*)/g,'$2')
-			.replace(/\<\/a\>/g,'')
-			.replace(/img src="/g,'img]')
-			.replace(/.gif/g,'.gif[/img')
-			.replace(/"/g,'')
-			.replace(/font /g,'')
-			.replace(/font/g,'color')
-			.replace(/\</g,'[')
-			.replace(/\>/g,']')
-			+ '[img]system/img/w' + match1.weather + '.png[/img]' 
-			+ (match1.ref!='???' ? ' [b]Главный арбитр:[/b] ' + match1.ref + '.' : '')
-			+ '\n\n'+match1.ust
+		// запомнить новые футболки
+		saveForm()
+		// исправляем таблицу оценок
+		modifyMarksTable()
+		// сохраняем код для форума
+		SaveCodeForMatch()
 	}
+
+	//добавляем короткий отчет о сменах тактик, изменений счета и расстановок
 	$('a#a2').before('<a href="javascript:void(ShowSShort())" id="sshort">+</a> <b>Смены тактик и счета</b><div id="sshort" style="display: none;"><center><hr>'+match1.sshort+'<hr></center></div><br>')
+
 }, false);
+
+function modifyMarksTable(){
+	debug('modifyMarksTable()')
+	$('td.back4 table:eq(6)')
+		.find('td').removeAttr('width').end()
+		.find('td').removeAttr('bgcolor').end()
+		.find('tr:odd').attr('bgcolor','#a3de8f').end() //#a3de8f #c9f8b7
+		.find('tr:eq(10)').after('<tr bgcolor=white><td colspan=10> </td></tr>')
+}
+
+function getMatchInfo(){
+	debug('getMatchInfo()')
+	match1.id = mid
+	match1.hash = UrlValue('z')
+	match1.su = true
+	match1.weather = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
+	match1.minutes = parseInt($('p.key:last').text().split(' ')[0])-1
+	match1.ust = ''
+	match1.sshort = ''
+	match1.schet = $('td.back4 table:eq(3) td:eq(1)').text()
+	match1.eid = ''
+	match1.ename = ''
+	match1.emanager = ''
+	// /system/img/club/1455.gif - club
+	// /system/img/flags/155.gif - national
+	match1.type = ($('td.back4 table:eq(4) td:first img').attr('src').indexOf('club')!=-1 ? 'club' : 'other')
+	match1.hid = (match1.type == 'club' ? parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0]) : '')
+	match1.aid = (match1.type == 'club' ? parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0]) : '')
+	match1.hname = $('td.back4 table:eq(3) tr:first td:eq(2)').text().trim()
+	match1.aname = $('td.back4 table:eq(3) tr:first td:eq(0)').text().trim()
+	match1.hmanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
+	match1.amanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(0)').text()
+	match1.place = (myteamid == match1.hid ? 'h' : (myteamid == match1.aid ? 'a' : '')) 
+	match1.place += ($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined ? '.n' : '')
+	match1.yrcard = $('td.back4 table:eq(6) img[src*="system/img/gm/yr.gif"]').length
+	match1.ycard = $('td.back4 table:eq(6) img[src*="system/img/gm/y.gif"]').length + match1.yrcard
+	match1.rcard = $('td.back4 table:eq(6) img[src*="system/img/gm/r.gif"]').length + match1.yrcard
+
+	// проверям на установки и пополняем краткий отчет
+	var otcharr = []
+	$('td.back4 table:eq(2) center p').each(function(){otcharr.push($(this).html())})
+	for(i in otcharr) {
+		if(String(otcharr[i]).indexOf('предельно настроенными') != -1 || String(otcharr[i]).indexOf('активно начинает') != -1) match1.ust = otcharr[i].split('<br>')[1].trim()
+		if(String(otcharr[i]).indexOf('(*)') != -1 || String(otcharr[i]).indexOf('СЧЕТ') != -1) match1.sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
+	}
+
+	// получаем рефери
+	var otch = $('td.back4 table:eq(2)').html()
+	match1.ref = ( otch.indexOf('Главный арбитр:') ==-1 ? '???' : otch.split('Главный арбитр:')[1].split(').')[0] + ')')
+
+	// получаем финальный счет(были ли пенальти)
+	var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
+	match1.fschet = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
+	match1.pen = (match1.fschet!=match1.schet ? match1.fschet : '')
+	if(deb) for(i in match1) if(i!='sshort') debug('getMatchInfo:'+i+'='+match1[i])
+}
+function saveForm(){
+	debug('saveForm()')
+	var tr = (match1.place.split('.')[0]=='h' ? 'first' : (match1.place.split('.')[0]=='a' ? 'last' : ''))
+	if(tr!=''){
+		localStorage.fp_uniform = $('td.back4 center:first table:first tr:'+tr+' td.field_left:first img').attr('src')
+		localStorage.gk_uniform = $('td.back4 center:first table:first tr:'+tr+' td:eq(2) img').attr('src')
+	}
+}
+
+function SaveCodeForMatch(){
+	debug('SaveCodeForMatch()')
+	var finschet = (match1.fschet!=match1.schet ? ' [center]По пенальти [b][color=red]'+ match1.fschet + '[/color][/b][/center]' : '')
+	sessionStorage['match'+mid] = finschet + $('td.back4 table:eq(6)')
+//	var x = finschet + $('td.back4 table:eq(6)')
+		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+		.prepend('<tr><td colspan=5 width=50%> </td><td colspan=5 width=50%> </td></tr>')
+		.html()
+		.replace(/<tbody>/g,'<table width=100% bgcolor=c9f8b7>')
+		.replace(/tbody/g,'table')
+		.replace(/\<a href=\"javascript\:void\(ShowPlayer\(\'(.*)\'\)\)\"\>(.*)/g,'$2')
+		.replace(/\<\/a\>/g,'')
+		.replace(/img src="/g,'img]')
+		.replace(/.gif/g,'.gif[/img')
+		.replace(/"/g,'')
+		.replace(/font /g,'')
+		.replace(/font/g,'color')
+		.replace(/\</g,'[')
+		.replace(/\>/g,']')
+		+ '[img]system/img/w' + match1.weather + '.png[/img]' 
+		+ (match1.ref!='???' ? ' [b]Главный арбитр:[/b] ' + match1.ref + '.' : '')
+		+ '\n\n'+match1.ust
+}
 
 function MatchGet(){
 	debug('MatchGet()')
