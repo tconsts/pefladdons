@@ -116,12 +116,12 @@ function getMatchInfo(){
 	// /system/img/club/1455.gif - club
 	// /system/img/flags/155.gif - national
 	match1.type = ($('td.back4 table:eq(4) td:first img').attr('src').indexOf('club')!=-1 ? 'club' : 'other')
-	match1.hid = (match1.type == 'club' ? parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0]) : '')
-	match1.aid = (match1.type == 'club' ? parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0]) : '')
-	match1.hname = $('td.back4 table:eq(3) tr:first td:eq(2)').text().trim()
-	match1.aname = $('td.back4 table:eq(3) tr:first td:eq(0)').text().trim()
-	match1.hmanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
-	match1.amanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(0)').text()
+	match1.hid = (match1.type == 'club' ? parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0]) : '')
+	match1.aid = (match1.type == 'club' ? parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0]) : '')
+	match1.hname = $('td.back4 table:eq(3) tr:first td:eq(0)').text().trim()
+	match1.aname = $('td.back4 table:eq(3) tr:first td:eq(2)').text().trim()
+	match1.hmanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(0)').text()
+	match1.amanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
 	match1.place = (myteamid == match1.hid ? 'h' : (myteamid == match1.aid ? 'a' : '')) 
 	match1.place += ($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined ? '.n' : '')
 	match1.yrcard = $('td.back4 table:eq(6) img[src*="system/img/gm/yr.gif"]').length
