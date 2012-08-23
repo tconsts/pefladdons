@@ -151,7 +151,7 @@ $().ready(function() {
 			tmpplayer["pg"] 		= pg;
 			tmpplayer["training"] 	= training;
 			tmpplayer["form"] 		= data_assoc["form"+i];
-			tmpplayer["firstname"] 	= data_assoc["firstname"+i];
+			tmpplayer["firstname"] 	= (data_assoc["firstname"+i] != '???' ? data_assoc["firstname"+i] : '')
 			tmpplayer["secondname"] = sname.replace('~','').replace('*','').replace('^','');
 			tmpplayer["rest"] 		= (training == 1 ? 1 : 0)
 			tmpplayer["newpos"] 	= (training > 13 ? 1 : 0)
@@ -363,15 +363,15 @@ function showData(){
 			var pli = players[i]
 			if(pli.rest==1) {
 				countrest++
-				prest += '&nbsp;'+pli.form+'% '+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
+				prest += '&nbsp;'+pli.form+'% '+pli.secondname+ '&nbsp;'+pli.firstname+'<br>'
 			}
 			if(pli.inj >1) {
 				countinj++
-				pinj  += '&nbsp;'+pli.inj+' д. '+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
+				pinj  += '&nbsp;'+pli.inj+' д. '+pli.secondname+ '&nbsp;'+pli.firstname+'<br>'
 			}         
 			if(pli.notrain==1) {
 				countnot++
-				pnot  += '&nbsp;'+pli.firstname + '&nbsp;'+pli.secondname+'<br>'
+				pnot  += '&nbsp;'+pli.secondname+ '&nbsp;'+pli.firstname+'<br>'
 			}
 		}
 		if(countnot >0) $('td.back4 table:first center').after(pnot)
