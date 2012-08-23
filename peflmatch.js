@@ -1,3 +1,4 @@
+
 // ==UserScript==
 // @name           peflmatch
 // @namespace      pefl
@@ -21,11 +22,12 @@ var list = {
 	'matchespl':'nameid,name,minute',
 }
 var match1	= {}
+var sshort	= ''
 var matches	= []
 var plmatch	= []
-var matchespl  = []
-var matchespl1 = []
-var matchespl2 = []
+var matchespl  = {}
+var matchesplh = {}
+var matchespla = {}
 var plhead	= 'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
 //var pldbase	= []
 //var plteam	= []
@@ -55,41 +57,85 @@ $().ready(function() {
 		$('td.back4 table:eq(2)').before('<br><a id="a2" href="javascript:void(ShowTable(2))">&ndash;</a> <b>Отчет</b><br>')
 		// собираем инфо матча
 		getMatchInfo()
+		getPlayersInfo()
 
-		if(myteamid!=undefined && $('td.back4 table:eq(4) td:first img').attr('src').indexOf('club')!=-1 ){
-			debug('check my team')
-			var mark = 'none'
-			if(myteamid==parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])) {
-				mark =  true
-//				match1.place = 'h'
-				match1.eid = parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])
-				match1.ename = $('td.back4 table:eq(3) tr:first td:eq(2)').text()
-				match1.emanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
-			}
-			if(myteamid==parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])) {
-				mark = false
-//				match1.place = 'a'
-				match1.eid = parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])
-				match1.ename = $('td.back4 table:eq(3) tr:first td:eq(0)').text()
-				match1.emanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(0)').text()
-			}
-			if(mark!='none') {
-				PlayerTime(mid,match1.minutes,mark,myteamid)
-				MatchGet()
-			}
-		}
+		//берем данные
+		getJSONlocalStorage('matches2',matches)
+		getJSONlocalStorage('matchespl2',matchespl)
+
+		// проверяем и если надо модифицируем и сохраняем данные
+		checkSave(matchespl)
+
 		// запомнить новые футболки
 		saveForm()
+
 		// исправляем таблицу оценок
 		modifyMarksTable()
+
 		// сохраняем код для форума
 		SaveCodeForMatch()
 	}
 
 	//добавляем короткий отчет о сменах тактик, изменений счета и расстановок
-	$('a#a2').before('<a href="javascript:void(ShowSShort())" id="sshort">+</a> <b>Смены тактик и счета</b><div id="sshort" style="display: none;"><center><hr>'+match1.sshort+'<hr></center></div><br>')
+	$('a#a2').before('<a href="javascript:void(ShowSShort())" id="sshort">+</a> <b>Смены тактик и счета</b><div id="sshort" style="display: none;"><center><hr>'+sshort+'<hr></center></div><br>')
 
 }, false);
+
+function checkSave(){
+	debug('checkSave()')
+	// есть matcheshpl
+	var savematch = false
+	
+//	if(deb) for(i in matchesplh) debug('checkSave(h):'+i+':'+matchesplh[i].m)
+//	if(deb) for(i in matchespla) debug('checkSave(a):'+i+':'+matchespla[i].m)
+//	if(deb) for(i in matchespl) debug('checkSave:matchespl:'+i)
+
+	switch(parseInt(myteamid)){
+		case match1.hid:
+			debug('checkSave:update:home')
+			savematch = true
+			for(i in matchesplh){
+				if(matchespl[i]==undefined) matchespl[i] = []
+				matchespl[i][mid] = matchesplh[i]
+			}
+			break
+		case match1.aid:
+			debug('checkSave:update:away')
+			savematch = true
+			for(i in matchespla){
+				if(matchespl[i]==undefined) matchespl[i] = []
+				matchespl[i][mid] = matchespla[i]
+			}
+			break
+		default:
+			debug('checkSave:update:player')
+			for(i in matchesplh){
+				if(matchespl[i]!=undefined){
+					savematch = true
+					debug('checkSave(h):add:'+i+':'+mid)
+					matchespl[i][mid] = matchesplh[i]
+				}
+			}
+			for(i in matchespla){
+				if(matchespl[i]!=undefined){
+					savematch = true
+					debug('checkSave(a):add:'+i+':'+mid)
+					matchespl[i][mid] = matchespla[i]
+				}
+			}
+	}
+	debug('checkSave:savematch='+savematch)
+	if(savematch) {
+		if(matches[match1.id]==undefined){
+			debug('checkSave:add:'+mid)
+			matches[match1.id] = match1
+		}else{
+			for(p in match1) matches[match1.id][p] = match1[p]
+		}
+		saveJSONlocalStorage('matches2',matches)
+		saveJSONlocalStorage('matchespl2',matchespl)
+	}
+}
 
 function modifyMarksTable(){
 	debug('modifyMarksTable()')
@@ -102,53 +148,67 @@ function modifyMarksTable(){
 
 function getMatchInfo(){
 	debug('getMatchInfo()')
-	match1.id = mid
-	match1.hash = UrlValue('z')
-	match1.su = true
-	match1.weather = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
-	match1.minutes = parseInt($('p.key:last').text().split(' ')[0])-1
-	match1.ust = ''
-	match1.sshort = ''
-	match1.schet = $('td.back4 table:eq(3) td:eq(1)').text()
-	match1.eid = ''
-	match1.ename = ''
-	match1.emanager = ''
+	var yrcard	= $('td.back4 table:eq(6) img[src*="system/img/gm/yr.gif"]').length
+	var ycard	= $('td.back4 table:eq(6) img[src*="system/img/gm/y.gif"]').length + yrcard
+	var rcard	= $('td.back4 table:eq(6) img[src*="system/img/gm/r.gif"]').length + yrcard
+	var type	= ($('td.back4 table:eq(4) td:first img').attr('src').indexOf('club')!=-1 ? 'club' : 'other')
+	var hname	= $('td.back4 table:eq(3) tr:first td:eq(0)').text().trim()
+	var aname	= $('td.back4 table:eq(3) tr:first td:eq(2)').text().trim()
+	var weather = $('img[src^="system/img/w"]').attr('src').replace('system/img/w','').replace('.png','')
 	// /system/img/club/1455.gif - club
 	// /system/img/flags/155.gif - national
-	match1.type = ($('td.back4 table:eq(4) td:first img').attr('src').indexOf('club')!=-1 ? 'club' : 'other')
-	match1.hid = (match1.type == 'club' ? parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0]) : '')
-	match1.aid = (match1.type == 'club' ? parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0]) : '')
-	match1.hname = $('td.back4 table:eq(3) tr:first td:eq(0)').text().trim()
-	match1.aname = $('td.back4 table:eq(3) tr:first td:eq(2)').text().trim()
-	match1.hmanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(0)').text()
-	match1.amanager = $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
-	match1.place = (myteamid == match1.hid ? 'h' : (myteamid == match1.aid ? 'a' : '')) 
-	match1.place += ($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined ? '.n' : '')
-	match1.yrcard = $('td.back4 table:eq(6) img[src*="system/img/gm/yr.gif"]').length
-	match1.ycard = $('td.back4 table:eq(6) img[src*="system/img/gm/y.gif"]').length + match1.yrcard
-	match1.rcard = $('td.back4 table:eq(6) img[src*="system/img/gm/r.gif"]').length + match1.yrcard
+	match1.id	= mid
+	match1.h	= UrlValue('z')
+	match1.m	= parseInt($('p.key:last').text().split(' ')[0])-1
+	match1.res	= $('td.back4 table:eq(3) td:eq(1)').text()
+	//match1.su	= true
+
+	if(weather!=0) match1.w =  weather
+	if(type == 'club') {
+		match1.hid	= parseInt($('td.back4 table:eq(4) td:first img').attr('src').split('club/')[1].split('.')[0])
+		match1.aid	= parseInt($('td.back4 table:eq(4) td:last img').attr('src').split('club/')[1].split('.')[0])
+	}
+	if(myteamid != match1.hid){
+		match1.hnm	= hname
+		match1.hmn	= $('td.back4 table:eq(3) tr:eq(1) td:eq(0)').text()
+	}
+	if(myteamid != match1.aid){
+		match1.anm	= aname
+		match1.amn	= $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
+	}
+	if($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined) match1.n	= 'N'
+	if(ycard!=0) match1.yc = ycard
+	if(rcard!=0) match1.rc = rcard
 
 	// проверям на установки и пополняем краткий отчет
 	var otcharr = []
 	$('td.back4 table:eq(2) center p').each(function(){otcharr.push($(this).html())})
+	var ust = true
 	for(i in otcharr) {
-		if(String(otcharr[i]).indexOf('предельно настроенными') != -1 || String(otcharr[i]).indexOf('активно начинает') != -1) match1.ust = otcharr[i].split('<br>')[1].trim()
-		if(String(otcharr[i]).indexOf('(*)') != -1 || String(otcharr[i]).indexOf('СЧЕТ') != -1) match1.sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
+		if(String(otcharr[i]).indexOf('предельно настроенными') != -1)	match1.ust = 'p'
+		else if(String(otcharr[i]).indexOf('активно начинает') != -1) 	match1.ust = 'a'
+		if(ust && match1.ust!=undefined){
+			ust = false
+			if(String(otcharr[i]).indexOf(hname) != -1)		 match1.ust += '.h'
+			else if(String(otcharr[i]).indexOf(aname) != -1) match1.ust += '.a'
+		}
+		if(String(otcharr[i]).indexOf('(*)') != -1 || String(otcharr[i]).indexOf('СЧЕТ') != -1) sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
 	}
 
 	// получаем рефери
 	var otch = $('td.back4 table:eq(2)').html()
-	match1.ref = ( otch.indexOf('Главный арбитр:') ==-1 ? '???' : otch.split('Главный арбитр:')[1].split(').')[0] + ')')
+	if(otch.indexOf('Главный арбитр:') !=-1) match1.r = (otch.split('Главный арбитр:')[1].split(').')[0] + ')').trim()
 
 	// получаем финальный счет(были ли пенальти)
 	var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
-	match1.fschet = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
-	match1.pen = (match1.fschet!=match1.schet ? match1.fschet : '')
-	if(deb) for(i in match1) if(i!='sshort') debug('getMatchInfo:'+i+'='+match1[i])
+	var fres = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
+	if(fres!=match1.res) match1.pen = match1.fres
+
+	if(deb) for(i in match1) debug('getMatchInfo:'+i+'='+match1[i])
 }
 function saveForm(){
 	debug('saveForm()')
-	var tr = (match1.place.split('.')[0]=='h' ? 'first' : (match1.place.split('.')[0]=='a' ? 'last' : ''))
+	var tr = (match1.hid==myteamid ? 'first' : (match1.aid==myteamid ? 'last' : ''))
 	if(tr!=''){
 		localStorage.fp_uniform = $('td.back4 center:first table:first tr:'+tr+' td.field_left:first img').attr('src')
 		localStorage.gk_uniform = $('td.back4 center:first table:first tr:'+tr+' td:eq(2) img').attr('src')
@@ -157,7 +217,7 @@ function saveForm(){
 
 function SaveCodeForMatch(){
 	debug('SaveCodeForMatch()')
-	var finschet = (match1.fschet!=match1.schet ? ' [center]По пенальти [b][color=red]'+ match1.fschet + '[/color][/b][/center]' : '')
+	var finschet = (match1.pen!=undefined ? ' [center]По пенальти [b][color=red]'+ match1.pen + '[/color][/b][/center]' : '')
 	sessionStorage['match'+mid] = finschet + $('td.back4 table:eq(6)')
 //	var x = finschet + $('td.back4 table:eq(6)')
 		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
@@ -174,56 +234,56 @@ function SaveCodeForMatch(){
 		.replace(/font/g,'color')
 		.replace(/\</g,'[')
 		.replace(/\>/g,']')
-		+ '[img]system/img/w' + match1.weather + '.png[/img]' 
-		+ (match1.ref!='???' ? ' [b]Главный арбитр:[/b] ' + match1.ref + '.' : '')
-		+ '\n\n'+match1.ust
+		+ '[img]system/img/w' + (match1.w==undefined ? 0 : match1.w) + '.png[/img]' 
+		+ (match1.r!=undefined ? ' [b]Главный арбитр:[/b] ' + match1.r + '.' : '')
+		+ (match1.ust!=undefined ? '\n\n'+match1.ust : '')
 }
 
-function MatchGet(){
-	debug('MatchGet()')
-	var getfalse = true
-	var dataname = 'matches'
-	var data = matches
-	var head = list[dataname].split(',')
-
-	var text1 = String(localStorage[dataname])
-	if(text1 != 'undefined'){
-		getfalse = false
-		var text = text1.split('#')
-		for (i in text) {
-			var x = text[i].split('|')
-			var curt = {}
-			var num = 0
-			for(j in head){
-				curt[head[j]] = (x[num]!=undefined ? x[num] : '')
-				num++
-			}
-			data[curt[head[0]]] = {}
-			if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
+function getJSONlocalStorage(dataname,data){
+	if(String(localStorage[dataname])!='undefined'){
+		var data2 = JSON.parse(localStorage[dataname]);
+		switch(dataname){
+			case 'matchespl2': 
+				for(k in data2){
+					for(l in data2[k]){
+						data[k] = []
+						if(data2[k][l].id!=undefined) data[k][data2[k][l].id]= data2[k][l]
+						else data[k][l]= data2[k][l]
+					}
+				}
+				break
+			default:
+				for(k in data2) {
+					if(data2[k].id!=undefined) data[data2[k].id]= data2[k]
+					else data[k]= data2[k]
+				}
 		}
-	}
-	MatchSave()
+		if(deb) for(i in data) debug('getJSONlocalStorage:'+dataname+':'+i)
+	} else return false
 }
-
-function MatchSave(){
-	debug('MatchSave()')
-	matches[match1.id] = match1
-	var dataname = 'matches'
-	var head = list[dataname].split(',')
-	var data = matches
-	var text = ''
-	for (var i in data) {
-		text += (text!='' ? '#' : '')
-		if(typeof(data[i])!='undefined') {
-			var dti = data[i]
-			var dtid = []
-			for(var j in head){
-				dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+function saveJSONlocalStorage(dataname,data){
+//	if(deb) for(i in data) debug('saveJSONlocalStorage:'+dataname+':'+i+':'+data[i][mid].m)
+	//debug(JSON.stringify(data).replace(/null\,/g,''))
+	switch(dataname){
+		case 'matchespl2': 
+			var data2 = {}
+			//if(deb) for(i in data) debug('saveJSONlocalStorage:'+dataname+':'+i+':'+data[i][mid].m)
+			for(k in data){
+				var d2 = []
+				for(l in data[k]){
+					d2.push(data[k][l])
+				}
+				data2[k] = d2
 			}
-			text += dtid.join('|')
-		}
+			//if(deb) for(i in data2) debug('saveJSONlocalStorage2:'+dataname+':'+i+':'+data2[i][0].m)
+			break
+		default:
+			var data2 = []
+			debug('default преобразования')
+			for(i in data) data2.push(data[i])
 	}
-	localStorage[dataname] = text
+	localStorage[dataname] = JSON.stringify(data2)
+
 }
 
 function UrlValue(key,url){
@@ -261,81 +321,47 @@ function TrimString(sInString){
 
 function debug(text) {if(deb) {debnum++;$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
-function PlayerTime(mid,mt,mrk,tid){
-	debug('PlayerTime('+mid+','+mt+','+mrk+','+tid+')')
-/**/
-	plmatch[mid] = {}
+function getPlayersInfo(){
+	debug('getPlayersInfo()')
+	var mt = match1.m
 
 	// get info from postmatch table
-	var m = false
-	var uni = 2
-	$('td.back4 table:eq(6) td:has(a[href^=javascript])').each(function(){
-		var player = {}
-		m = (m ? false : true)
-		if(m==mrk){
-			player.name		= TrimString($(this).find('a[href^=javascript]').text())
-			player.nameid	= player.name
+	var unih = 2
+	var unia = 2
+	$('td.back4 table:eq(6) td:has(a[href^=javascript])').each(function(i,val){
+		var player = {id:mid}
+		var nameid	= TrimString($(val).find('a[href^=javascript]').text())
 
-			if(plmatch[mid][player.nameid]!=undefined){
-				player.nameid += '_'+uni
-				uni++;
-			}
+        var pnum = parseInt($(val).prev().html()) +(i%2==1 ? 18 : 0)
+        var nexttd = $(val).next().html()
+		var minutes = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
+		if(minutes!=0) player.m = minutes
+//		player.num = (pnum>18 ? pnum-18 : pnum)
 
-			var pnum = parseInt($(this).prev().html())+(mrk ? 0 : 18)
-			var nexttd = $(this).next().html()
-			player.minute = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
-			player.num = (pnum>18 ? pnum-18 : pnum)
-
-			// get info from match text
-			player.searchname = ':'+player.name+':'
-			$('font.p'+(pnum<10 ? 0 :'')+pnum).each(function(){
-				var cname = $(this).text()
-				if(player.searchname.indexOf(':'+cname+':')==-1) player.searchname += cname+':'
-			})
-			plmatch[mid][player.nameid] = player
-		}
-	})
-
-	// get players position
-	//$('td.back4 table:first').attr('border','2')
-
-	// print debug info
+		// get info from match text
 /**
-	for(i in plmatch[mid]) {
-		var x  = plmatch[mid][i]
-		var dtext = ''
-		for(j in x) dtext += ' '+x[j]
-		debug(dtext)
-	}
+		var searchname = ':'+player.name+':'
+		$('font.p'+(pnum<10 ? 0 :'')+pnum).each(function(){
+			var cname = $(this).text()
+			if(searchname.indexOf(':'+cname+':')==-1) searchname += cname+':'
+		})
 /**/
-	SavePlayers(mid)
-}
-
-function SavePlayers(mid) {
-	debug('SavePlayers()')
-	var dataname = 'matchespl'
-	var head = plhead.split(',')
-	var data = []
-	for (i in plmatch){
-		var players = {'id':mid}
-		for (j in plmatch[i]) players['n'+plmatch[i][j].num] = plmatch[i][j].nameid + ':' + plmatch[i][j].minute
-		data[i] = players
-	}
-	var text = String(localStorage[dataname])
-	text = (text=='undefined' ? '' : text)
-   	if((text=='' || (text.indexOf('#'+mid+'|')==-1 && text.split('|',1)[0]!=mid))) {
-		debug(dataname+':add')
-		for (var i in data) {
-			text += (text!='' ? '#' : '')
-			if(typeof(data[i])!='undefined') {
-				var dti = data[i]
-				var dtid = []
-				for(var j in head){
-					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
-				}
-				text += dtid.join('|')
+		if(i%2==1){
+			if(matchespla[nameid]!=undefined){
+				player.nm = nameid
+				nameid += '_'+unia
+				unia++
 			}
+			matchespla[nameid] = player
+		}else{
+			if(matchesplh[nameid]!=undefined){
+				player.nm = nameid
+				nameid += '_'+unih
+				unih++
+			}
+			matchesplh[nameid] = player
 		}
-		localStorage[dataname] = text
-	}
+//		debug('getPlayersInfo:i='+i+':team='+(i%2==1 ? 'a' : 'h')+':nameid='+player.nameid)
+//		if(deb) for(i in player) debug('getPlayersInfo:'+i+'='+player[i])
+	})
 }
