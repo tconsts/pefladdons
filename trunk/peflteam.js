@@ -457,9 +457,9 @@ function ShowSU(del) {
 		preparedhtml += '<br>1. минуты в матчах с получением травм и удалений могут считаться не совсем корректно'
 		preparedhtml += '<br>2. с однофамильцами мугут быть проблемы'
 		preparedhtml += '<br>3. игроки покинувшие клуб пока не удаляются из списка'
-		preparedhtml += '<hr></div>'
+		preparedhtml += '</div><br><br>'
 
-		preparedhtml += '<table id="tblSuM"></table>'
+		preparedhtml += '<table id="tblSuM" width=100% style="border-spacing:1px 0px"></table>'
 
 		$('table#tblRoster').after(preparedhtml)
 		$('table#tblSu tr:even').attr('class','back2')
@@ -482,10 +482,30 @@ function ShowPlM(plid){
 	debug('ShowPlM('+plid+')')
 	$('table#tblSuM tr').remove()
 
-	var mlistpl = ''
-	var prehtml = '<tr><th colspan=10 align=left><font size=3>'+(plid==0 ? 'Все матчи' : plid)+'</font>:</th></tr>'
-	prehtml += '<tr id=zagolovok class=back2><td>&nbsp;N</td><td>мин</td><td>del</td><td>СУ</td>'
-	prehtml += '<td>&nbsp;N</td><td>мин</td><td>СР(ИМ)</td><td>Г</td><td>К</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
+	var prehtml = ''
+	prehtml += '<tr>'
+	prehtml += '<th colspan=6 width=30% '+(plid!=0 ? 'style="border-bottom:1px solid;"' : '')+'><font size=3>'+ (plid!=0 ? plid : '&nbsp;' )+'</font></th>'
+	prehtml += '<td colspan=9 style="border-bottom:1px solid;">&nbsp;</td>'
+	prehtml += '</tr>'
+	prehtml += '<tr id=zagolovok height=20>'
+	if(plid!=0){
+		prehtml += '<td style="border-left:1px solid;">&nbsp;N</td>'
+		prehtml += '<td>мин</td>'
+		prehtml += '<td colspan=2>рейт</td>'
+		prehtml += '<td>голы</td>'
+		prehtml += '<td style="border-right:1px solid;">карт</td>'
+	}else prehtml += '<td colspan=6 class=back1></td>'
+	prehtml += '<td style="border-left:1px solid;">N</td>'
+	prehtml += '<td>del</td>'
+	prehtml += '<td>СУ</td>'
+	prehtml += '<td colspan=2>мин</td>'
+	prehtml += '<td colspan=3 align=center>матч</td>'
+	prehtml += '<td style="border-right:1px solid;">судья</td>'
+	prehtml += '</tr>'
+	prehtml += '<tr>'
+	prehtml += '<td colspan=6 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
+	prehtml += '<td colspan=9 class=back1 style="border-top:1px solid;;">&nbsp;</td>'
+	prehtml += '</tr>'
 	$('table#tblSuM').html(prehtml)
 
 	var num = 1
@@ -497,39 +517,45 @@ function ShowPlM(plid){
 		var t2 = (mch.anm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.anm)
 		var minute	= ''
 		var mark	= ''
-		var im		= ''
+		var im		= '&nbsp;'
+		var cp		= '&nbsp;'
 		var goals	= ''
-		var cards	= ''
+		var cards	= '&nbsp;'
 		var inz		= ''
 		if(plid!=0 && matchespl2[plid][j]!=undefined && matchespl2[plid][j].m!=undefined){
 			minute	= matchespl2[plid][j].m+'\''
 			mark	= (matchespl2[plid][j].mr!=undefined ? matchespl2[plid][j].mr : '')
 			im		= (matchespl2[plid][j].im!=undefined ? '(им)' : '')
-			goals	= (matchespl2[plid][j].g!=undefined ? matchespl2[plid][j].g : '')
-			cards	= (matchespl2[plid][j].cr!=undefined ? '<img src="system/img/gm/'+matchespl2[plid][j].cr+'.gif"></img>' : '')
-			inz		= (matchespl2[plid][j].in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : '')
+			cp		= (matchespl2[plid][j].cp!=undefined ? '(k)' : '')
+			goals	= (matchespl2[plid][j].g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(matchespl2[plid][j].g>1 ? '('+matchespl2[plid][j].g+')' : '') : '')
+			cards	= (matchespl2[plid][j].cr!=undefined ? '<img src="system/img/gm/'+matchespl2[plid][j].cr+'.gif"></img>' : '&nbsp;')
+			inz		= (matchespl2[plid][j].in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (matchespl2[plid][j].m<mch.m ? '<img src="system/img/gm/out.gif"></img>':''))
 			num2++
 		}
-		prehtml += '<tr id="tr'+mch.id+'">'
-		prehtml += '<th>'+num+'</th>'
-		prehtml += '<td>'+mch.m+'\'</td>'
+		prehtml += '<tr id="tr'+mch.id+'" height=20>'
+		if(plid!=0){
+			prehtml += '<td style="border-left:1px solid;">'+(minute!='' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
+			prehtml += '<td nowrap align=right>'+inz+minute+'</td>'
+			prehtml += '<td align=right>'+mark+'</td>'
+			prehtml += '<td nowrap>'+im+cp+'</td>'
+			prehtml += '<td nowrap>'+goals+'</td>'
+			prehtml += '<td style="border-right:1px solid;" align=center>'+cards+'</td>'
+		}else prehtml += '<td colspan=6 class=back1></td>'
+		prehtml += '<td style="border-left:1px solid;">'+(num<10 ? 0 : '')+num+'</td>'
 		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
-		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su==undefined ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;</a>')+'</th>'
-		prehtml += '<td align=right>'+(minute!='' ? num2 : '')+'</td>'
-		prehtml += '<td align=right>'+inz+minute+'</td>'
-		prehtml += '<td>'+mark+im+'</td>'
-		prehtml += '<td>'+goals+'</td>'
-		prehtml += '<td>'+cards+'</td>'
-		prehtml += '<td align=right>'+t1+'</td>'
-		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? '(п'+mch.pen+')' : '')+'</td>'
-		prehtml += '<td>'+t2+'</td>'
+		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su==undefined ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;&nbsp;&nbsp;</a>')+'</th>'
+		prehtml += '<td>'+mch.m+'\'</td>'
 		prehtml += '<td><img height=15 src="/system/img/w'+(mch.w!=undefined ? mch.w : 0)+'.png"></img></td>'
-		prehtml += '<td>'+(mch.r!=undefined ? mch.r : '')+'</td>'
+		prehtml += '<td align=right nowrap>'+t1+'</td>'
+		prehtml += '<td nowrap align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? '(п'+mch.pen+')' : '')+'</td>'
+		prehtml += '<td nowrap>'+t2+'</td>'
+		prehtml += '<td nowrap style="border-right:1px solid;">'+(mch.r!=undefined ? mch.r.split(' (')[0] : '&nbsp;')+'</td>'
 		prehtml += '</tr>'
 		num++
 		$('table#tblSuM tr#zagolovok').after(prehtml)
 	}
-
+	$('table#tblSuM tr:even').attr('class','back1')
+	$('table#tblSuM tr:odd').attr('class','back2')
 }
 
 function SuDelMatch(mid, type, plid){
