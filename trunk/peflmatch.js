@@ -334,14 +334,25 @@ function getPlayersInfo(){
 	var unih = 2
 	var unia = 2
 	$('td.back4 table:eq(6) td:has(a[href^=javascript])').each(function(i,val){
-		var player = {id:mid}
+		var player	= {id:mid}
 		var nameid	= TrimString($(val).find('a[href^=javascript]').text())
 
         var pnum = parseInt($(val).prev().html()) +(i%2==1 ? 18 : 0)
         var nexttd = $(val).next().html()
 		var minutes = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
-		if(minutes!=0) player.m = minutes
-//		player.num = (pnum>18 ? pnum-18 : pnum)
+		if(minutes!=0) {
+			player.m = minutes
+			player.mr = $(val).next().next().text().trim()
+			//debug('getPlayersInfo:'+nameid+':mark='+player.mr)
+			if($(val).find('b').text()=='(к)')	player.cp = 1
+			if(deb && player.cp!=undefined) debug('getPlayersInfo:'+nameid+':cp='+player.cp)
+			if($(val).find('font').length>0)	player.im = 1
+			if(deb && player.im!=undefined) debug('getPlayersInfo:'+nameid+':im='+player.im)
+			if($(val).next().next().find('img').length>0) player.cr = $(val).next().next().find('img').attr('src').split('/')[3].split('.')[0]
+			if(deb && player.cr!=undefined) debug('getPlayersInfo:'+nameid+':cr='+player.cr)
+			if(parseInt($(val).prev().html())>11) player.in = 1
+			if(deb && player.in!=undefined) debug('getPlayersInfo:'+nameid+':in='+player.in)
+		}
 
 		// get info from match text
 /**
@@ -350,7 +361,7 @@ function getPlayersInfo(){
 			var cname = $(this).text()
 			if(searchname.indexOf(':'+cname+':')==-1) searchname += cname+':'
 		})
-/**/
+/**/    // сохраняем или в гостевой(a) или домашний(h) список
 		if(i%2==1){
 			if(matchespla[nameid]!=undefined){
 				player.nm = nameid
