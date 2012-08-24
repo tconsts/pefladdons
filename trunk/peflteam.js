@@ -12,10 +12,9 @@ var debnum = 0
 var type 	= 'num'
 var players = []
 var players2= []
-var matches	= []
-var matchespl	= []
+var matches2	= []
+var matchespl2	= []
 var teams 	= []
-var plsu	= []
 var sumax 	= 3600
 var team_cur = {}
 var m = []
@@ -195,8 +194,10 @@ $().ready(function() {
 		}
 /**/
 		if(cid==parseInt(localStorage.myteamid)) {
-			GetData2('matchespl')
-			GetData2('matches')
+			delete localStorage.matches
+			delete localStorage.matchespl
+			getJSONlocalStorage('matches2',matches2)
+			getJSONlocalStorage('matchespl2',matchespl2)
 		}
 	}
 }, false);
@@ -376,7 +377,6 @@ function sNomPsum(i, ii) { // Сортировка
     else					return  0
 }
 
-
 function ShowSU(del) {
 	debug('ShowSU()')
 	if(del) {
@@ -402,38 +402,35 @@ function ShowSU(del) {
 		$('table#tblSuM').show()
 		$('div#divSu').show()
 	}else{
+		var plsu = []
 		var plexl = String(localStorage.plexl)
 		var teamminutes = 0
 		//for(i in matches) teamminutes += parseInt(matches[i].minutes)
 		//var teammatches = 0
-		for(i in matchespl){
-			for (j in matchespl[i]){
-				//debug(i+'_'+j+'_'+matchespl[i][j])
-				var num = plsu.length
-				var field = String(matchespl[i][j]).split(':')
-				if(field[1] != undefined && field[1]!=0) {
-					for(p in plsu) if(plsu[p].name && plsu[p].name == field[0]) num = p
-					if(plsu[num]==undefined || plsu[num].name==undefined){
-						var del = false
-						if(plexl.indexOf('|'+field[0]+'|') != -1) del = true
-
-						if(matches[i].su) 	plsu[num] = {'name':field[0], 'minutesu':parseInt(field[1]),'minute':parseInt(field[1]),'matches':1, 'matches2':0,'mlist':i,'del':del}
-						else 				plsu[num] = {'name':field[0], 'minutesu':0,'minute':parseInt(field[1]),'matches':0, 'matches2':1,'mlist':i,'del':del}
+		for(i in matchespl2){
+			var num = plsu.length
+			plsu[num] = {'name':i, 'minutesu':0,'minute':0,'matches':0,'matches2':0,'del':(plexl.indexOf('|'+i+'|') != -1 ? true : false)}
+			for (j in matchespl2[i]){
+				var mth = matchespl2[i][j]
+				var minute = 0
+				if(mth.m!=undefined){
+					minute = parseInt(mth.m)
+					plsu[num].minute 	+= minute
+					if(matches2[j].su==undefined){
+						plsu[num].minutesu	+= minute
+						plsu[num].matches 	+= 1
 					}else{
-						if(matches[i].su){
-							plsu[num].minutesu	+= parseInt(field[1])
-							plsu[num].matches	+= 1
-						}else{
-							plsu[num].matches2	+= 1
-						}
-						plsu[num].mlist		+= ','+i
-						plsu[num].minute	+= parseInt(field[1])
+						plsu[num].matches2 	+= 1
 					}
-					if(!plsu[num].del) teamminutes += parseInt(field[1])
 				}
+                if(!plsu[num].del) teamminutes += minute
+				//debug('ShowSU:'+i+':minute='+minute+':teamminutes='+teamminutes)
 			}
 		}
-		for(i in plsu) plsu[i].tilda = (plsu[i].del ? 0 : parseFloat(plsu[i].minute/(teamminutes/countSostavMax)*100))
+		for(i in plsu) {
+			plsu[i].tilda = (plsu[i].del ? 'none' : parseFloat(plsu[i].minute/(teamminutes/countSostavMax)*100))
+			//debug('ShowSU:'+i+':'+plsu[i].minute+':'+teamminutes+':'+countSostavMax)
+		}
 
 		var preparedhtml = '<table id="tblSu" class=back1 width=100%>' //BFDEB3
 		preparedhtml += '<tr align=left><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th><th>мин в %</th></tr>'
@@ -447,22 +444,19 @@ function ShowSU(del) {
 			preparedhtml += '<td>'+(parseInt(i)+1)+'</td>'
 			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+plsi.name+'\'))"><b>'+plsi.name+'</b></a></td>'
 			preparedhtml += '<td><b>'+plsi.minutesu+'</b>'+(plsi.minute>0 ? '<font size=1> ('+plsi.minute+')</font>' : '')+'</td>'
-			preparedhtml += '<td><b>'+pls[i].matches+'</b>'+(pls[i].matches2>0 ? '<font size=1> ('+pls[i].matches2+')</font>' : '')+'</td>'
+			preparedhtml += '<td><b>'+plsi.matches+'</b>'+(plsi.matches2>0 ? '<font size=1> ('+plsi.matches2+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+ost+'</b>'
 			preparedhtml += (ost>0 ? '<font size=1> ('+(ostmatch>0 ? '93мин*'+ostmatch+' + ' : '')+ostminute+'мин)</font>' : '')
 			preparedhtml += '</td>'
-			preparedhtml += '<td width=10%'+(pls[i].tilda<=40 && pls[i].tilda!=0? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+i+'\'))">'+(pls[i].tilda==0 ? '&nbsp;&nbsp;&nbsp;' : (pls[i].tilda).toFixed(1))+'</a></td>'
+			preparedhtml += '<td width=10%'+(plsi.tilda<=40  && plsi.tilda!='none' ? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda).toFixed(1)) +'</a></td>'
 //			preparedhtml += '<td align=center width=5%>'+(pls[i].del ? '<b><font color=red>X</font></b>': '')+'</td>'
 			preparedhtml += '</tr>'
 		}
 		preparedhtml += '</table>'
 		preparedhtml += '<div id="divSu">'
-		preparedhtml += '<br>1. матчи за сборные не учитываются'
-		preparedhtml += '<br>2. матчи за предыдущие клубы не учитываются'
-		preparedhtml += '<br>3. минуты в матчах с получением травм и удалений считаются некорректно'
-		preparedhtml += '<br>4. товы с установкой "набирать кондиции" временно считаются в зачет СУ'
-		preparedhtml += '<br>5. с однофамильцами мугут быть проблемы'
-		preparedhtml += '<br>6. игроки покинувшие клуб пока не удалены из списка'
+		preparedhtml += '<br>1. минуты в матчах с получением травм и удалений могут считаться не совсем корректно'
+		preparedhtml += '<br>2. с однофамильцами мугут быть проблемы'
+		preparedhtml += '<br>3. игроки покинувшие клуб пока не удаляются из списка'
 		preparedhtml += '<hr></div>'
 
 		preparedhtml += '<table id="tblSuM"></table>'
@@ -473,17 +467,17 @@ function ShowSU(del) {
 	}
 	ShowPlM(0)
 }
-function suMarkDel(plid){
-	if(plsu[plid].del) {
-		plsu[plid].del = false
-		localStorage.plexl = String(localStorage.plexl).replace(plsu[plid].name+'|','')
-	}else{
-		plsu[plid].del = true
-		localStorage.plexl = (String(localStorage.plexl)=='undefined' ? '|' : String(localStorage.plexl)) + plsu[plid].name+'|'
-	}
+
+function suMarkDel(plid,del){
+	debug('suMarkDel:'+localStorage.plexl)
+	debug('suMarkDel:plid='+plid+':del='+del+':'+(del ? 'стираем':'добавляем'))
+	if(del) localStorage.plexl = String(localStorage.plexl).replace(plid+'|','')
+	else	localStorage.plexl = (String(localStorage.plexl)=='undefined' ? '|' : String(localStorage.plexl)) + plid+'|'
+	debug('suMarkDel:'+localStorage.plexl)
 	ShowSU(true)
-	$('table#tblSuM tr').remove()
+	ShowPlM(plid)
 }
+
 function ShowPlM(plid){
 	debug('ShowPlM('+plid+')')
 	$('table#tblSuM tr').remove()
@@ -491,86 +485,55 @@ function ShowPlM(plid){
 	var mlistpl = ''
 	var prehtml = '<tr><th colspan=10 align=left><font size=3>'+(plid==0 ? 'Все матчи' : plid)+'</font>:</th></tr>'
 	prehtml += '<tr id=zagolovok class=back2><td>&nbsp;N</td><td>мин</td><td>del</td><td>СУ</td><td>&nbsp;N</td><td>мин</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
-	for(i in plsu){
-		if(plsu[i].name==plid) {
-			//mlistpl = plsu[i].mlist.split(',');
-			mlistpl = plsu[i].mlist;
-			debug(plsu[i].mlist)
-		}
-	}
 	$('table#tblSuM').html(prehtml)
 
-	// 'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash'
 	var num = 1
-	var num2 = 1
-	for(j in matches){
+	var num2 = 0
+	for(j in matches2){
 		prehtml = ''
-		var mch = matches[j]
-		var t1 = t2 = '<b>'+team_cur.tname+'</b>'
-		if(mch.place.split('.')[0]=='a') t1 = TrimString(mch.ename)
-		else 							 t2 = TrimString(mch.ename)
+		var mch = matches2[j]
+		var t1 = (mch.hnm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.hnm)
+		var t2 = (mch.anm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.anm)
+		var minute = ''
+		if(plid!=0 && matchespl2[plid][j]!=undefined && matchespl2[plid][j].m!=undefined){
+			minute = matchespl2[plid][j].m+'\''
+			num2++
+		}
 		prehtml += '<tr id="tr'+mch.id+'">'
 		prehtml += '<th>'+num+'</th>'
-		prehtml += '<td>'+mch.minutes+'\'</td>'
+		prehtml += '<td>'+mch.m+'\'</td>'
 		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
-		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;</a>')+'</th>'
-		if(plid!=0){
-			if(mlistpl.indexOf(j)!=-1){
-				for(p in matchespl[mch.id]) if(String(matchespl[mch.id][p]).split(':')[0]==plid){
-					prehtml += '<td align=right>'+num2+'</td>'
-					prehtml += '<td align=right>'+String(matchespl[mch.id][p]).split(':')[1]+'\'</td>'
-				}
-				num2++
-			}else{
-				prehtml += '<td></td><td></td>'
-			}
-		}else prehtml += '<td></td><td></td>'
+		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su==undefined ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;</a>')+'</th>'
+		prehtml += '<td align=right>'+(minute!='' ? num2 : '')+'</td>'
+		prehtml += '<td align=right>'+minute+'</td>'
 		prehtml += '<td align=right>'+t1+'</td>'
-		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.hash+'">'+mch.schet+'</a>'+(mch.pen!='' ? '(п'+mch.pen+')' : '')+'</td>'
+		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? '(п'+mch.pen+')' : '')+'</td>'
 		prehtml += '<td>'+t2+'</td>'
-		prehtml += '<td><img height=15 src="/system/img/w'+mch.weather+'.png"></img></td>'
-		prehtml += '<td>'+mch.ref+'</td>'
+		prehtml += '<td><img height=15 src="/system/img/w'+(mch.w!=undefined ? mch.w : 0)+'.png"></img></td>'
+		prehtml += '<td>'+(mch.r!=undefined ? mch.r : '')+'</td>'
 		prehtml += '</tr>'
 		num++
 		$('table#tblSuM tr#zagolovok').after(prehtml)
 	}
 
-/**
-	for(j=mlistpl.length-1; j>=0; j--){
-		var mch = matches[mlistpl[j]]
-		var t1 = t2 = '<b>'+team_cur.tname+'</b>'
-		if(mch.place.split('.')[0]=='a') t1 = TrimString(mch.ename)
-		else 							 t2 = TrimString(mch.ename)
-		prehtml += '<tr id="tr'+mch.id+'">'
-		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
-		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;</a>')+'</th>'
-		prehtml += '<th>'+(j+1)+''+'</th>'
-		for(p in matchespl[mch.id]) if(String(matchespl[mch.id][p]).split(':')[0]==plid) prehtml += '<td align=right>'+String(matchespl[mch.id][p]).split(':')[1]+'\'</td>'
-		prehtml += '<td align=right>'+t1+'</td>'
-		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.hash+'">'+mch.schet+'</a>'+(mch.pen!='' ? '(п'+mch.pen+')' : '')+'</td>'
-		prehtml += '<td>'+t2+'</td>'
-		prehtml += '<td><img height=15 src="/system/img/w'+mch.weather+'.png"></img></td>'
-		prehtml += '<td>'+mch.ref+'</td>'
-		prehtml += '</tr>'
-	}
-/**/
-	//$('table#tblSuM').html(prehtml)
 }
+
 function SuDelMatch(mid, type, plid){
 	debug('SuDelMatch('+mid+','+type+','+plid+')')
 	if(type=='del'){
 		//удалить матч из базы
-		delete matches[mid]
-		delete matchespl[mid]
-		SaveData2('matchespl')
+		delete matches2[mid]
+		for(i in matchespl2) delete matchespl2[i][mid]
+		saveJSONlocalStorage('matchespl2',matchespl2)
 	}else if(type=='suoff'){
 		//снять флаг сверхусталости
-		delete matches[mid].su
+		matches2[mid].su = false
 	}else if(type=='suon'){
 		//поставить флаг сверхусталости
-		matches[mid].su = true
+ 		delete matches2[mid].su
 	}
-	SaveData2('matches')
+	//SaveData2('matches')
+	saveJSONlocalStorage('matches2',matches2)
 	ShowSU(true)
 	ShowPlM(plid)
 }
@@ -760,36 +723,47 @@ function Print(dataname){
 	text += '</table>'
 	$('td.back4').prepend(text)
 }
-
-function SaveData2(dataname){
-	debug(dataname+':SaveData2')
-	if(!save || UrlValue('h')==1 || (dataname=='players' && UrlValue('j')!=99999)){
-		debug(dataname+':SaveData2 false')
-		return false
-	}
-
-	var data = []
-	var head = list[dataname].split(',')
-	switch (dataname){
-//		case 'players':	data = players;		break
-//		case 'teams': 	data = teams;		break
-		case 'matches':	 data = matches;	break
-		case 'matchespl':data = matchespl;	break
-		default: return false
-	}
-	var text = ''
-	for (var i in data) {
-		text += (text!='' ? '#' : '')
-		if(typeof(data[i])!='undefined') {
-			var dti = data[i]
-			var dtid = []
-			for(var j in head){
-				dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
-			}
-			text += dtid.join('|')
+function getJSONlocalStorage(dataname,data){
+	debug('getJSONlocalStorage:'+dataname)
+	if(String(localStorage[dataname])!='undefined'){
+		var data2 = JSON.parse(localStorage[dataname]);
+		switch(dataname){
+			case 'matchespl2': 
+				for(k in data2){
+					data[k] = []
+					for(l in data2[k]){
+						if(data2[k][l].id!=undefined) data[k][data2[k][l].id]= data2[k][l]
+						else data[k][l]= data2[k][l]
+					}
+				}
+				break
+			default:
+				for(k in data2) {
+					if(data2[k].id!=undefined) data[data2[k].id]= data2[k]
+					else data[k]= data2[k]
+				}
 		}
+	} else return false
+}
+function saveJSONlocalStorage(dataname,data){
+	debug('saveJSONlocalStorage:'+dataname)
+	switch(dataname){
+		case 'matchespl2': 
+			var data2 = {}
+			for(k in data){
+				var d2 = []
+				for(l in data[k]){
+					d2.push(data[k][l])
+				}
+				data2[k] = d2
+			}
+			break
+		default:
+			var data2 = []
+			debug('saveJSONlocalStorage:'+dataname+'default преобразования')
+			for(i in data) data2.push(data[i])
 	}
-	localStorage[dataname] = text
+	localStorage[dataname] = JSON.stringify(data2)
 }
 
 function SaveData(dataname){
@@ -849,47 +823,6 @@ function SaveData(dataname){
 				});
 			}
 		});
-	}
-}
-
-function GetData2(dataname){
-	debug(dataname+':GetData2')
-	var data = []
-	var head = list[dataname].split(',')
-	switch (dataname){
-//		case 'players':  data = players2;	break
-//		case 'teams': 	 data = teams;		break
-		case 'matches':	 data = matches;	break
-		case 'matchespl':data = matchespl;	break
-		default: return false
-	}
-	var text1 = String(localStorage[dataname])
-	if (text1 != 'undefined' && text1 != 'null'){
-		var text = text1.split('#')
-		for (i in text) {
-			var x = text[i].split('|')
-			var curt = {}
-			var num = 0
-			for(j in head){
-				curt[head[j]] = (x[num]!=undefined ? x[num] : '')
-				num++
-			}
-			data[curt[head[0]]] = {}
-			if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
-		}
-		GetFinish('get_'+dataname, true)
-	} else {
-		GetFinish('get_'+dataname, false)
-	}
-	if(!ff) {
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
-				function(tx, result){},
-				function(tx, error) {debug(dataname+':' + error.message)}
-			);
-
-		})
 	}
 }
 
@@ -959,22 +892,8 @@ function checkDeleteMatches(){
 		plsu.length = 0
 		ShowSU(true)
 		ShowRoster()
-		delete localStorage.matches
-		delete localStorage.matchespl
-		// чуть позже - убрать этот код что ниже
-		if(!ff) {
-			if(!db) DBConnect()
-			db.transaction(function(tx) {
-				tx.executeSql("DROP TABLE IF EXISTS matches",[],
-					function(tx, result){},
-						function(tx, error) {debug('matches:drop error:' + error.message)}
-				);
-				tx.executeSql("DROP TABLE IF EXISTS matchespl",[],
-					function(tx, result){},
-						function(tx, error) {debug('matchespl:drop error:' + error.message)}
-				);                                           
-			});
-		}
+		delete localStorage.matches2
+		delete localStorage.matchespl2
 	}
 }
 
