@@ -503,7 +503,7 @@ function ShowPlM(plid){
 		var inz		= ''
 		if(plid!=0 && matchespl2[plid][j]!=undefined && matchespl2[plid][j].m!=undefined){
 			minute	= matchespl2[plid][j].m+'\''
-			mark	= matchespl2[plid][j].mr
+			mark	= (matchespl2[plid][j].mr!=undefined ? matchespl2[plid][j].mr : '')
 			im		= (matchespl2[plid][j].im!=undefined ? '(им)' : '')
 			goals	= (matchespl2[plid][j].g!=undefined ? matchespl2[plid][j].g : '')
 			cards	= (matchespl2[plid][j].cr!=undefined ? '<img src="system/img/gm/'+matchespl2[plid][j].cr+'.gif"></img>' : '')
