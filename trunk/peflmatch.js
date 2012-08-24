@@ -88,7 +88,7 @@ function checkSave(){
 	
 //	if(deb) for(i in matchesplh) debug('checkSave(h):'+i+':'+matchesplh[i].m)
 //	if(deb) for(i in matchespla) debug('checkSave(a):'+i+':'+matchespla[i].m)
-//	if(deb) for(i in matchespl) debug('checkSave:matchespl:'+i)
+//	if(deb) for(i in matchespl['Р.Тарала']) debug('checkSave:matchespl[Р.Тарала]:'+i)
 
 	switch(parseInt(myteamid)){
 		case match1.hid:
@@ -124,6 +124,7 @@ function checkSave(){
 				}
 			}
 	}
+	if(deb) for(i in matchespl['Р.Тарала']) debug('checkSave:matchespl[Р.Тарала]:'+i)
 	debug('checkSave:savematch='+savematch)
 	if(savematch) {
 		if(matches[match1.id]==undefined){
@@ -244,13 +245,15 @@ function getJSONlocalStorage(dataname,data){
 		var data2 = JSON.parse(localStorage[dataname]);
 		switch(dataname){
 			case 'matchespl2': 
+				//if(deb) for(i in data2['Р.Тарала']) debug('getJSONlocalStorage:data2[Р.Тарала]:'+data2['Р.Тарала'][i].id)
 				for(k in data2){
+					data[k] = []
 					for(l in data2[k]){
-						data[k] = []
 						if(data2[k][l].id!=undefined) data[k][data2[k][l].id]= data2[k][l]
 						else data[k][l]= data2[k][l]
 					}
 				}
+				//if(deb) for(i in data['Р.Тарала']) debug('getJSONlocalStorage:data[Р.Тарала]:'+data['Р.Тарала'][i].id)
 				break
 			default:
 				for(k in data2) {
@@ -258,7 +261,7 @@ function getJSONlocalStorage(dataname,data){
 					else data[k]= data2[k]
 				}
 		}
-		if(deb) for(i in data) debug('getJSONlocalStorage:'+dataname+':'+i)
+//		if(deb) for(i in data) debug('getJSONlocalStorage:'+dataname+':'+i)
 	} else return false
 }
 function saveJSONlocalStorage(dataname,data){
@@ -266,6 +269,7 @@ function saveJSONlocalStorage(dataname,data){
 	//debug(JSON.stringify(data).replace(/null\,/g,''))
 	switch(dataname){
 		case 'matchespl2': 
+			//if(deb) for(i in data['Р.Тарала']) debug('getJSONlocalStorage:data[Р.Тарала]:'+data['Р.Тарала'][i].id)
 			var data2 = {}
 			//if(deb) for(i in data) debug('saveJSONlocalStorage:'+dataname+':'+i+':'+data[i][mid].m)
 			for(k in data){
@@ -275,6 +279,7 @@ function saveJSONlocalStorage(dataname,data){
 				}
 				data2[k] = d2
 			}
+			//if(deb) for(i in data2['Р.Тарала']) debug('getJSONlocalStorage:data2[Р.Тарала]:'+data2['Р.Тарала'][i].id)
 			//if(deb) for(i in data2) debug('saveJSONlocalStorage2:'+dataname+':'+i+':'+data2[i][0].m)
 			break
 		default:
