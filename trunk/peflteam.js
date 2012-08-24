@@ -496,7 +496,7 @@ function ShowPlM(plid){
 		prehtml += '<td style="border-right:1px solid;">карт</td>'
 	}else prehtml += '<td colspan=6 class=back1></td>'
 	prehtml += '<td style="border-left:1px solid;">N</td>'
-	prehtml += '<td>del</td>'
+	prehtml += '<td></td>'
 	prehtml += '<td>СУ</td>'
 	prehtml += '<td colspan=2>мин</td>'
 	prehtml += '<td colspan=3 align=center>матч</td>'
@@ -515,6 +515,13 @@ function ShowPlM(plid){
 		var mch = matches2[j]
 		var t1 = (mch.hnm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.hnm)
 		var t2 = (mch.anm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.anm)
+		var t1u = ''
+		var t2u = ''
+		if(mch.ust!=undefined){
+			var ust = mch.ust.split('.')
+			t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт)' ) : '') //p.h a.h p
+			t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ) : '') //p.a a.a p
+		}
 		var minute	= '&nbsp;'
 		var mark	= '&nbsp;'
 		var im		= '&nbsp;'
@@ -545,10 +552,10 @@ function ShowPlM(plid){
 		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
 		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su==undefined ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;&nbsp;&nbsp;</a>')+'</th>'
 		prehtml += '<td>'+mch.m+'\'</td>'
-		prehtml += '<td><img height=15 src="/system/img/w'+(mch.w!=undefined ? mch.w : 0)+'.png"></img></td>'
-		prehtml += '<td align=right nowrap>'+t1+'</td>'
+		prehtml += '<td valign=center><img height=15 src="/system/img/w'+(mch.w!=undefined ? mch.w : 0)+'.png"></img>'+(mch.n!=undefined ? '<sup>N</sup>' : '&nbsp;')+'</td>'
+		prehtml += '<td align=right nowrap>'+t1+t1u+'</td>'
 		prehtml += '<td nowrap align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? '(п'+mch.pen+')' : '')+'</td>'
-		prehtml += '<td nowrap>'+t2+'</td>'
+		prehtml += '<td nowrap>'+t2+t2u+'</td>'
 		prehtml += '<td nowrap style="border-right:1px solid;">'+(mch.r!=undefined ? mch.r.split(' (')[0] : '&nbsp;')+'</td>'
 		prehtml += '</tr>'
 		num++

@@ -177,7 +177,7 @@ function getMatchInfo(){
 		match1.anm	= aname
 		match1.amn	= $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
 	}
-	if($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined) match1.n	= 'N'
+	if($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined) match1.n	= '1'
 	if(ycard!=0) match1.yc = ycard
 	if(rcard!=0) match1.rc = rcard
 
@@ -198,7 +198,7 @@ function getMatchInfo(){
 
 	// получаем рефери
 	var otch = $('td.back4 table:eq(2)').html()
-	if(otch.indexOf('Главный арбитр:') !=-1) match1.r = (otch.split('Главный арбитр:')[1].split(').')[0] + ')').trim()
+	if(otch.indexOf('Главный арбитр:') !=-1) match1.r = (otch.split('Главный арбитр:')[1].split(' (')[0]).trim()
 
 	// получаем финальный счет(были ли пенальти)
 	var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
