@@ -515,26 +515,26 @@ function ShowPlM(plid){
 		var mch = matches2[j]
 		var t1 = (mch.hnm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.hnm)
 		var t2 = (mch.anm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.anm)
-		var minute	= ''
-		var mark	= ''
+		var minute	= '&nbsp;'
+		var mark	= '&nbsp;'
 		var im		= '&nbsp;'
 		var cp		= '&nbsp;'
-		var goals	= ''
+		var goals	= '&nbsp;'
 		var cards	= '&nbsp;'
-		var inz		= ''
+		var inz		= '&nbsp;'
 		if(plid!=0 && matchespl2[plid][j]!=undefined && matchespl2[plid][j].m!=undefined){
 			minute	= matchespl2[plid][j].m+'\''
-			mark	= (matchespl2[plid][j].mr!=undefined ? matchespl2[plid][j].mr : '')
-			im		= (matchespl2[plid][j].im!=undefined ? '(им)' : '')
-			cp		= (matchespl2[plid][j].cp!=undefined ? '(k)' : '')
-			goals	= (matchespl2[plid][j].g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(matchespl2[plid][j].g>1 ? '('+matchespl2[plid][j].g+')' : '') : '')
+			mark	= (matchespl2[plid][j].mr!=undefined ? matchespl2[plid][j].mr : '&nbsp;')
+			im		= (matchespl2[plid][j].im!=undefined ? '(им)' : '&nbsp;')
+			cp		= (matchespl2[plid][j].cp!=undefined ? '(k)' : '&nbsp;')
+			goals	= (matchespl2[plid][j].g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(matchespl2[plid][j].g>1 ? '('+matchespl2[plid][j].g+')' : '') : '&nbsp;')
 			cards	= (matchespl2[plid][j].cr!=undefined ? '<img src="system/img/gm/'+matchespl2[plid][j].cr+'.gif"></img>' : '&nbsp;')
-			inz		= (matchespl2[plid][j].in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (matchespl2[plid][j].m<mch.m ? '<img src="system/img/gm/out.gif"></img>':''))
+			inz		= (matchespl2[plid][j].in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (matchespl2[plid][j].m<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
 			num2++
 		}
 		prehtml += '<tr id="tr'+mch.id+'" height=20>'
 		if(plid!=0){
-			prehtml += '<td style="border-left:1px solid;">'+(minute!='' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
+			prehtml += '<td style="border-left:1px solid;">'+(minute!='&nbsp;' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
 			prehtml += '<td nowrap align=right>'+inz+minute+'</td>'
 			prehtml += '<td align=right>'+mark+'</td>'
 			prehtml += '<td nowrap>'+im+cp+'</td>'
