@@ -345,13 +345,20 @@ function getPlayersInfo(){
 			player.mr = $(val).next().next().text().trim()
 			//debug('getPlayersInfo:'+nameid+':mark='+player.mr)
 			if($(val).find('b').text()=='(к)')	player.cp = 1
-			if(deb && player.cp!=undefined) debug('getPlayersInfo:'+nameid+':cp='+player.cp)
+			//if(deb && player.cp!=undefined) debug('getPlayersInfo:'+nameid+':cp='+player.cp)
 			if($(val).find('font').length>0)	player.im = 1
-			if(deb && player.im!=undefined) debug('getPlayersInfo:'+nameid+':im='+player.im)
+			//if(deb && player.im!=undefined) debug('getPlayersInfo:'+nameid+':im='+player.im)
 			if($(val).next().next().find('img').length>0) player.cr = $(val).next().next().find('img').attr('src').split('/')[3].split('.')[0]
-			if(deb && player.cr!=undefined) debug('getPlayersInfo:'+nameid+':cr='+player.cr)
+			//if(deb && player.cr!=undefined) debug('getPlayersInfo:'+nameid+':cr='+player.cr)
 			if(parseInt($(val).prev().html())>11) player.in = 1
-			if(deb && player.in!=undefined) debug('getPlayersInfo:'+nameid+':in='+player.in)
+			//if(deb && player.in!=undefined) debug('getPlayersInfo:'+nameid+':in='+player.in)
+			//посчитаем голы
+			var goals = 0
+			var td = (pnum<=18 ? 1 : 2)
+			var goalsarr = $('td.back4 table:eq(4) td:eq('+td+')').html().split('br')
+			for(x in goalsarr) if(goalsarr[x].indexOf(nameid)!=-1) goals++
+			if(goals>0) player.g = goals
+			if(deb && goals>0) debug('getPlayersInfo:'+nameid+':goals='+goals)
 		}
 
 		// get info from match text
