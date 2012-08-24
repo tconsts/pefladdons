@@ -484,7 +484,8 @@ function ShowPlM(plid){
 
 	var mlistpl = ''
 	var prehtml = '<tr><th colspan=10 align=left><font size=3>'+(plid==0 ? 'Все матчи' : plid)+'</font>:</th></tr>'
-	prehtml += '<tr id=zagolovok class=back2><td>&nbsp;N</td><td>мин</td><td>del</td><td>СУ</td><td>&nbsp;N</td><td>мин</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
+	prehtml += '<tr id=zagolovok class=back2><td>&nbsp;N</td><td>мин</td><td>del</td><td>СУ</td>'
+	prehtml += '<td>&nbsp;N</td><td>мин</td><td>СР(ИМ)</td><td>Г</td><td>К</td><td colspan=3 align=center>матч</td><td colspan=2>погода, судья</td></tr>'
 	$('table#tblSuM').html(prehtml)
 
 	var num = 1
@@ -494,9 +495,19 @@ function ShowPlM(plid){
 		var mch = matches2[j]
 		var t1 = (mch.hnm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.hnm)
 		var t2 = (mch.anm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.anm)
-		var minute = ''
+		var minute	= ''
+		var mark	= ''
+		var im		= ''
+		var goals	= ''
+		var cards	= ''
+		var inz		= ''
 		if(plid!=0 && matchespl2[plid][j]!=undefined && matchespl2[plid][j].m!=undefined){
-			minute = matchespl2[plid][j].m+'\''
+			minute	= matchespl2[plid][j].m+'\''
+			mark	= matchespl2[plid][j].mr
+			im		= (matchespl2[plid][j].im!=undefined ? '(им)' : '')
+			goals	= (matchespl2[plid][j].g!=undefined ? matchespl2[plid][j].g : '')
+			cards	= (matchespl2[plid][j].cr!=undefined ? '<img src="system/img/gm/'+matchespl2[plid][j].cr+'.gif"></img>' : '')
+			inz		= (matchespl2[plid][j].in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : '')
 			num2++
 		}
 		prehtml += '<tr id="tr'+mch.id+'">'
@@ -505,7 +516,10 @@ function ShowPlM(plid){
 		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
 		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su==undefined ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;</a>')+'</th>'
 		prehtml += '<td align=right>'+(minute!='' ? num2 : '')+'</td>'
-		prehtml += '<td align=right>'+minute+'</td>'
+		prehtml += '<td align=right>'+inz+minute+'</td>'
+		prehtml += '<td>'+mark+im+'</td>'
+		prehtml += '<td>'+goals+'</td>'
+		prehtml += '<td>'+cards+'</td>'
 		prehtml += '<td align=right>'+t1+'</td>'
 		prehtml += '<td align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? '(п'+mch.pen+')' : '')+'</td>'
 		prehtml += '<td>'+t2+'</td>'
