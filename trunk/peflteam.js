@@ -936,7 +936,7 @@ function checkDeleteMatches(){
 		debug('checkDeleteMatches:true')
 		matches2.length = 0
 		matchespl2.length = 0
-		plsu.length = 0
+//		plsu.length = 0
 		ShowSU(true)
 		ShowRoster()
 		delete localStorage.matches2
