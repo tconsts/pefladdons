@@ -486,16 +486,16 @@ function ShowPlM(plid){
 
 	var prehtml = ''
 	prehtml += '<tr>'
-	prehtml += '<th colspan=6 width=30% '+(plid!=0 ? 'style="border-bottom:1px solid;"' : '')+'><font size=3>'+ (plid!=0 ? plid : '&nbsp;' )+'</font></th>'
+	prehtml += '<th colspan=5 width=30% '+(plid!=0 ? 'style="border-bottom:1px solid;"' : '')+'><font size=3>'+ (plid!=0 ? plid : '&nbsp;' )+'</font></th>'
 	prehtml += '<td colspan=9 style="border-bottom:1px solid;">&nbsp;</td>'
 	prehtml += '</tr>'
 	prehtml += '<tr id=zagolovok height=20>'
 	if(plid!=0){
 		prehtml += '<td style="border-left:1px solid;">&nbsp;N</td>'
 		prehtml += '<td>мин</td>'
-		prehtml += '<td colspan=2>рейт</td>'
+		prehtml += '<td>рейт</td>'
 		prehtml += '<td>голы</td>'
-		prehtml += '<td style="border-right:1px solid;">карт</td>'
+		prehtml += '<td style="border-right:1px solid;">&nbsp;</td>'
 	}else prehtml += '<td colspan=6 class=back1></td>'
 	prehtml += '<td style="border-left:1px solid;">N</td>'
 	prehtml += '<td></td>'
@@ -505,7 +505,7 @@ function ShowPlM(plid){
 	prehtml += '<td style="border-right:1px solid;">судья</td>'
 	prehtml += '</tr>'
 	prehtml += '<tr>'
-	prehtml += '<td colspan=6 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
+	prehtml += '<td colspan=5 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
 	prehtml += '<td colspan=9 class=back1 style="border-top:1px solid;;">&nbsp;</td>'
 	prehtml += '</tr>'
 	$('table#tblSuM').html(prehtml)
@@ -527,7 +527,7 @@ function ShowPlM(plid){
 		}
 		var minute	= '&nbsp;'
 		var mark	= '&nbsp;'
-		var im		= ''
+		var im		= false
 		var cp		= ''
 		var goals	= '&nbsp;'
 		var cards	= '&nbsp;'
@@ -535,8 +535,8 @@ function ShowPlM(plid){
 		if(plid!=0 && mchpl && mchpl.mr!=undefined){
 			minute	= (mchpl.m==undefined ? mch.m : mchpl.m)
 			mark	= (mchpl.mr!=undefined ? mchpl.mr : '&nbsp;')
-			im		= (mchpl.im!=undefined ? '(им)' : '')
-			cp		= (mchpl.cp!=undefined ? '(к)' : '')
+			im		= (mchpl.im!=undefined ? true : false)
+			cp		= (mchpl.cp!=undefined ? 'кэп&nbsp;' : '')
 			goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
 			cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
 			inz		= (mchpl.in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
@@ -546,10 +546,9 @@ function ShowPlM(plid){
 		if(plid!=0){
 			prehtml += '<td style="border-left:1px solid;">'+(minute!='&nbsp;' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
 			prehtml += '<td nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
-			prehtml += '<td align=right>'+mark+'</td>'
-			prehtml += '<td nowrap>'+(cp+im).replace(')(',',')+'</td>'
+			prehtml += '<td align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
 			prehtml += '<td nowrap>'+goals+'</td>'
-			prehtml += '<td style="border-right:1px solid;" align=center>'+cards+'</td>'
+			prehtml += '<td style="border-right:1px solid;" align=left>'+cp+cards+'</td>'
 		}else prehtml += '<td colspan=6 class=back1></td>'
 		prehtml += '<td style="border-left:1px solid;">'+(num<10 ? 0 : '')+num+'</td>'
 		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
