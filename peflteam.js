@@ -416,11 +416,10 @@ function ShowSU(del) {
 				if(mth.mr!=undefined){
 					minute = (mth.m==undefined ? matches2[j].m: parseInt(mth.m))
 					plsu[num].minute 	+= minute
+					plsu[num].matches2 	+= 1
 					if(matches2[j].su==undefined){
 						plsu[num].minutesu	+= minute
 						plsu[num].matches 	+= 1
-					}else{
-						plsu[num].matches2 	+= 1
 					}
 				}
                 if(!plsu[num].del) teamminutes += minute
@@ -434,13 +433,15 @@ function ShowSU(del) {
 
 		var preparedhtml = '<table id="tblSu" class=back1 width=100%>' //BFDEB3
 		preparedhtml += '<tr align=left><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th><th>мин в %</th></tr>'
-		var pls = plsu.sort(function(a,b){return ((b.minutesu + b.minute*0.001) - (a.minutesu + a.minute*0.001))})
+		var pls = plsu.sort(function(a,b){return (((b.del ? -1000 : 0) + b.minutesu + b.minute*0.001) - ((a.del ? -1000 : 0) + a.minutesu + a.minute*0.001))})
+		var num = 1
 		for(i in pls) {
 			var plsi = pls[i]
 			var ost = sumax - plsi.minutesu
 			var ostmatch = Math.floor(ost/93)
 			var ostminute = ost - ostmatch*93
-			preparedhtml += '<tr>'
+			var trclass = (plsi.del ? ' bgcolor=BABDB6' : (num%2==1 ? ' class=back2' : ' class=back1'))
+			preparedhtml += '<tr'+trclass+'>'
 			preparedhtml += '<td>'+(parseInt(i)+1)+'</td>'
 			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+plsi.name+'\'))"><b>'+plsi.name+'</b></a></td>'
 			preparedhtml += '<td><b>'+plsi.minutesu+'</b>'+(plsi.minute>0 ? '<font size=1> ('+plsi.minute+')</font>' : '')+'</td>'
@@ -448,9 +449,10 @@ function ShowSU(del) {
 			preparedhtml += '<td><b>'+ost+'</b>'
 			preparedhtml += (ost>0 ? '<font size=1> ('+(ostmatch>0 ? '93мин*'+ostmatch+' + ' : '')+ostminute+'мин)</font>' : '')
 			preparedhtml += '</td>'
-			preparedhtml += '<td width=10%'+(plsi.tilda<=40  && plsi.tilda!='none' ? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda).toFixed(1)) +'</a></td>'
+			preparedhtml += '<td width=10%'+(plsi.tilda!='none' && plsi.tilda<=40 ? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda).toFixed(1)) +'</a></td>'
 //			preparedhtml += '<td align=center width=5%>'+(pls[i].del ? '<b><font color=red>X</font></b>': '')+'</td>'
 			preparedhtml += '</tr>'
+			num++
 		}
 		preparedhtml += '</table>'
 		preparedhtml += '<div id="divSu">'
@@ -462,8 +464,8 @@ function ShowSU(del) {
 		preparedhtml += '<table id="tblSuM" width=100% style="border-spacing:1px 0px"></table>'
 
 		$('table#tblRoster').after(preparedhtml)
-		$('table#tblSu tr:even').attr('class','back2')
-		$('table#tblSu tr:odd').attr('class','back1')
+//		$('table#tblSu tr:even').attr('class','back2')
+//		$('table#tblSu tr:odd').attr('class','back1')
 	}
 	ShowPlM(0)
 }
