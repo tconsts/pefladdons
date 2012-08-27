@@ -341,7 +341,8 @@ function getPlayersInfo(){
         var nexttd = $(val).next().html()
 		var minutes = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
 		if(minutes!=0) {
-			player.m = minutes
+			debug('getPlayersInfo:pl='+nameid+':minutes='+minutes+':mt='+mt)
+			if(minutes!=mt) {player.m = minutes;debug('getPlayersInfo:pl='+nameid+':minutes!=mt')}
 			player.mr = $(val).next().next().text().trim()
 			//debug('getPlayersInfo:'+nameid+':mark='+player.mr)
 			if($(val).find('b').text()=='(к)')	player.cp = 1
@@ -369,20 +370,22 @@ function getPlayersInfo(){
 			if(searchname.indexOf(':'+cname+':')==-1) searchname += cname+':'
 		})
 /**/    // сохраняем или в гостевой(a) или домашний(h) список
-		if(i%2==1){
-			if(matchespla[nameid]!=undefined){
-				player.nm = nameid
-				nameid += '_'+unia
-				unia++
+		if(player.mr!=undefined){
+			if(i%2==1){
+				if(matchespla[nameid]!=undefined){
+					player.nm = nameid
+					nameid += '_'+unia
+					unia++
+				}
+				matchespla[nameid] = player
+			}else{
+				if(matchesplh[nameid]!=undefined){
+					player.nm = nameid
+					nameid += '_'+unih
+					unih++
+				}
+				matchesplh[nameid] = player
 			}
-			matchespla[nameid] = player
-		}else{
-			if(matchesplh[nameid]!=undefined){
-				player.nm = nameid
-				nameid += '_'+unih
-				unih++
-			}
-			matchesplh[nameid] = player
 		}
 //		debug('getPlayersInfo:i='+i+':team='+(i%2==1 ? 'a' : 'h')+':nameid='+player.nameid)
 //		if(deb) for(i in player) debug('getPlayersInfo:'+i+'='+player[i])
