@@ -25,8 +25,8 @@ var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
 	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale,tsvalue',
-	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
-	'matchespl':'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
+//	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
+//	'matchespl':'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
 }
 var skl = {}
 	skl['corners']	= 'Угловые'
@@ -934,8 +934,8 @@ function checkDeleteMatches(){
 	debug('checkDeleteMatches:checksu='+checksu)
 	if(checksu==0){
 		debug('checkDeleteMatches:true')
-		matches.length = 0
-		matchespl.length = 0
+		matches2.length = 0
+		matchespl2.length = 0
 		plsu.length = 0
 		ShowSU(true)
 		ShowRoster()
