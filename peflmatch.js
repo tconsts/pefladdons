@@ -342,13 +342,13 @@ function getPlayersInfo(){
 		var minutes = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
 		if(minutes!=0) {
 			debug('getPlayersInfo:pl='+nameid+':minutes='+minutes+':mt='+mt)
-			if(minutes!=mt) {player.m = minutes;debug('getPlayersInfo:pl='+nameid+':minutes!=mt')}
+			if(minutes!=mt) player.m = minutes
 			player.mr = $(val).next().next().text().trim()
 			//debug('getPlayersInfo:'+nameid+':mark='+player.mr)
-			if($(val).find('b').text()=='(к)')	player.cp = 1
-			//if(deb && player.cp!=undefined) debug('getPlayersInfo:'+nameid+':cp='+player.cp)
+			if($(val).find('b:contains("(к)")').length>0)	player.cp = 1
+			if(deb && player.cp!=undefined) debug('getPlayersInfo:'+nameid+':cp='+player.cp)
 			if($(val).find('font').length>0)	player.im = 1
-			//if(deb && player.im!=undefined) debug('getPlayersInfo:'+nameid+':im='+player.im)
+			if(deb && player.im!=undefined) debug('getPlayersInfo:'+nameid+':im='+player.im)
 			if($(val).next().next().find('img').length>0) player.cr = $(val).next().next().find('img').attr('src').split('/')[3].split('.')[0]
 			//if(deb && player.cr!=undefined) debug('getPlayersInfo:'+nameid+':cr='+player.cr)
 			if(parseInt($(val).prev().html())>11) player.in = 1
@@ -359,7 +359,7 @@ function getPlayersInfo(){
 			var goalsarr = $('td.back4 table:eq(4) td:eq('+td+')').html().split('br')
 			for(x in goalsarr) if(goalsarr[x].indexOf(nameid)!=-1) goals++
 			if(goals>0) player.g = goals
-			if(deb && goals>0) debug('getPlayersInfo:'+nameid+':goals='+goals)
+			//if(deb && goals>0) debug('getPlayersInfo:'+nameid+':goals='+goals)
 		}
 
 		// get info from match text
