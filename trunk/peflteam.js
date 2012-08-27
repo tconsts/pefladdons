@@ -548,7 +548,7 @@ function ShowPlM(plid){
 			prehtml += '<td nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
 			prehtml += '<td align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
 			prehtml += '<td nowrap>'+goals+'</td>'
-			prehtml += '<td style="border-right:1px solid;" align=left>'+cp+cards+'</td>'
+			prehtml += '<td style="border-right:1px solid;" align=left width=5%>'+cp+cards+'</td>'
 		}else prehtml += '<td colspan=6 class=back1></td>'
 		prehtml += '<td style="border-left:1px solid;">'+(num<10 ? 0 : '')+num+'</td>'
 		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
