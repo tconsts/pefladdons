@@ -413,8 +413,8 @@ function ShowSU(del) {
 			for (j in matchespl2[i]){
 				var mth = matchespl2[i][j]
 				var minute = 0
-				if(mth.m!=undefined){
-					minute = parseInt(mth.m)
+				if(mth.mr!=undefined){
+					minute = (mth.m==undefined ? matches2[j].m: parseInt(mth.m))
 					plsu[num].minute 	+= minute
 					if(matches2[j].su==undefined){
 						plsu[num].minutesu	+= minute
@@ -511,10 +511,11 @@ function ShowPlM(plid){
 	var num = 1
 	var num2 = 0
 	for(j in matches2){
-		prehtml = ''
-		var mch = matches2[j]
-		var t1 = (mch.hnm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.hnm)
-		var t2 = (mch.anm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.anm)
+		prehtml 	= ''
+		var mch 	= matches2[j]
+		var mchpl	= (matchespl2[plid]!=undefined && matchespl2[plid][j]!=undefined ? matchespl2[plid][j] : false)
+		var t1 	= (mch.hnm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.hnm)
+		var t2 	= (mch.anm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.anm)
 		var t1u = ''
 		var t2u = ''
 		if(mch.ust!=undefined){
@@ -529,20 +530,20 @@ function ShowPlM(plid){
 		var goals	= '&nbsp;'
 		var cards	= '&nbsp;'
 		var inz		= '&nbsp;'
-		if(plid!=0 && matchespl2[plid][j]!=undefined && matchespl2[plid][j].m!=undefined){
-			minute	= matchespl2[plid][j].m+'\''
-			mark	= (matchespl2[plid][j].mr!=undefined ? matchespl2[plid][j].mr : '&nbsp;')
-			im		= (matchespl2[plid][j].im!=undefined ? '(им)' : '&nbsp;')
-			cp		= (matchespl2[plid][j].cp!=undefined ? '(k)' : '&nbsp;')
-			goals	= (matchespl2[plid][j].g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(matchespl2[plid][j].g>1 ? '('+matchespl2[plid][j].g+')' : '') : '&nbsp;')
-			cards	= (matchespl2[plid][j].cr!=undefined ? '<img src="system/img/gm/'+matchespl2[plid][j].cr+'.gif"></img>' : '&nbsp;')
-			inz		= (matchespl2[plid][j].in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (matchespl2[plid][j].m<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
+		if(plid!=0 && mchpl && mchpl.mr!=undefined){
+			minute	= (mchpl.m==undefined ? mch.m : mchpl.m)
+			mark	= (mchpl.mr!=undefined ? mchpl.mr : '&nbsp;')
+			im		= (mchpl.im!=undefined ? '(им)' : '&nbsp;')
+			cp		= (mchpl.cp!=undefined ? '(k)' : '&nbsp;')
+			goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g>1 ? '('+mchpl.g+')' : '') : '&nbsp;')
+			cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
+			inz		= (mchpl.in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
 			num2++
 		}
 		prehtml += '<tr id="tr'+mch.id+'" height=20>'
 		if(plid!=0){
 			prehtml += '<td style="border-left:1px solid;">'+(minute!='&nbsp;' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
-			prehtml += '<td nowrap align=right>'+inz+minute+'</td>'
+			prehtml += '<td nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
 			prehtml += '<td align=right>'+mark+'</td>'
 			prehtml += '<td nowrap>'+im+cp+'</td>'
 			prehtml += '<td nowrap>'+goals+'</td>'
