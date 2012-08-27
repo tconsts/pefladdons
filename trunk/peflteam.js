@@ -522,22 +522,22 @@ function ShowPlM(plid){
 		var t2u = ''
 		if(mch.ust!=undefined){
 			var ust = mch.ust.split('.')
-			t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт)' ) : '') //p.h a.h p
-			t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ) : '') //p.a a.a p
+			t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.h a.h p
+			t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.a a.a p
 		}
 		var minute	= '&nbsp;'
 		var mark	= '&nbsp;'
-		var im		= '&nbsp;'
-		var cp		= '&nbsp;'
+		var im		= ''
+		var cp		= ''
 		var goals	= '&nbsp;'
 		var cards	= '&nbsp;'
 		var inz		= '&nbsp;'
 		if(plid!=0 && mchpl && mchpl.mr!=undefined){
 			minute	= (mchpl.m==undefined ? mch.m : mchpl.m)
 			mark	= (mchpl.mr!=undefined ? mchpl.mr : '&nbsp;')
-			im		= (mchpl.im!=undefined ? '(им)' : '&nbsp;')
-			cp		= (mchpl.cp!=undefined ? '(k)' : '&nbsp;')
-			goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g>1 ? '('+mchpl.g+')' : '') : '&nbsp;')
+			im		= (mchpl.im!=undefined ? '(им)' : '')
+			cp		= (mchpl.cp!=undefined ? '(к)' : '')
+			goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
 			cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
 			inz		= (mchpl.in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
 			num2++
@@ -547,7 +547,7 @@ function ShowPlM(plid){
 			prehtml += '<td style="border-left:1px solid;">'+(minute!='&nbsp;' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
 			prehtml += '<td nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
 			prehtml += '<td align=right>'+mark+'</td>'
-			prehtml += '<td nowrap>'+im+cp+'</td>'
+			prehtml += '<td nowrap>'+(cp+im).replace(')(',',')+'</td>'
 			prehtml += '<td nowrap>'+goals+'</td>'
 			prehtml += '<td style="border-right:1px solid;" align=center>'+cards+'</td>'
 		}else prehtml += '<td colspan=6 class=back1></td>'
