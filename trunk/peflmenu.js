@@ -21,6 +21,30 @@ function CheckNewMail(){
 	}
 }
 
+function getIDnum(){
+	var gday = String(localStorage.gday)
+	var datestr = (gday=='undefined' ? 0 : parseInt(gday.split('.')[0]))
+	var idcur 	= (gday=='undefined' ? 0 : parseInt(gday.split('.')[1]))
+	var datecur =  new Date()
+	var datecur3 = new Date(datecur.valueOf() + (datecur.getTimezoneOffset() + 4*60)*60*1000)	//-420(7h) hours, Moscow +4
+	var m = datecur3.getMonth()+1
+	var d = datecur3.getDate()
+	var datecur4 = new Date((m<10?0:'')+m+'/'+(d<10?0:'')+d+'/'+datecur3.getFullYear())
+	var datecur5 = datecur4.valueOf()
+	var getID = (datecur5>datestr ? true : false)
+	if(getID){
+		$('td.back4').prepend('<div style="display: none;" id=debugid></div>') //
+		$('#debugid').load('plug.php?p=tr&t=transfers0&z=3f460327cf4af02a70491d5cb9b2b159 td.back4 table td:last a',function(){
+			idcur = parseInt($('#debugid').text())
+			localStorage.gday = datecur5+'.'+idcur
+			$('td.topmenu:first table td:last').append('&nbsp;('+(idcur+1)+'й ИД)')
+			$('div#debugid').remove()
+		})
+	}else{
+		$('td.topmenu:first table td:last').append('&nbsp;('+(idcur+1)+'й ИД)')
+	}
+}
+
 function SetNumShcoolers(){
 	var pls = $('td.back4 table table:eq(0) tr').length + $('td.back4 table table:eq(1) tr').length
 	$('td.back4 table table:eq(1) tr').each(function(){
@@ -51,6 +75,7 @@ function FixSize() {
 $().ready(function() {
 //	delete localStorage.debug
 
+	getIDnum()
 	FixSize()
 
 	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
