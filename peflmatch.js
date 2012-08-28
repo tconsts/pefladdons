@@ -15,6 +15,7 @@ var debnum = 0
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var mid = parseInt(UrlValue('j'))
 var myteamid = localStorage.myteamid
+var ustanovka = false
 var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
@@ -192,6 +193,8 @@ function getMatchInfo(){
 			ust = false
 			if(String(otcharr[i]).indexOf(hname) != -1)		 match1.ust += '.h'
 			else if(String(otcharr[i]).indexOf(aname) != -1) match1.ust += '.a'
+			ustanovka = String(otcharr[i]).split('<br>')[1]
+			debug('getMatchInfo:ustanovka='+ustanovka)
 		}
 		if(String(otcharr[i]).indexOf('(*)') != -1 || String(otcharr[i]).indexOf('СЧЕТ') != -1) sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
 	}
@@ -238,7 +241,7 @@ function SaveCodeForMatch(){
 		.replace(/\>/g,']')
 		+ '[img]system/img/w' + (match1.w==undefined ? 0 : match1.w) + '.png[/img]' 
 		+ (match1.r!=undefined ? ' [b]Главный арбитр:[/b] ' + match1.r + '.' : '')
-		+ (match1.ust!=undefined ? '\n\n'+match1.ust : '')
+		+ (ustanovka ? '<br>'+ustanovka : '')
 }
 
 function getJSONlocalStorage(dataname,data){
