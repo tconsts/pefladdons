@@ -487,7 +487,7 @@ function ShowPlM(plid){
 	var prehtml = ''
 	prehtml += '<tr>'
 	prehtml += '<th colspan=5 width=30% '+(plid!=0 ? 'style="border-bottom:1px solid;"' : '')+'><font size=3>'+ (plid!=0 ? plid : '&nbsp;' )+'</font></th>'
-	prehtml += '<td colspan=9 style="border-bottom:1px solid;">&nbsp;</td>'
+	prehtml += '<td colspan=10 style="border-bottom:1px solid;">&nbsp;</td>'
 	prehtml += '</tr>'
 	prehtml += '<tr id=zagolovok height=20>'
 	if(plid!=0){
@@ -502,11 +502,11 @@ function ShowPlM(plid){
 	prehtml += '<td>СУ</td>'
 	prehtml += '<td colspan=2>мин</td>'
 	prehtml += '<td colspan=3 align=center>матч</td>'
-	prehtml += '<td style="border-right:1px solid;border-top:1px solid;">судья</td>'
+	prehtml += '<td style="border-right:1px solid;">судья</td>'
 	prehtml += '</tr>'
 	prehtml += '<tr>'
 	prehtml += '<td colspan=5 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
-	prehtml += '<td colspan=9 class=back1 style="border-top:1px solid;">&nbsp;</td>'
+	prehtml += '<td colspan=10 class=back1 style="border-top:1px solid;">&nbsp;</td>'
 	prehtml += '</tr>'
 	$('table#tblSuM').html(prehtml)
 
