@@ -931,6 +931,7 @@ function GetData(dataname){
 
 function checkDeleteMatches(){
 	debug('checkDeleteMatches()')
+	if(UrlValue('j')!=99999 || UrlValue('j')!=parseInt(localStorage.myteamid)) return false
 	var checksu = 0
 	for (i in players) checksu += parseInt(players[i].games)
 	debug('checkDeleteMatches:checksu='+checksu)
