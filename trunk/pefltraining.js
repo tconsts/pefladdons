@@ -363,15 +363,15 @@ function showData(){
 			var pli = players[i]
 			if(pli.rest==1) {
 				countrest++
-				prest += '&nbsp;'+pli.form+'% '+pli.secondname+ '&nbsp;'+pli.firstname+'<br>'
+				prest += '&nbsp;'+pli.form+'% '+pli.firstname+ '&nbsp;'+pli.secondname+'<br>'
 			}
 			if(pli.inj >1) {
 				countinj++
-				pinj  += '&nbsp;'+pli.inj+' д. '+pli.secondname+ '&nbsp;'+pli.firstname+'<br>'
+				pinj  += '&nbsp;'+pli.inj+' д. '+pli.firstname+ '&nbsp;'+pli.secondname+'<br>'
 			}         
 			if(pli.notrain==1) {
 				countnot++
-				pnot  += '&nbsp;'+pli.secondname+ '&nbsp;'+pli.firstname+'<br>'
+				pnot  += '&nbsp;'+pli.firstname+ '&nbsp;'+pli.secondname+'<br>'
 			}
 		}
 		if(countnot >0) $('td.back4 table:first center').after(pnot)
