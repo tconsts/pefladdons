@@ -36,8 +36,10 @@ function getIDnum(){
 		$('td.back4').prepend('<div style="display: none;" id=debugid></div>') //
 		$('#debugid').load('plug.php?p=tr&t=transfers0&z=3f460327cf4af02a70491d5cb9b2b159 td.back4 table td:last a',function(){
 			idcur = parseInt($('#debugid').text())
-			localStorage.gday = datecur5+'.'+idcur
-			if(!isNaN(idcur)) $('td.topmenu:first table td:last').append('&nbsp;('+(idcur+1)+'й ИД)')
+			if(!isNaN(idcur)){
+				localStorage.gday = datecur5+'.'+idcur
+				$('td.topmenu:first table td:last').append('&nbsp;('+(idcur+1)+'й ИД)')
+			}
 			$('div#debugid').remove()
 		})
 	}else{
