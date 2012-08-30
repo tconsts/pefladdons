@@ -923,7 +923,8 @@ function CodeForForum(){
 //		x += '\n'
 
 	} else {
-		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] [b]'
+//		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] [b]'
+		x += '[url=plug.php?p=refl&t='+pl.t+'&j='+pl.id+'&z='+pl.hash+']#[/url] [b]'
 		x += $('td.back4 table center:first b:first')
 			.find('a[id="th0"]').remove().end()
 			.find('img').removeAttr('width').end()
@@ -1250,13 +1251,14 @@ $().ready(function() {
 	} else if (players[0].t =='p2'){
 		players[0].team = 'свободный'
 	}
-
-	players[0].id  = UrlValue('j')
-	players[0].hash  = UrlValue('z')
 	// школяр!
 	if (players[0].t == 'yp' || players[0].t == 'yp2') {
 		players[0].flag = 5
 	}
+
+	players[0].id  = UrlValue('j')
+	players[0].hash = ($('a:[href^="plug.php?p=tr&t=ncyf&n=yf2&j="]').length>0 ? UrlValue('z',$('a:[href^="plug.php?p=tr&t=ncyf&n=yf2&j="]').attr('href')) : UrlValue('z'))
+
  	j++
 	if (ms[j].indexOf('в аренде') !=-1) j++
 	players[0].age = +ms[j].split(' ',1)[0]
