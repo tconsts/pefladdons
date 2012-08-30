@@ -5,6 +5,7 @@
 // @include        http://*pefl.*/*
 // @exclude        http://*pefl.*/profile.php
 // @exclude        http://*pefl.*/auth.php
+// @exclude        http://*pefl.*/hist.php*
 // ==/UserScript==
 
 function UrlValue(key,url){
