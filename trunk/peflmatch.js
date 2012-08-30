@@ -97,7 +97,8 @@ function checkSave(){
 			savematch = true
 			for(i in matchesplh){
 				if(matchespl[i]==undefined) matchespl[i] = []
-				matchespl[i][mid] = matchesplh[i]
+				if(matchespl[i][mid]==undefined) matchespl[i][mid] = matchesplh[i]
+				else for(p in matchesplh[i]) 	 matchespl[i][mid][p] = matchesplh[i][p]
 			}
 			break
 		case match1.aid:
@@ -105,7 +106,8 @@ function checkSave(){
 			savematch = true
 			for(i in matchespla){
 				if(matchespl[i]==undefined) matchespl[i] = []
-				matchespl[i][mid] = matchespla[i]
+				if(matchespl[i][mid]==undefined) matchespl[i][mid] = matchespla[i]
+				else for(p in matchespla[i]) 	 matchespl[i][mid][p] = matchespla[i][p]
 			}
 			break
 		default:
@@ -114,14 +116,16 @@ function checkSave(){
 				if(matchespl[i]!=undefined){
 					savematch = true
 					debug('checkSave(h):add:'+i+':'+mid)
-					matchespl[i][mid] = matchesplh[i]
+					if(matchespl[i][mid]==undefined) matchespl[i][mid] = matchesplh[i]
+					else for(p in matchesplh[i]) 	 matchespl[i][mid][p] = matchesplh[i][p]
 				}
 			}
 			for(i in matchespla){
 				if(matchespl[i]!=undefined){
 					savematch = true
 					debug('checkSave(a):add:'+i+':'+mid)
-					matchespl[i][mid] = matchespla[i]
+					if(matchespl[i][mid]==undefined) matchespl[i][mid] = matchespla[i]
+					else for(p in matchespla[i]) 	 matchespl[i][mid][p] = matchespla[i][p]
 				}
 			}
 	}

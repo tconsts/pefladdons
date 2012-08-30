@@ -412,17 +412,18 @@ function ShowSU(del) {
 			plsu[num] = {'name':i, 'minutesu':0,'minute':0,'matches':0,'matches2':0,'del':(plexl.indexOf('|'+i+'|') != -1 ? true : false)}
 			for (j in matchespl2[i]){
 				var mth = matchespl2[i][j]
+				var countminutes = (mth.h==undefined && (matches2[j].hnm==undefined || matches2[j].anm==undefined) ? true : false)
 				var minute = 0
 				if(mth.mr!=undefined){
-					minute = (mth.m==undefined ? matches2[j].m: parseInt(mth.m))
-					plsu[num].minute 	+= minute
+					minute = (mth.m==undefined ? matches2[j].m : parseInt(mth.m))
+					if(countminutes) plsu[num].minute 	+= minute
 					plsu[num].matches2 	+= 1
 					if(matches2[j].su==undefined){
 						plsu[num].minutesu	+= minute
 						plsu[num].matches 	+= 1
 					}
 				}
-                if(!plsu[num].del) teamminutes += minute
+                if(!plsu[num].del && countminutes) teamminutes += minute
 				//debug('ShowSU:'+i+':minute='+minute+':teamminutes='+teamminutes)
 			}
 		}
@@ -432,7 +433,7 @@ function ShowSU(del) {
 		}
 
 		var preparedhtml = '<table id="tblSu" class=back1 width=100%>' //BFDEB3
-		preparedhtml += '<tr align=left><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th><th>мин в %</th></tr>'
+		preparedhtml += '<tr align=left><td></td><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th><th>мин в %</th></tr>'
 		var pls = plsu.sort(function(a,b){return (((b.del ? -1000 : 0) + b.minutesu + b.minute*0.001) - ((a.del ? -1000 : 0) + a.minutesu + a.minute*0.001))})
 		var num = 1
 		for(i in pls) {
@@ -440,17 +441,17 @@ function ShowSU(del) {
 			var ost = sumax - plsi.minutesu
 			var ostmatch = Math.floor(ost/93)
 			var ostminute = ost - ostmatch*93
-			var trclass = (plsi.del ? ' bgcolor=BABDB6' : (num%2==1 ? ' class=back2' : ' class=back1'))
+			var trclass = (plsi.del ? ' bgcolor='+(num%2==1 ? 'D3D7CF' : 'BABDB6') : ' class=back'+(num%2==1 ? 2 : 1))
 			preparedhtml += '<tr'+trclass+'>'
+			preparedhtml += '<td align=center width=1%><a href="javascript:void(DeletePl(\''+plsi.name+'\','+plsi.del+'))"><font color=red>X</font></a></td>'
 			preparedhtml += '<td>'+(parseInt(i)+1)+'</td>'
-			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+plsi.name+'\'))"><b>'+plsi.name+'</b></a></td>'
+			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+plsi.name+'\','+plsi.del+'))"><b>'+plsi.name+'</b></a></td>'
 			preparedhtml += '<td><b>'+plsi.minutesu+'</b>'+(plsi.minute>0 ? '<font size=1> ('+plsi.minute+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+plsi.matches+'</b>'+(plsi.matches2>0 ? '<font size=1> ('+plsi.matches2+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+ost+'</b>'
 			preparedhtml += (ost>0 ? '<font size=1> ('+(ostmatch>0 ? '93мин*'+ostmatch+' + ' : '')+ostminute+'мин)</font>' : '')
 			preparedhtml += '</td>'
 			preparedhtml += '<td width=10%'+(plsi.tilda!='none' && plsi.tilda<=40 ? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda).toFixed(1)) +'</a></td>'
-//			preparedhtml += '<td align=center width=5%>'+(pls[i].del ? '<b><font color=red>X</font></b>': '')+'</td>'
 			preparedhtml += '</tr>'
 			num++
 		}
@@ -458,7 +459,10 @@ function ShowSU(del) {
 		preparedhtml += '<div id="divSu">'
 		preparedhtml += '<br>1. минуты в матчах с получением травм и удалений могут считаться не совсем корректно'
 		preparedhtml += '<br>2. с однофамильцами мугут быть проблемы'
-		preparedhtml += '<br>3. игроки покинувшие клуб пока не удаляются из списка'
+		preparedhtml += '<br>3. серфм помечено то что не идет в подсчет % минут'
+		preparedhtml += '<br>4. <a>&ndash;</a> пометить что матч ненадо учитывать при подсчете % минут'
+		preparedhtml += '<br>5. <font color=red>X</font> удалить: или игрока, или игрока из матча, или матч целиком'
+
 		preparedhtml += '</div><br><br>'
 
 		preparedhtml += '<table id="tblSuM" width=100% style="border-spacing:1px 0px"></table>'
@@ -480,32 +484,34 @@ function suMarkDel(plid,del){
 	ShowPlM(plid)
 }
 
-function ShowPlM(plid){
+function ShowPlM(plid,pdel){
 	debug('ShowPlM('+plid+')')
 	$('table#tblSuM tr').remove()
-
+	pdel = (pdel==undefined ? false : pdel)
 	var prehtml = ''
 	prehtml += '<tr>'
-	prehtml += '<th colspan=5 width=30% '+(plid!=0 ? 'style="border-bottom:1px solid;"' : '')+'><font size=3>'+ (plid!=0 ? plid : '&nbsp;' )+'</font></th>'
+	prehtml += '<th colspan=6 width=30% '+(plid!=0 ? 'style="border-bottom:1px solid;"' : '')+'><font size=3>'+ (plid!=0 ? plid : '&nbsp;' )+'</font></th>'
 	prehtml += '<td colspan=10 style="border-bottom:1px solid;">&nbsp;</td>'
 	prehtml += '</tr>'
 	prehtml += '<tr id=zagolovok height=20>'
 	if(plid!=0){
-		prehtml += '<td style="border-left:1px solid;">&nbsp;N</td>'
+		prehtml += '<td style="border-left:1px solid;">&nbsp;</td>'
+		prehtml += '<td></td>'
+		prehtml += '<td>&nbsp;N</td>'
 		prehtml += '<td>мин</td>'
 		prehtml += '<td>рейт</td>'
 		prehtml += '<td>голы</td>'
 		prehtml += '<td style="border-right:1px solid;">&nbsp;</td>'
 	}else prehtml += '<td colspan=6 class=back1></td>'
-	prehtml += '<td style="border-left:1px solid;">N</td>'
-	prehtml += '<td></td>'
+	prehtml += '<td style="border-left:1px solid;">&nbsp;</td>'
+	prehtml += '<td>N</td>'
 	prehtml += '<td>СУ</td>'
 	prehtml += '<td colspan=2>мин</td>'
 	prehtml += '<td colspan=3 align=center>матч</td>'
 	prehtml += '<td style="border-right:1px solid;">судья</td>'
 	prehtml += '</tr>'
 	prehtml += '<tr>'
-	prehtml += '<td colspan=5 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
+	prehtml += '<td colspan=6 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
 	prehtml += '<td colspan=10 class=back1 style="border-top:1px solid;">&nbsp;</td>'
 	prehtml += '</tr>'
 	$('table#tblSuM').html(prehtml)
@@ -542,16 +548,25 @@ function ShowPlM(plid){
 			inz		= (mchpl.in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
 			num2++
 		}
-		prehtml += '<tr id="tr'+mch.id+'" height=20>'
+		var countmatch = (mch.hnm!=undefined && mch.anm!=undefined ? false : true)
+		var trcolor = ''
+		if(!countmatch) trcolor = ' bgcolor='+(num%2==1 ? 'D3D7CF' : 'BABDB6')
+		else trcolor = ' class=back'+(num%2==1 ? 2 : 1)
+		var tdcolor = ''
+		if(pdel || mchpl.h!=undefined) tdcolor = ' bgcolor='+(num%2==1 ? 'D3D7CF' : 'BABDB6')
+
+		prehtml += '<tr'+trcolor+' id="tr'+mch.id+'">'
 		if(plid!=0){
-			prehtml += '<td style="border-left:1px solid;">'+(minute!='&nbsp;' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
-			prehtml += '<td nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
-			prehtml += '<td align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
-			prehtml += '<td nowrap>'+goals+'</td>'
-			prehtml += '<td style="border-right:1px solid;" align=left width=5%>'+cp+cards+'</td>'
+			prehtml += '<td'+tdcolor+' width=1% style="border-left:1px solid;">'+(minute!='&nbsp;' ? '<a href="javascript:void(MinutesPl('+j+',\''+plid+'\',\'del\'))"><font color=red>X</font></a>' : '&nbsp;')+'</td>'
+			prehtml += '<td'+tdcolor+' width=1%>'+(minute!='&nbsp;' && mchpl.h==undefined && countmatch ? '<a href="javascript:void(MinutesPl('+j+',\''+plid+'\',\'hide\'))">&ndash;</a>' : '&nbsp;')+'</td>'
+			prehtml += '<td'+tdcolor+'>'+(minute!='&nbsp;' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
+			prehtml += '<td'+tdcolor+' nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
+			prehtml += '<td'+tdcolor+' align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
+			prehtml += '<td'+tdcolor+' nowrap>'+goals+'</td>'
+			prehtml += '<td'+tdcolor+' style="border-right:1px solid;" align=left width=5%>'+cp+cards+'</td>'
 		}else prehtml += '<td colspan=6 class=back1></td>'
-		prehtml += '<td style="border-left:1px solid;">'+(num<10 ? 0 : '')+num+'</td>'
-		prehtml += '<th><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></th>'
+		prehtml += '<td style="border-left:1px solid;"><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></td>'
+		prehtml += '<td>'+(num<10 ? 0 : '')+num+'</td>'
 		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su==undefined ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;&nbsp;&nbsp;</a>')+'</th>'
 		prehtml += '<td>'+mch.m+'\'</td>'
 		prehtml += '<td valign=center><img height=15 src="/system/img/w'+(mch.w!=undefined ? mch.w : 0)+'.png"></img>'+(mch.n!=undefined ? '<sup>N</sup>' : '&nbsp;')+'</td>'
@@ -563,8 +578,38 @@ function ShowPlM(plid){
 		num++
 		$('table#tblSuM tr#zagolovok').after(prehtml)
 	}
-	$('table#tblSuM tr:even').attr('class','back1')
-	$('table#tblSuM tr:odd').attr('class','back2')
+}
+
+function DeletePl(pid,del){
+	delete matchespl2[pid]
+	saveJSONlocalStorage('matchespl2',matchespl2)
+	if(del) localStorage.plexl = String(localStorage.plexl).replace(pid+'|','')
+	ShowSU(true)
+	ShowPlM(0)
+}
+
+function MinutesPl(mid,pid,type){
+	debug('MinutesPl:mid='+mid+':pid='+pid+':type='+type)
+	if(type=='del'){
+		delete matchespl2[pid][mid]
+		saveJSONlocalStorage('matchespl2',matchespl2)
+		var delmatch = true
+		for(i in matchespl2) if(matchespl2[i][mid]!=undefined) {
+			delmatch = false;
+			break;
+		}
+		if(delmatch){
+			delete matches2[mid]
+			saveJSONlocalStorage('matches2',matches2)
+		}
+	}
+	else if(type=='hide'){
+		matchespl2[pid][mid].h = 1
+		saveJSONlocalStorage('matchespl2',matchespl2)
+	}
+	else return false
+	ShowSU(true)
+	ShowPlM(pid)
 }
 
 function SuDelMatch(mid, type, plid){
