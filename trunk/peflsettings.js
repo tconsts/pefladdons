@@ -85,6 +85,16 @@ $().ready(function() {
 
 function DropAll(){
 	localStorage.clear()
+	if(navigator.userAgent.indexOf('Firefox') == -1){
+		db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
+		db.transaction(function(tx) {
+			tx.executeSql("DROP DATABASE PEFL", [],
+				function(tx, result){},
+				function(tx, error){debug(error)}
+			)
+		})
+	}
+	debug('DropAll() finished')
 	window.location.reload( true );
 }
 
