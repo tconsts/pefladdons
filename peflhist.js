@@ -111,8 +111,10 @@ if (type == 'p') {
 	resRow.cells[5].innerHTML = "<b>"+nTotalMVP+"</b>";
 	resRow.cells[6].innerHTML = "<b>"+(nAvgMark).toFixed(2)+"</b>";
 
+} else if(type == 'n') {
+	var text = document.getElementsByName('rtext')
+	text[0].value= (parseInt(localStorage.gday.split('.')[1])+1)+"й ИД: ";
+	text[0].focus()
 } else {
-
-
 
 }
