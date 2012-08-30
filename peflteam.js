@@ -433,7 +433,7 @@ function ShowSU(del) {
 		}
 
 		var preparedhtml = '<table id="tblSu" class=back1 width=100%>' //BFDEB3
-		preparedhtml += '<tr align=left><td></td><th>N</th><th>Имя</th><th>Минут</th><th>Матчей</th><th>Осталось</th><th>мин в %</th></tr>'
+		preparedhtml += '<tr align=left><td></td><th>N</th><th>в %</th><th>Имя</th><th>СУ Минут</th><th>СУ Матчей</th><th>СУ Осталось</th></tr>'
 		var pls = plsu.sort(function(a,b){return (((b.del ? -1000 : 0) + b.minutesu + b.minute*0.001) - ((a.del ? -1000 : 0) + a.minutesu + a.minute*0.001))})
 		var num = 1
 		for(i in pls) {
@@ -445,13 +445,13 @@ function ShowSU(del) {
 			preparedhtml += '<tr'+trclass+'>'
 			preparedhtml += '<td align=center width=1%><a href="javascript:void(DeletePl(\''+plsi.name+'\','+plsi.del+'))"><font color=red>X</font></a></td>'
 			preparedhtml += '<td>'+(parseInt(i)+1)+'</td>'
+			preparedhtml += '<td align=right width=5%'+(plsi.tilda!='none' && plsi.tilda<=40 ? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda).toFixed(1)) +'</a></td>'
 			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+plsi.name+'\','+plsi.del+'))"><b>'+plsi.name+'</b></a></td>'
 			preparedhtml += '<td><b>'+plsi.minutesu+'</b>'+(plsi.minute>0 ? '<font size=1> ('+plsi.minute+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+plsi.matches+'</b>'+(plsi.matches2>0 ? '<font size=1> ('+plsi.matches2+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+ost+'</b>'
 			preparedhtml += (ost>0 ? '<font size=1> ('+(ostmatch>0 ? '93мин*'+ostmatch+' + ' : '')+ostminute+'мин)</font>' : '')
 			preparedhtml += '</td>'
-			preparedhtml += '<td width=10%'+(plsi.tilda!='none' && plsi.tilda<=40 ? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda).toFixed(1)) +'</a></td>'
 			preparedhtml += '</tr>'
 			num++
 		}
@@ -459,9 +459,10 @@ function ShowSU(del) {
 		preparedhtml += '<div id="divSu">'
 		preparedhtml += '<br>1. минуты в матчах с получением травм и удалений могут считаться не совсем корректно'
 		preparedhtml += '<br>2. с однофамильцами мугут быть проблемы'
-		preparedhtml += '<br>3. серфм помечено то что не идет в подсчет % минут'
-		preparedhtml += '<br>4. <a>&ndash;</a> пометить что матч ненадо учитывать при подсчете % минут'
-		preparedhtml += '<br>5. <font color=red>X</font> удалить: или игрока, или игрока из матча, или матч целиком'
+		preparedhtml += '<br>3. желтым должны быть помечены игроки с тильдами(~)'
+		preparedhtml += '<br>4. серым помечено то что не идет в подсчет % минут'
+		preparedhtml += '<br>5. <a>&ndash;</a> пометить что матч ненадо учитывать при подсчете % минут'
+		preparedhtml += '<br>6. <font color=red>X</font> удалить: или игрока, или игрока из матча, или матч целиком'
 
 		preparedhtml += '</div><br><br>'
 
