@@ -206,8 +206,8 @@ function getMatchInfo(){
 	// получаем финальный счет(были ли пенальти)
 	var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
 	var fres = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
-	debug('getMatchInfo:fres='+fres+':match1.res='+match1.res)
-	if(fres!=match1.res) match1.pen = fres
+	if(fres!=match1.res && fres.indexOf(':')!=-1) match1.pen = fres
+	debug('getMatchInfo:fres='+fres+':match1.res='+match1.res+':match1.pen='+match1.pen)
 
 	if(deb) for(i in match1) debug('getMatchInfo:'+i+'='+match1[i])
 }
