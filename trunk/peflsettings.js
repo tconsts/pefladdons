@@ -44,9 +44,11 @@ $().ready(function() {
 		datatop = 9107893
 		delete localStorage.datatop
 	}
+
 	$('td.back4').html('<br><br><div align=center><font size=3>Настройки CrabVIP скриптов</font></div>')
 
-	var html = '<br><table width=90% align=center class=back2>'
+	var html = '<div align=right><a href="javascript:void(DropAll())">сбросить все настройки</a>&nbsp;</div>'
+	html += '<br><table width=90% align=center class=back2>'
 	html += '<tr class=back2><th width=5%>N</th><th width=5%>Вкл</th><th colspan=2 width=30%>Имя скрипта</th><th>Описание</th></tr>'
 	for (i=1;i<scnames.length;i++) {
 		html += '<tr class=back1>'
@@ -80,6 +82,11 @@ $().ready(function() {
 
 	$('td.back4').append(html)
 });
+
+function DropAll(){
+	localStorage.clear()
+	window.location.reload( true );
+}
 
 function NomDataSwitch(curtop){
 	debug('NomDataSwitch('+curtop+')')
