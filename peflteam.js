@@ -492,9 +492,31 @@ function ShowPlM(plid,pdel){
 	debug('ShowPlM('+plid+')')
 	$('table#tblSuM tr').remove()
 	pdel = (pdel==undefined ? false : pdel)
+
+	var plcount = 0
+	var plname = (plid==0 ? '&nbsp;' : plid)
+	var plinfo = '<br>&nbsp;'
+	if(plid!=0) for(m in players) {
+		debug(String(players[m].name)[0]+'=='+plid.split('.')[0]+':'+players[m].name+'=='+plid.split('.')[1])
+		if(	String(players[m].name)[0]==(plid.split('.')[1]==undefined ? plid[0] : plid.split('.')[0]) && 
+			players[m].name.indexOf((plid.split('.')[1]==undefined ? plid : plid.split('.')[1]))!=-1)
+		{
+			plcount++
+			if(plcount==1){
+				plname = players[m].name +'('+players[m].position+')'
+				plinfo  = '<br><img src="system/img/flags/'+players[m].nid+'.gif" width=20></img> '
+				plinfo += 'возраст: '+players[m].age+', номинал: '+ShowValueFormat(players[m].value/1000)+'т'
+			}
+			if(plcount>1){
+				plname = plid
+				plinfo = ''
+			}
+		}
+	}
+	
 	var prehtml = ''
 	prehtml += '<tr>'
-	prehtml += '<td colspan='+(plid!=0 ? '16 style="border-bottom:1px solid;"' : '6')+'><font size=3><b>'+ (plid!=0 ? plid : '&nbsp;' )+'</b></font></td>'
+	prehtml += '<td colspan='+(plid!=0 ? '16 style="border-bottom:1px solid;"' : '6')+'><font size=3><b>'+plname+'</b></font>'+plinfo+'</td>'
 	prehtml += (plid==0 ? '<td colspan=10 style="border-bottom:1px solid;">&nbsp;</td>' : '')
 	prehtml += '</tr>'
 	prehtml += '<tr id=zagolovok height=20>'
