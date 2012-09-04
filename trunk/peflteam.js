@@ -506,6 +506,7 @@ function ShowPlM(plid,pdel){
 				plname = players[m].name +'('+players[m].position+')'
 				plinfo  = '<br><img src="system/img/flags/'+players[m].nid+'.gif" width=20></img> '
 				plinfo += 'возраст: '+players[m].age+', номинал: '+ShowValueFormat(players[m].value/1000)+'т'
+				plinfo += ', форма/мораль: '+players[m].form+'/'+players[m].morale
 			}
 			if(plcount>1){
 				plname = plid
