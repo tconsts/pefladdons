@@ -416,11 +416,13 @@ function ShowSU(del) {
 				var minute = 0
 				if(mth.mr!=undefined){
 					minute = (mth.m==undefined ? matches2[j].m : parseInt(mth.m))
-					if(countminutes) plsu[num].minute 	+= minute
-					plsu[num].matches2 	+= 1
-					if(matches2[j].su==undefined){
-						plsu[num].minutesu	+= minute
-						plsu[num].matches 	+= 1
+					if(countminutes) {
+						plsu[num].minute 	+= minute
+						plsu[num].matches2 	+= 1
+						if(matches2[j].su==undefined){
+							plsu[num].minutesu	+= minute
+							plsu[num].matches 	+= 1
+						}
 					}
 				}
                 if(!plsu[num].del && countminutes) teamminutes += minute
@@ -433,7 +435,7 @@ function ShowSU(del) {
 		}
 
 		var preparedhtml = '<table id="tblSu" class=back1 width=100%>' //BFDEB3
-		preparedhtml += '<tr align=left><td></td><th>N</th><th>в %</th><th>Имя</th><th>СУ Минут</th><th>СУ Матчей</th><th>СУ Осталось</th></tr>'
+		preparedhtml += '<tr align=left><td></td><th>N</th><th>мин%</th><th>Имя</th><th>СУ Минут</th><th>СУ Матчей</th><th>СУ Осталось</th></tr>'
 		var pls = plsu.sort(function(a,b){return (((b.del ? -1000 : 0) + b.minutesu + b.minute*0.001) - ((a.del ? -1000 : 0) + a.minutesu + a.minute*0.001))})
 		var num = 1
 		for(i in pls) {
@@ -441,7 +443,7 @@ function ShowSU(del) {
 			var ost = sumax - plsi.minutesu
 			var ostmatch = Math.floor(ost/93)
 			var ostminute = ost - ostmatch*93
-			var trclass = (plsi.del ? ' bgcolor='+(num%2==1 ? 'D3D7CF' : 'BABDB6') : ' class=back'+(num%2==1 ? 2 : 1))
+			var trclass = (plsi.del ? ' bgcolor='+(num%2==1 ? 'BABDB6' : 'D3D7CF') : ' class=back'+(num%2==1 ? 2 : 1))
 			preparedhtml += '<tr'+trclass+'>'
 			preparedhtml += '<td align=center width=1%><a href="javascript:void(DeletePl(\''+plsi.name+'\','+plsi.del+'))"><font color=red>X</font></a></td>'
 			preparedhtml += '<td>'+(parseInt(i)+1)+'</td>'
@@ -461,8 +463,9 @@ function ShowSU(del) {
 		preparedhtml += '<br>2. с однофамильцами мугут быть проблемы'
 		preparedhtml += '<br>3. желтым должны быть помечены игроки с тильдами(~)'
 		preparedhtml += '<br>4. серым помечено то что не идет в подсчет % минут'
-		preparedhtml += '<br>5. <a>&ndash;</a> пометить что матч ненадо учитывать при подсчете % минут'
-		preparedhtml += '<br>6. <font color=red>X</font> удалить: или игрока, или игрока из матча, или матч целиком'
+		preparedhtml += '<br>5. <a>&ndash;</a> матч ненадо учитывать при подсчете % минут (например при подписывании школьника)'
+		preparedhtml += '<br>6. <font color=red>X</font> удалить: игрока, игрока из матча или матч целиком'
+		preparedhtml += '<br>7. нажмите на Имя игрока чтобы посмотреть в каких матчах и сколько он играл'
 
 		preparedhtml += '</div><br><br>'
 
@@ -491,8 +494,8 @@ function ShowPlM(plid,pdel){
 	pdel = (pdel==undefined ? false : pdel)
 	var prehtml = ''
 	prehtml += '<tr>'
-	prehtml += '<th colspan=6 width=30% '+(plid!=0 ? 'style="border-bottom:1px solid;"' : '')+'><font size=3>'+ (plid!=0 ? plid : '&nbsp;' )+'</font></th>'
-	prehtml += '<td colspan=10 style="border-bottom:1px solid;">&nbsp;</td>'
+	prehtml += '<td colspan='+(plid!=0 ? '16 style="border-bottom:1px solid;"' : '6')+'><font size=3><b>'+ (plid!=0 ? plid : '&nbsp;' )+'</b></font></td>'
+	prehtml += (plid==0 ? '<td colspan=10 style="border-bottom:1px solid;">&nbsp;</td>' : '')
 	prehtml += '</tr>'
 	prehtml += '<tr id=zagolovok height=20>'
 	if(plid!=0){
@@ -512,7 +515,7 @@ function ShowPlM(plid,pdel){
 	prehtml += '<td style="border-right:1px solid;">судья</td>'
 	prehtml += '</tr>'
 	prehtml += '<tr>'
-	prehtml += '<td colspan=6 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
+	prehtml += '<td colspan=6 width=25% class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
 	prehtml += '<td colspan=10 class=back1 style="border-top:1px solid;">&nbsp;</td>'
 	prehtml += '</tr>'
 	$('table#tblSuM').html(prehtml)
@@ -523,6 +526,9 @@ function ShowPlM(plid,pdel){
 		prehtml 	= ''
 		var mch 	= matches2[j]
 		var mchpl	= (matchespl2[plid]!=undefined && matchespl2[plid][j]!=undefined ? matchespl2[plid][j] : false)
+		if(mchpl.mr==undefined && mch.hnm!=undefined && mch.anm!=undefined){
+
+		}else{
 		var t1 	= (mch.hnm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.hnm)
 		var t2 	= (mch.anm==undefined ? '<b>'+team_cur.tname+'</b>' : mch.anm)
 		var t1u = ''
@@ -551,10 +557,10 @@ function ShowPlM(plid,pdel){
 		}
 		var countmatch = (mch.hnm!=undefined && mch.anm!=undefined ? false : true)
 		var trcolor = ''
-		if(!countmatch) trcolor = ' bgcolor='+(num%2==1 ? 'D3D7CF' : 'BABDB6')
+		if(!countmatch) trcolor = ' bgcolor='+(num%2==1 ? 'BABDB6' : 'D3D7CF')
 		else trcolor = ' class=back'+(num%2==1 ? 2 : 1)
 		var tdcolor = ''
-		if(pdel || mchpl.h!=undefined) tdcolor = ' bgcolor='+(num%2==1 ? 'D3D7CF' : 'BABDB6')
+		if(pdel || mchpl.h!=undefined) tdcolor = ' bgcolor='+(num%2==1 ? 'BABDB6' : 'D3D7CF')
 
 		prehtml += '<tr'+trcolor+' id="tr'+mch.id+'">'
 		if(plid!=0){
@@ -570,7 +576,7 @@ function ShowPlM(plid,pdel){
 		prehtml += '<td>'+(num<10 ? 0 : '')+num+'</td>'
 		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su==undefined ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;&nbsp;&nbsp;</a>')+'</th>'
 		prehtml += '<td>'+mch.m+'\'</td>'
-		prehtml += '<td valign=center><img height=15 src="/system/img/w'+(mch.w!=undefined ? mch.w : 0)+'.png"></img>'+(mch.n!=undefined ? '<sup>N</sup>' : '&nbsp;')+'</td>'
+		prehtml += '<td valign=center nowrap><img height=15 src="/system/img/w'+(mch.w!=undefined ? mch.w : 0)+'.png"></img>'+(mch.n!=undefined ? '<sup>N</sup>' : '&nbsp;')+'</td>'
 		prehtml += '<td align=right nowrap>'+t1+t1u+'</td>'
 		prehtml += '<td nowrap align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? '(п'+mch.pen+')' : '')+'</td>'
 		prehtml += '<td nowrap>'+t2+t2u+'</td>'
@@ -578,6 +584,7 @@ function ShowPlM(plid,pdel){
 		prehtml += '</tr>'
 		num++
 		$('table#tblSuM tr#zagolovok').after(prehtml)
+		}
 	}
 }
 
