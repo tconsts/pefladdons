@@ -192,7 +192,7 @@ function getMatchInfo(){
 	var ust = true
 	for(i in otcharr) {
 		if(String(otcharr[i]).indexOf('предельно настроенными') != -1)	match1.ust = 'p'
-		else if(String(otcharr[i]).indexOf('активно начинает') != -1) 	match1.ust = 'a'
+		else if(String(otcharr[i]).indexOf('активно начина') != -1) 	match1.ust = 'a'
 		if(ust && match1.ust!=undefined){
 			ust = false
 			if(String(otcharr[i]).indexOf(hname) != -1)		 match1.ust += '.h'
