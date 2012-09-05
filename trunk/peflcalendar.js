@@ -14,6 +14,8 @@ var list = {
 	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
 }
 
+var gdaylist = []
+
 $().ready(function() {
 	GetData('matches')
 	checkMatches()
@@ -43,11 +45,20 @@ function checkMatches(){
 	debug('checkMatches:month='+month+':year='+year)
 
 	$('td.back3').each(function(){
-		if($(this).find('i').length>0){
-//			$(this).css("border", "1px solid red");
-			var date = parseInt($(this).find('b:first').html())
-			var timestamp = toTimestamp(checkNum(month)+'/'+checkNum(date)+'/'+year)
-			debug('checkMatches:date='+date+':timestamp='+timestamp)
+		// есть игровой день!
+		if($(this).find('img').length>0){
+			var date 	  = parseInt($(this).find('b:first').html())
+			var timestamp = parseInt(toTimestamp(checkNum(month)+'/'+checkNum(date)+'/'+year))
+			var gdli = gdaylist[timestamp] = {}
+			if($(this).find('img:first').attr('src') == 'system/img/g/ball1.gif') 	 gdli.mday = true
+			else if($(this).find('img:first').attr('src') == 'system/img/g/int.gif') gdli.iday = true
+
+			// есть матч!
+			if($(this).find('i').length>0){
+				//достаем
+			}
+
+			debug('checkMatches:date='+date+':timestamp='+timestamp+':mday='+gdli.mday+':iday='+gdli.iday)
 		}
 	})
 }
