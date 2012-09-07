@@ -51,23 +51,27 @@ function checkMatches(){
 		for(k in matches){
 			var countmark = 0
 			var countall = 0
+			var counttext = ''
+			var counttext2 = ''
 			var mch = matches[k]
 //			debug('checkMatches:-----:gdli='+gdli.dt+':mch='+mch.id)
 			for(j in gdli){
-				if(j!='mday' && j!='iday' && j!='tp' && j!='dt' && j!='hid' && j!='aid'){
+				if(j!='mday' && j!='iday' && j!='tp' && j!='dt'){
 					countall++
 					if(gdli[j]==mch[j] 
 						|| (j=='w' && gdli[j]==0 && mch[j]==undefined)
 //						|| ()
 					){
 						countmark++
+						counttext += j+','
 						//debug('checkMatches:true :gdli='+gdli.dt+':mch='+mch.id+':'+j+':gdli='+gdli[j]+':mch='+mch[j])
 					}else{
+						counttext2 += j+','
 						//debug('checkMatches:false:gdli='+gdli.dt+':mch='+mch.id+':'+j+':gdli='+gdli[j]+':mch='+mch[j])
 					}
 				}
 			}
-			debug('checkMatches:gdli='+gdli.dt+':mch='+mch.id+':all='+countall+':mark='+countmark)
+			debug('checkMatches:gdli='+gdli.dt+':mch='+mch.id+':all='+countall+':mark='+countmark+':'+counttext+':'+counttext2)
 			if(countall!=0 && countmark == countall){
 				mch.dt = gdli.dt
 				mch.tp = gdli.tp
