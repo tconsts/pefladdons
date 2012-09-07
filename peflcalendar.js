@@ -66,7 +66,7 @@ function checkMatches(){
 						counttext += j+','
 						//debug('checkMatches:true :gdli='+gdli.dt+':mch='+mch.id+':'+j+':gdli='+gdli[j]+':mch='+mch[j])
 					}else{
-						counttext2 += j+','
+						counttext2 += j+'('+gdli[j]+'!='+mch[j]+'),'
 						//debug('checkMatches:false:gdli='+gdli.dt+':mch='+mch.id+':'+j+':gdli='+gdli[j]+':mch='+mch[j])
 					}
 				}
@@ -76,7 +76,7 @@ function checkMatches(){
 				mch.dt = gdli.dt
 				mch.tp = gdli.tp
 				matches[k] = mch
-//				saveJSONlocalStorage('matches2',matches)
+				saveJSONlocalStorage('matches2',matches)
 				debug('checkMatches:'+gdli.dt+'-----------------')
 				if(deb) for(g in mch) debug('checkMatches:matches:'+g+'='+mch[g])
 				break;
@@ -106,10 +106,10 @@ function getPageMatches(){
 			if($(this).find('img:first').attr('src') == 'system/img/g/ball1.gif') 	 gdli.mday = true
 			else if($(this).find('img:first').attr('src') == 'system/img/g/int.gif') gdli.iday = true
 
-			// есть матч!
 			if($(this).find('i').length>0){
+				// есть матч!!!
 				//club
-				var place = ($(this).find('a b').length>0 ? 'a' : 'h')
+				var place = ($(this).find('b a').length>0 ? 'a' : 'h')
 				gdli[place+'id'] = parseInt(UrlValue('j',$(this).find('a:first').attr('href')))
 				gdli[place+'nm'] = $(this).find('a:first').text()
 
@@ -128,7 +128,15 @@ function getPageMatches(){
 				var arr = $(this).html().split('<br>')
 				//счет
 				if($(this).html().indexOf(':')!=-1 && $(this).html().indexOf('*:*')==-1){
-					for(h in arr) if(arr[h].indexOf(':')!=-1) gdli.res = arr[h].split('</')[0].trim()
+					for(h in arr) if(arr[h].indexOf(':')!=-1){
+						var res = arr[h].split('</')[0].trim()
+						if(place == 'h'){
+							// надо перевернуть
+							var re = /([0-9]+)\:([0-9]+)/;
+							res = res.replace(re, "$2:$1");
+						}
+						gdli.res = res
+					}
 				}
 
 				//type
