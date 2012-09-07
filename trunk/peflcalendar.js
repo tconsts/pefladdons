@@ -49,21 +49,33 @@ function checkMatches(){
 	for(i in gdaylist){
 		var gdli = gdaylist[i]
 		for(k in matches){
-			var mark = true
+			var countmark = 0
+			var countall = 0
 			var mch = matches[k]
 //			debug('checkMatches:-----:gdli='+gdli.dt+':mch='+mch.id)
 			for(j in gdli){
-				if(j!='mday'&&j!='iday'&&j!='tp'&&j!='dt'&&j!='hid'&&j!='aid'){
-					if(gdli[j]!=mch[j]){
-						debug('checkMatches:'+mark+':j='+j+':gdli[j]='+gdli[j]+':mch[j]='+mch[j])
-						mark = false
+				if(j!='mday' && j!='iday' && j!='tp' && j!='dt' && j!='hid' && j!='aid'){
+					countall++
+					if(gdli[j]==mch[j] 
+						|| (j=='w' && gdli[j]==0 && mch[j]==undefined)
+//						|| ()
+					){
+						countmark++
+						//debug('checkMatches:true :gdli='+gdli.dt+':mch='+mch.id+':'+j+':gdli='+gdli[j]+':mch='+mch[j])
+					}else{
+						//debug('checkMatches:false:gdli='+gdli.dt+':mch='+mch.id+':'+j+':gdli='+gdli[j]+':mch='+mch[j])
 					}
 				}
 			}
-//			debug('checkMatches:'+mark)
-			if(mark){
-//				debug('checkMatches:gdaylist:'+gdli.dt+':'+matches[k].id+'-----------------')
-//				if(deb) for(g in gdli) debug('checkMatches:gdaylist:'+g+'='+gdli[g])
+			debug('checkMatches:gdli='+gdli.dt+':mch='+mch.id+':all='+countall+':mark='+countmark)
+			if(countall!=0 && countmark == countall){
+				mch.dt = gdli.dt
+				mch.tp = gdli.tp
+				matches[k] = mch
+//				saveJSONlocalStorage('matches2',matches)
+				debug('checkMatches:'+gdli.dt+'-----------------')
+				if(deb) for(g in mch) debug('checkMatches:matches:'+g+'='+mch[g])
+				break;
 			}
 		}
 	}
