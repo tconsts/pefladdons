@@ -17,10 +17,10 @@ var list = {
 var gdaylist = []
 
 $().ready(function() {
-	GetData('matches')
-	checkMatches()
-	//SaveData('matches')
 	markToday()
+	getJSONlocalStorage('matches2',matches)
+	getPageMatches()
+	checkMatches()
 });
 
 function toTimestamp(td){
@@ -35,6 +35,42 @@ function checkNum(num){
 
 function checkMatches(){
 	debug('checkMatches()')
+/**
+	for (i in gdaylist){
+		debug('checkMatches:gdaylist:'+i+'-----------------')
+		if(deb) for(g in gdaylist[i]) debug('checkMatches:gdaylist:'+g+'='+gdaylist[i][g])
+	}
+	for (i in matches){
+		debug('checkMatches:matches:'+i+'-----------------')
+		if(deb) for(g in matches[i]) debug('checkMatches:matches:'+g+'='+matches[i][g])
+	}
+/**/
+
+	for(i in gdaylist){
+		var gdli = gdaylist[i]
+		for(k in matches){
+			var mark = true
+			var mch = matches[k]
+//			debug('checkMatches:-----:gdli='+gdli.dt+':mch='+mch.id)
+			for(j in gdli){
+				if(j!='mday'&&j!='iday'&&j!='tp'&&j!='dt'&&j!='hid'&&j!='aid'){
+					if(gdli[j]!=mch[j]){
+						debug('checkMatches:'+mark+':j='+j+':gdli[j]='+gdli[j]+':mch[j]='+mch[j])
+						mark = false
+					}
+				}
+			}
+//			debug('checkMatches:'+mark)
+			if(mark){
+//				debug('checkMatches:gdaylist:'+gdli.dt+':'+matches[k].id+'-----------------')
+//				if(deb) for(g in gdli) debug('checkMatches:gdaylist:'+g+'='+gdli[g])
+			}
+		}
+	}
+}
+
+function getPageMatches(){
+	debug('getPageMatches()')
 	var m2 = []
 	var year  = parseInt(UrlValue('y',$('td.back4 a:first').attr('href')))
 	var month = parseInt(UrlValue('m',$('td.back4 a:first').attr('href'))) + 1
@@ -42,79 +78,58 @@ function checkMatches(){
 		month = 1
 		year += 1
 	}
-	debug('checkMatches:month='+month+':year='+year)
+	debug('getPageMatches:month='+month+':year='+year)
 
+	var count = 0
 	$('td.back3').each(function(){
-		// ���� ������� ����!
+		// есть игровой день!
 		if($(this).find('img').length>0){
 			var date 	  = parseInt($(this).find('b:first').html())
-			var timestamp = parseInt(toTimestamp(checkNum(month)+'/'+checkNum(date)+'/'+year))
-			var gdli = gdaylist[timestamp] = {}
+			var timestamp = parseInt(toTimestamp(checkNum(month)+'/'+checkNum(date)+'/'+year))/100000
+			var gdli = {'dt':timestamp}
 			if($(this).find('img:first').attr('src') == 'system/img/g/ball1.gif') 	 gdli.mday = true
 			else if($(this).find('img:first').attr('src') == 'system/img/g/int.gif') gdli.iday = true
 
-			// ���� ����!
+			// есть матч!
 			if($(this).find('i').length>0){
-				//�������
-			}
+				//club
+				var place = ($(this).find('a b').length>0 ? 'a' : 'h')
+				gdli[place+'id'] = parseInt(UrlValue('j',$(this).find('a:first').attr('href')))
+				gdli[place+'nm'] = $(this).find('a:first').text()
 
-			debug('checkMatches:date='+date+':timestamp='+timestamp+':mday='+gdli.mday+':iday='+gdli.iday)
+				//weather
+				var weather = parseInt(($(this).find('img:eq(1)').attr('src')).split('/w')[1].split('.')[0])
+				gdli.w = weather
+
+				//нейтральное поле
+				if($(this).html().indexOf('Нейтр. поле')!=-1) gdli.n = 1
+
+				//судья
+				if($(this).find('b:contains("R")').length>0) {
+					gdli.r = $(this).html().split('<b>R</b>')[1].split('<')[0].trim()
+				}
+
+				var arr = $(this).html().split('<br>')
+				//счет
+				if($(this).html().indexOf(':')!=-1 && $(this).html().indexOf('*:*')==-1){
+					for(h in arr) if(arr[h].indexOf(':')!=-1) gdli.res = arr[h].split('</')[0].trim()
+				}
+
+				//type
+				gdli.tp = getTypeMatch(arr[1].trim())
+			}
+			gdaylist[count] = gdli
+			count++
 		}
 	})
 }
 
-function GetData(dataname){
-	debug('GetData:'+dataname)
-	var data = []
-	var head = list[dataname].split(',')
-	switch (dataname){
-		case 'matches':	 data = matches;	break
-		default: return false
-	}
-	var text1 = String(localStorage[dataname])
-	if (text1 != 'undefined' && text1 != 'null'){
-		var text = text1.split('#')
-		for (i in text) {
-			var x = text[i].split('|')
-			var curt = {}
-			var num = 0
-			for(j in head){
-				curt[head[j]] = (x[num]!=undefined ? x[num] : '')
-				num++
-			}
-			data[curt[head[0]]] = {}
-			if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
-		}
-		debug('GetData:'+dataname+':true')
-	} else {
-		debug('GetData:'+dataname+':false')
+function getTypeMatch(mtype){
+	switch(mtype){
+		case 'Товарищеские': return 't'
+		default: return mtype
 	}
 }
-
-function SaveData(dataname){
-	debug('SaveData:'+dataname)
-	var data = []
-	var head = list[dataname].split(',')
-	switch (dataname){
-		case 'matches':	 data = matches;	break
-		default: return false
-	}
-	var text = ''
-	for (var i in data) {
-		text += (text!='' ? '#' : '')
-		if(typeof(data[i])!='undefined') {
-			var dti = data[i]
-			var dtid = []
-			for(var j in head){
-				dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
-			}
-			text += dtid.join('|')
-		}
-	}
-	localStorage[dataname] = text
-}
-
-
 function markToday(){
 	debug('markToday()')
 	var time=new Date();
@@ -129,7 +144,7 @@ function markToday(){
 function debug(text) {
 	if(deb) {
 		if(debnum==1) $('body').append('<div id=debug>DEBUG INFROMATION<hr></div>')
-		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
+		$('div#debug').append(checkNum(debnum)+'&nbsp;\''+text+'\'<br>');
 		debnum++;
 	}
 }
@@ -140,4 +155,27 @@ function UrlValue(key,url){
 		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
 	}
 	return false
+}
+function getJSONlocalStorage(dataname,data){
+	debug('getJSONlocalStorage:'+dataname)
+	if(String(localStorage[dataname])!='undefined'){
+		var data2 = JSON.parse(localStorage[dataname]);
+		switch(dataname){
+			default:
+				for(k in data2) {
+					if(data2[k].id!=undefined) data[data2[k].id]= data2[k]
+					else data[k]= data2[k]
+				}
+		}
+	} else return false
+}
+function saveJSONlocalStorage(dataname,data){
+	debug('saveJSONlocalStorage:'+dataname)
+	switch(dataname){
+		default:
+			var data2 = []
+			debug('default преобразования')
+			for(i in data) data2.push(data[i])
+	}
+	localStorage[dataname] = JSON.stringify(data2)
 }
