@@ -385,7 +385,7 @@ function ShowSU(del) {
 		plsu = []
 		debug('plsu.length:'+plsu.length)
 	}
-
+//	for(g in matches2) debug('g='+g+':mid='+matches2[g].id)
 	$('div#divRostSkillsFilter').hide()
 	$('table#tblRostSkillsFilter').hide()
 	$('table#SumPl').hide()
@@ -396,7 +396,7 @@ function ShowSU(del) {
 	$('table#tblRosterFilter').hide()
 	$('table#tblRoster').hide()
 
-	debug('x:'+$('table#tblSu').length)
+	debug('ShowSU:размер(tblSu)='+$('table#tblSu').length)
 	if($('table#tblSu').length>0) {
 		$('table#tblSu').show()
 		$('table#tblSuM').show()
@@ -412,21 +412,29 @@ function ShowSU(del) {
 			plsu[num] = {'name':i, 'minutesu':0,'minute':0,'matches':0,'matches2':0,'del':(plexl.indexOf('|'+i+'|') != -1 ? true : false)}
 			for (j in matchespl2[i]){
 				var mth = matchespl2[i][j]
-				var countminutes = (mth.h==undefined && (matches2[j].hnm==undefined || matches2[j].anm==undefined) ? true : false)
+				var mch2 = {}
+				for(g in matches2){
+					if(parseInt(matches2[g].id)==parseInt(j)) {
+						mch2 = matches2[g];
+						break
+					}
+				}
+				var countminutes = (mth.h==undefined && (mch2.hnm==undefined || mch2.anm==undefined) ? true : false)
+//				var countminutes = (mth.h==undefined && (matches2[j].hnm==undefined || matches2[j].anm==undefined) ? true : false)
 				var minute = 0
 				if(mth.mr!=undefined){
-					minute = (mth.m==undefined ? matches2[j].m : parseInt(mth.m))
+					minute = (mth.m==undefined ? parseInt(mch2.m) : parseInt(mth.m))
 					if(countminutes) {
 						plsu[num].minute 	+= minute
 						plsu[num].matches2 	+= 1
-						if(matches2[j].su==undefined){
+						if(mch2.su==undefined){
 							plsu[num].minutesu	+= minute
 							plsu[num].matches 	+= 1
 						}
 					}
 				}
                 if(!plsu[num].del && countminutes) teamminutes += minute
-				//debug('ShowSU:'+i+':minute='+minute+':teamminutes='+teamminutes)
+//				debug('ShowSU:'+i+':minute='+minute+':teamminutes='+teamminutes+':mch2='+mch2.id)
 			}
 		}
 		for(i in plsu) {
@@ -466,6 +474,8 @@ function ShowSU(del) {
 		preparedhtml += '<br>5. <a>&ndash;</a> матч ненадо учитывать при подсчете % минут (например при подписывании школьника)'
 		preparedhtml += '<br>6. <font color=red>X</font> удалить: игрока, игрока из матча или матч целиком'
 		preparedhtml += '<br>7. нажмите на Имя игрока чтобы посмотреть в каких матчах и сколько он играл'
+		preparedhtml += '<br>8. для отображения дат и турниров сходите в календарь'
+		preparedhtml += '<br>9. сортировка матчей идет так: вначале матчи без дат(по id), потом по датам'
 
 		preparedhtml += '</div><br><br>'
 
@@ -532,23 +542,29 @@ function ShowPlM(plid,pdel){
 	}else prehtml += '<td colspan=6 class=back1></td>'
 	prehtml += '<td style="border-left:1px solid;">&nbsp;</td>'
 	prehtml += '<td>N</td>'
+	prehtml += '<td>Дата</td>'
 	prehtml += '<td>СУ</td>'
-	prehtml += '<td colspan=2>мин</td>'
+	prehtml += '<td>&nbsp;</td>'
 	prehtml += '<td colspan=3 align=center>матч</td>'
-	prehtml += '<td style="border-right:1px solid;">судья</td>'
+	prehtml += '<td style="border-right:1px solid;">турнир</td>'
 	prehtml += '</tr>'
 	prehtml += '<tr>'
-	prehtml += '<td colspan=6 width=25% class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
-	prehtml += '<td colspan=10 class=back1 style="border-top:1px solid;">&nbsp;</td>'
+	prehtml += '<td colspan=6 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
+	prehtml += '<td colspan=10 width=65% class=back1 style="border-top:1px solid;">&nbsp;</td>'
 	prehtml += '</tr>'
 	$('table#tblSuM').html(prehtml)
 
 	var num = 1
 	var num2 = 0
-	for(j in matches2){
+	var matches22 = []
+	matches22 = matches2
+	matches22.sort(function(a,b){return (((a.dt==undefined?(a.hnm!=undefined&&a.anm!=undefined?0:100000000):a.dt) + a.id*0.0000001) - ((b.dt==undefined?(b.hnm!=undefined&&b.anm!=undefined?0:100000000):b.dt) + b.id*0.0000001))})
+	for(j in matches22){
 		prehtml 	= ''
-		var mch 	= matches2[j]
-		var mchpl	= (matchespl2[plid]!=undefined && matchespl2[plid][j]!=undefined ? matchespl2[plid][j] : false)
+		var mch 	= matches22[j]
+		if(mch.res!=undefined){
+
+		var mchpl	= (matchespl2[plid]!=undefined && matchespl2[plid][mch.id]!=undefined ? matchespl2[plid][mch.id] : false)
 		if(mchpl.mr==undefined && mch.hnm!=undefined && mch.anm!=undefined){
 
 		}else{
@@ -560,6 +576,21 @@ function ShowPlM(plid,pdel){
 			var ust = mch.ust.split('.')
 			t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.h a.h p
 			t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.a a.a p
+		}
+		var date = '&nbsp;'
+		if(mch.dt!=undefined){
+			var dt = new Date(mch.dt*100000)
+			mdate = parseInt(dt.getDate())
+			mmonth = parseInt(dt.getMonth())+1
+			date =  (mdate<10?'0':'')+mdate+'.'+(mmonth<10?0:'')+mmonth//+ '.'+dt.getFullYear()
+		}
+		var type	= '&nbsp;'
+		if(mch.tp!=undefined){
+			switch(mch.tp){
+				case 't': type='Товарищеский';break;
+//				case 'c': type='Кубок'
+				default: type = mch.tp
+			}
 		}
 		var minute	= '&nbsp;'
 		var mark	= '&nbsp;'
@@ -587,8 +618,8 @@ function ShowPlM(plid,pdel){
 
 		prehtml += '<tr'+trcolor+' id="tr'+mch.id+'">'
 		if(plid!=0){
-			prehtml += '<td'+tdcolor+' width=1% style="border-left:1px solid;">'+(minute!='&nbsp;' ? '<a href="javascript:void(MinutesPl('+j+',\''+plid+'\',\'del\'))"><font color=red>X</font></a>' : '&nbsp;')+'</td>'
-			prehtml += '<td'+tdcolor+' width=1%>'+(minute!='&nbsp;' && mchpl.h==undefined && countmatch ? '<a href="javascript:void(MinutesPl('+j+',\''+plid+'\',\'hide\'))">&ndash;</a>' : '&nbsp;')+'</td>'
+			prehtml += '<td'+tdcolor+' width=1% style="border-left:1px solid;">'+(minute!='&nbsp;' ? '<a href="javascript:void(MinutesPl('+mch.id+',\''+plid+'\',\'del\'))"><font color=red>X</font></a>' : '&nbsp;')+'</td>'
+			prehtml += '<td'+tdcolor+' width=1%>'+(minute!='&nbsp;' && mchpl.h==undefined && countmatch ? '<a href="javascript:void(MinutesPl('+mch.id+',\''+plid+'\',\'hide\'))">&ndash;</a>' : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+'>'+(minute!='&nbsp;' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
 			prehtml += '<td'+tdcolor+' align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
@@ -596,17 +627,20 @@ function ShowPlM(plid,pdel){
 			prehtml += '<td'+tdcolor+' style="border-right:1px solid;" align=left width=5%>'+cp+cards+'</td>'
 		}else prehtml += '<td colspan=6 class=back1></td>'
 		prehtml += '<td style="border-left:1px solid;"><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></td>'
-		prehtml += '<td>'+(num<10 ? 0 : '')+num+'</td>'
+		prehtml += '<td align=right><b>'+String(num).fontsize(1)+'</b></td>'
+		prehtml += '<td nowrap align=right>'+date.fontsize(1)+'</td>'
 		prehtml += '<th id="tdsu'+mch.id+'">'+(mch.su==undefined ? '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suoff\',\''+plid+'\'))"><img src="system/img/g/tick.gif" height=12></img></a>' : '<a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'suon\',\''+plid+'\'))">&nbsp;&nbsp;&nbsp;</a>')+'</th>'
-		prehtml += '<td>'+mch.m+'\'</td>'
+//		prehtml += '<td>'+mch.m+'\'</td>'
 		prehtml += '<td valign=center nowrap><img height=15 src="/system/img/w'+(mch.w!=undefined ? mch.w : 0)+'.png"></img>'+(mch.n!=undefined ? '<sup>N</sup>' : '&nbsp;')+'</td>'
 		prehtml += '<td align=right nowrap>'+t1+t1u+'</td>'
 		prehtml += '<td nowrap align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? '(п'+mch.pen+')' : '')+'</td>'
 		prehtml += '<td nowrap>'+t2+t2u+'</td>'
-		prehtml += '<td nowrap style="border-right:1px solid;">'+(mch.r!=undefined ? mch.r.split(' (')[0] : '&nbsp;')+'</td>'
+		prehtml += '<td nowrap style="border-right:1px solid;">'+type.fontsize(1)+'</td>'
+//		prehtml += '<td nowrap style="border-right:1px solid;">'+(mch.r!=undefined ? mch.r.split(' (')[0] : '&nbsp;')+'</td>'
 		prehtml += '</tr>'
 		num++
 		$('table#tblSuM tr#zagolovok').after(prehtml)
+		}
 		}
 	}
 }
@@ -630,7 +664,10 @@ function MinutesPl(mid,pid,type){
 			break;
 		}
 		if(delmatch){
-			delete matches2[mid]
+			for(k in matches2) if(matches2[k].id==mid){
+				delete matches2[k]
+				break
+			}
 			saveJSONlocalStorage('matches2',matches2)
 		}
 	}
@@ -647,15 +684,24 @@ function SuDelMatch(mid, type, plid){
 	debug('SuDelMatch('+mid+','+type+','+plid+')')
 	if(type=='del'){
 		//удалить матч из базы
-		delete matches2[mid]
+		for(k in matches2) if(matches2[k].id==mid){
+			delete matches2[k]
+			break
+		}
 		for(i in matchespl2) delete matchespl2[i][mid]
 		saveJSONlocalStorage('matchespl2',matchespl2)
 	}else if(type=='suoff'){
 		//снять флаг сверхусталости
-		matches2[mid].su = false
+		for(k in matches2) if(matches2[k].id==mid){
+			matches2[k].su = false
+			break
+		}
 	}else if(type=='suon'){
 		//поставить флаг сверхусталости
- 		delete matches2[mid].su
+		for(k in matches2) if(matches2[k].id==mid){
+	 		delete matches2[k].su
+			break
+		}
 	}
 	//SaveData2('matches')
 	saveJSONlocalStorage('matches2',matches2)
@@ -862,12 +908,17 @@ function getJSONlocalStorage(dataname,data){
 					}
 				}
 				break
-			default:
+/**/
+			case 'matches2':
+				for(k in data2) data[k] = data2[k]
+				break
+/**/		default:
 				for(k in data2) {
 					if(data2[k].id!=undefined) data[data2[k].id]= data2[k]
 					else data[k]= data2[k]
 				}
 		}
+//		for(g in matches2) debug('g='+g+':data='+matches2[g].id)
 	} else return false
 }
 function saveJSONlocalStorage(dataname,data){
@@ -883,7 +934,11 @@ function saveJSONlocalStorage(dataname,data){
 				data2[k] = d2
 			}
 			break
-		default:
+/**/
+		case 'matches2': 
+			var data2 = data
+			break
+/**/	default:
 			var data2 = []
 			debug('saveJSONlocalStorage:'+dataname+'default преобразования')
 			for(i in data) data2.push(data[i])
