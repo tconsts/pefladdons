@@ -78,6 +78,7 @@ function FixSize() {
 $().ready(function() {
 //	delete localStorage.debug
 
+	if($('td.topmenu:first table td:eq(1) a:contains("Вход")').length>0) return false
 	getIDnum()
 	FixSize()
 
