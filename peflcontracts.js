@@ -72,6 +72,7 @@ $().ready(function() {
 });
 
 function GetTeams(nid,nname){
+		debug('GetTeams:nid='+nid+':nname='+nname)
 		if(ff){
 			debug('GetTeams as FF')
 			var list = {'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid'}
@@ -94,10 +95,11 @@ function GetTeams(nid,nname){
 		}else{
 			if(!db) DBConnect()
 			db.transaction(function(tx) {
-				tx.executeSql("SELECT tid,nname FROM teams",[],
+				tx.executeSql("SELECT tid,nname,tname FROM teams",[],
 					function(tx, result){
 						for(var i = 0; i < result.rows.length; i++) {
 							var row = result.rows.item(i)
+							//debug('GetTeams:tid='+row['tid']+':nname='+row['nname']+':tname='+row['tname'])
 							teams[parseInt(row['tid'])] = row['nname']
 						}
 						MarkMyCountry(nid,nname)
@@ -111,11 +113,14 @@ function GetTeams(nid,nname){
 }
 
 function MarkMyCountry(nid,nname){
-	debug('MarkMyCountry')
+	debug('MarkMyCountry:nid='+nid+':nname='+nname)
 	$('span.text2b').html('Помечены команды: '+nname)
-	$('td.back4 table table tr:gt(0)').each(function(){
-		$(this).find('td:eq(3), td:eq(4)').each(function(i,val){
-			if(nname==teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))]) $(this).attr('bgcolor','D3D7CF').parent().attr('bgcolor','white')
+	$('td.back4 table table tr:gt(0)').each(function(k,kval){
+		$(kval).find('td:eq(4), td:eq(5)').each(function(i,val){
+			if(nname==teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))]) {
+				debug('MarkMyCountry:k='+(k+1)+':teamid='+parseInt(UrlValue('j',$(val).find('a').attr('href')))+':nname='+teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))])
+				$(this).find('a').attr('style','border-bottom:1px solid blue')
+			}
 		})
 	})
 }
