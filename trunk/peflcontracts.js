@@ -116,9 +116,9 @@ function MarkMyCountry(nid,nname){
 	debug('MarkMyCountry:nid='+nid+':nname='+nname)
 	$('span.text2b').html('Помечены команды: '+nname)
 	$('td.back4 table table tr:gt(0)').each(function(k,kval){
-		$(kval).find('td:eq(4), td:eq(5)').each(function(i,val){
-			if(nname==teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))]) {
-				debug('MarkMyCountry:k='+(k+1)+':teamid='+parseInt(UrlValue('j',$(val).find('a').attr('href')))+':nname='+teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))])
+		$(kval).find('td:gt(2)').each(function(i,val){
+			if(i<3 && nname==teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))]) {
+				debug('MarkMyCountry:k='+(k+1)+':i='+(i+3)+':teamid='+parseInt(UrlValue('j',$(val).find('a').attr('href')))+':nname='+teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))])
 				$(this).find('a').attr('style','border-bottom:1px solid blue')
 			}
 		})
