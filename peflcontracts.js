@@ -108,17 +108,22 @@ function GetTeams(nid,nname){
 				);                                           
 			})		
 		}
-
-	
 }
 
 function MarkMyCountry(nid,nname){
 	debug('MarkMyCountry:nid='+nid+':nname='+nname)
 	$('span.text2b').html('Помечены команды: '+nname)
+	var t1=0
+	var t2=0
+	$('td.back4 table table tr:eq(0) td').each(function(k,kval){
+		if($(kval).text().trim()=='Откуда')	t1=k
+		if($(kval).text().trim()=='Куда')		t2=k
+	})
+	debug('MarkMyCountry:t1='+t1+':t2='+t2)
 	$('td.back4 table table tr:gt(0)').each(function(k,kval){
-		$(kval).find('td:gt(2)').each(function(i,val){
-			if(i<3 && nname==teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))]) {
-				debug('MarkMyCountry:k='+(k+1)+':i='+(i+3)+':teamid='+parseInt(UrlValue('j',$(val).find('a').attr('href')))+':nname='+teams[parseInt(UrlValue('j',$(val).find('a').attr('href')))])
+		$(kval).find('td:eq('+t1+'), td:eq('+t2+')').each(function(){
+			if(nname==teams[parseInt(UrlValue('j',$(this).find('a').attr('href')))]) {
+				debug('MarkMyCountry:teamid='+parseInt(UrlValue('j',$(this).find('a').attr('href')))+':nname='+teams[parseInt(UrlValue('j',$(this).find('a').attr('href')))])
 				$(this).find('a').attr('style','border-bottom:1px solid blue')
 			}
 		})
