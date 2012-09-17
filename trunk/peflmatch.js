@@ -338,12 +338,24 @@ function getPlayersInfo(){
 	debug('getPlayersInfo()')
 	var mt = match1.m
 
+	var positions = {}
+//	if(deb) $('td.back4 table:first').attr('border','1')
+	$('td.back4 table:first td.field').each(function(i,val){
+//		if(deb) $(val).prepend(i)
+		if($(val).find('img').length>0){
+			var pname = $(val).find('small').text().trim()
+			positions[pname] = {'ps':i}
+		}
+	})
+	//for(i in positions) debug('getPlayersInfo:'+i+':'+positions[i].ps)
+
 	// get info from postmatch table
 	var unih = 2
 	var unia = 2
 	$('td.back4 table:eq(6) td:has(a[href^=javascript])').each(function(i,val){
 		var player	= {id:mid}
 		var nameid	= TrimString($(val).find('a[href^=javascript]').text())
+		if(positions[nameid]!=undefined && positions[nameid].ps!=undefined) player.ps = positions[nameid].ps
 
         var pnum = parseInt($(val).prev().html()) +(i%2==1 ? 18 : 0)
         var nexttd = $(val).next().html()
