@@ -624,7 +624,7 @@ function ShowPlM(plid,pdel){
 			goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
 			cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
 			inz		= (mchpl.in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
-			pos		= (mchpl.ps!=undefined ? matchpos[mchpl.ps]: '&nbsp;')
+			pos		= (mchpl.ps!=undefined ? matchpos[String(mchpl.ps).split(':')[0]]: '&nbsp;')
 			num2++
 		}
 		var countmatch = (mch.hnm!=undefined && mch.anm!=undefined ? false : true)
@@ -638,7 +638,7 @@ function ShowPlM(plid,pdel){
 		if(plid!=0){
 			prehtml += '<td'+tdcolor+' width=1% style="border-left:1px solid;">'+(minute!='&nbsp;' ? '<a href="javascript:void(MinutesPl('+mch.id+',\''+plid+'\',\'del\'))"><font color=red>X</font></a>' : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+' width=1%>'+(minute!='&nbsp;' && mchpl.h==undefined && countmatch ? '<a href="javascript:void(MinutesPl('+mch.id+',\''+plid+'\',\'hide\'))">&ndash;</a>' : '&nbsp;')+'</td>'
-			prehtml += '<td'+tdcolor+'>'+(minute!='&nbsp;' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
+			prehtml += '<td'+tdcolor+' align=right>'+(minute!='&nbsp;' ? '<b>'+String(num2).fontsize(1)+'</b>' : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap align=right>'+pos+'</td>'
 			prehtml += '<td'+tdcolor+' align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
