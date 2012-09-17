@@ -499,6 +499,21 @@ function suMarkDel(plid,del){
 }
 
 function ShowPlM(plid,pdel){
+	var matchpos = [,'GK',,
+	,,'SW',,,
+	'RDF','CDF','CDF','CDF','LDF',
+	'RDM','CDM','CDM','CDM','LDM',
+	'RMF','CMF','CMF','CMF','LMF',
+	'RAM','CAM','CAM','CAM','LAM',
+	,'FW','FW','FW',,
+	,'FW','FW','FW',,
+	'LAM','CAM','CAM','CAM','RAM',
+	'LMF','CMF','CMF','CMF','RMF',
+	'LDM','CDM','CDM','CDM','RDM',
+	'LDF','CDF','CDF','CDF','RDF',
+	,,'SW',,,
+	,'GK']
+
 	debug('ShowPlM('+plid+')')
 	$('table#tblSuM tr').remove()
 	pdel = (pdel==undefined ? false : pdel)
@@ -527,7 +542,7 @@ function ShowPlM(plid,pdel){
 	
 	var prehtml = ''
 	prehtml += '<tr>'
-	prehtml += '<td colspan='+(plid!=0 ? '16 style="border-bottom:1px solid;"' : '6')+'><font size=3><b>'+plname+'</b></font>'+plinfo+'</td>'
+	prehtml += '<td colspan='+(plid!=0 ? '17 style="border-bottom:1px solid;"' : '7')+'><font size=3><b>'+plname+'</b></font>'+plinfo+'</td>'
 	prehtml += (plid==0 ? '<td colspan=10 style="border-bottom:1px solid;">&nbsp;</td>' : '')
 	prehtml += '</tr>'
 	prehtml += '<tr id=zagolovok height=20>'
@@ -536,10 +551,11 @@ function ShowPlM(plid,pdel){
 		prehtml += '<td></td>'
 		prehtml += '<td>&nbsp;N</td>'
 		prehtml += '<td>мин</td>'
+		prehtml += '<td>поз</td>'
 		prehtml += '<td>рейт</td>'
 		prehtml += '<td>голы</td>'
 		prehtml += '<td style="border-right:1px solid;">&nbsp;</td>'
-	}else prehtml += '<td colspan=6 class=back1></td>'
+	}else prehtml += '<td colspan=7 class=back1></td>'
 	prehtml += '<td style="border-left:1px solid;">&nbsp;</td>'
 	prehtml += '<td>N</td>'
 	prehtml += '<td>Дата</td>'
@@ -549,7 +565,7 @@ function ShowPlM(plid,pdel){
 	prehtml += '<td style="border-right:1px solid;">турнир</td>'
 	prehtml += '</tr>'
 	prehtml += '<tr>'
-	prehtml += '<td colspan=6 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
+	prehtml += '<td colspan=7 class=back1'+(plid!=0 ? ' style="border-top:1px solid;"' : '')+'>&nbsp;</td>'
 	prehtml += '<td colspan=10 width=65% class=back1 style="border-top:1px solid;">&nbsp;</td>'
 	prehtml += '</tr>'
 	$('table#tblSuM').html(prehtml)
@@ -599,6 +615,7 @@ function ShowPlM(plid,pdel){
 		var goals	= '&nbsp;'
 		var cards	= '&nbsp;'
 		var inz		= '&nbsp;'
+		var pos		= '&nbsp;'
 		if(plid!=0 && mchpl && mchpl.mr!=undefined){
 			minute	= (mchpl.m==undefined ? mch.m : mchpl.m)
 			mark	= (mchpl.mr!=undefined ? mchpl.mr : '&nbsp;')
@@ -607,6 +624,7 @@ function ShowPlM(plid,pdel){
 			goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
 			cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
 			inz		= (mchpl.in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
+			pos		= (mchpl.ps!=undefined ? matchpos[mchpl.ps]: '&nbsp;')
 			num2++
 		}
 		var countmatch = (mch.hnm!=undefined && mch.anm!=undefined ? false : true)
@@ -622,10 +640,11 @@ function ShowPlM(plid,pdel){
 			prehtml += '<td'+tdcolor+' width=1%>'+(minute!='&nbsp;' && mchpl.h==undefined && countmatch ? '<a href="javascript:void(MinutesPl('+mch.id+',\''+plid+'\',\'hide\'))">&ndash;</a>' : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+'>'+(minute!='&nbsp;' ? (num2<10 ? '0' : '')+num2 : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
+			prehtml += '<td'+tdcolor+' nowrap align=right>'+pos+'</td>'
 			prehtml += '<td'+tdcolor+' align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap>'+goals+'</td>'
 			prehtml += '<td'+tdcolor+' style="border-right:1px solid;" align=left width=5%>'+cp+cards+'</td>'
-		}else prehtml += '<td colspan=6 class=back1></td>'
+		}else prehtml += '<td colspan=7 class=back1></td>'
 		prehtml += '<td style="border-left:1px solid;"><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></td>'
 		prehtml += '<td align=right><b>'+String(num).fontsize(1)+'</b></td>'
 		prehtml += '<td nowrap align=right>'+date.fontsize(1)+'</td>'
