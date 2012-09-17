@@ -427,10 +427,10 @@ function ShowSU(del) {
 					if(countminutes) {
 						plsu[num].minute 	+= minute
 						plsu[num].matches2 	+= 1
-						if(mch2.su==undefined){
-							plsu[num].minutesu	+= minute
-							plsu[num].matches 	+= 1
-						}
+					}
+					if(mch2.su==undefined){
+						plsu[num].minutesu	+= minute
+						plsu[num].matches 	+= 1
 					}
 				}
                 if(!plsu[num].del && countminutes) teamminutes += minute
@@ -443,7 +443,7 @@ function ShowSU(del) {
 		}
 
 		var preparedhtml = '<table id="tblSu" class=back1 width=100%>' //BFDEB3
-		preparedhtml += '<tr align=left><td></td><th>N</th><th>мин%</th><th>Имя</th><th>СУ Минут</th><th>СУ Матчей</th><th>СУ Осталось</th></tr>'
+		preparedhtml += '<tr align=left><td></td><th>N</th><th nowrap>мин%</th><th>Имя</th><th>СУ Минут</th><th>СУ Матчей</th><th>СУ Осталось</th></tr>'
 		var pls = plsu.sort(function(a,b){return (((b.del ? -1000 : 0) + b.minutesu + b.minute*0.001) - ((a.del ? -1000 : 0) + a.minutesu + a.minute*0.001))})
 		var num = 1
 		for(i in pls) {
