@@ -501,16 +501,16 @@ function suMarkDel(plid,del){
 function ShowPlM(plid,pdel){
 	var matchpos = [,'GK',,
 	,,'SW',,,
-	'RDF','CDF','CDF','CDF','LDF',
-	'RDM','CDM','CDM','CDM','LDM',
-	'RMF','CMF','CMF','CMF','LMF',
-	'RAM','CAM','CAM','CAM','LAM',
+	'R DF','C DF','C DF','C DF','L DF',
+	'R DM','C DM','C DM','C DM','L DM',
+	'R M','C M','C M','C M','L M',
+	'R AM','C AM','C AM','C AM','L AM',
 	,'FW','FW','FW',,
 	,'FW','FW','FW',,
-	'LAM','CAM','CAM','CAM','RAM',
-	'LMF','CMF','CMF','CMF','RMF',
-	'LDM','CDM','CDM','CDM','RDM',
-	'LDF','CDF','CDF','CDF','RDF',
+	'L AM','C AM','C AM','C AM','R AM',
+	'L M','C M','C M','C M','R M',
+	'L DM','C DM','C DM','C DM','R DM',
+	'L DF','C DF','C DF','C DF','R DF',
 	,,'SW',,,
 	,'GK']
 
@@ -521,14 +521,16 @@ function ShowPlM(plid,pdel){
 	var plcount = 0
 	var plname = (plid==0 ? '&nbsp;' : plid)
 	var plinfo = '<br>&nbsp;'
+	var plposition = false
 	if(plid!=0) for(m in players) {
-		debug(String(players[m].name)[0]+'=='+plid.split('.')[0]+':'+players[m].name+'=='+plid.split('.')[1])
+//		debug('ShowPlM:'+String(players[m].name)[0]+'=='+plid.split('.')[0]+':'+players[m].name+'=='+plid.split('.')[1])
 		if(	String(players[m].name)[0]==(plid.split('.')[1]==undefined ? plid[0] : plid.split('.')[0]) && 
 			players[m].name.indexOf((plid.split('.')[1]==undefined ? plid : plid.split('.')[1]))!=-1)
 		{
 			plcount++
 			if(plcount==1){
-				plname = players[m].name +'('+players[m].position+')'
+				plposition = players[m].position
+				plname = players[m].name +'('+plposition+')'
 				plinfo  = '<br><img src="system/img/flags/'+players[m].nid+'.gif" width=20></img> '
 				plinfo += 'возраст: '+players[m].age+', номинал: '+ShowValueFormat(players[m].value/1000)+'т'
 				plinfo += ', форма/мораль: '+players[m].form+'/'+players[m].morale
@@ -536,6 +538,7 @@ function ShowPlM(plid,pdel){
 			if(plcount>1){
 				plname = plid
 				plinfo = ''
+				plposition = false
 			}
 		}
 	}
@@ -615,7 +618,7 @@ function ShowPlM(plid,pdel){
 		var goals	= '&nbsp;'
 		var cards	= '&nbsp;'
 		var inz		= '&nbsp;'
-		var pos		= '&nbsp;'
+		var pos		= ''
 		if(plid!=0 && mchpl && mchpl.mr!=undefined){
 			minute	= (mchpl.m==undefined ? mch.m : mchpl.m)
 			mark	= (mchpl.mr!=undefined ? mchpl.mr : '&nbsp;')
@@ -624,7 +627,19 @@ function ShowPlM(plid,pdel){
 			goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
 			cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
 			inz		= (mchpl.in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
-			pos		= (mchpl.ps!=undefined ? matchpos[parseInt(String(mchpl.ps).split(':')[0])]: '&nbsp;')
+			if(mchpl.ps!=undefined){
+				var posarr = String(mchpl.ps).split(':')
+				for(n in posarr){
+					var posname = matchpos[parseInt(posarr[n])]
+					var red1 = ''
+					var red2 = ''
+					if(!filterPosition(plposition,posname)){
+						red1 = '<font color=red>'
+						red2 = '</font>'
+					}
+					pos	+= (pos==''?'':',')+red1+posname+red2
+				}
+			}else pos = '&nbsp;'
 			num2++
 		}
 		var countmatch = (mch.hnm!=undefined && mch.anm!=undefined ? false : true)
@@ -640,7 +655,7 @@ function ShowPlM(plid,pdel){
 			prehtml += '<td'+tdcolor+' width=1%>'+(minute!='&nbsp;' && mchpl.h==undefined && countmatch ? '<a href="javascript:void(MinutesPl('+mch.id+',\''+plid+'\',\'hide\'))">&ndash;</a>' : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+' align=right>'+(minute!='&nbsp;' ? '<b>'+String(num2).fontsize(1)+'</b>' : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
-			prehtml += '<td'+tdcolor+' nowrap align=right>'+pos+'</td>'
+			prehtml += '<td'+tdcolor+' nowrap>'+pos+'</td>'
 			prehtml += '<td'+tdcolor+' align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap>'+goals+'</td>'
 			prehtml += '<td'+tdcolor+' style="border-right:1px solid;" align=left width=5%>'+cp+cards+'</td>'
@@ -662,6 +677,20 @@ function ShowPlM(plid,pdel){
 		}
 		}
 	}
+}
+function filterPosition(plpos,flpos){
+		var pos = flpos.split(' ')
+		var	pos0 = false
+		var pos1 = false
+		if(pos[1]==undefined) {
+			pos1 = true
+			if(plpos.indexOf(pos[0]) != -1) pos0 = true
+		}else{
+			for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
+			pos1arr = pos[1].split('/')
+			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
+		}
+		return (pos0 && pos1 ? true : false)
 }
 
 function DeletePl(pid,del){
