@@ -15,8 +15,10 @@ var teams = []
 
 
 $().ready(function() {
-	if(UrlValue('p')=='tr'){
-		if(UrlValue('t')=='nc' || UrlValue('t')=='ctrf'){
+	var t = UrlValue('t')
+	var p = UrlValue('p')
+	if(p=='tr'){
+		if(t=='nc' || t=='ctrf'){
 		/**
 			$('td.back4').append('form:<br>')
 				$("form").submit(function() {
@@ -25,12 +27,14 @@ $().ready(function() {
 				return false;
 	    	});
 		/**/
-		}else if(UrlValue('t')=='transfers' || UrlValue('t')=='transfers3' || UrlValue('t')=='transfers4') {
+		}else if(t=='staff' || t=='alist' || t=='nlist' || t=='tlist' || t=='free'){
+			$('td.back4 table tr[bgcolor]').addClass('back3').removeAttr('bgcolor')
+		}else if(t=='transfers' || t=='transfers3' || t=='transfers4') {
 			// fix table colors
 			$('td.back4 table tr[bgcolor]').addClass('back3').removeAttr('bgcolor')
 			GetTeams(parseInt(localStorage.mycountry),localStorage.mycountry.split('.')[1])
 		}
-	} else if(UrlValue('p')=='fin'){
+	} else if(p=='fin'){
 		// fix table colors
 		$('td.back4 table table tr[bgcolor]').addClass('back3').removeAttr('bgcolor')
 
