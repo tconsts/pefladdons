@@ -73,7 +73,7 @@ function checkMatches(){
 					}
 				}
 				debug('checkMatches:gdli='+gdli.dt+':mch='+mch.id+':all='+countall+':mark='+countmark+':'+counttext+':'+counttext2)
-				if(countall!=0 && countmark == countall){
+				if(countall>3 && countmark == countall){
 					mch.dt = gdli.dt
 					mch.tp = gdli.tp
 					matches[k] = mch
