@@ -35,7 +35,7 @@ function getIDnum(){
 	var getID = (datecur5>datestr ? true : false)
 	if(getID){
 		$('td.back4').prepend('<div style="display: none;" id=debugid></div>') //
-		$('#debugid').load('plug.php?p=tr&t=transfers0&z=3f460327cf4af02a70491d5cb9b2b159 td.back4 table td:last a',function(){
+		$('#debugid').load('plug.php?p=fri&t=r&tur=0&z=d48354e9dfc841580edc9a181fd0cb18 td.back4 a:last',function(){
 			idcur = parseInt($('#debugid').text())
 			if(!isNaN(idcur)){
 				localStorage.gday = datecur5+'.'+idcur

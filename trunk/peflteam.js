@@ -624,7 +624,7 @@ function ShowPlM(plid,pdel){
 			goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
 			cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
 			inz		= (mchpl.in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
-			pos		= (mchpl.ps!=undefined ? matchpos[String(mchpl.ps).split(':')[0]]: '&nbsp;')
+			pos		= (mchpl.ps!=undefined ? matchpos[parseInt(String(mchpl.ps).split(':')[0])]: '&nbsp;')
 			num2++
 		}
 		var countmatch = (mch.hnm!=undefined && mch.anm!=undefined ? false : true)
