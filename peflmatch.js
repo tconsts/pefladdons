@@ -205,7 +205,6 @@ function getMatchInfo(){
 	$('td.back4 table:eq(2) center p').each(function(){otcharr.push($(this).html())})
 	var ust = true
 	var chpos = 0
-	$('td.back4').append('<div id=posdebug style="display: none;">xx</div>')
 	for(i in otcharr) {
 		// выясняем установку
 		if(String(otcharr[i]).indexOf('предельно настроенными') != -1)	match1.ust = 'p'
@@ -228,9 +227,10 @@ function getMatchInfo(){
 			chpos++
 			var curmin = parseInt(otcharr[i])
 			var tbl = otcharr[i].split('showNewFieldWnd(')[3].split('\'')[1]
-			$('div#posdebug').html(curmin+' мин:'+tbl)
-			var correct = ($('div#posdebug table tr:first td').length>3 ? 33 : 0)
-			$('div#posdebug table td').each(function(i,val){
+			$('td.back4').append('<div id=posdebug'+i+(deb ? '' : ' style="display: none;"')+'></div>')
+			$('div#posdebug'+i).html(curmin+' мин:'+tbl)
+			var correct = ($('div#posdebug'+i+' table tr:first td').length>3 ? 33 : 0)
+			$('div#posdebug'+i+' table td').each(function(i,val){
 				var pos = i+correct
 				$(val).prepend(pos)
 				if($(val).find('img').length>0){
@@ -242,21 +242,43 @@ function getMatchInfo(){
 						if(curps.indexOf(':')!=-1){
 							var psarr = curps.split(':')
 							if(parseInt(psarr[psarr.length-1])!=pos) positions[pname].ps += ':'+pos+'.'+curmin
-						}else if(positions[pname].ps!=pos){
+						}else if(parseInt(positions[pname].ps)!=pos){
 							positions[pname].ps += ':'+pos+'.'+curmin
 						}
 					}
 				}
 			})
+			if(!deb) $('div#posdebug'+i).remove()
 			
 		}
 		// обычная замена
 		if(String(otcharr[i]).indexOf('(*)') == -1 && String(otcharr[i]).indexOf('on.gif') != -1){
 			var curmin = parseInt(otcharr[i])
 			var otiarr = otcharr[i].split('"p')
-			var ploff = otiarr[1].split('"')[0]
-			var plon = otiarr[2].split('"')[0]
-			debug('Замена:'+curmin+' мин:'+ploff+'->'+plon)
+			var pl = []
+			var pnum = []
+			var pname = []
+			for(n=1;n<3;n++){
+				pl[n] = otiarr[n].split('"')[0]
+				pl[n] = parseInt(parseInt(pl[n])==0 ? String(pl[n])[1] : pl[n])
+				pnum[n] = (pl[n]>18 ? pl[n]-18 : pl[n])
+				pname[n] = TrimString($('td.back4 table:eq(6) tr:eq('+(pnum[n]-1)+') a:eq('+(pl[n]>18 ? 1 : 0)+')').text())
+			}
+			if(pnum[1]>pnum[2]){
+				plon = pname[1]
+				ploff = pname[2]
+			}else{
+				plon = pname[2]
+				ploff = pname[1]
+			}
+			debug('Замена:'+curmin+' мин:pl='+pl+':pnum='+pnum+': ушел '+ploff+' зашел '+plon)
+			var pos = positions[ploff].ps
+			var curps = String(positions[ploff].ps)
+			if(curps.indexOf(':')!=-1){
+				var psarr = curps.split(':')
+				pos = parseInt(psarr[psarr.length-1])
+			}
+			positions[plon] = {'ps':pos+'.'+curmin}
 		}
 	}
 
@@ -404,7 +426,6 @@ function getPlayersInfo(){
 		if(positions[nameid]!=undefined && positions[nameid].ps!=undefined) player.ps = positions[nameid].ps
 
         var pnum = parseInt($(val).prev().html()) +(i%2==1 ? 18 : 0)
-		debug(nameid+'='+pnum)
         var nexttd = $(val).next().html()
 		var minutes = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
 		if(minutes!=0) {
@@ -454,7 +475,7 @@ function getPlayersInfo(){
 				matchesplh[nameid] = player
 			}
 		}
-//		debug('getPlayersInfo:i='+i+':team='+(i%2==1 ? 'a' : 'h')+':nameid='+nameid)
-//		if(deb) for(i in player) debug('getPlayersInfo:'+i+'='+player[i])
+		debug('getPlayersInfo:i='+i+':team='+(i%2==1 ? 'a' : 'h')+':nameid='+nameid)
+		if(deb) for(i in player) debug('getPlayersInfo:'+i+'='+player[i])
 	})
 }
