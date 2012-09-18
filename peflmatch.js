@@ -23,6 +23,8 @@ var list = {
 	'matchespl':'nameid,name,minute',
 }
 var match1	= {}
+var positions = {}
+var zamena = []
 var sshort	= ''
 var matches	= []
 var plmatch	= []
@@ -154,6 +156,18 @@ function modifyMarksTable(){
 
 function getMatchInfo(){
 	debug('getMatchInfo()')
+
+//	if(deb) $('td.back4 table:first').attr('border','1')
+	$('td.back4 table:first td.field').each(function(i,val){
+		if(deb) $(val).prepend(i)
+		if($(val).find('img').length>0){
+			var pname = $(val).find('small').text().trim()
+			positions[pname] = {'ps':i}
+		}
+	})
+	//for(i in positions) debug('getPlayersInfo:'+i+':'+positions[i].ps)
+
+
 	var yrcard	= $('td.back4 table:eq(6) img[src*="system/img/gm/yr.gif"]').length
 	var ycard	= $('td.back4 table:eq(6) img[src*="system/img/gm/y.gif"]').length + yrcard
 	var rcard	= $('td.back4 table:eq(6) img[src*="system/img/gm/r.gif"]').length + yrcard
@@ -190,7 +204,10 @@ function getMatchInfo(){
 	var otcharr = []
 	$('td.back4 table:eq(2) center p').each(function(){otcharr.push($(this).html())})
 	var ust = true
+	var chpos = 0
+	$('td.back4').append('<hr><div id=posdebug>xx</div><hr>')
 	for(i in otcharr) {
+		// выясняем установку
 		if(String(otcharr[i]).indexOf('предельно настроенными') != -1)	match1.ust = 'p'
 		else if(String(otcharr[i]).indexOf('активно начина') != -1) 	match1.ust = 'a'
 		if(ust && match1.ust!=undefined){
@@ -200,7 +217,47 @@ function getMatchInfo(){
 			ustanovka = String(otcharr[i]).split('<br>')[1]
 			debug('getMatchInfo:ustanovka='+ustanovka)
 		}
-		if(String(otcharr[i]).indexOf('(*)') != -1 || String(otcharr[i]).indexOf('СЧЕТ') != -1) sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
+		// изменение в счете
+		if(String(otcharr[i]).indexOf('СЧЕТ') != -1){
+			sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
+		}
+		//смена расстановки
+		if(String(otcharr[i]).indexOf('(*)') != -1){
+			sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
+
+			chpos++
+			var curmin = parseInt(otcharr[i])
+			var tbl = otcharr[i].split('showNewFieldWnd(')[3].split('\'')[1]
+			$('div#posdebug').html(curmin+' мин:'+tbl)
+			var correct = ($('div#posdebug table tr:first td').length>3 ? 33 : 0)
+			$('div#posdebug table td').each(function(i,val){
+				var pos = i+correct
+				$(val).prepend(pos)
+				if($(val).find('img').length>0){
+					var pname = $(val).find('small').text().trim()
+					if(positions[pname]==undefined){
+						positions[pname] = {'ps':pos+'.'+curmin}
+					}else{
+						var curps = String(positions[pname].ps)
+						if(curps.indexOf(':')!=-1){
+							var psarr = curps.split(':')
+							if(parseInt(psarr[psarr.length-1])!=pos) positions[pname].ps += ':'+pos+'.'+curmin
+						}else if(positions[pname].ps!=pos){
+							positions[pname].ps += ':'+pos+'.'+curmin
+						}
+					}
+				}
+			})
+			
+		}
+		// обычная замена
+		if(String(otcharr[i]).indexOf('(*)') == -1 && String(otcharr[i]).indexOf('on.gif') != -1){
+			var curmin = parseInt(otcharr[i])
+			var otiarr = otcharr[i].split('"p')
+			var ploff = otiarr[1].split('"')[0]
+			var plon = otiarr[2].split('"')[0]
+			debug('Замена:'+curmin+' мин:'+ploff+'->'+plon)
+		}
 	}
 
 	// получаем рефери
@@ -338,17 +395,6 @@ function getPlayersInfo(){
 	debug('getPlayersInfo()')
 	var mt = match1.m
 
-	var positions = {}
-//	if(deb) $('td.back4 table:first').attr('border','1')
-	$('td.back4 table:first td.field').each(function(i,val){
-//		if(deb) $(val).prepend(i)
-		if($(val).find('img').length>0){
-			var pname = $(val).find('small').text().trim()
-			positions[pname] = {'ps':i}
-		}
-	})
-	//for(i in positions) debug('getPlayersInfo:'+i+':'+positions[i].ps)
-
 	// get info from postmatch table
 	var unih = 2
 	var unia = 2
@@ -358,19 +404,20 @@ function getPlayersInfo(){
 		if(positions[nameid]!=undefined && positions[nameid].ps!=undefined) player.ps = positions[nameid].ps
 
         var pnum = parseInt($(val).prev().html()) +(i%2==1 ? 18 : 0)
+		debug(nameid+'='+pnum)
         var nexttd = $(val).next().html()
 		var minutes = (nexttd.indexOf('(')==-1 ? (pnum<12 || (pnum>18 && pnum<30) ? mt : 0) : (pnum<12 || (pnum>18 && pnum<30) ? parseInt(nexttd.split('(')[1]) : mt-parseInt(nexttd.split('(')[1])))
 		if(minutes!=0) {
-			debug('getPlayersInfo:pl='+nameid+':minutes='+minutes+':mt='+mt)
+//			debug('getPlayersInfo:pl='+nameid+':minutes='+minutes+':mt='+mt)
 			if(minutes!=mt) player.m = minutes
 			player.mr = $(val).next().next().text().trim()
 			//debug('getPlayersInfo:'+nameid+':mark='+player.mr)
 			if($(val).find('b:contains("(к)")').length>0)	player.cp = 1
-			if(deb && player.cp!=undefined) debug('getPlayersInfo:'+nameid+':cp='+player.cp)
+//			if(deb && player.cp!=undefined) debug('getPlayersInfo:'+nameid+':cp='+player.cp)
 			if($(val).find('font').length>0)	player.im = 1
-			if(deb && player.im!=undefined) debug('getPlayersInfo:'+nameid+':im='+player.im)
+//			if(deb && player.im!=undefined) debug('getPlayersInfo:'+nameid+':im='+player.im)
 			if($(val).next().next().find('img').length>0) player.cr = $(val).next().next().find('img').attr('src').split('/')[3].split('.')[0]
-			//if(deb && player.cr!=undefined) debug('getPlayersInfo:'+nameid+':cr='+player.cr)
+//			if(deb && player.cr!=undefined) debug('getPlayersInfo:'+nameid+':cr='+player.cr)
 			if(parseInt($(val).prev().html())>11) player.in = 1
 			//if(deb && player.in!=undefined) debug('getPlayersInfo:'+nameid+':in='+player.in)
 			//посчитаем голы
@@ -407,7 +454,7 @@ function getPlayersInfo(){
 				matchesplh[nameid] = player
 			}
 		}
-//		debug('getPlayersInfo:i='+i+':team='+(i%2==1 ? 'a' : 'h')+':nameid='+player.nameid)
+//		debug('getPlayersInfo:i='+i+':team='+(i%2==1 ? 'a' : 'h')+':nameid='+nameid)
 //		if(deb) for(i in player) debug('getPlayersInfo:'+i+'='+player[i])
 	})
 }
