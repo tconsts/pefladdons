@@ -26,6 +26,8 @@ $().ready(function() {
 	    	});
 		/**/
 		}else if(UrlValue('t')=='transfers' || UrlValue('t')=='transfers3' || UrlValue('t')=='transfers4') {
+			// fix table colors
+			$('td.back4 table tr[bgcolor]').addClass('back3').removeAttr('bgcolor')
 			GetTeams(parseInt(localStorage.mycountry),localStorage.mycountry.split('.')[1])
 		}
 	} else if(UrlValue('p')=='fin'){
