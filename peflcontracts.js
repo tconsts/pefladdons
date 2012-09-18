@@ -117,14 +117,16 @@ function MarkMyCountry(nid,nname){
 	var t2=0
 	$('td.back4 table table tr:eq(0) td').each(function(k,kval){
 		if($(kval).text().trim()=='Откуда')	t1=k
-		if($(kval).text().trim()=='Куда')		t2=k
+		if($(kval).text().trim()=='Куда')	t2=k
 	})
 	debug('MarkMyCountry:t1='+t1+':t2='+t2)
 	$('td.back4 table table tr:gt(0)').each(function(k,kval){
 		$(kval).find('td:eq('+t1+'), td:eq('+t2+')').each(function(){
 			if(nname==teams[parseInt(UrlValue('j',$(this).find('a').attr('href')))]) {
 				debug('MarkMyCountry:teamid='+parseInt(UrlValue('j',$(this).find('a').attr('href')))+':nname='+teams[parseInt(UrlValue('j',$(this).find('a').attr('href')))])
-				$(this).find('a').attr('style','border-bottom:1px solid blue')
+				$(this).find('a').attr('style','border-bottom:1px solid blue').end()
+					.attr('bgcolor','D3D7CF')
+					.parent().removeAttr('class').attr('bgcolor','white')
 			}
 		})
 	})
