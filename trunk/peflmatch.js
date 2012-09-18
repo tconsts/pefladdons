@@ -205,7 +205,7 @@ function getMatchInfo(){
 	$('td.back4 table:eq(2) center p').each(function(){otcharr.push($(this).html())})
 	var ust = true
 	var chpos = 0
-	$('td.back4').append('<hr><div id=posdebug>xx</div><hr>')
+	$('td.back4').append('<div id=posdebug style="display: none;">xx</div>')
 	for(i in otcharr) {
 		// выясняем установку
 		if(String(otcharr[i]).indexOf('предельно настроенными') != -1)	match1.ust = 'p'
