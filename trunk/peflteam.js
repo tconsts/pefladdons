@@ -633,7 +633,7 @@ function ShowPlM(plid,pdel){
 					var posname = matchpos[parseInt(posarr[n])]
 					var red1 = ''
 					var red2 = ''
-					if(!filterPosition(plposition,posname)){
+					if(plposition && !filterPosition(plposition,posname)){
 						red1 = '<font color=red>'
 						red2 = '</font>'
 					}
