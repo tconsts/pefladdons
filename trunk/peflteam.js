@@ -667,7 +667,7 @@ function ShowPlM(plid,pdel){
 //		prehtml += '<td>'+mch.m+'\'</td>'
 		prehtml += '<td valign=center nowrap><img height=15 src="/system/img/w'+(mch.w!=undefined ? mch.w : 0)+'.png"></img>'+(mch.n!=undefined ? '<sup>N</sup>' : '&nbsp;')+'</td>'
 		prehtml += '<td align=right nowrap>'+t1+t1u+'</td>'
-		prehtml += '<td nowrap align=center><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? '(п'+mch.pen+')' : '')+'</td>'
+		prehtml += '<td nowrap align=center>'+(mch.h!=undefined ? '<a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">':'')+mch.res+(mch.h!=undefined?'</a>':'')+(mch.pen!=undefined ? '(п'+mch.pen+')' : '')+'</td>'
 		prehtml += '<td nowrap>'+t2+t2u+'</td>'
 		prehtml += '<td nowrap style="border-right:1px solid;">'+type.fontsize(1)+'</td>'
 //		prehtml += '<td nowrap style="border-right:1px solid;">'+(mch.r!=undefined ? mch.r.split(' (')[0] : '&nbsp;')+'</td>'
