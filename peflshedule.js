@@ -32,15 +32,21 @@ function UrlValue(key,url){
 }
 
 function filter(criteria){
-		$('.back4 tr').each(function(index,value){
-			if ($(this).html().indexOf('Матч')<0 && $(this).html().indexOf('now')<0){
-			    if($(this).html().indexOf(criteria)<0){
-			        $(this).fadeOut();
-			    } else {
-			    	$(this).fadeIn();
-			    }
-			}
-		})
+//	if(deb) $('td.back4 table:first table').attr('border',1)
+	$('td.back4 table:first table tr:not(#trnow)').each(function(){
+		var txt = $(this).html()
+		debug('filter:1')
+		if (txt.indexOf('Матч')==-1){// && txt.indexOf('now')==-1){
+/**/	    if(txt.indexOf(criteria)==-1){
+		        $(this).hide();
+				debug('filter:fadeOut:')
+		    } else {
+		    	$(this).show();
+				debug('filter:fadeIn:')
+		    }
+/**/
+		}
+	})
 }
 function CheckInt(ddn, fl){
 	var strn = ''
@@ -55,66 +61,91 @@ function CheckInt(ddn, fl){
 var int = 	'17.01.12!31.01.12!14.02.12!28.02.12!13.03.12!27.03.12!10.04.12!24.04.12!08.05.12!22.05.12!05.06.12!19.06.12!'
 
 var matches = []
-var list = {
-	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
-	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
-	'matchespl':'nameid,name,minute',
-}
-
-function GetData(dataname){
-	debug(dataname+':GetData')
-	var data = []
-	var head = list[dataname].split(',')
-	switch (dataname){
-		case 'matches':	 data = matches;	break
-		default: return false
+function returnDate(tmsp){
+	if(tmsp!=undefined){
+		var dt = new Date(tmsp*100000)
+		mdate = parseInt(dt.getDate())
+		mmonth = parseInt(dt.getMonth())+1
+		return (mdate<10?'0':'')+mdate+'.'+(mmonth<10?0:'')+mmonth//+ '.'+dt.getFullYear()
 	}
-	var text1 = String(localStorage[dataname])
-	if (text1 != 'undefined' && text1 != 'null'){
-		var text = text1.split('#')
-		for (i in text) {
-			var x = text[i].split('|')
-			var curt = {}
-			var num = 0
-			for(j in head){
-				curt[head[j]] = (x[num]!=undefined ? x[num] : '')
-				num++
-			}
-			data[curt[head[0]]] = {}
-			if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
-		}
-		debug('GetData:'+dataname+':true')
-	} else {
-		debug('GetData:'+dataname+':false')
-	}
+	return ''
 }
 
 function showMatches(){
-	GetData('matches')
+	if(String(localStorage.matches2)!='undefined') matches = JSON.parse(localStorage.matches2)
 	debug('showMatches()')
+	var supic = '<img src="system/img/g/tick.gif" height=12></img>'
+	var myteamid = parseInt(localStorage.myteamid)
+	var myteamname = ''
+	$('td.back4 table:first table:eq(1) tr:eq(1) td:eq(0) a').each(function(){
+		if(parseInt(UrlValue('j',$(this).attr('href'))) == myteamid) myteamname = $(this).text()
+	})
 	//for(p in matches)
 
+	$('td.back4 table:first table:eq(1) tr[bgcolor]').addClass('back3').removeAttr('bgcolor')
 	$('td.back4 table:first table:eq(1) tr').each(function(val){
 		$(this).find('td').attr('nowrap','')
 		if(val==0){
-			$(this).prepend('<td title="Идет в зачет сверхусталости">СУ</td><td></td>')
+			$(this).prepend('<td title="Идет в зачет сверхусталости">СУ</td><td>дата</td>')
+			$(this).find('td:eq(5)').attr('colspan',2)
 		}else{
+			$(this).prepend('<td></td><td nowrap></td>')
+			$(this).find('td:eq(5)').after('<td nowrap></td>')
 			//get match id
-			var matchid = parseInt(UrlValue('j',$(this).find('td:eq(1) a').attr('href')))
-			if(matches[matchid]!=undefined) {
-				var mch = matches[matchid]
-				$(this).find('td:eq(3)').append('&nbsp;<img height=15 src="/system/img/w'+mch.weather+'.png"></img>&nbsp;'+mch.ref)
-				if(mch.pen!='') $(this).find('td:eq(1)').append('&nbsp;(п&nbsp;'+mch.pen+')')
-				$(this).prepend('<td>'+(mch.place.split('.')[1]=='n' ? 'N' : '')+'</td>')
-				$(this).prepend('<td>'+(mch.su ? '<img src="system/img/g/tick.gif" height=12></img>' : '')+'</td>')
-			} else {
-				$(this).prepend('<td></td><td></td>')
+			var matchid = parseInt(UrlValue('j',$(this).find('td:eq(3) a').attr('href')))
+			for(k in matches){
+				if(matches[k].id==matchid){
+					var mch = matches[k]
+					$(this).find('td:eq(0)').html((mch.su==undefined ? supic : ''))
+					$(this).find('td:eq(1)').html(returnDate(mch.dt)+(mch.n==1 ? ' N' : ''))
+					var t1u = ''
+					var t2u = ''
+					if(mch.ust!=undefined){
+						var ust = mch.ust.split('.')
+						t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт) ' ).fontcolor('red') : '') //p.h a.h p
+						t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.a a.a p
+					}
+					$(this).find('td:eq(2)').append(t2u).html($(this).find('td:eq(2)').html().replace(' -',t1u+' -'))
+					$(this).find('td:eq(3)').append((mch.pen!=undefined ? '&nbsp;(п&nbsp;'+mch.pen+')' : ''))
+					$(this).find('td:eq(6)').html('&nbsp;<img height=15 src="/system/img/w'+(mch.w==undefined?0:mch.w)+'.png"></img>&nbsp;'+(mch.r==undefined?'':mch.r))
+					delete matches[k]
+				}
 			}
 		}
 	})
+	// дорисовываем забытые матчи
+	$('td.back4 table:first table:eq(1) tr:last').attr('id','last')
+	var num=0
+	for(i in matches){
+		mch = matches[i]
+		if(mch.anm==undefined || mch.hnm==undefined){
+			debug(mch.id+':'+mch.hnm+' '+mch.res+' '+ mch.anm)
+			var html = '<tr'+(num%2?' class="back3"':'')+'>'
+			html += '<td>'+(mch.su==undefined ? supic : '')+'</td>'
+			html += '<td nowrap>'+returnDate(mch.dt)+(mch.n==1 ? ' N' : '')+'</td>'
+			var t1u = ''
+			var t2u = ''
+			if(mch.ust!=undefined){
+				var ust = mch.ust.split('.')
+				t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт) ' ).fontcolor('red') : '') //p.h a.h p
+				t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.a a.a p
+			}
+			html += '<td nowrap><a>'+(mch.hnm==undefined ? myteamname : mch.hnm)+'</a>'+t1u+' - <a>'+(mch.anm==undefined ? myteamname : mch.anm)+'</a>'+t2u+'</td>'
+			html += '<td nowrap><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? ' (п '+mch.pen+')':'')+'</td>'
+			html += '<td><img src="skins/refl/img/i3.gif" width="15" border="0" align="absmiddle"></img></td>'
+			html += '<td></td>'
+			html += '<td nowrap>&nbsp;<img height=15 src="/system/img/w'+(mch.w==undefined?0:mch.w)+'.png"></img>&nbsp;'+(mch.r==undefined?'':mch.r)+'</td>'
+			html += '<td nowrap>'+(mch.tp!=undefined ? (mch.tp=='t'?'Товарищеский':mch.tp):'')+'</td>'
+			html += '</tr>'
+			$('td.back4 table:first table:eq(1) tr#last').after(html)
+			num++
+		}
+	}
 }
 
 $().ready(function() {
+
+	if(parseInt(localStorage.myteamid)==parseInt(UrlValue('j'))) showMatches()
 
 	var imgecup = '<img height=12 src="system/img/g/e.gif">'
 	var imgcup  = '<img height=12 src="plugins/s/topcontributors/img/cup-1.gif">'
@@ -135,8 +166,8 @@ $().ready(function() {
 	for (var i in competitions){
 		filtertext += ' | <a href="#" onclick="filter(\''+competitions[i]+'\'); return false;">'+competitions[i]+'</a>'
 	}
-	filtertext += ' | <t/><a href="#" onclick="$(\'.back4 tr\').fadeIn(); return false;">Все</a><t/>'
-	$('.back4').prepend(filtertext)
+	filtertext += ' | <t/><a href="#" onclick="$(\'td.back4 tr\').fadeIn(); return false;">Все</a><t/>'
+	$('td.back4').prepend(filtertext)
 	
 	var day = ['вск','пнд','втр','срд','чтв','птн','суб'] 
 	var prevdt = ''
@@ -230,9 +261,8 @@ $().ready(function() {
 			str = td.split('&nbsp;')[0]
 			if(ecup.indexOf(str)!=-1)	img = imgecup
 			if(cup.indexOf(str)!=-1)	img = imgcup
-			$(this).append('<tr><td></td><td class="now" height=25>' + td.fontcolor('#888A85') + '</td><td></td><td></td><td>'+img+'</td>')
+			$(this).append('<tr id="trnow"><td></td><td class="now" height=25>' + td.fontcolor('#888A85') + '</td><td></td><td></td><td>'+img+'</td>')
 		})
 		$('td.now').css("border", "1px solid green");//#a3de8f
 	}
-	if(parseInt(localStorage.myteamid)==parseInt(UrlValue('j'))) showMatches()
 })
