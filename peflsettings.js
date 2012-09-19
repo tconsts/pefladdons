@@ -63,6 +63,8 @@ $().ready(function() {
 		html += '</tr>'
 	}
 	html += '</table>'
+	html += '<br>'
+	html += 'Картинка вместо лого: <input name="logo" id="logo" type="text" size="40" value="'+(String(localStorage.logopic)!='undefined'?localStorage.logopic:'')+'"> <a href="javascript:void(setLogo())">установить</a>'
 	html += '<br><br>&nbsp;* - <i>при появлении нового скрипта, чтобы он заработал, требуется переустановить(поставить поверх) основной скрипт: <a href="http://pefladdons.googlecode.com/svn/trunk/pefl.user.js">pefl.user.js</a>.</i>'
 
 	html += '<br><br>&nbsp;* - <i>Вы можете поддержать проект (или например запросить сделать определенную фичу в первую очередь, или в персональное пользование), перечислив какую-либо сумму одним из следующих способов (оплата возможна через любой платёжный терминал)</i>'
@@ -83,6 +85,29 @@ $().ready(function() {
 	$('td.back4').append(html)
 });
 
+function dropLogo(){
+	debug('dropLogo()')
+}
+function setLogo(){
+	var val = document.getElementById("logo").value
+	debug('setLogo:'+val)
+
+	if(val==''){
+		//delete from lS
+		delete localStorage.logopic
+
+		//delete from input
+		$('input#logo').val('')
+
+		//delete from top
+		$('img:first').attr('src','skins/refl/img/pefl.gif')
+	}else{
+		//set to top
+		$('img:first').attr('height','88').attr('src',val)
+		//save to lS
+		localStorage.logopic = val
+	}
+}
 function DropAll(){
 	localStorage.clear()
 	if(navigator.userAgent.indexOf('Firefox') == -1){

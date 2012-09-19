@@ -75,10 +75,15 @@ function FixSize() {
 	}
 }
 
+function setLogo(){
+	if(String(localStorage.logopic)!='undefined') $('img:first').attr('height','88').attr('src',localStorage.logopic)
+}
+
 $().ready(function() {
 //	delete localStorage.debug
 
 	if($('td.topmenu:first table td:eq(1) a:contains("Вход")').length>0) return false
+	setLogo()
 	getIDnum()
 	FixSize()
 
