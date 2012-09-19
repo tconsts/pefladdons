@@ -178,7 +178,7 @@ function getMatchInfo(){
 	// /system/img/club/1455.gif - club
 	// /system/img/flags/155.gif - national
 	match1.id	= mid
-	match1.h	= UrlValue('z')
+	if(!UrlValue('v')) match1.h	= UrlValue('z')
 	match1.m	= parseInt($('p.key:last').text().split(' ')[0])-1
 	match1.res	= $('td.back4 table:eq(3) td:eq(1)').text()
 	//match1.su	= true
@@ -344,7 +344,7 @@ function getJSONlocalStorage(dataname,data){
 				break
 			default:
 				for(k in data2) {
-					if(data2[k].id!=undefined) data[data2[k].id]= data2[k]
+					if(data2[k]!=undefined && data2[k].id!=undefined) data[data2[k].id]= data2[k]
 					else data[k]= data2[k]
 				}
 		}

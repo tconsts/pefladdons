@@ -131,13 +131,13 @@ function showMatches(){
 				t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.a a.a p
 			}
 			html += '<td nowrap><a>'+(mch.hnm==undefined ? myteamname : mch.hnm)+'</a>'+t1u+' - <a>'+(mch.anm==undefined ? myteamname : mch.anm)+'</a>'+t2u+'</td>'
-			html += '<td nowrap><a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">'+mch.res+'</a>'+(mch.pen!=undefined ? ' (п '+mch.pen+')':'')+'</td>'
+			html += '<td nowrap>'+(mch.h!=undefined?'<a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">':'')+mch.res+(mch.h!=undefined?'</a>':'')+(mch.pen!=undefined ? ' (п '+mch.pen+')':'')+'</td>'
 			html += '<td><img src="skins/refl/img/i3.gif" width="15" border="0" align="absmiddle"></img></td>'
 			html += '<td></td>'
 			html += '<td nowrap>&nbsp;<img height=15 src="/system/img/w'+(mch.w==undefined?0:mch.w)+'.png"></img>&nbsp;'+(mch.r==undefined?'':mch.r)+'</td>'
 			html += '<td nowrap>'+(mch.tp!=undefined ? (mch.tp=='t'?'Товарищеский':mch.tp):'')+'</td>'
 			html += '</tr>'
-			$('td.back4 table:first table:eq(1) tr#last').after(html)
+			$('td.back4 table:first table:eq(1) tr'+(mch.h==undefined ? ':eq(0)':'#last')).after(html)
 			num++
 		}
 	}
