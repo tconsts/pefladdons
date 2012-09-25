@@ -956,15 +956,8 @@ function getJSONlocalStorage(dataname,data){
 					}
 				}
 				break
-/**/
-			case 'matches2':
+			default:
 				for(k in data2) data[k] = data2[k]
-				break
-/**/		default:
-				for(k in data2) {
-					if(data2[k].id!=undefined) data[data2[k].id]= data2[k]
-					else data[k]= data2[k]
-				}
 		}
 //		for(g in matches2) debug('g='+g+':data='+matches2[g].id)
 	} else return false
@@ -982,14 +975,8 @@ function saveJSONlocalStorage(dataname,data){
 				data2[k] = d2
 			}
 			break
-/**/
-		case 'matches2': 
+		default:
 			var data2 = data
-			break
-/**/	default:
-			var data2 = []
-			debug('saveJSONlocalStorage:'+dataname+'default преобразования')
-			for(i in data) data2.push(data[i])
 	}
 	localStorage[dataname] = JSON.stringify(data2)
 }
