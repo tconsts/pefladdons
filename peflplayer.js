@@ -1176,8 +1176,79 @@ apasses
 amom
 /**/
 }
+function getJSONlocalStorage(dataname){
+	if(String(localStorage[dataname])!='undefined'){
+		var data = []
+		var data2 = JSON.parse(localStorage[dataname]);
+		switch(dataname){
+			case 'matchespl2': 
+				for(k in data2){
+					data[k] = []
+					for(l in data2[k]){
+						if(data2[k][l].id!=undefined) data[k][data2[k][l].id]= data2[k][l]
+						else data[k][l]= data2[k][l]
+					}
+				}
+				return data
+				break
+			default:
+				return data2
+		}
+	} else return false
+}
 
-//document.addEventListener('DOMContentLoaded', function(){
+
+function ShowLastStats(){
+	debug('LastStats()')
+	if($('table#plst tr').length==0){
+		var matches = getJSONlocalStorage('matches2')
+		var matchespl = getJSONlocalStorage('matchespl2')
+		var html = '<tr><td>нет данных</td></tr>'
+		if(matches && matchespl){
+			html = ''
+			var num = 1
+			for(i in matchespl){
+				var mpl = matchespl[i]
+//				debug(String(players[0].firstname)[0]+'.'+players[0].secondname + ':'+i)
+				if(i==String(players[0].firstname)[0]+'.'+players[0].secondname){
+					for(j in matches){
+						var mch = matches[j]
+						if(mpl[mch.id]!=undefined){
+							var mchpl = mpl[mch.id]
+							var tr = '<tr nowrap class=back2 align=right>'
+							tr += '<td>'+mch.dt+'('+num+')</td>'
+							tr += '<td>'+(mchpl.in==undefined?'':'->')+(mchpl.m==undefined?mch.m:mchpl.m)+'</td>'
+							tr += '<td>'+mchpl.ps+'</td>'
+							tr += '<td>'+(mchpl.im==1?'<b>':'')+mchpl.mr+(mchpl.im==1?'</b>':'')+'</td>'
+							tr += '<td>'+(mchpl.g!=undefined?mchpl.g:'')+'</td>'
+							tr += '<td>'+(mchpl.cr==undefined?'':mchpl.cr)+(mchpl.cp==undefined?'':mchpl.cp)+'</td>'
+							tr += '<td><img src="system/img/w'+(mch.w==undefined?0:mch.w)+'.png"></img> '+(mch.n==1?'N':'')+'</td>'
+							tr += '<td>'+(mch.hnm==undefined?players[0].team:mch.hnm)+'</td>'
+							tr += '<td align=center>'+mch.res+'</td>'
+							tr += '<td align=left>'+(mch.anm==undefined?players[0].team:mch.anm)+'</td>'
+							tr += '<td align=left>'+mch.tp+'</td>'
+							tr += '</tr>'
+							html = tr+html
+							num++
+						}
+					}
+					break
+				}
+			}
+
+		}
+		html = '<tr class=back2 height=20><td>N</td><td>мин</td><td>поз</td><td>рейт</td><td>голы</td><td>&nbsp;</td><td>&nbsp;</td><td colspan=3>матч</td><td>турнир</td></tr>'+html
+		$('table#plst').append(html)
+	}
+	if ($('a#plst').html() == '+'){
+		$('table#plst tr').show()
+		$('a#plst').html('&ndash;')
+	}else{
+		$('table#plst tr').hide()
+		$('a#plst').html('+')
+	}
+}
+
 $().ready(function() {
 	debug('размер0:'+$('table:eq(0)').attr('width'))
 	var bbig = false
@@ -1434,14 +1505,19 @@ $().ready(function() {
 
 	$('td.back4 table table:eq(1)').attr('id','stat')
 
+	if(deb && players[0].teamid == parseInt(localStorage.myteamid)){
+		var statsplayer = '<br><div id="plst" align=center>Последние матчи</div>'
+		statsplayer += '<div id="plst"><a id="plst" href="javascript:void(ShowLastStats())">+</a></div>'
+		statsplayer += '<table width=100% id="plst"></table>'
+		$('td.back4 table table:eq(1)').after(statsplayer)
+	}
+
 	var statseasons = '<br><div id="kar" align=center>Карьера '+('(<a id="mh" href="javascript:void(ModifyHistory())">more</a>)').fontsize(1)+'</div><br>'
 	statseasons += '<table width=100% id=ph0></table>'
 	$('td.back4 table table:eq(1)').after(statseasons)
 
 	// добавим ссылку на заметки
-	if(UrlValue('t')=='yp') { }
-	else if(UrlValue('t')=='yp2')	$('td.back4').append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
-	else 							$('td.back4 center:last').append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
+	if(UrlValue('t')!='yp') $('td.back4'+(UrlValue('t')!='yp2' ? ' center:last' : '')).append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
 
 	// Get info fom Global or Session Storage
 	var text1 = String(localStorage.peflplayer)
