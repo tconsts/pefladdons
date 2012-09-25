@@ -949,7 +949,12 @@ function CodeForForum(){
 			.replace(/font/g,'color')
 		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+pl.position+'[b]'
 		if(pl.newpos != '' && pl.newpos != undefined) x += '[/b] (' +pl.newpos + ')[b]'
-		x += '\n\nУмения[/b](сс='+pl.sumskills+')[/center]'
+		x += '\n\nУмения[/b](сс='+pl.sumskills
+		x += (pl.flag==5 ? ', школьник':'')
+		x += (pl.flag==7 ? ', молодеж':'')
+		x += (pl.t=='p2' ? ', свободный':'')
+		x += ')[/center]'
+
 	}
 
 	// skills
@@ -1246,10 +1251,9 @@ $().ready(function() {
 	players[0].t = UrlValue('t')
 
 	if (players[0].t =='p' ||players[0].t =='pp') {
-		players[0].teamid = UrlValue('j',$('td.back4 a:first').attr('href'))
+		players[0].team		= $('td.back4 a:first').text()
+		players[0].teamid	= UrlValue('j',$('td.back4 a:first').attr('href'))
 		players[0].teamhash = UrlValue('z',$('td.back4 a:first').attr('href'))
-
-		players[0].team = $('td.back4 a:first').text()
 	} else if (players[0].t =='p2'){
 		players[0].team = 'свободный'
 	}
@@ -1257,9 +1261,12 @@ $().ready(function() {
 	if (players[0].t == 'yp' || players[0].t == 'yp2') {
 		players[0].flag = 5
 	}
-
 	players[0].id  = UrlValue('j')
-	players[0].hash = ($('a:[href^="plug.php?p=tr&t=ncyf&n=yf2&j="]').length>0 ? UrlValue('z',$('a:[href^="plug.php?p=tr&t=ncyf&n=yf2&j="]').attr('href')) : UrlValue('z'))
+	players[0].hash = UrlValue('z')
+	if($('a:[href^="plug.php?p=tr&t=ncyf&n=yf"]').length>0){
+		//значит молодеж
+		players[0].flag = 7
+	}
 
  	j++
 	if (ms[j].indexOf('в аренде') !=-1) j++
