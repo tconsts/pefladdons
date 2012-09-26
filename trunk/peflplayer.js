@@ -1035,7 +1035,7 @@ function CodeForForum(){
 				.removeAttr('ilo-full-src')		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 				.removeAttr('width')
 				.end()
-			//.find('tr').removeAttr('style').removeAttr('id').end()
+			.find('tr').removeAttr('style').removeAttr('id').end()
 			.html()
 			.replace(/<tbody>/g,'<table width=100%>')
 			.replace(/tbody/g,'table')
