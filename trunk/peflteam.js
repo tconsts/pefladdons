@@ -405,8 +405,6 @@ function ShowSU(del) {
 		var plsu = []
 		var plexl = String(localStorage.plexl)
 		var teamminutes = 0
-		//for(i in matches) teamminutes += parseInt(matches[i].minutes)
-		//var teammatches = 0
 		for(i in matchespl2){
 			var num = plsu.length
 			plsu[num] = {'name':i, 'minutesu':0,'minute':0,'matches':0,'matches2':0,'del':(plexl.indexOf('|'+i+'|') != -1 ? true : false)}
@@ -420,13 +418,12 @@ function ShowSU(del) {
 					}
 				}
 				var countminutes = (mth.h==undefined && (mch2.hnm==undefined || mch2.anm==undefined) ? true : false)
-//				var countminutes = (mth.h==undefined && (matches2[j].hnm==undefined || matches2[j].anm==undefined) ? true : false)
 				var minute = 0
 				if(mth.mr!=undefined){
 					minute = (mth.m==undefined ? parseInt(mch2.m) : parseInt(mth.m))
+					plsu[num].matches2 	+= 1
 					if(countminutes) {
 						plsu[num].minute 	+= minute
-						plsu[num].matches2 	+= 1
 					}
 					if(mch2.su==undefined){
 						plsu[num].minutesu	+= minute
@@ -620,7 +617,7 @@ function ShowPlM(plid,pdel){
 		var inz		= '&nbsp;'
 		var pos		= ''
 		if(plid!=0 && mchpl && mchpl.mr!=undefined){
-			minute	= (mchpl.m==undefined ? mch.m : mchpl.m)
+			minute	= (mchpl.m==undefined ? mch.m : mchpl.m)+'\''
 			mark	= (mchpl.mr!=undefined ? mchpl.mr : '&nbsp;')
 			im		= (mchpl.im!=undefined ? true : false)
 			cp		= (mchpl.cp!=undefined ? 'кэп&nbsp;' : '')
@@ -654,7 +651,7 @@ function ShowPlM(plid,pdel){
 			prehtml += '<td'+tdcolor+' width=1% style="border-left:1px solid;">'+(minute!='&nbsp;' ? '<a href="javascript:void(MinutesPl('+mch.id+',\''+plid+'\',\'del\'))"><font color=red>X</font></a>' : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+' width=1%>'+(minute!='&nbsp;' && mchpl.h==undefined && countmatch ? '<a href="javascript:void(MinutesPl('+mch.id+',\''+plid+'\',\'hide\'))">&ndash;</a>' : '&nbsp;')+'</td>'
 			prehtml += '<td'+tdcolor+' align=right>'+(minute!='&nbsp;' ? '<b>'+String(num2).fontsize(1)+'</b>' : '&nbsp;')+'</td>'
-			prehtml += '<td'+tdcolor+' nowrap align=right>'+inz+minute+(minute!="&nbsp;" ? '\'' : '')+'</td>'
+			prehtml += '<td'+tdcolor+' nowrap align=right>'+inz+minute+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap>'+pos+'</td>'
 			prehtml += '<td'+tdcolor+' align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap>'+goals+'</td>'
