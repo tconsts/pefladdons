@@ -732,7 +732,7 @@ function CheckPlayer(nn){
 	// Get data and compare players
 	ShowAll()
 //	$('a[id="th2"]').html('+')
-	$('div#kar, #th2, table#ph0, table#debug').remove()
+	$('div#kar, #th2, table#ph0, table#plst, table#debug').remove()
 
 	$('td.back4').prepend('<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>')
 	$('a#remember, a[id^="compare"]').removeAttr('href')
