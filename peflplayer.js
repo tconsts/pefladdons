@@ -892,9 +892,10 @@ function CodeForForum(){
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
 	var pl = players[0]
 	var ptype = UrlValue('t')
-	var skillsshow = ($('a[id="th0"]').html() == '+' ? false : true)
-	var seasonstatshow = ($('a[id="th1"]').html() == '+' ? false : true)
-	var fullstatshow = ($('a[id="th2"]').html() == '+' ? false : true)
+	var skillsshow		= ($('a#th0').html() == '+' ? false : true)
+	var seasonstatshow	= ($('a#th1').html() == '+' ? false : true)
+	var fullstatshow 	= ($('a#th2').html() == '+' ? false : true)
+	var lastplstatshow	= ($('a#plst').length>0 && $('a#plst').html() == '+' ? false : true)
 
 	$('td.back4 table:first table:not(#plheader):first img').removeAttr('style')
 	x += '<br><hr><b>Полный вариант</b>:<br>'
@@ -1023,6 +1024,32 @@ function CodeForForum(){
 			.replace(/.gif/g,'.gif[/img')
 			.replace(/"/g,'')
 			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
+	}
+	if($('table#plst').html()!=null && lastplstatshow){
+		x += '\n[center][b]Последние матчи[/b][/center]\n'
+		x += $('table#plst')
+			.find('tr.back2').removeAttr('class').end()
+			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
+			.find('td.back1').removeAttr('class').attr('bgcolor','#C9F8B7').end()
+			.find('img')
+				.removeAttr('ilo-full-src')		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+				.removeAttr('width')
+				.end()
+			//.find('tr').removeAttr('style').removeAttr('id').end()
+			.html()
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/<font /g,'[')
+			.replace(/\/font/g,'/color')
+			.replace(/a href=\"/g,'url=')
+			.replace(/\/a/g,'/url')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/.png/g,'.png[/img')
+			.replace(/"/g,'')
+			//.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
 	}
 
 	x += '[/td][/tr][/table]'
@@ -1196,7 +1223,20 @@ function getJSONlocalStorage(dataname){
 		}
 	} else return false
 }
-
+function filterPosition(plpos,flpos){
+		var pos = flpos.split(' ')
+		var	pos0 = false
+		var pos1 = false
+		if(pos[1]==undefined) {
+			pos1 = true
+			if(plpos.indexOf(pos[0]) != -1) pos0 = true
+		}else{
+			for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
+			pos1arr = pos[1].split('/')
+			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
+		}
+		return (pos0 && pos1 ? true : false)
+}
 
 function ShowLastStats(){
 	debug('LastStats()')
@@ -1211,33 +1251,100 @@ function ShowLastStats(){
 				var mpl = matchespl[i]
 //				debug(String(players[0].firstname)[0]+'.'+players[0].secondname + ':'+i)
 				if(i==String(players[0].firstname)[0]+'.'+players[0].secondname){
+					var matchpos = [,'GK',,
+					,,'SW',,,
+					'R DF','C DF','C DF','C DF','L DF',
+					'R DM','C DM','C DM','C DM','L DM',
+					'R M','C M','C M','C M','L M',
+					'R AM','C AM','C AM','C AM','L AM',
+					,'FW','FW','FW',,
+					,'FW','FW','FW',,
+					'L AM','C AM','C AM','C AM','R AM',
+					'L M','C M','C M','C M','R M',
+					'L DM','C DM','C DM','C DM','R DM',
+					'L DF','C DF','C DF','C DF','R DF',
+					,,'SW',,,
+					,'GK']
+
 					for(j in matches){
 						var mch = matches[j]
 						if(mpl[mch.id]!=undefined){
 							var mchpl = mpl[mch.id]
-							var tr = '<tr nowrap class=back2 align=right>'
-							tr += '<td>'+mch.dt+'('+num+')</td>'
-							tr += '<td>'+(mchpl.in==undefined?'':'->')+(mchpl.m==undefined?mch.m:mchpl.m)+'</td>'
-							tr += '<td>'+mchpl.ps+'</td>'
-							tr += '<td>'+(mchpl.im==1?'<b>':'')+mchpl.mr+(mchpl.im==1?'</b>':'')+'</td>'
-							tr += '<td>'+(mchpl.g!=undefined?mchpl.g:'')+'</td>'
-							tr += '<td>'+(mchpl.cr==undefined?'':mchpl.cr)+(mchpl.cp==undefined?'':mchpl.cp)+'</td>'
-							tr += '<td><img src="system/img/w'+(mch.w==undefined?0:mch.w)+'.png"></img> '+(mch.n==1?'N':'')+'</td>'
-							tr += '<td>'+(mch.hnm==undefined?players[0].team:mch.hnm)+'</td>'
-							tr += '<td align=center>'+mch.res+'</td>'
-							tr += '<td align=left>'+(mch.anm==undefined?players[0].team:mch.anm)+'</td>'
-							tr += '<td align=left>'+mch.tp+'</td>'
+							var date = '&nbsp;'
+							if(mch.dt!=undefined){
+								var dt = new Date(mch.dt*100000)
+								mdate = parseInt(dt.getDate())
+								mmonth = parseInt(dt.getMonth())+1
+								date =  (mdate<10?'0':'')+mdate+'.'+(mmonth<10?0:'')+mmonth//+ '.'+dt.getFullYear()
+							}
+							var type	= '&nbsp;'
+							if(mch.tp!=undefined){
+								switch(mch.tp){
+									case 't': type='Товарищеский';break;
+									//case 'c': type='Кубок'
+									default: type = mch.tp
+								}
+							}
+							var t1 	= (mch.hnm==undefined ? '<b>'+players[0].team+'</b>' : mch.hnm)
+							var t2 	= (mch.anm==undefined ? '<b>'+players[0].team+'</b>' : mch.anm)
+							var t1u = ''
+							var t2u = ''
+							if(mch.ust!=undefined){
+								var ust = mch.ust.split('.')
+								t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.h a.h p
+								t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.a a.a p
+							}
+							var minute	= (mchpl.m==undefined ? (mch.m==undefined?'&nbsp;':mch.m+'\'') : mchpl.m+'\'')
+							var im		= (mchpl.im!=undefined ? true : false)
+							var mark	= (mchpl.mr!=undefined ? (im?'<b>':'')+mchpl.mr+(im?'</b>':'') : '&nbsp;')
+							var cp		= (mchpl.cp!=undefined ? 'кэп' : '')+'&nbsp;'
+							//var goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
+							var goals	= (mchpl.g!=undefined ? mchpl.g : '&nbsp;')
+							var cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
+							var inz		= (mchpl.in!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
+							var pos		= '&nbsp;'
+							if(mchpl.ps!=undefined){
+								pos = ''
+								var posarr = String(mchpl.ps).split(':')
+								for(n in posarr){
+									var posname = matchpos[parseInt(posarr[n])]
+									var red1 = ''
+									var red2 = ''
+									if(players[0].position && !filterPosition(players[0].position,posname)){
+										red1 = '<font color=red>'
+										red2 = '</font>'
+									}
+									pos	+= (n==0?'':',')+red1+posname+red2
+								}
+							}
+
+							var tr = '<tr class=back3>'
+							tr += '<td align=right>'+date+'</td>'
+							tr += '<td align=right>'+inz+minute+'</td>'
+							tr += '<td>'+pos+'</td>'
+							tr += '<td align=right>'+mark+'</td>'
+							tr += '<td align=center>'+goals+'</td>'
+							tr += '<td>'+cards+cp+'</td>'
+							//tr += '<td><img src="system/img/w'+(mch.w==undefined?0:mch.w)+'.png"></img> '+(mch.n!=undefined?'N':'')+'</td>'
+							tr += '<td align=right>'+t1+t1u+'</td>'
+							tr += '<td align=center>'+(mch.h!=undefined?'<a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">':'')+mch.res+(mch.h!=undefined?'</a>':'')+'</td>'
+							tr += '<td>'+t2+t2u+'</td>'
+							//tr += '<td>'+type+'</td>'
 							tr += '</tr>'
 							html = tr+html
 							num++
 						}
 					}
+					html = '<tr class=back2 height=20><td>N</td><td>мин</td><td>поз</td><td>рейт</td><td>голы</td><td>&nbsp;</td>'
+					//		+'<td>&nbsp;</td>'
+							+'<td colspan=3 align=center>матч</td>'
+					//		+'<td>турнир</td>'
+							+'</tr>'
+							+html
 					break
 				}
 			}
-
 		}
-		html = '<tr class=back2 height=20><td>N</td><td>мин</td><td>поз</td><td>рейт</td><td>голы</td><td>&nbsp;</td><td>&nbsp;</td><td colspan=3>матч</td><td>турнир</td></tr>'+html
 		$('table#plst').append(html)
 	}
 	if ($('a#plst').html() == '+'){
@@ -1505,7 +1612,7 @@ $().ready(function() {
 
 	$('td.back4 table table:eq(1)').attr('id','stat')
 
-	if(deb && players[0].teamid == parseInt(localStorage.myteamid)){
+	if(players[0].teamid == parseInt(localStorage.myteamid)){
 		var statsplayer = '<br><div id="plst" align=center>Последние матчи</div>'
 		statsplayer += '<div id="plst"><a id="plst" href="javascript:void(ShowLastStats())">+</a></div>'
 		statsplayer += '<table width=100% id="plst"></table>'
