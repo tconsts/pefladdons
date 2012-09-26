@@ -688,6 +688,15 @@ function FillHeaders(){
 	}
 }
 
+function printToBackUp(){
+	debug('printToBackUp()')
+	var text = JSON.stringify(positions)
+		.replace(/\{/g,'\n{')
+		.replace(']','[/code][/spoiler]')
+		.replace('[','[spoiler][code]')
+	return text
+}
+
 function fillPosEdit(num){
 	debug('fillPosEdit:num='+num)
 	var html = ''
@@ -733,6 +742,10 @@ function fillPosEdit(num){
 	html += '<tr><td clospan=2><table>'
 	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
 	html += '</table></td><tr>'
+	if(deb){
+		html += '<tr><th colspan=2>&nbsp;</th></tr>'
+		html += '<tr><td colspan=2><b>Бекап</b>(выделить, скопировать на форум):<br><textarea class=back1 style="border:1px solid;" id=bk name="bk" cols="100" rows="20">'+printToBackUp()+'</textarea></td></tr>'
+	}
 	html += '</table>'
 	$('div#divedit').html(html)
 
