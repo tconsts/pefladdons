@@ -439,7 +439,7 @@ function getPlayersInfo(){
 //			if(deb && player.im!=undefined) debug('getPlayersInfo:'+nameid+':im='+player.im)
 			if($(val).next().next().find('img').length>0) player.cr = $(val).next().next().find('img').attr('src').split('/')[3].split('.')[0]
 //			if(deb && player.cr!=undefined) debug('getPlayersInfo:'+nameid+':cr='+player.cr)
-			if(parseInt($(val).prev().html())>11) player.in = 1
+			if(parseInt($(val).prev().html())>11) player['in'] = 1
 			//if(deb && player.in!=undefined) debug('getPlayersInfo:'+nameid+':in='+player.in)
 			//посчитаем голы
 			var goals = 0
