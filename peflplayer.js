@@ -474,17 +474,17 @@ function GetPlayerHistory(n,pid){
 	stats[0].sr = 0
 
 	$('a#th2').attr('href',"javascript:void(ShowTable(2))").html('&ndash;')
+	$('div#kar2').remove()
 
 	var head = '<tr><td width=3%>С</td><td width=16%>Трансфер</td><td width=3%>Сб</td><td width=3%>Мл</td><td width=10%>Игры</td><td width=13%>Голы</td><td width=13%>Пасы</td><td width=13%>ИМ</td><td width=8%>СР</td><td width=8%> </td><td width=8%> </td></tr>'
-	$('#ph'+n).append(head)
+	$('table#ph'+n).append(head)
 
-	var table = '<table id=debug style="display: none;"></table>'
-//	var table = '<table id=debug></table>'
-	$('#ph'+n).after(table)
+	var table = '<table id=debug style="display: none;"></table>' //
+	$('table#ph'+n).after(table)
 
-	$('#debug').load('hist.php?id='+pid+'&t=p table:eq(0) tr:gt(0)',function(){
+	$('table#debug').load('hist.php?id='+pid+'&t=p table:eq(0) tr:gt(0)',function(){
 		var flagT = true
-		$('#debug').find('tr').each(function(){
+		$('table#debug').find('tr').each(function(){
 			var d = []
 			if(isNaN(parseInt($(this).find('td:first').html()))) flagT = false
 
@@ -539,7 +539,7 @@ function GetPlayerHistory(n,pid){
 		})
 		//print
 		var data = ''
-		data += '<tr class=back2><td><a id=th2 href="javascript:void(ShowCar('+n+'))">+</a> </td><td colspan=3>Итого</td>' //bgcolor=#88C274
+		data += '<tr class=back2><td><a id=th2 href="javascript:void(ShowCar('+n+'))">&ndash;</a></td><td colspan=3>Итого</td>' //bgcolor=#88C274
 		for (p in stats[0]){
 			if(p!='sale' && p!='rent' && p!='free' && p!='nat' && p!='u21') {
 				data += '<td>' 
@@ -554,7 +554,7 @@ function GetPlayerHistory(n,pid){
 
 		for (ss=stats.length-1;ss>=1;ss--){
 			if(stats[ss] !=undefined && (stats[ss].gm !=0 || stats[ss].sale!=0 || (stats[ss].free+stats[ss].rent)>0)){
-					data += '<tr class=back3 id=carpl'+n+' style="display: none;"><td>'
+					data += '<tr class=back3 id=carpl'+n+'><td>'
 					data += ss
 					data += '</td><td>'
 					if(stats[ss].sale!=0) 		data += stats[ss].sale.replace('.',',')
@@ -575,7 +575,7 @@ function GetPlayerHistory(n,pid){
 			}
 		}
 
-		$('#ph'+n).append(data)
+		$('table#ph'+n).append(data)
 	})
 }
 
@@ -1619,9 +1619,11 @@ $().ready(function() {
 		$('td.back4 table table:eq(1)').after(statsplayer)
 	}
 
-	var statseasons = '<br><div id="kar" align=center>Карьера '+('(<a id="mh" href="javascript:void(ModifyHistory())">more</a>)').fontsize(1)+'</div><br>'
+	var statseasons = '<br><div id="kar" align=center>Карьера '+('(<a id="mh" href="javascript:void(ModifyHistory())">more</a>)').fontsize(1)+'</div>'
+	statseasons += '<div id="kar2"><a href="javascript:void(GetPlayerHistory(\'0\',\''+players[0].id+'\'))">+</a></div><br>'
 	statseasons += '<table width=100% id=ph0></table>'
 	$('td.back4 table table:eq(1)').after(statseasons)
+
 
 	// добавим ссылку на заметки
 	if(UrlValue('t')!='yp') $('td.back4'+(UrlValue('t')!='yp2' ? ' center:last' : '')).append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
@@ -1637,7 +1639,7 @@ $().ready(function() {
 		}
 		PrintPlayers()
 	}
-	GetPlayerHistory(0,players[0].id)
+	//GetPlayerHistory(0,players[0].id)
 	GetValue()
 	ShowAdaptation(players[0].natfull)
 	RelocateGetNomData()
