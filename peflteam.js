@@ -77,6 +77,7 @@ var sumH = false
 var MyNick = ''
 
 var countSostav = 0
+var countSostavVip = 0
 var countSk = [0]
 var svalue = true
 var nom = true
@@ -143,6 +144,57 @@ $().ready(function() {
 		preparedhtml += '<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
 		preparedhtml += '</table><br>'
 		$("#crabright").html(preparedhtml)
+
+		var thtml = ''
+		thtml += '<tr><td id="os" colspan=3 align=center nowrap><br><b>Основной состав</b>'
+		thtml += (UrlValue('h')==1 ? '' : ' <a id=showvip href="javascript:void(ShowVip())">*</a>')
+		thtml += '</td></tr>'
+
+		thtml += '<tr id="osform">'
+		thtml += '<td nowrap><b>форма</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
+		thtml += '<th id=osform align=right nowrap></th>'
+		thtml += '</tr>'
+
+		thtml += '<tr id="osmorale">'
+		thtml += '<td nowrap><b>мораль</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
+		thtml += '<th id=osmorale align=right nowrap></th>'
+		thtml += '</tr>'
+
+		thtml += '<tr id="osage">'
+		thtml += '<td nowrap><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
+		thtml += '<th id="osage" align=right nowrap></th>'
+		thtml += '</tr>'
+
+		thtml += '<tr id="osskills">'
+		thtml += '<td nowrap><b><a href="javascript:void(ShowPlayersSkillChange())">скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
+		thtml += '<th id="osskills" align=right nowrap></th>'
+		thtml += '</tr>'
+
+		thtml += '<tr id="ossvalue">'
+		thtml += '<th align=left width=50% nowrap><a href="javascript:void(ShowPlayersSValue())">номиналы+</a>:</th>'
+		thtml += '<th id=ossvalue align=right nowrap></th>'
+		thtml += '<td width=10%>&nbsp;<a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></td>'
+		thtml += '</tr>'
+
+		thtml += '<tr id="osnom">'
+		thtml += '<th align=left width=50% nowrap><a id="osnom" href="javascript:void(ShowPlayersValue())">номиналы</a>:</th>'
+		thtml += '<th id=osnom nowrap align=right></th>'
+		thtml += '<td id=nomch nowrap width=10%>&nbsp;</td>'
+		thtml += '</tr>'
+
+		thtml += '<tr id="oszp">'
+		thtml += '<th align=left nowrap><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th>'
+		thtml += '<th id="oszp" align=right nowrap></th>'
+		thtml += '</tr>'
+
+		$('#crabright table:first').append(thtml)
+
+		var text = ''
+		text += '<a href="javascript:void(ShowRoster())"><b>Ростер команды</b></a><br>'
+		text += '<b><a id=teamskills>Скиллы игроков</a></b>'
+		text += '<br><a id=teamsu href="javascript:void(ShowSU())" style="display: none;"><b>Сверхусталость</b></a>'
+		$('#crabright').append('<br>'+text+'<br><br>')
+
 
 		// add tables
 		var filter = '<div id="divRostSkillsFilter" style="display: none;"><a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a></div>'
@@ -802,6 +854,11 @@ function GetFinish(type, res){
 		ModifyPlayers()// and Save if need
 		PrintRightInfo()
 	}
+	if(m.showvip==undefined && m.pg_playersVip){
+		m.showvip = true
+		PrintRightInfoVip()
+		SaveData('players')
+	}
 }
 
 function CheckTrash(){
@@ -846,6 +903,7 @@ function CheckMy(){
 	debug('CheckMy go')
 	if(team_cur.my){
 		save = true
+		$('a#teamsu').show()
 		debug('teams:Need Save(cur)')
 	}else{
 		for(i in teams){
@@ -1144,15 +1202,23 @@ function GetInfoPagePl(){
 		players[pid].position= $(val).find('td:eq(11)').html()
 		players[pid].value 	= 0
 		players[pid].valuech= 0
+		if(eurl!=undefined) players[pid].eurl = eurl
 
-		if(eurl==undefined || UrlValue('h')==1){
-			Ready()
-		}else{
-			$('td.back4').append('<table id=pl'+pid+' hidden><tr><td id=pl'+pid+'></td></tr></table>')
-			$('td#pl'+pid).load(eurl+' center:first', function(){GetPl(pid);})
-		}
+		Ready()
 	})
-	debug('players:GetPage ok')
+	debug('GetInfoPagePl:done')
+}
+
+function Ready(vip){
+	if(vip==undefined){
+		countSostav++
+//		debug('Ready:'+countSostav+'=='+countSostavMax)
+		if(countSostav==countSostavMax) GetFinish('pg_players', true)
+	}else{
+		countSostavVip++
+//		debug('Ready:'+vip+':'+countSostavVip+'=='+countSostavMax)
+		if(countSostavVip==countSostavMax) GetFinish('pg_playersVip', true)
+	}
 }
 
 function ModifyPlayers(){
@@ -1216,8 +1282,24 @@ function ModifyPlayers(){
 	if (remember==1) SaveData('players')
 }
 
+function GetInfoPagePlVip(){
+	debug('GetInfoPagePlVip()')
+	for(k in players){
+		var eurl = players[k].eurl
+		if(eurl!=undefined){
+//			var id = players[k].id
+//			debug('GetInfoPagePlVip:k='+k)
+			$('td.back4').append('<table id=pl'+k+' hidden><tr><td id=pl'+k+'></td></tr></table>')
+			$('td#pl'+k).load(eurl+' center:first', function(){GetPl(countSostavVip)})
+		}
+	}
+	debug('GetInfoPagePlVip:done')
+}
+
 function GetPl(pid){
+//	debug('GetPl:pid='+pid)
 	// get player skills with number pid
+//	debug(head)
 	var skillsum = 0
 	var skillchange = []
 	$('td#pl'+pid+' table:first td:even').each(function(){
@@ -1254,73 +1336,36 @@ function GetPl(pid){
 	team_cur.tsvalue+= players[pid].svalue/1000
 	$('table#pl'+pid).remove()
 
-	Ready()
+	Ready('vip')
 }
+
+function ShowVip(){
+	debug('ShowVip()')
+	$('a#showvip').removeAttr('href')
+	GetInfoPagePlVip()
+}
+
 function PrintRightInfo(){
 	debug('PrintRightInfo go')
-	if(UrlValue('h')==1) return false
 
-	// print link to skills page
-	var text = '<a href="javascript:void(ShowRoster())"><b>Ростер команды</b></a><br>'
-	text += (team_cur.tss!=0 ? '<a href="javascript:void(ShowSkills(1))"><b>Скиллы игроков</b></a>' : '<b><a>Скиллы игроков</a> <font color=BABDB6>(для VIP)</font></b>')
-	text += (team_cur.my ? '<br><a href="javascript:void(ShowSU())"><b>Сверхусталость</b></a> <font color=BABDB6>(debug)</font>' : '')
-	$('#crabright').append('<br>'+text+'<br><br>')
-
-	// print to right menu
-	var thtml = ''
-	thtml += '<tr><td id="os" colspan=3 align=center><br><b>Основной состав</b>'
-//	if(sumvaluechange != 0) 
-//	thtml += '&nbsp;<a id="os" href="javascript:void(ForgotPlValueCh())">'+('[x]').fontsize(1)+'<a>'
-	thtml += '</td></tr>'
-	thtml += '<tr id="ossvalue"><th align=left width=50% nowrap><a'
-	thtml += (team_cur.tsvalue!=0 ? ' href="javascript:void(ShowPlayersSValue())"' : '')
-	thtml += '>номиналы+</a>:</th><th align=right nowrap>'
-	thtml += (team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : '<font color=BABDB6>для VIP</font>')
-	thtml += '</th><td width=10% id="svaluech" nowrap>&nbsp;<a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a>'
-//	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
-	thtml += '</td></tr>'
-
-
-	thtml += '<tr id="osnom"><th align=left width=50% nowrap><a'
-	thtml += (team_cur.tvalue!=0 ? ' href="javascript:void(ShowPlayersValue())"' : '')
-	thtml += '>номиналы</a>:</th><th align=right nowrap>'
-	thtml += (team_cur.tvalue!=0 ? ShowValueFormat(team_cur.tvalue)+'т' : '<font color=BABDB6>для VIP</font>')
-	thtml += '</th><td width=10% id="nomch">&nbsp;'
-	if(sumvaluechange != 0) thtml += '&nbsp;'+ShowChange(sumvaluechange)
-	thtml += '</td></tr>'
-
-	thtml += '<tr id="oszp"><th align=left nowrap><a'
-	thtml += (team_cur.twage!=0 ? ' href="javascript:void(ShowPlayersZp())"' : '')
-	thtml += '>зарплаты</a>:</th><th align=right nowrap>'
-	thtml += (team_cur.twage!=0 ? ShowValueFormat(team_cur.twage)+'&nbsp;' : '<font color=BABDB6>для VIP</font>')
-	thtml += '</th></tr>'
-
-	thtml += '<tr id="osskills"><td nowrap><b><a'
-	thtml += (team_cur.tss!=0 ? ' href="javascript:void(ShowPlayersSkillChange())"' : '')
-	thtml += '>скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right nowrap>'
-	thtml += (team_cur.tss!=0 ? team_cur.tss + '&nbsp;' :  '<font color=BABDB6>для VIP</font>')
-	thtml += '</th><td></td></tr>'
-
-	thtml += '<tr id="osage"><td nowrap><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right nowrap>'
-	thtml += team_cur.age + '&nbsp;'
-	thtml += '</th><td></td></tr>'
-
-	thtml += '<tr id="osform"><td nowrap><b>форма</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right nowrap>'
-	thtml += team_cur.tform + '&nbsp;'
-	thtml += '</th><td></td></tr>'
-
-	thtml += '<tr id="osmorale"><td nowrap><b>мораль</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td><th align=right nowrap>'
-	thtml += team_cur.tmorale + '&nbsp;'
-	thtml += '</th><td></td></tr>'
-
-	$('#crabright table:first').append(thtml)
+	$('th#osform').html(team_cur.tform + '&nbsp;')
+	$('th#osmorale').html(team_cur.tmorale + '&nbsp;')
+	$('th#osage').html(team_cur.age + '&nbsp;')
 }
 
-function Ready(){
-	countSostav++
-	if(countSostav==countSostavMax){
-		GetFinish('pg_players', true)
-	}
+function PrintRightInfoVip(){
+	debug('PrintRightInfoVip go')
+
+	var notvip ='<font color=BABDB6>для VIP</font>'
+	$('th#osskills').html((team_cur.tss!=0 ? team_cur.tss + '&nbsp;' : '<font color=green>отключено</font>'))
+	$('th#ossvalue').html((team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : notvip))
+	$('th#osnom').html((team_cur.tvalue!=0 ? ShowValueFormat(team_cur.tvalue)+'т' : notvip))
+	$('th#nomch').html((sumvaluechange!= 0 ? '&nbsp;'+ShowChange(sumvaluechange) : notvip))
+	$('th#oszp').html((team_cur.twage!=0 ? ShowValueFormat(team_cur.twage)+'&nbsp;' : notvip))
+
+//	if(team_cur.tss!=0)	
+		$('a#teamskills').attr('href','javascript:void(ShowSkills(1))')
+//	else $('a#teamskills').after('&nbsp;'+notvip)
 }
 
 function EditFinance(){
