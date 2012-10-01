@@ -147,7 +147,7 @@ $().ready(function() {
 
 		var thtml = ''
 		thtml += '<tr><td id="os" colspan=3 align=center nowrap><br><b>Основной состав</b>'
-		thtml += (UrlValue('h')==1 ? '' : ' <a id=showvip href="javascript:void(ShowVip())">*</a>')
+		thtml += (UrlValue('h')==1 ? '' : ' <a id=showvip href="javascript:void(ShowVip())">(всё)</a>')
 		thtml += '</td></tr>'
 
 		thtml += '<tr id="osform">'
