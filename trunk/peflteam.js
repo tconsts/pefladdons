@@ -1338,8 +1338,6 @@ function GetPl(pid){
 	team_cur.tvalue	+= players[pid].value/1000
 	team_cur.tsvalue+= players[pid].svalue/1000
 	$('table#pl'+pid).remove()
-
-	Ready('vip')
 }
 
 function ShowVip(){
