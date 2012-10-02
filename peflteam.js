@@ -94,7 +94,7 @@ var skills = {
 	'отб':'Отбор мяча', 'вид':'Видение поля', 'рбт':'Работоспособность', 'тех':'Техника'}
 
 $().ready(function() {
-	debug('размер0:'+$('table:eq(0)').attr('width'))
+	debug('Main:размер0:'+$('table:eq(0)').attr('width'))
 	var bbig = false
 	if($('table:eq(0)').attr('width')>=1000) {
 		bbig = true
@@ -225,7 +225,7 @@ $().ready(function() {
 		$('table#tblRoster').after(preparedhtml)
 
 		countSostavMax  = $('tr[id^=tblRosterTr]').length
-		debug('countSostavMax='+countSostavMax)
+		debug('Main:countSostavMax='+countSostavMax)
 		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
 
 		EditFinance();
@@ -255,6 +255,7 @@ $().ready(function() {
 }, false);
 
 function fixColors(){
+	debug('fixColors()')
 	$('td.back4 table table:eq(0)') // заголовок с именем
 		.attr('width','100%')
 		.removeAttr('background')
@@ -304,12 +305,12 @@ function fixColors(){
 function RelocateGetNomData(){
 	debug('RelocateGetNomData()')
 	if(localStorage.getnomdata != undefined && String(localStorage.getnomdata).indexOf('1.1$')!=-1){
-		debug('Storage.getnomdata ok!')
+		debug('RelocateGetNomData:ok!')
 		//GetNomData(0)
 		GetFinish('getnomdata', true)
 	}else{
 		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9107893)
-		debug('Storage.getnomdata('+top+')')
+		debug('RelocateGetNomData:top='+top)
 
 		$('td.back4').prepend('<div id=debval hidden></div>') //
 		$('div#debval').load('forums.php?m=posts&p='+top+' td.back3:contains(#CrabNom1.1.'+top+'#) blockquote pre', function(){
@@ -336,6 +337,7 @@ function RelocateGetNomData(){
 }
 
 function GetNomData(id){
+	debug('GetNomData:id='+id)
 	var sdata = []
 	var pl = players[id]
 	var tkp = 0
@@ -430,12 +432,12 @@ function sNomPsum(i, ii) { // Сортировка
 }
 
 function ShowSU(del) {
-	debug('ShowSU()')
+	debug('ShowSU:del='+del)
 	if(del) {
 		$('table#tblSu, table#tblSuM, div#divSu').remove()
 //		plsu.splice(0,100000)
 		plsu = []
-		debug('plsu.length:'+plsu.length)
+//		debug('ShowSU:plsu.length:'+plsu.length)
 	}
 //	for(g in matches2) debug('g='+g+':mid='+matches2[g].id)
 	$('div#divRostSkillsFilter').hide()
@@ -448,7 +450,7 @@ function ShowSU(del) {
 	$('table#tblRosterFilter').hide()
 	$('table#tblRoster').hide()
 
-	debug('ShowSU:размер(tblSu)='+$('table#tblSu').length)
+//	debug('ShowSU:размер(tblSu)='+$('table#tblSu').length)
 	if($('table#tblSu').length>0) {
 		$('table#tblSu').show()
 		$('table#tblSuM').show()
@@ -548,6 +550,7 @@ function suMarkDel(plid,del){
 }
 
 function ShowPlM(plid,pdel){
+	debug('ShowPlM:plid='+plid+':pdel='+pdel)
 	var matchpos = [,'GK',,
 	,,'SW',,,
 	'R DF','C DF','C DF','C DF','L DF',
@@ -563,7 +566,6 @@ function ShowPlM(plid,pdel){
 	,,'SW',,,
 	,'GK']
 
-	debug('ShowPlM('+plid+')')
 	$('table#tblSuM tr').remove()
 	pdel = (pdel==undefined ? false : pdel)
 
@@ -656,7 +658,8 @@ function ShowPlM(plid,pdel){
 		if(mch.tp!=undefined){
 			switch(mch.tp){
 				case 't': type='Товарищеский';break;
-//				case 'c': type='Кубок'
+				case 'ch': type='Чемпионат';break;
+//				case 'cp': type='Кубок';break;
 				default: type = mch.tp
 			}
 		}
@@ -743,6 +746,7 @@ function filterPosition(plpos,flpos){
 }
 
 function DeletePl(pid,del){
+	debug('DeletePl:pid='+pid+':del='+del)
 	delete matchespl2[pid]
 	saveJSONlocalStorage('matchespl2',matchespl2)
 	if(del) localStorage.plexl = String(localStorage.plexl).replace(pid+'|','')
@@ -778,7 +782,7 @@ function MinutesPl(mid,pid,type){
 }
 
 function SuDelMatch(mid, type, plid){
-	debug('SuDelMatch('+mid+','+type+','+plid+')')
+	debug('SuDelMatch:mid='+mid+':type='+type+':plid='+plid)
 	if(type=='del'){
 		//удалить матч из базы
 		for(k in matches2) if(matches2[k].id==mid){
@@ -813,12 +817,12 @@ function TrimString(sInString){
 
 function DBConnect(){
 	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
-	if(!db) {debug('Open DB PEFL fail.');return false;} 
-	else 	{debug('Open DB PEFL ok.')}
+	if(!db) {debug('DBConnect:fail');return false;} 
+	else 	{debug('DBConnect:ok')}
 }
 
 function GetFinish(type, res){
-	debug(type + ' ' + res + ' ')
+	debug('GetFinish:type='+type+':res='+res)
 	m[type] = res;
 
 	if(m.checksu==undefined && m.pg_players && UrlValue('h')!=1){
@@ -862,7 +866,7 @@ function GetFinish(type, res){
 }
 
 function CheckTrash(){
-	debug('CheckTrash go')
+	debug('CheckTrash()')
 
 	//count top11
 	var pls = players.sort(sSkills)
@@ -873,7 +877,7 @@ function CheckTrash(){
 		num++
 	}
 	ss = (ss/11)*0.8
-	debug('ss:'+ss)
+	debug('CheckTrash:ss='+ss)
 	var tss  = 0
 	var age  = 0
 	var tform = 0
@@ -900,26 +904,26 @@ function CheckTrash(){
 }
 
 function CheckMy(){
-	debug('CheckMy go')
+	debug('CheckMy()')
 	if(team_cur.my){
 		save = true
 		$('a#teamsu').show()
-		debug('teams:Need Save(cur)')
+		debug('CheckMy:need save(cur)')
 	}else{
 		for(i in teams){
 			if(teams[i].my && teams[i].nname == team_cur.nname) {
 				save = true
-				debug('teams:Need Save(list):'+team_cur.nname)
+				debug('CheckMy:need save(list):'+team_cur.nname)
 			}
 		}
 	}
 }
 
 function ModifyTeams(){
-	debug('teams:Modify')
+	debug('ModifyTeams()')
 	if(!save && typeof(teams[team_cur.tid].tname)!='undefined') {
 		save = true
-		debug('teams:Need Save(have)')
+		debug('ModifyTeams:need save(have)')
 	}
 	var tmt = {}
 	for(var i in team_cur){
@@ -933,7 +937,7 @@ function ModifyTeams(){
 }
 
 function GetInfoPageTm(){
-	debug('teams:GetInfoPage ok')
+	debug('GetInfoPageTm()')
 	// Get current club data
 	var task_name   = $('table.layer1 td.l4:eq(3)').text().split(': ',2)[1]
 	var screit_name = $('table.layer1 td.l2:eq(1)').text().split(': ',2)[1].split(' (')[0]
@@ -977,6 +981,7 @@ function GetInfoPageTm(){
 }
 
 function Print(dataname){
+	debug('Print:'+dataname)
 	var head = list[dataname].split(',')
 	var data = []
 	switch (dataname){
@@ -1037,9 +1042,9 @@ function saveJSONlocalStorage(dataname,data){
 }
 
 function SaveData(dataname){
-	debug(dataname+':SaveData')
+	debug('SaveData:'+dataname)
 	if(!save || UrlValue('h')==1 || (dataname=='players' && UrlValue('j')!=99999)){
-		debug(dataname+':SaveData false')
+		debug('SaveData:'+dataname+':false')
 		return false
 	}
 
@@ -1069,12 +1074,12 @@ function SaveData(dataname){
 	}else{
 		db.transaction(function(tx) {
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
-				function(tx, result){},
-				function(tx, error) {debug(dataname+':drop error:' + error.message)}
+				function(tx, result){debug('SaveData:'+dataname+':table drop ok')},
+				function(tx, error) {debug('SaveData:'+dataname+':table drop error:' + error.message)}
 			);                                           
 			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+list[dataname]+")", [],
-				function(tx, result){debug(dataname+':create ok')},
-				function(tx, error) {debug(error.message)}
+				function(tx, result){debug('SaveData:'+dataname+':table create ok')},
+				function(tx, error) {debug('SaveData:'+dataname+':table create error:'+error.message)}
 			);
 			for(var i in data) {
 				var dti = data[i]
@@ -1089,7 +1094,7 @@ function SaveData(dataname){
 //				debug(dataname+':s'+x3['0']+'_'+x3['1'])
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
-					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
+					function(tx, error) {debug('SaveData:'+dataname+':insert('+i+') error:'+error.message)
 				});
 			}
 		});
@@ -1097,7 +1102,7 @@ function SaveData(dataname){
 }
 
 function GetData(dataname){
-	debug(dataname+':GetData')
+	debug('GetData:'+dataname)
 	var data = []
 	var head = list[dataname].split(',')
 	switch (dataname){
@@ -1131,7 +1136,7 @@ function GetData(dataname){
 		db.transaction(function(tx) {
 			tx.executeSql("SELECT * FROM "+dataname, [],
 				function(tx, result){
-					debug(dataname+':Select ok')
+					debug('GetData:'+dataname+':Select ok')
 					for(var i = 0; i < result.rows.length; i++) {
 						var row = result.rows.item(i)
 						var id = row[head[0]]
@@ -1142,7 +1147,7 @@ function GetData(dataname){
 					GetFinish('get_'+dataname,true)
 				},
 				function(tx, error){
-					debug(error.message)
+					debug('GetData:'+dataname+':'+error.message)
 					GetFinish('get_'+dataname, false)
 				}
 			)
@@ -1169,6 +1174,7 @@ function checkDeleteMatches(){
 }
 
 function GetInfoPagePl(){
+	debug('GetInfoPagePl()')
 	$('tr[id^=tblRosterTr]').each(function(i,val){
 		var eurl= $(val).find('a[trp="1"]').attr('href')
 		var pid = UrlValue('j',$(val).find('td:eq(1) a').attr('href'))
@@ -1210,6 +1216,7 @@ function GetInfoPagePl(){
 }
 
 function Ready(vip){
+	debug('Ready:vip='+vip)
 	if(vip==undefined){
 		countSostav++
 //		debug('Ready:'+countSostav+'=='+countSostavMax)
@@ -1225,7 +1232,7 @@ function Ready(vip){
 }
 
 function ModifyPlayers(){
-	debug('players:Modify go')
+	debug('ModifyPlayers()')
 
 	// Check for update
 	for(i in players) {
@@ -1235,14 +1242,14 @@ function ModifyPlayers(){
 			var pl2 = players2[pl.id]
 			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form || (pl.value!=0 && pl.value != pl2.value))){
 				remember = 1
-				debug('players:NeedSave '+pl.id+':'+pl.morale +'/'+pl2.morale+':'+pl.form+'/'+pl2.form+':'+pl.value+'/'+pl2.value)
+				debug('ModifyPlayers:NeedSave:id='+pl.id+':morale='+pl.morale +'/'+pl2.morale+':form='+pl.form+'/'+pl2.form+':value='+pl.value+'/'+pl2.value)
 				break;
 			}
 		}
 	}
 
 	// Calculate
-	debug('players:calculate')
+	debug('ModifyPlayers:calculate')
 	for(i in players) {
 		var pl = players[i]
 		if(typeof(players2[pl.id])!='undefined'){
@@ -1265,9 +1272,7 @@ function ModifyPlayers(){
 		}
 	}
 	// Update page
-	debug('players:UpdatePage ')
-
-
+	debug('ModifyPlayers:UpdatePage')
 	for(i in players) {
 		var pl = players[i]
 		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(4)').append(ShowChange(pl.mchange))
@@ -1280,7 +1285,7 @@ function ModifyPlayers(){
 		}
 		sumvaluechange += pl.valuech/1000
 	}
-	debug('nomch:'+sumvaluechange)
+	debug('ModifyPlayers:sumvaluechange='+sumvaluechange)
 	// Save if not team21
 	if (remember==1) SaveData('players')
 }
@@ -1300,7 +1305,7 @@ function GetInfoPagePlVip(){
 }
 
 function GetPl(pid){
-//	debug('GetPl:pid='+pid)
+	debug('GetPl:pid='+pid)
 	// get player skills with number pid
 //	debug(head)
 	var skillsum = 0
@@ -1347,16 +1352,14 @@ function ShowVip(){
 }
 
 function PrintRightInfo(){
-	debug('PrintRightInfo go')
-
+	debug('PrintRightInfo()')
 	$('th#osform').html(team_cur.tform + '&nbsp;')
 	$('th#osmorale').html(team_cur.tmorale + '&nbsp;')
 	$('th#osage').html(team_cur.age + '&nbsp;')
 }
 
 function PrintRightInfoVip(){
-	debug('PrintRightInfoVip go')
-
+	debug('PrintRightInfoVip()')
 	var notvip ='<font color=BABDB6>для VIP</font>'
 	$('th#osskills').html((team_cur.tss!=0 ? team_cur.tss + '&nbsp;' : '<font color=green>отключено</font>'))
 	$('th#ossvalue').html((team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : notvip))
@@ -1370,7 +1373,7 @@ function PrintRightInfoVip(){
 }
 
 function EditFinance(){
-	debug('EditFinance go')
+	debug('EditFinance()')
 	var txt = $('table.layer1 td.l4:eq(1)').text().split(': ')[1]
 	var txt2 = ''
 	switch (txt){
@@ -1401,7 +1404,7 @@ function EditFinance(){
 }
 
 function EditSkillsPage(){
-	debug('EditSkillsPage')
+	debug('EditSkillsPage()')
 	$('table#tblRostSkills')
 		.attr('width','886')
 		.find('td[bgcolor=white]').removeAttr('bgcolor').end()
@@ -1415,6 +1418,7 @@ function EditSkillsPage(){
 } 
 
 function ShowSkillsY() {
+	debug('ShowSkillsY()')
 	switch (type){
 		case 'num': 
 			$('table#tblRostSkills img').attr('height','10').show();
@@ -1433,6 +1437,7 @@ function ShowSkillsY() {
 }
 
 function ShowPlayersValue(){
+	debug('ShowPlayersValue()')
 	if(nom) {
 		nom = false
 		var nomtext = ''
@@ -1461,6 +1466,7 @@ function ShowPlayersValue(){
 	}
 }
 function ShowPlayersSValue(){
+	debug('ShowPlayersSValue()')
 	if(svalue) {
 		svalue = false
 		var nomtext = ''
@@ -1485,6 +1491,7 @@ function ShowPlayersSValue(){
 }
 
 function ShowPlayersZp(){
+	debug('ShowPlayersZp()')
 	if(zp){
 		zp = false
 		var text = ''
@@ -1516,6 +1523,7 @@ function ShowPlayersZp(){
 }
 
 function ShowPlayersAge(){
+	debug('ShowPlayersAge()')
 	if(age) {
 		age = false
 		var text = ''
@@ -1538,6 +1546,7 @@ function ShowPlayersAge(){
 }
 
 function ShowPlayersSkillChange(){
+	debug('ShowPlayersSkillChange()')
 	if(sk) {
 		sk = false
 		var text = ''
@@ -1590,7 +1599,7 @@ function ShowRoster(){
 }
 
 function ShowSkills(param){
-	debug('ShowSkills param: '+param)
+	debug('ShowSkills:param='+param)
 	if(param == 1){
 //		$('table[background]:eq(1)').hide()
 		//$('td#crabglobalright').html('')
@@ -1654,7 +1663,7 @@ function ShowSkills(param){
 }
 
 function HidePl(num,fl){
-	debug('HidePl('+num+','+fl+') go')
+	debug('HidePl:num='+num+':fl='+fl)
 	if(fl){
 		$('table#tblRostSkills tr:eq('+num+') a#x').attr('href','javascript:void(HidePl('+(num)+',false))')
 		$('table#tblRostSkills tr:eq('+num+') td:gt(2)').each(function(){
@@ -1672,13 +1681,14 @@ function HidePl(num,fl){
 }
 
 function ShowHols(p){
+	debug('ShowHols:p='+p)
 	sumH = (sumH ? false : true)
 	ShowSumPlayer()
 }
 
 function ShowSumPlayer(p){
+	debug('ShowSumPlayer()')
 	if(p!=undefined) sumP = p
-	debug('ShowSumPlayer go')
 	var ld = {'sum':0,'mx':0,'mn':0,'num':0}
 	var head = []
 	sumplarr = {}
@@ -1728,6 +1738,7 @@ function ShowSumPlayer(p){
 }
 
 function ShowFilter(){
+	debug('ShowFilter()')
 	var style = $('table#tblRostSkillsFilter').attr('style')
 	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
 		$('table#tblRostSkillsFilter').show()
@@ -1742,6 +1753,7 @@ function ShowFilter(){
 }
 
 function Filter(num,p){
+	debug('Filter:num='+num+':p='+p)
 	if(num==1){
 		pos1[p] = (pos1[p]==undefined || pos1[p]==0 ? 1 : 0)
 	} else if(num==2){
@@ -1789,6 +1801,7 @@ function Filter(num,p){
 }
 
 function CountSkills(tdid){
+	debug('CountSkills:tdid='+tdid)
     if(countSk[tdid]!=undefined && countSk[tdid]==1) countSk[tdid] = 0
 	else countSk[tdid] = 1
 	$('table#tblRostSkills tr:gt(0)').each(function(j, valj){
@@ -1810,6 +1823,7 @@ function CountSkills(tdid){
 }
 
 function ShowShortName(fullname){
+	debug('ShowShortName:fullname='+fullname)
 	var namearr = fullname.replace(/^\s+/, "").replace(/\s+$/, "").split(' ')
 	var shortname = ''
 	for(n in namearr) {
@@ -1822,7 +1836,6 @@ function ShowShortName(fullname){
 	}
 	return shortname
 }
-
 
 function ShowValueFormat(value){
 	if (value > 1000)	return (value/1000).toFixed(3).replace(/\./g,',') + '$'
