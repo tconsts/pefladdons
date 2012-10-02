@@ -1217,7 +1217,10 @@ function Ready(vip){
 	}else{
 		countSostavVip++
 //		debug('Ready:'+vip+':'+countSostavVip+'=='+countSostavMax)
-		if(countSostavVip==countSostavMax) GetFinish('pg_playersVip', true)
+		if(countSostavVip==countSostavMax) {
+			for(i in players) GetPl(i)
+			GetFinish('pg_playersVip', true)
+		}
 	}
 }
 
@@ -1290,7 +1293,7 @@ function GetInfoPagePlVip(){
 //			var id = players[k].id
 //			debug('GetInfoPagePlVip:k='+k)
 			$('td.back4').append('<table id=pl'+k+' hidden><tr><td id=pl'+k+'></td></tr></table>')
-			$('td#pl'+k).load(eurl+' center:first', function(){GetPl(countSostavVip)})
+			$('td#pl'+k).load(eurl+' center:first', function(){Ready('vip')})
 		}
 	}
 	debug('GetInfoPagePlVip:done')
