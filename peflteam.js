@@ -1438,6 +1438,7 @@ function ShowSkillsY() {
 
 function ShowPlayersValue(){
 	debug('ShowPlayersValue()')
+	if(team_cur.tvalue == 0) return false
 	if(nom) {
 		nom = false
 		var nomtext = ''
@@ -1467,6 +1468,7 @@ function ShowPlayersValue(){
 }
 function ShowPlayersSValue(){
 	debug('ShowPlayersSValue()')
+	if(team_cur.tsvalue == 0) return false
 	if(svalue) {
 		svalue = false
 		var nomtext = ''
@@ -1492,6 +1494,7 @@ function ShowPlayersSValue(){
 
 function ShowPlayersZp(){
 	debug('ShowPlayersZp()')
+	if(team_cur.twage == 0) return false
 	if(zp){
 		zp = false
 		var text = ''
@@ -1547,6 +1550,7 @@ function ShowPlayersAge(){
 
 function ShowPlayersSkillChange(){
 	debug('ShowPlayersSkillChange()')
+//	if(team_cur.tss == 0) return false
 	if(sk) {
 		sk = false
 		var text = ''
