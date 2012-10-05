@@ -29,7 +29,7 @@ var curhometour = 0
 var maxhometour = 0
 
 function GetFinish(type, res){
-	debug(type + '(' + res + ')')
+	debug('GetFinish:type='+type + ':res=' + res)
 	m[type] = res;
 	if(m.divs==undefined && m.get_divs!=undefined){
 		m.divs = true
@@ -119,7 +119,7 @@ function GetData2(){
 					dprize = (curt['dprize']!=undefined ? curt['dprize'].split(',') : 0)
 					dnum2  = (curt['dnum']  !=undefined ? parseInt(curt['dnum']) : 0)
 					dteams = (curt['numteams']  !=undefined ? parseInt(curt['numteams']) : 0)
-					dtour  = (curt['curtour']  !=undefined ? parseInt(curt['curtour']) : 0)
+					dtour  = (curt['curtour']  ==undefined || isNaN(parseInt(curt['curtour'])) ? 0 : parseInt(curt['curtour']))
 				}
 			}
 			GetFinish('dprize',true)
