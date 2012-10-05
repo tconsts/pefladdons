@@ -131,9 +131,10 @@ $().ready(function() {
 		if(cid==parseInt(localStorage.myteamid)) {
 			delete localStorage.matches
 			delete localStorage.matchespl
+			delete localStorage.players
 			getJSONlocalStorage('matches2',matches2)
 			getJSONlocalStorage('matchespl2',matchespl2)
-			getJSONlocalStorage('players',players3)
+			getJSONlocalStorage('players2',players3)
 		}
 	}
 }, false);
@@ -1332,7 +1333,7 @@ function PrintRightInfoVip(){
 	$('th#osform').html(team_cur.tform + '&nbsp;')
 	$('th#osmorale').html(team_cur.tmorale + '&nbsp;')
 	$('th#osage').html(team_cur.age + '&nbsp;')
-	$('th#osskills').html((team_cur.tss!=0 ? team_cur.tss + '&nbsp;' : '<font color=green>отключено</font>'))
+	$('th#osskills').html((team_cur.tss!=0 ? team_cur.tss + '&nbsp;' : notvip))
 	$('th#ossvalue').html((team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : notvip))
 	$('th#osnom').html((team_cur.tvalue!=0 ? ShowValueFormat(team_cur.tvalue)+'т' : notvip))
 	$('th#nomch').html((sumvaluechange!= 0 ? '&nbsp;'+ShowChange(sumvaluechange) : notvip))
