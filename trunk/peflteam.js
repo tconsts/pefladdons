@@ -9,6 +9,7 @@
 deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
+var	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var type 	= 'num'
 var players = []
 var players2= []
@@ -94,18 +95,11 @@ var skills = {
 	'отб':'Отбор мяча', 'вид':'Видение поля', 'рбт':'Работоспособность', 'тех':'Техника'}
 
 $().ready(function() {
-	debug('Main:размер0:'+$('table:eq(0)').attr('width'))
-	var bbig = false
-	if($('table:eq(0)').attr('width')>=1000) {
-		bbig = true
-		$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200)
-	}
 
 	fixColors()
-
-	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	cid = parseInt($('td.back4 table:first table td:first').text())
 	teams[cid] = {'tid':cid}
+
 	var srch='Вы вошли как '
 	MyNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 
@@ -125,134 +119,79 @@ $().ready(function() {
 			}
 		})
 		EditSkillsPage()
-	}else if(UrlValue('n')!=false){
+//	}else if(UrlValue('n')!=false){
 		//Ростер с фильтром(не вся стата показывается)
 	}else{
-		//Ростер команды
-		// Draw right panel and fill data
-		var preparedhtml = ''
-		preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td id="crabgloballeft" width='+(bbig ? 0 : 200)+' valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
-		preparedhtml += '<table id="crabrighttable" class=back1 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
-		preparedhtml += '</td></tr></table>'
-		$('body table.border:last').before(preparedhtml)
-
-		$('td.back4 script').remove()
-		$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
-		$('#crabrighttable').addClass('border') 
-
-		preparedhtml  =	'<table width=100% id="rg"><tr><th colspan=3>Финансовое положение</th></tr>'
-		preparedhtml += '<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
-		preparedhtml += '</table><br>'
-		$("#crabright").html(preparedhtml)
-
-		var thtml = ''
-		thtml += '<tr><td id="os" colspan=3 align=center nowrap><br><b>Основной состав</b>'
-		thtml += (UrlValue('h')==1 ? '' : ' <a id=showvip href="javascript:void(ShowVip())">(всё)</a>')
-		thtml += '</td></tr>'
-
-		thtml += '<tr id="osform">'
-		thtml += '<td nowrap><b>форма</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
-		thtml += '<th id=osform align=right nowrap></th>'
-		thtml += '</tr>'
-
-		thtml += '<tr id="osmorale">'
-		thtml += '<td nowrap><b>мораль</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
-		thtml += '<th id=osmorale align=right nowrap></th>'
-		thtml += '</tr>'
-
-		thtml += '<tr id="osage">'
-		thtml += '<td nowrap><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
-		thtml += '<th id="osage" align=right nowrap></th>'
-		thtml += '</tr>'
-
-		thtml += '<tr id="osskills">'
-		thtml += '<td nowrap><b><a href="javascript:void(ShowPlayersSkillChange())">скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
-		thtml += '<th id="osskills" align=right nowrap></th>'
-		thtml += '</tr>'
-
-		thtml += '<tr id="ossvalue">'
-		thtml += '<th align=left width=50% nowrap><a href="javascript:void(ShowPlayersSValue())">номиналы+</a>:</th>'
-		thtml += '<th id=ossvalue align=right nowrap></th>'
-		thtml += '<td width=10%>&nbsp;<a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></td>'
-		thtml += '</tr>'
-
-		thtml += '<tr id="osnom">'
-		thtml += '<th align=left width=50% nowrap><a id="osnom" href="javascript:void(ShowPlayersValue())">номиналы</a>:</th>'
-		thtml += '<th id=osnom nowrap align=right></th>'
-		thtml += '<td id=nomch nowrap width=10%>&nbsp;</td>'
-		thtml += '</tr>'
-
-		thtml += '<tr id="oszp">'
-		thtml += '<th align=left nowrap><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th>'
-		thtml += '<th id="oszp" align=right nowrap></th>'
-		thtml += '</tr>'
-
-		$('#crabright table:first').append(thtml)
-
-		var text = ''
-		text += '<a href="javascript:void(ShowRoster())"><b>Ростер команды</b></a><br>'
-		text += '<b><a id=teamskills>Скиллы игроков</a></b>'
-		text += '<br><a id=teamsu href="javascript:void(ShowSU())" style="display: none;"><b>Сверхусталость</b></a>'
-		$('#crabright').append('<br>'+text+'<br><br>')
-
-
-		// add tables
-		var filter = '<div id="divRostSkillsFilter" style="display: none;"><a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a></div>'
-		filter += '<table id="tblRostSkillsFilter" width=50% align=left cellspacing=1 cellpadding=1 class=back1 border=0 style="display: none;">'
-		filter += '<tr align=center><th width=10%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th></tr>'
-		filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td class=back2 id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
-		filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td class=back2 id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
-		filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td class=back2 id="R DF">&nbsp;</td>	<td class=back2 id="C DF">&nbsp;</td>	<td class=back2 id="C DF">&nbsp;</td>	<td class=back2 id="C DF">&nbsp;</td>	<td class=back2 id="L DF">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td class=back2 id="R DM">&nbsp;</td>	<td class=back2 id="C DM">&nbsp;</td>	<td class=back2 id="C DM">&nbsp;</td>	<td class=back2 id="C DM">&nbsp;</td>	<td class=back2 id="L DM">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td class=back2 id="R MF">&nbsp;</td>	<td class=back2 id="C MF">&nbsp;</td>	<td class=back2 id="C MF">&nbsp;</td>	<td class=back2 id="C MF">&nbsp;</td>	<td class=back2 id="L MF">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td class=back2 id="R AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="L AM">&nbsp;</td></tr>'
-		filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td class=back2 id="C FW">&nbsp;</td>	<td class=back2 id="C FW">&nbsp;</td>	<td class=back2 id="C FW">&nbsp;</td>	<th></th></tr>'
-		filter += '</table>'
-		filter += '<table id="SumPl" width=50% align=right style="display: none;">'
-		filter += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Суммарный игрок</th></tr>'
-		filter += '<tr id="sumlast1"><td colspan=4 align=right id="sumlast1"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></td></tr>'
-		//filter += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
-		filter += '</table>'
-		filter += '<div id="filter" style="display: none;">&nbsp;</div>'
-		$('table#tblRosterFilter').after(filter)
-
-		preparedhtml  = '<table id="tblRostSkills" width=866 class=back1 style="display: none;">' //BFDEB3
-		preparedhtml += '</table>'
-		preparedhtml += '<div id="divRostSkills" style="display: none;">'
-		preparedhtml += '<br>* - <i>нажать на значение <b>Сум</b> чтобы отключить или включить показ скиллов определенного игрока</i>'
-		preparedhtml += '<br>* - <i>нажимать на заголовки столбцов чтоб сортировать по сумме выделенных скиллов</i></div><br>'
-
-		$('table#tblRoster').after(preparedhtml)
-
+		modifyPage()
 		countSostavMax  = $('tr[id^=tblRosterTr]').length
-		debug('Main:countSostavMax='+countSostavMax)
 		countRentMax 	= $('tr[id^=tblRosterRentTr]').length
-
+		debug('Main:countSostavMax='+countSostavMax)
 		EditFinance();
-
-		RelocateGetNomData()
-/**
-		GetData('teams')
-		GetData('players')
-		GetInfoPagePl()
-		GetInfoPageTm()
-/**/
-//		GetData('divs')
-
-/**		if(deb){
-			preparedhtml  = '<br><br><a id="players" href="javascript:void(Print(\'players\'))">debug:Игроки</a><br>'
-			preparedhtml += '<a id="teams" href="javascript:void(Print(\'teams\'))">debug:Команды</a><br>'
-			$("#rg").after(preparedhtml)
-		}
-/**/
+		GetFinish('start', true)
 		if(cid==parseInt(localStorage.myteamid)) {
 			delete localStorage.matches
 			delete localStorage.matchespl
 			getJSONlocalStorage('matches2',matches2)
 			getJSONlocalStorage('matchespl2',matchespl2)
+			getJSONlocalStorage('players2',players2)
 		}
 	}
 }, false);
+
+function GetFinish(type, res){
+	debug('GetFinish:type='+type+':res='+res)
+	m[type] = res;
+
+	if(m.checksu==undefined && m.pg_players && UrlValue('h')!=1){
+		m.checksu = true
+		checkDeleteMatches()
+	}
+/**/
+	if(m.getdatatm==undefined && m.start){
+		m.getdatatm = true
+		GetData('teams')
+		GetInfoPageTm()
+	}
+	if(m.getdatapl==undefined && m.pg_teams){
+		m.getdatapl = true
+		GetData('players')
+		GetInfoPagePl()
+	}
+
+/**/
+
+	if(m.modifyteams==undefined && m.get_teams!=undefined && m.pg_teams && m.pg_players){
+		m.modifyteams = true
+		ModifyTeams()	//and save if need
+		PrintRightInfo()
+	}
+/**
+	if(m.trash==undefined && m.pg_teams && m.pg_players){
+		m.trash = true
+		CheckTrash()
+	}
+/**/
+
+	if(m.savedatapl==undefined && m.get_players==false && m.pg_players){
+		m.savedatapl = true
+		SaveData('players')
+	}
+	if(m.savedatapl==undefined && m.get_players && m.pg_players){//m.trash
+		m.savedatapl = true
+		ModifyPlayers()// and Save if need
+	}
+	if(m.showvip==undefined){
+		m.showvip = true
+		RelocateGetNomData() // вернет getnomdata=true
+	}
+	if(m.rightvip==undefined && m.getnomdata && m.pg_playersVip){
+		m.rightvip = true
+		CheckTrash()
+		ModifyTeams()	//and save if need
+		PrintRightInfoVip()
+		ModifyPlayers()// and Save if need
+	}
+}
 
 function fixColors(){
 	debug('fixColors()')
@@ -302,6 +241,97 @@ function fixColors(){
 		.find('tr[bgcolor*=C9F8B7]').addClass('back1').removeAttr('bgcolor').end()
 }
 
+function modifyPage(){
+	// исправляем размер
+	var bbig = false
+	if($('table:eq(0)').attr('width')>=1000) {
+		bbig = true
+		$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200)
+	}
+	// Draw right panel and fill data
+	var preparedhtml = ''
+	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr>'
+	preparedhtml += '<td id="crabgloballeft" width='+(bbig ? 0 : 200)+' valign=top></td>'
+	preparedhtml += '<td id="crabglobalcenter" valign=top></td>'
+	preparedhtml += '<td id="crabglobalright" width=200 valign=top>'
+	preparedhtml += '<table id="crabrighttable" class=back1 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
+	preparedhtml += '</td></tr></table>'
+	$('body table.border:last').before(preparedhtml)
+	$('td.back4 script').remove()
+	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
+	$('#crabrighttable').addClass('border') 
+
+	preparedhtml  =	'<table width=100% id="rg"><tr><th colspan=3>Финансовое положение</th></tr>'
+	preparedhtml += '<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
+	preparedhtml += '<tr><td id="os" colspan=3 align=center nowrap><br><b>Основной состав</b>'
+	preparedhtml += (UrlValue('h')==1 ? '' : ' <a id=showvip href="javascript:void(ShowVip())">(всё)</a>')
+	preparedhtml += '</td></tr>'
+	preparedhtml += '<tr id="osform">'
+	preparedhtml += '<td nowrap><b>форма</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
+	preparedhtml += '<th id=osform align=right nowrap></th>'
+	preparedhtml += '</tr>'
+	preparedhtml += '<tr id="osmorale">'
+	preparedhtml += '<td nowrap><b>мораль</b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
+	preparedhtml += '<th id=osmorale align=right nowrap></th>'
+	preparedhtml += '</tr>'
+	preparedhtml += '<tr id="osage">'
+	preparedhtml += '<td nowrap><b><a href="javascript:void(ShowPlayersAge())">возраст</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
+	preparedhtml += '<th id="osage" align=right nowrap></th>'
+	preparedhtml += '</tr>'
+	preparedhtml += '<tr id="osskills">'
+	preparedhtml += '<td nowrap><b><a href="javascript:void(ShowPlayersSkillChange())">скиллы</a></b>'+('&nbsp;(срд)').fontsize(1)+'<b>:</b></td>'
+	preparedhtml += '<th id="osskills" align=right nowrap></th>'
+	preparedhtml += '</tr>'
+	preparedhtml += '<tr id="ossvalue">'
+	preparedhtml += '<th align=left width=50% nowrap><a href="javascript:void(ShowPlayersSValue())">номиналы+</a>:</th>'
+	preparedhtml += '<th id=ossvalue align=right nowrap></th>'
+	preparedhtml += '<td width=10%>&nbsp;<a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></td>'
+	preparedhtml += '</tr>'
+	preparedhtml += '<tr id="osnom">'
+	preparedhtml += '<th align=left width=50% nowrap><a id="osnom" href="javascript:void(ShowPlayersValue())">номиналы</a>:</th>'
+	preparedhtml += '<th id=osnom nowrap align=right></th>'
+	preparedhtml += '<td id=nomch nowrap width=10%>&nbsp;</td>'
+	preparedhtml += '</tr>'
+	preparedhtml += '<tr id="oszp">'
+	preparedhtml += '<th align=left nowrap><a href="javascript:void(ShowPlayersZp())">зарплаты</a>:</th>'
+	preparedhtml += '<th id="oszp" align=right nowrap></th>'
+	preparedhtml += '</tr>'
+	preparedhtml += '</table><br>'
+	preparedhtml += '<br>'
+	preparedhtml += '<a href="javascript:void(ShowRoster())"><b>Ростер команды</b></a><br>'
+	preparedhtml += '<b><a id=teamskills>Скиллы игроков</a></b>'
+	preparedhtml += '<br><a id=teamsu href="javascript:void(ShowSU())" style="display: none;"><b>Сверхусталость</b></a>'
+	preparedhtml += '<br><br>'
+	$("#crabright").html(preparedhtml)
+
+	// add tables
+	var filter = '<div id="divRostSkillsFilter" style="display: none;"><a href="javascript:void(ShowSkills(2))">Стрелки</a> | <a href="javascript:void(ShowFilter())">Фильтр >></a></div>'
+	filter += '<table id="tblRostSkillsFilter" width=50% align=left cellspacing=1 cellpadding=1 class=back1 border=0 style="display: none;">'
+	filter += '<tr align=center><th width=10%></th><th id="R" width=15%><a href="javascript:void(Filter(1,\'R\'))">R</a></th><th width=15%></th><th id="C" width=15%><a href="javascript:void(Filter(1,\'C\'))">C</a></th><th width=15%></th><th id="L" width=15%><a href="javascript:void(Filter(1,\'L\'))">L</a></th></tr>'
+	filter += '<tr align=center><th id="GK"><a href="javascript:void(Filter(2,\'GK\'))">GK</a></th><th></th><th></th>	<td class=back2 id="GK">&nbsp;</td>		<th></th>	<th></th></tr>'
+	filter += '<tr align=center><th id="SW"><a href="javascript:void(Filter(2,\'SW\'))">SW</a></th><th></th><th></th>	<td class=back2 id="C SW">&nbsp;</td>	<th></th>	<th></th></tr>'
+	filter += '<tr align=center><th id="DF"><a href="javascript:void(Filter(2,\'DF\'))">DF</a></th><td class=back2 id="R DF">&nbsp;</td>	<td class=back2 id="C DF">&nbsp;</td>	<td class=back2 id="C DF">&nbsp;</td>	<td class=back2 id="C DF">&nbsp;</td>	<td class=back2 id="L DF">&nbsp;</td></tr>'
+	filter += '<tr align=center><th id="DM"><a href="javascript:void(Filter(2,\'DM\'))">DM</a></th><td class=back2 id="R DM">&nbsp;</td>	<td class=back2 id="C DM">&nbsp;</td>	<td class=back2 id="C DM">&nbsp;</td>	<td class=back2 id="C DM">&nbsp;</td>	<td class=back2 id="L DM">&nbsp;</td></tr>'
+	filter += '<tr align=center><th id="MF"><a href="javascript:void(Filter(2,\'MF\'))">MF</a></th><td class=back2 id="R MF">&nbsp;</td>	<td class=back2 id="C MF">&nbsp;</td>	<td class=back2 id="C MF">&nbsp;</td>	<td class=back2 id="C MF">&nbsp;</td>	<td class=back2 id="L MF">&nbsp;</td></tr>'
+	filter += '<tr align=center><th id="AM"><a href="javascript:void(Filter(2,\'AM\'))">AM</a></th><td class=back2 id="R AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="C AM">&nbsp;</td>	<td class=back2 id="L AM">&nbsp;</td></tr>'
+	filter += '<tr align=center><th id="FW"><a href="javascript:void(Filter(2,\'FW\'))">FW</a></th><th></td><td class=back2 id="C FW">&nbsp;</td>	<td class=back2 id="C FW">&nbsp;</td>	<td class=back2 id="C FW">&nbsp;</td>	<th></th></tr>'
+	filter += '</table>'
+	filter += '<table id="SumPl" width=50% align=right style="display: none;">'
+	filter += '<tr id="sumhead"><th colspan=4 align=center id="sumhead">Суммарный игрок</th></tr>'
+	filter += '<tr id="sumlast1"><td colspan=4 align=right id="sumlast1"><a href="javascript:void(ShowSumPlayer(0))">целые</a>, <a href="javascript:void(ShowSumPlayer(1))">десятые</a>, <a href="javascript:void(ShowSumPlayer(2))">сотые</a></td></tr>'
+	//filter += '<tr id="sumlast2"><td colspan=4 align=right id="sumlast2"><a href="javascript:void(ShowHols())">провалы</a></td></tr>'
+	filter += '</table>'
+	filter += '<div id="filter" style="display: none;">&nbsp;</div>'
+	$('table#tblRosterFilter').after(filter)
+
+	preparedhtml  = '<table id="tblRostSkills" width=866 class=back1 style="display: none;">' //BFDEB3
+	preparedhtml += '</table>'
+	preparedhtml += '<div id="divRostSkills" style="display: none;">'
+	preparedhtml += '<br>* - <i>нажать на значение <b>Сум</b> чтобы отключить или включить показ скиллов определенного игрока</i>'
+	preparedhtml += '<br>* - <i>нажимать на заголовки столбцов чтоб сортировать по сумме выделенных скиллов</i></div><br>'
+	$('table#tblRoster').after(preparedhtml)
+}
+
 function RelocateGetNomData(){
 	debug('RelocateGetNomData()')
 	if(localStorage.getnomdata != undefined && String(localStorage.getnomdata).indexOf('1.1$')!=-1){
@@ -337,7 +367,7 @@ function RelocateGetNomData(){
 }
 
 function GetNomData(id){
-	debug('GetNomData:id='+id)
+//	debug('GetNomData:id='+id)
 	var sdata = []
 	var pl = players[id]
 	var tkp = 0
@@ -821,50 +851,6 @@ function DBConnect(){
 	else 	{debug('DBConnect:ok')}
 }
 
-function GetFinish(type, res){
-	debug('GetFinish:type='+type+':res='+res)
-	m[type] = res;
-
-	if(m.checksu==undefined && m.pg_players && UrlValue('h')!=1){
-		m.checksu = true
-		checkDeleteMatches()
-	}
-
-	if(m.savenomdata==undefined && m.getnomdata){
-		m.savenomdata = true
-/**/
-		GetData('teams')
-		GetData('players')
-		GetInfoPagePl()
-		GetInfoPageTm()
-/**/
-	}
-	if(m.trash==undefined && m.pg_teams && m.pg_players){
-		m.trash = true
-		CheckTrash()
-	}
-	if(m.savedatatm==undefined && m.get_teams!=undefined && m.pg_teams && m.pg_players && m.trash){
-		m.savedatatm = true
-		CheckMy()
-		ModifyTeams()
-	}
-	if(m.savedatapl==undefined && m.get_players==false && m.pg_players && m.trash){
-		m.savedatapl = true
-		PrintRightInfo()
-		SaveData('players')
-	}
-	if(m.savedatapl==undefined && m.get_players && m.pg_players && m.trash){
-		m.savedatapl = true
-		ModifyPlayers()// and Save if need
-		PrintRightInfo()
-	}
-	if(m.showvip==undefined && m.pg_playersVip){
-		m.showvip = true
-		PrintRightInfoVip()
-		SaveData('players')
-	}
-}
-
 function CheckTrash(){
 	debug('CheckTrash()')
 
@@ -878,45 +864,29 @@ function CheckTrash(){
 	}
 	ss = (ss/11)*0.8
 	debug('CheckTrash:ss='+ss)
-	var tss  = 0
-	var age  = 0
-	var tform = 0
-	var tmorale = 0
-	var pnum = 0
+	if(isNaN(ss)) return false
+	team_cur.age = 0
+	team_cur.tmorale = 0
+	team_cur.tform = 0
+	team_cur.pnum = 0
 	for(i in players){
 		var pli = players[i]
 		if(pli.sumskills<ss){
 			pli.trash = true
 		}else{
-			tss += pli.sumskills
-			age += pli.age
-			tform += pli.form
-			tmorale += pli.morale
-			pnum++
+			team_cur.tss 	= ((team_cur.tss*team_cur.pnum)+pli.sumskills)/(team_cur.pnum+1)
+			team_cur.age 	= ((team_cur.age*team_cur.pnum)+pli.age)/(team_cur.pnum+1)
+			team_cur.tform 	= ((team_cur.tform*team_cur.pnum)+pli.form)/(team_cur.pnum+1)
+			team_cur.tmorale= ((team_cur.tmorale*team_cur.pnum)+pli.morale)/(team_cur.pnum+1)
+			team_cur.pnum = team_cur.pnum+1
 		}
-		team_cur.pnum = pnum
-		team_cur.tss = (isNaN(tss) ? 0 : (tss/pnum).toFixed(2))
-		team_cur.age = (age/pnum).toFixed(2)
-		team_cur.tform = (tform/pnum).toFixed(2)
-		team_cur.tmorale = (tmorale/pnum).toFixed(2)
 	}
-	GetFinish('trash', true)
-}
+	team_cur.tss = parseFloat(team_cur.tss).toFixed(2)
+	team_cur.age = parseFloat(team_cur.age).toFixed(2)
+	team_cur.tform = parseFloat(team_cur.tform).toFixed(2)
+	team_cur.tmorale = parseFloat(team_cur.tmorale).toFixed(2)
 
-function CheckMy(){
-	debug('CheckMy()')
-	if(team_cur.my){
-		save = true
-		$('a#teamsu').show()
-		debug('CheckMy:need save(cur)')
-	}else{
-		for(i in teams){
-			if(teams[i].my && teams[i].nname == team_cur.nname) {
-				save = true
-				debug('CheckMy:need save(list):'+team_cur.nname)
-			}
-		}
-	}
+	GetFinish('trash', true)
 }
 
 function ModifyTeams(){
@@ -970,12 +940,16 @@ function GetInfoPageTm(){
 
 	// Save my team id for script "match"
 	if(team_cur.my) {
+		$('a#teamsu').show()
+		save = true
 		localStorage.myteamid = cid
 		localStorage.mycountry = team_cur.ncode+'.'+team_cur.nname
 		var pic = ($('table.layer1 td[rowspan=3] img:first').attr('src')).split('/')[3].split('.')[0]
 		if(cid+'a'!=pic) localStorage.myteampic = pic
 		else delete localStorage.myteampic
 	}
+	// проверим что команда из моей страны - тогда сохраним
+	if(!save && localStorage.mycountry!=undefined && String(localStorage.mycountry).split('.')[1]==team_cur.nname) save = true
 
 	GetFinish('pg_teams', true)
 }
@@ -1042,11 +1016,8 @@ function saveJSONlocalStorage(dataname,data){
 }
 
 function SaveData(dataname){
-	debug('SaveData:'+dataname)
-	if(!save || UrlValue('h')==1 || (dataname=='players' && UrlValue('j')!=99999)){
-		debug('SaveData:'+dataname+':false')
-		return false
-	}
+	debug('SaveData:'+dataname+':save='+save)
+	if(!save || UrlValue('h')==1 || (dataname=='players' && UrlValue('j')!=99999)) return false
 
 	var data = []
 	var head = list[dataname].split(',')
@@ -1176,9 +1147,12 @@ function checkDeleteMatches(){
 function GetInfoPagePl(){
 	debug('GetInfoPagePl()')
 	$('tr[id^=tblRosterTr]').each(function(i,val){
-		var eurl= $(val).find('a[trp="1"]').attr('href')
-		var pid = UrlValue('j',$(val).find('td:eq(1) a').attr('href'))
-		var pn	= parseInt($(val).find('td:first').text())
+		var eurl	= $(val).find('a[trp="1"]').attr('href')
+		var pid 	= UrlValue('j',$(val).find('td:eq(1) a').attr('href'))
+		var pn		= parseInt($(val).find('td:first').text())
+		var age		= parseInt($(val).find('td:eq(3)').html())
+		var morale	= parseInt($(val).find('td:eq(4)').html())
+		var form	= parseInt($(val).find('td:eq(5)').html())
 		players[pid] = {}
 		players[pid].pn 	= pn
 		players[pid].id 	= pid
@@ -1195,10 +1169,10 @@ function GetInfoPagePl(){
 		players[pid].nid	= $(val).find('td:eq(2) img').attr('src')
 								.split('/')[4]
 								.split('.')[0]
-		players[pid].age	= parseInt($(val).find('td:eq(3)').html())
-		players[pid].morale	= parseInt($(val).find('td:eq(4)').html())
+		players[pid].age	= age
+		players[pid].morale	= morale
 		players[pid].mchange= 0
-		players[pid].form	= parseInt($(val).find('td:eq(5)').html())
+		players[pid].form	= form
 		players[pid].fchange= 0
 		players[pid].games	= parseInt($(val).find('td:eq(6)').html())
 		players[pid].goals	= parseInt($(val).find('td:eq(7)').html())
@@ -1210,20 +1184,25 @@ function GetInfoPagePl(){
 		players[pid].valuech= 0
 		if(eurl!=undefined) players[pid].eurl = eurl
 
+		team_cur.tform 		= ((team_cur.tform*team_cur.pnum)+ form)/(team_cur.pnum+1)
+		team_cur.tmorale 	= ((team_cur.tmorale*team_cur.pnum)+ morale)/(team_cur.pnum+1)
+		team_cur.age 		= ((team_cur.age*team_cur.pnum)+ age)/(team_cur.pnum+1)
+		team_cur.pnum 		= team_cur.pnum+1
+
 		Ready()
 	})
+	team_cur.tform = parseFloat(team_cur.tform).toFixed(2)
+	team_cur.tmorale = parseFloat(team_cur.tmorale).toFixed(2)
+	team_cur.age = parseFloat(team_cur.age).toFixed(2)
 	debug('GetInfoPagePl:done')
 }
 
 function Ready(vip){
-	debug('Ready:vip='+vip)
 	if(vip==undefined){
 		countSostav++
-//		debug('Ready:'+countSostav+'=='+countSostavMax)
 		if(countSostav==countSostavMax) GetFinish('pg_players', true)
 	}else{
 		countSostavVip++
-//		debug('Ready:'+vip+':'+countSostavVip+'=='+countSostavMax)
 		if(countSostavVip==countSostavMax) {
 			for(i in players) GetPl(i)
 			GetFinish('pg_playersVip', true)
@@ -1233,6 +1212,8 @@ function Ready(vip){
 
 function ModifyPlayers(){
 	debug('ModifyPlayers()')
+
+	if(!team_cur.my) return false
 
 	// Check for update
 	for(i in players) {
@@ -1279,9 +1260,9 @@ function ModifyPlayers(){
 		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(4)').append(ShowChange(pl.mchange))
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
-			$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(7)').append(ShowChange(pl.goals-pl2.goals, true))
-			$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(8)').append(ShowChange(pl.passes-pl2.passes, true))
-			$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(9)').append(ShowChange(pl.ims-pl2.ims, true))
+			$('table#tblRoster tr#tblRosterTr'	+ pl.pn + ' td:eq(7)').append(ShowChange(pl.goals-pl2.goals, true))
+			$('table#tblRoster tr#tblRosterTr'	+ pl.pn + ' td:eq(8)').append(ShowChange(pl.passes-pl2.passes, true))
+			$('table#tblRoster tr#tblRosterTr'	+ pl.pn + ' td:eq(9)').append(ShowChange(pl.ims-pl2.ims, true))
 		}
 		sumvaluechange += pl.valuech/1000
 	}
@@ -1305,9 +1286,9 @@ function GetInfoPagePlVip(){
 }
 
 function GetPl(pid){
-	debug('GetPl:pid='+pid)
+//	debug('GetPl:pid='+pid)
+
 	// get player skills with number pid
-//	debug(head)
 	var skillsum = 0
 	var skillchange = []
 	$('td#pl'+pid+' table:first td:even').each(function(){
@@ -1361,6 +1342,9 @@ function PrintRightInfo(){
 function PrintRightInfoVip(){
 	debug('PrintRightInfoVip()')
 	var notvip ='<font color=BABDB6>для VIP</font>'
+	$('th#osform').html(team_cur.tform + '&nbsp;')
+	$('th#osmorale').html(team_cur.tmorale + '&nbsp;')
+	$('th#osage').html(team_cur.age + '&nbsp;')
 	$('th#osskills').html((team_cur.tss!=0 ? team_cur.tss + '&nbsp;' : '<font color=green>отключено</font>'))
 	$('th#ossvalue').html((team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : notvip))
 	$('th#osnom').html((team_cur.tvalue!=0 ? ShowValueFormat(team_cur.tvalue)+'т' : notvip))
