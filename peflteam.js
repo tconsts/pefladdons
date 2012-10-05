@@ -133,7 +133,7 @@ $().ready(function() {
 			delete localStorage.matchespl
 			getJSONlocalStorage('matches2',matches2)
 			getJSONlocalStorage('matchespl2',matchespl2)
-			getJSONlocalStorage('players2',players2)
+			getJSONlocalStorage('players',players3)
 		}
 	}
 }, false);
@@ -146,7 +146,7 @@ function GetFinish(type, res){
 		m.checksu = true
 		checkDeleteMatches()
 	}
-/**/
+
 	if(m.getdatatm==undefined && m.start){
 		m.getdatatm = true
 		GetData('teams')
@@ -157,21 +157,11 @@ function GetFinish(type, res){
 		GetData('players')
 		GetInfoPagePl()
 	}
-
-/**/
-
 	if(m.modifyteams==undefined && m.get_teams!=undefined && m.pg_teams && m.pg_players){
 		m.modifyteams = true
 		ModifyTeams()	//and save if need
 		PrintRightInfo()
 	}
-/**
-	if(m.trash==undefined && m.pg_teams && m.pg_players){
-		m.trash = true
-		CheckTrash()
-	}
-/**/
-
 	if(m.savedatapl==undefined && m.get_players==false && m.pg_players){
 		m.savedatapl = true
 		SaveData('players')
@@ -1191,9 +1181,6 @@ function GetInfoPagePl(){
 
 		Ready()
 	})
-	team_cur.tform = parseFloat(team_cur.tform).toFixed(2)
-	team_cur.tmorale = parseFloat(team_cur.tmorale).toFixed(2)
-	team_cur.age = parseFloat(team_cur.age).toFixed(2)
 	debug('GetInfoPagePl:done')
 }
 
@@ -1334,9 +1321,9 @@ function ShowVip(){
 
 function PrintRightInfo(){
 	debug('PrintRightInfo()')
-	$('th#osform').html(team_cur.tform + '&nbsp;')
-	$('th#osmorale').html(team_cur.tmorale + '&nbsp;')
-	$('th#osage').html(team_cur.age + '&nbsp;')
+	$('th#osform').html(parseFloat(team_cur.tform).toFixed(2) + '&nbsp;')
+	$('th#osmorale').html(parseFloat(team_cur.tmorale).toFixed(2) + '&nbsp;')
+	$('th#osage').html(parseFloat(team_cur.age).toFixed(2) + '&nbsp;')
 }
 
 function PrintRightInfoVip(){
