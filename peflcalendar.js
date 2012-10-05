@@ -189,7 +189,7 @@ function getJSONlocalStorage(dataname,data){
 		switch(dataname){
 			default:
 				for(k in data2) {
-					if(data2[k].id!=undefined) data[data2[k].id]= data2[k]
+					if(data2[k]!=null && data2[k]!=undefined && data2[k].id!=undefined) data[data2[k].id]= data2[k]
 					else data[k]= data2[k]
 				}
 		}
