@@ -13,13 +13,13 @@ var	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var type 	= 'num'
 var players = []
 var players2= []
+var players3= []
 var matches2	= []
 var matchespl2	= []
 var teams 	= []
 var sumax 	= 3600
 var team_cur = {}
 var m = []
-var remember = 0
 var sumvaluechange = 0
 var save = false
 var db = false
@@ -131,7 +131,7 @@ $().ready(function() {
 		if(cid==parseInt(localStorage.myteamid)) {
 			delete localStorage.matches
 			delete localStorage.matchespl
-			delete localStorage.players
+//			delete localStorage.players
 			getJSONlocalStorage('matches2',matches2)
 			getJSONlocalStorage('matchespl2',matchespl2)
 			getJSONlocalStorage('players2',players3)
@@ -166,6 +166,7 @@ function GetFinish(type, res){
 	if(m.savedatapl==undefined && m.get_players==false && m.pg_players){
 		m.savedatapl = true
 		SaveData('players')
+		saveJSONlocalStorage('players2',players3)
 	}
 	if(m.savedatapl==undefined && m.get_players && m.pg_players){//m.trash
 		m.savedatapl = true
@@ -1169,7 +1170,7 @@ function GetInfoPagePl(){
 		players[pid].goals	= parseInt($(val).find('td:eq(7)').html())
 		players[pid].passes	= parseInt($(val).find('td:eq(8)').html())
 		players[pid].ims	= parseInt($(val).find('td:eq(9)').html())
-		players[pid].rate	= parseInt($(val).find('td:eq(10)').html())
+		players[pid].rate	= parseFloat($(val).find('td:eq(10)').html())
 		players[pid].position= $(val).find('td:eq(11)').html()
 		players[pid].value 	= 0
 		players[pid].valuech= 0
@@ -1199,18 +1200,19 @@ function Ready(vip){
 }
 
 function ModifyPlayers(){
-	debug('ModifyPlayers()')
+	//'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
+	debug('ModifyPlayers:my='+team_cur.my)
 
 	if(!team_cur.my) return false
-
+	var remember = false
 	// Check for update
 	for(i in players) {
 		var pl = players[i]
 //		debug('Check:'+pl.id+':'+typeof(players2[pl.id]))
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
-			if (remember != 1 && (pl.morale != pl2.morale || pl.form != pl2.form || (pl.value!=0 && pl.value != pl2.value))){
-				remember = 1
+			if (!remember && (pl.morale != pl2.morale || pl.form != pl2.form || (pl.value!=0 && pl.value != pl2.value))){
+				remember = true
 				debug('ModifyPlayers:NeedSave:id='+pl.id+':morale='+pl.morale +'/'+pl2.morale+':form='+pl.form+'/'+pl2.form+':value='+pl.value+'/'+pl2.value)
 				break;
 			}
@@ -1224,7 +1226,7 @@ function ModifyPlayers(){
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
 			//debug(pl.id+':'+pl.goals+'='+pl2.goals)
-			if (remember == 1){
+			if (remember){
 				players[i].mchange = pl.morale - pl2.morale
 				players[i].fchange = pl.form   - pl2.form
 				if(pl.value!=0) {
@@ -1256,7 +1258,39 @@ function ModifyPlayers(){
 	}
 	debug('ModifyPlayers:sumvaluechange='+sumvaluechange)
 	// Save if not team21
-	if (remember==1) SaveData('players')
+	if (remember)	SaveData('players')
+
+
+	var remember3 = false
+	var lsgday = String(localStorage.gday)
+	var curgday = 0
+	if(!team_cur.my || lsgday=='undefined' || isNaN(parseInt(lsgday.split('.')[1]))) return false 
+	else curgday = parseInt(lsgday.split('.')[1])
+
+	if(players3[0]==undefined){
+		remember3 = true
+		players3[0] = curgday
+		for (i in players){
+			var pl = players[i]
+			var pl3 = {}
+			pl3.id	= pl.id
+			if(pl.morale!=100)	pl3.m	= pl.morale
+//			if(pl.value!=0)		pl3.v	= pl.value
+			if(pl.goals!=0)		pl3.g	= pl.goals
+			if(pl.ims!=0)		pl3.i	= pl.ims
+			if(pl.passes!=0)	pl3.p	= pl.passes
+			if(pl.rate!=0)		pl3.r	= pl.rate
+			if(pl.games!=0)		pl3.m	= pl.games
+			players3.push(pl3)
+		}
+		debug('ModifyPlayers:save(first)')
+	}else{
+		// проверяем и считаем и сохраняем
+		var dgday = parseInt(players3[0])
+//		if(dgday==curgday)
+	}
+
+	if (remember3)	saveJSONlocalStorage('players2',players3)
 }
 
 function GetInfoPagePlVip(){
