@@ -181,7 +181,7 @@ function GetFinish(type, res){
 		CheckTrash()
 		ModifyTeams()	//and save if need
 		PrintRightInfoVip()
-		ModifyPlayers()// and Save if need
+		ModifyPlayers('vip')// and Save if need
 	}
 }
 
@@ -1199,7 +1199,7 @@ function Ready(vip){
 	}
 }
 
-function ModifyPlayers(){
+function ModifyPlayers(vip){
 	//'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
 	debug('ModifyPlayers:my='+team_cur.my)
 
@@ -1244,7 +1244,7 @@ function ModifyPlayers(){
 	}
 	// Update page
 	debug('ModifyPlayers:UpdatePage')
-	for(i in players) {
+	if(vip==undefined) for(i in players) {
 		var pl = players[i]
 		$('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(4)').append(ShowChange(pl.mchange))
 		$('table#tblRoster tr#tblRosterRentTr'	+ pl.pn + ' td:eq(4)').append(ShowChange(pl.mchange))
