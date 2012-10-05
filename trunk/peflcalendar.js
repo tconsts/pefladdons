@@ -49,7 +49,7 @@ function checkMatches(){
 	for(i in gdaylist){
 		var gdli = gdaylist[i]
 		for(k in matches){
-			if(matches[k].dt==undefined){
+			if(matches[k]!=null && matches[k]!=undefined && matches[k].dt==undefined){
 				var countmark = 0
 				var countall = 0
 				var counttext = ''
