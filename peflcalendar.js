@@ -116,8 +116,9 @@ function getPageMatches(){
 				gdli[place+'nm'] = $(this).find('a:first').text()
 
 				//weather
-				var weather = parseInt(($(this).find('img:eq(1)').attr('src')).split('/w')[1].split('.')[0])
-				gdli.w = weather
+				//debug('getPageMatches:src='+$(this).find('img:eq(1)').attr('src'))
+				var weather = ($(this).find('img:eq(1)').attr('src')!=undefined ? parseInt(($(this).find('img:eq(1)').attr('src')).split('/w')[1].split('.')[0]) : false)
+				if(weather) gdli.w = weather
 
 				//нейтральное поле
 				if($(this).html().indexOf('Нейтр. поле')!=-1) gdli.n = 1
@@ -148,6 +149,7 @@ function getPageMatches(){
 			count++
 		}
 	})
+debug('getPageMatches:done')
 }
 
 function getTypeMatch(mtype){
