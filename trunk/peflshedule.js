@@ -94,7 +94,7 @@ function showMatches(){
 			//get match id
 			var matchid = parseInt(UrlValue('j',$(this).find('td:eq(3) a').attr('href')))
 			for(k in matches){
-				if(matches[k].id==matchid){
+				if(matches[k]!=null&& matches[k]!=undefined && matches[k].id==matchid){
 					var mch = matches[k]
 					$(this).find('td:eq(0)').html((mch.su==undefined ? supic : ''))
 					$(this).find('td:eq(1)').html(returnDate(mch.dt)+(mch.n==1 ? ' N' : ''))
