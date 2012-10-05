@@ -466,7 +466,7 @@ function ShowSU(del) {
 				var mth = matchespl2[i][j]
 				var mch2 = {}
 				for(g in matches2){
-					if(parseInt(matches2[g].id)==parseInt(j)) {
+					if(matches2[g]!=null && matches2[g]!=undefined && parseInt(matches2[g].id)==parseInt(j)) {
 						mch2 = matches2[g];
 						break
 					}
