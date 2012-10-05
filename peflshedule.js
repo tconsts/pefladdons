@@ -118,7 +118,7 @@ function showMatches(){
 	var num=0
 	for(i in matches){
 		mch = matches[i]
-		if(mch.anm==undefined || mch.hnm==undefined){
+		if(mch!=null && mch!=undefined && (mch.anm==undefined || mch.hnm==undefined)){
 			debug(mch.id+':'+mch.hnm+' '+mch.res+' '+ mch.anm)
 			var html = '<tr'+(num%2?' class="back3"':'')+'>'
 			html += '<td>'+(mch.su==undefined ? supic : '')+'</td>'
