@@ -2,7 +2,7 @@
 // @name           peflmain
 // @namespace      pefl
 // @description    modify site
-// @include        http://*.pefl.*/*
+// @include        http://www.pefl.*/*
 // @include        http://pefl.*/*
 // @exclude        http://*pefl.*/profile.php
 // @exclude        http://*pefl.*/auth.php
