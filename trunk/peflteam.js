@@ -807,7 +807,7 @@ function SuDelMatch(mid, type, plid){
 	debug('SuDelMatch:mid='+mid+':type='+type+':plid='+plid)
 	if(type=='del'){
 		//удалить матч из базы
-		for(k in matches2) if(matches2[k].id==mid){
+		for(k in matches2) if(matches2[k]==null || matches2[k].id==mid){
 			delete matches2[k]
 			break
 		}
@@ -815,13 +815,13 @@ function SuDelMatch(mid, type, plid){
 		saveJSONlocalStorage('matchespl2',matchespl2)
 	}else if(type=='suoff'){
 		//снять флаг сверхусталости
-		for(k in matches2) if(matches2[k].id==mid){
+		for(k in matches2) if(matches2[k]!=null && matches2[k].id==mid){
 			matches2[k].su = false
 			break
 		}
 	}else if(type=='suon'){
 		//поставить флаг сверхусталости
-		for(k in matches2) if(matches2[k].id==mid){
+		for(k in matches2) if(matches2[k]!=null && matches2[k].id==mid){
 	 		delete matches2[k].su
 			break
 		}
