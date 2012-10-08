@@ -372,7 +372,7 @@ function saveJSONlocalStorage(dataname,data){
 		default:
 			var data2 = []
 			debug('default преобразования')
-			for(i in data) data2.push(data[i])
+			for(i in data) if(data[i]!=null) data2.push(data[i])
 	}
 	localStorage[dataname] = JSON.stringify(data2)
 
