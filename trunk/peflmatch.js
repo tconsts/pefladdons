@@ -352,13 +352,10 @@ function getJSONlocalStorage(dataname,data){
 	} else return false
 }
 function saveJSONlocalStorage(dataname,data){
-//	if(deb) for(i in data) debug('saveJSONlocalStorage:'+dataname+':'+i+':'+data[i][mid].m)
-	//debug(JSON.stringify(data).replace(/null\,/g,''))
+	debug('saveJSONlocalStorage:'+dataname)
 	switch(dataname){
 		case 'matchespl2': 
-			//if(deb) for(i in data['Р.Тарала']) debug('getJSONlocalStorage:data[Р.Тарала]:'+data['Р.Тарала'][i].id)
 			var data2 = {}
-			//if(deb) for(i in data) debug('saveJSONlocalStorage:'+dataname+':'+i+':'+data[i][mid].m)
 			for(k in data){
 				var d2 = []
 				for(l in data[k]){
@@ -366,12 +363,9 @@ function saveJSONlocalStorage(dataname,data){
 				}
 				data2[k] = d2
 			}
-			//if(deb) for(i in data2['Р.Тарала']) debug('getJSONlocalStorage:data2[Р.Тарала]:'+data2['Р.Тарала'][i].id)
-			//if(deb) for(i in data2) debug('saveJSONlocalStorage2:'+dataname+':'+i+':'+data2[i][0].m)
 			break
 		default:
 			var data2 = []
-			debug('default преобразования')
 			for(i in data) if(data[i]!=null) data2.push(data[i])
 	}
 	localStorage[dataname] = JSON.stringify(data2)

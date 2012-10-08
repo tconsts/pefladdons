@@ -1002,7 +1002,8 @@ function saveJSONlocalStorage(dataname,data){
 			}
 			break
 		default:
-			var data2 = data
+			var data2 = []
+			for(i in data) if(data[i]!=null) data2.push(data[i])
 	}
 	localStorage[dataname] = JSON.stringify(data2)
 }
