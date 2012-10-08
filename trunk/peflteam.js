@@ -652,9 +652,9 @@ function ShowPlM(plid,pdel){
 	matches22 = matches2
 	matches22.sort(function(a,b){if(a!=null&&b!=null) return (((a.dt==undefined?(a.hnm!=undefined&&a.anm!=undefined?0:100000000):a.dt) + a.id*0.0000001) - ((b.dt==undefined?(b.hnm!=undefined&&b.anm!=undefined?0:100000000):b.dt) + b.id*0.0000001))})
 	for(j in matches22){
-		prehtml 	= ''
-		var mch 	= matches22[j]
-		if(mch.res!=undefined){
+		prehtml = ''
+		var mch = matches22[j]
+		if(mch!=null && mch!=undefined && mch.res!=undefined){
 
 		var mchpl	= (matchespl2[plid]!=undefined && matchespl2[plid][mch.id]!=undefined ? matchespl2[plid][mch.id] : false)
 		if(mchpl.mr==undefined && mch.hnm!=undefined && mch.anm!=undefined){
