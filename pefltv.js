@@ -8,6 +8,8 @@
 // ==/UserScript==
 
 
+if (typeof(jQuery) == 'undefined') return false;
+
 var source = 'http://pefladdons.googlecode.com/svn/trunk/';
 var tv_counter = 0;
 var comments = [];

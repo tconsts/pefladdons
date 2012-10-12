@@ -188,25 +188,4 @@ if(scflag[22]==0 && url2=='adaptation'){
 	newScriptAd.src = source+'pefladaptation.js';
 	headID.appendChild(newScriptAd);
 }
-//23 tv
-if(scflag[23]==0 && url1=='tvgame.php'){
-	if(window.jQuery == undefined) {
-		var jqueryScript = document.createElement('script');
-		jqueryScript.type = 'text/javascript';
-		jqueryScript.src = source+'jquery-1.7.1.min.js';
-		jqueryScript.onreadystatechange= function () {
-			if (this.readyState == 'complete') initTV();
-		}
-		jqueryScript.onload = initTV;
-		headID.appendChild(jqueryScript);	
-	} else {
-		$(document).ready(initTV());
-	}
-}
-
-function initTV() {
-	var newScriptTV = document.createElement('script');
-	newScriptTV.type = 'text/javascript';
-	newScriptTV.src = source+'pefltv.js';
-	headID.appendChild(newScriptTV);
-}
+//23 tv: removed
