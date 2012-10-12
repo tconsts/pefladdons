@@ -8,9 +8,6 @@
 // @exclude        http://*pefl.*/hist.php*
 // ==/UserScript==
 
-
-if (typeof(jQuery) == 'undefined') return false;
-
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) if(pf[n].split('=')[0] == key) return pf[n].split('=')[1];
@@ -82,7 +79,7 @@ function setLogo(){
 	if(String(localStorage.logopic)!='undefined') $('img:first').attr('height','88').attr('src',localStorage.logopic)
 }
 
-$().ready(function() {
+if(typeof(jQuery)!='undefined'){ $().ready(function() {
 //	delete localStorage.debug
 
 	if($('td.topmenu:first table td:eq(1) a:contains("Вход")').length>0) return false
@@ -122,4 +119,4 @@ $().ready(function() {
 	CheckNewMail()
 	if (UrlValue("t")=="school") SetNumShcoolers()
 
-});
+})};
