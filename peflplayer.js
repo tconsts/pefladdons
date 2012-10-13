@@ -952,7 +952,7 @@ function CodeForForum(){
 		if(pl.newpos != '' && pl.newpos != undefined) x += '[/b] (' +pl.newpos + ')[b]'
 		x += '\n\nУмения[/b](сс='+pl.sumskills
 		x += (pl.flag==5 ? ', школьник':'')
-		x += (pl.flag==7 ? ', молодеж':'')
+		x += (pl.flag==7 ? ', молодёжь':'')
 		x += (pl.t=='p2' ? ', свободный':'')
 		x += ')[/center]'
 
@@ -1442,7 +1442,7 @@ $().ready(function() {
 	players[0].id  = UrlValue('j')
 	players[0].hash = UrlValue('z')
 	if($('a:[href^="plug.php?p=tr&t=ncyf&n=yf"]').length>0){
-		//значит молодеж
+		//значит молодежь
 		players[0].flag = 7
 	}
 
