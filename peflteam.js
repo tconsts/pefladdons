@@ -732,7 +732,7 @@ function ShowPlM(plid,pdel){
 			prehtml += '<td'+tdcolor+' nowrap>'+pos+'</td>'
 			prehtml += '<td'+tdcolor+' align=right>'+(im ? '<b>' : '')+mark+(im ? '</b>' : '')+'</td>'
 			prehtml += '<td'+tdcolor+' nowrap>'+goals+'</td>'
-			prehtml += '<td'+tdcolor+' style="border-right:1px solid;" align=left width=5%>'+cp+cards+'</td>'
+			prehtml += '<td'+tdcolor+' nowrap style="border-right:1px solid;" align=left width=5%>'+cp+cards+'</td>'
 		}else prehtml += '<td colspan=7 class=back1></td>'
 		prehtml += '<td style="border-left:1px solid;"><a href="javascript:void(SuDelMatch(\''+mch.id+'\',\'del\',\''+plid+'\'))"><font color=red>X</font></a></td>'
 		prehtml += '<td align=right><b>'+String(num).fontsize(1)+'</b></td>'
