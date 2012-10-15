@@ -8,7 +8,7 @@
 // ==/UserScript==
 
 deb = (localStorage.debug == '1' ? true : false)
-var debnum = 0
+var debnum = 1
 var db = false
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var teams = []
@@ -73,8 +73,29 @@ $().ready(function() {
 		$('td.back4 table table:last').after(szptxt)
 		$('td.back4').append('<br>*  - последняя колонка показывает сумму компенсации при увольнении')
 		$('td.back4').append('<br>** - для учета в подсчете школьников сходите в школу')
+		if(UrlValue('j')) showSponsers()
+		//showSponsers()
+
 	}
 });
+
+function showSponsers(){
+	debug('showSponsers()')
+	var page0 = $('td.back4').html().split('Макс. фонд зарплат: ')[1]
+	var maxwage = parseInt((page0.split('$')[0]).replace(/\,/g,''))
+	var fortrans = parseInt(page0.split(': ')[1].split('$')[0].replace(/\,/g,''))
+	var finances = parseInt(page0.split('/ ')[1].split('$')[0].replace(/\,/g,''))
+	debug('showSponsers:maxwage='+maxwage+':fortrans='+fortrans+':finanses='+finances)
+	sponsers = 0
+	if(fortrans==finances || fortrans == 0){
+		sponsers = (finances<=0 ? maxwage : maxwage*100/130)/1000
+	}else{
+		
+	}
+	sptext = '<br>Спонсоры: '+(sponsers>999 ? String(parseFloat(sponsers/1000).toFixed(3)).replace(/\./g,',') : parseInt(sponsers))+',000$'
+	debug('showSponsers:sponsers='+sponsers+':sptext='+sptext)
+	if(sponsers!=0) $('td.back4 table table:last').after(sptext)
+}
 
 function GetTeams(nid,nname){
 		debug('GetTeams:nid='+nid+':nname='+nname)
@@ -158,4 +179,10 @@ function UrlValue(key,url){
 	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
 	return false
 }
-function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+function debug(text) {
+	if(deb) {
+		if(debnum==1) $('body').append('<div id=debug></div>')
+		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
+		debnum++;
+	}
+}
