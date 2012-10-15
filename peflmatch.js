@@ -28,6 +28,7 @@ var zamena = []
 var sshort	= ''
 var matches	= []
 var plmatch	= []
+var players	= []
 var matchespl  = {}
 var matchesplh = {}
 var matchespla = {}
@@ -202,10 +203,29 @@ function getMatchInfo(){
 
 	// проверям на установки и пополняем краткий отчет
 	var otcharr = []
-	$('td.back4 table:eq(2) center p').each(function(){otcharr.push($(this).html())})
+	$('td.back4 table:eq(2) center p').each(function(){
+		var fulltext = $(this).html()
+		var curmin = parseInt(fulltext)
+		otcharr.push(fulltext)
+		$(this).find('font').each(function(i,val){
+			var pnum = parseInt($(val).attr('class').replace('p0','').replace('p',''))
+			if(players[pnum]==undefined) players[pnum] = {"act":0}
+			players[pnum].act += 1
+			players[pnum].last = curmin
+			//debug('getMatchInfo:curmin='+curmin+':pnum'+pnum+':')
+		})
+		if($(this).find('font ~ img[src*=krest.gif]').length>0){
+			var pnum = parseInt($(this).find('font ~ img[src*=krest.gif]').prev().attr('class').replace('p0','').replace('p',''))
+			players[pnum].inj = true
+			//debug('getMatchInfo:curmin='+curmin+':class=:'+$(this).find('font ~ img[src*=krest.gif]').prev().attr('class'))
+		}
+	})
+	if(deb) for(i in players) debug('getMatchInfo:i='+i+':act='+players[i].act+':last='+players[i].last+':inj='+players[i].inj)
+
 	var ust = true
 	var chpos = 0
 	for(i in otcharr) {
+
 		// выясняем установку
 		if(String(otcharr[i]).indexOf('предельно настроенными') != -1)	match1.ust = 'p'
 		else if(String(otcharr[i]).indexOf('активно начина') != -1) 	match1.ust = 'a'
@@ -443,6 +463,12 @@ function getPlayersInfo(){
 			if(goals>0) player.g = goals
 			//if(deb && goals>0) debug('getPlayersInfo:'+nameid+':goals='+goals)
 		}
+		if(player.cr=='yr'|| player.cr=='r') {
+			var delmin = players[pnum].last
+			player.m = (player.m==undefined ? delmin : player.m - (mt-delmin))
+			//debug('getPlayersInfo:'+nameid+':m='+players.m)
+		}
+//		if(players[pnum].inj)
 
 		// get info from match text
 /**
