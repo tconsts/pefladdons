@@ -1242,6 +1242,7 @@ function ShowLastStats(){
 	debug('LastStats()')
 	if($('table#plst tr').length==0){
 		var matches = getJSONlocalStorage('matches2')
+		matches.sort(function(a,b){if(a!=null&&b!=null) return (((a.dt==undefined?(a.hnm!=undefined&&a.anm!=undefined?0:100000000):a.dt) + a.id*0.0000001) - ((b.dt==undefined?(b.hnm!=undefined&&b.anm!=undefined?0:100000000):b.dt) + b.id*0.0000001))})
 		var matchespl = getJSONlocalStorage('matchespl2')
 		var html = '<tr><td>нет данных</td></tr>'
 		if(matches && matchespl){
