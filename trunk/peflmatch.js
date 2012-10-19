@@ -468,7 +468,17 @@ function getPlayersInfo(){
 			player.m = (player.m==undefined ? delmin : player.m - (mt-delmin))
 			//debug('getPlayersInfo:'+nameid+':m='+players.m)
 		}
-//		if(players[pnum].inj)
+		if(players[pnum]!=undefined && players[pnum].inj){
+			player.t = 1
+			var injmin = players[pnum].last
+			player.m = (player.m==undefined ? injmin : (player['in']==1 ? player.m - (mt-injmin) : player.m))
+//			$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append(' <font color=red><b>T</b></font>('+players[pnum].last+'\')')
+			if($('td.back4 table:eq(6) td:contains('+nameid+')').next().find('img[src*=system/img/gm/out.gif]').length>0){
+				$('td.back4 table:eq(6) td:contains('+nameid+')').next().find('img[src*=system/img/gm/out.gif]').remove().end().prepend('<font color=red><b>T</b></font>')
+			}else{
+				$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append(' <font color=red><b>Т</b></font>('+players[pnum].last+'\')')
+			}
+		}
 
 		// get info from match text
 /**
