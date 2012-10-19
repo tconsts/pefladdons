@@ -560,15 +560,14 @@ function ShowSU(del) {
 		}
 		preparedhtml += '</table>'
 		preparedhtml += '<div id="divSu">'
-		preparedhtml += '<br>1. минуты в матчах с получением травм могут считаться не совсем корректно'
-		preparedhtml += '<br>2. с однофамильцами мугут быть проблемы'
-		preparedhtml += '<br>3. желтым должны быть помечены игроки с тильдами(~)'
-		preparedhtml += '<br>4. серым помечено то что не идет в подсчет % минут'
-		preparedhtml += '<br>5. <a>&ndash;</a> матч ненадо учитывать при подсчете % минут (например при подписывании школьника)'
-		preparedhtml += '<br>6. <font color=red>X</font> удалить: игрока, игрока из матча или матч целиком'
-		preparedhtml += '<br>7. нажмите на Имя игрока чтобы посмотреть в каких матчах и сколько он играл'
-		preparedhtml += '<br>8. для отображения дат и турниров сходите в календарь'
-		preparedhtml += '<br>9. сортировка матчей идет так: вначале матчи без дат(по id), потом по датам'
+		preparedhtml += '<br>1. с однофамильцами мугут быть проблемы'
+		preparedhtml += '<br>2. желтым должны быть помечены игроки с тильдами(~)'
+		preparedhtml += '<br>3. серым помечено то что не идет в подсчет % минут'
+		preparedhtml += '<br>4. <a>&ndash;</a> матч ненадо учитывать при подсчете % минут (например при подписывании школьника)'
+		preparedhtml += '<br>5. <font color=red>X</font> удалить: игрока, игрока из матча или матч целиком'
+		preparedhtml += '<br>6. нажмите на Имя игрока чтобы посмотреть в каких матчах и сколько он играл'
+		preparedhtml += '<br>7. для отображения дат и турниров сходите в календарь'
+		preparedhtml += '<br>8. сортировка матчей идет так: вначале матчи без дат(по id), потом по датам'
 
 		preparedhtml += '</div><br><br>'
 
@@ -714,12 +713,13 @@ function ShowPlM(plid,pdel){
 		var inz		= '&nbsp;'
 		var pos		= ''
 		if(plid!=0 && mchpl && mchpl.mr!=undefined){
-			minute	= (mchpl.m==undefined ? mch.m : mchpl.m)+'\''
+			minute	= (mchpl.m==undefined ? mch.m : mchpl.m)
 			mark	= (mchpl.mr!=undefined ? mchpl.mr : '&nbsp;')
 			im		= (mchpl.im!=undefined ? true : false)
 			cp		= (mchpl.cp!=undefined ? 'кэп&nbsp;' : '')
 			goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
 			cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
+			cards	= cards + (mchpl.t==1 ? '&nbsp;<font color=red><b>T</b></font>':'')
 			inz		= (mchpl['in']!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
 			if(mchpl.ps!=undefined){
 				var posarr = String(mchpl.ps).split(':')
@@ -734,6 +734,7 @@ function ShowPlM(plid,pdel){
 					pos	+= (pos==''?'':',')+red1+posname+red2
 				}
 			}else pos = '&nbsp;'
+			minute	= minute +'\''
 			num2++
 		}
 		var countmatch = (mch.hnm!=undefined && mch.anm!=undefined ? false : true)
