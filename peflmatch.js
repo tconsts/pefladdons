@@ -466,6 +466,7 @@ function getPlayersInfo(){
 		if(player.cr=='yr'|| player.cr=='r') {
 			var delmin = players[pnum].last
 			player.m = (player.m==undefined ? delmin : player.m - (mt-delmin))
+			$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append('<img src="system/img/gm/out.gif"></img>('+players[pnum].last+'\')')
 			//debug('getPlayersInfo:'+nameid+':m='+players.m)
 		}
 		if(players[pnum]!=undefined && players[pnum].inj){
