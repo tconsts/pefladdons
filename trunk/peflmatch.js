@@ -342,6 +342,7 @@ function SaveCodeForMatch(){
 		.replace(/font/g,'color')
 		.replace(/\</g,'[')
 		.replace(/\>/g,']')
+		.replace('[img]system/img/refl/krest.gif[/img width=10]','[color=red][b]Т[/b][/color]')
 		+ '[img]system/img/w' + (match1.w==undefined ? 0 : match1.w) + '.png[/img]' 
 		+ (match1.r!=undefined ? ' [b]Главный арбитр:[/b] ' + match1.r + '.' : '')
 		+ (ustanovka ? '<br>'+ustanovka : '')
@@ -477,7 +478,8 @@ function getPlayersInfo(){
 			if($('td.back4 table:eq(6) td:contains('+nameid+')').next().find('img[src*=system/img/gm/out.gif]').length>0){
 				$('td.back4 table:eq(6) td:contains('+nameid+')').next().find('img[src*=system/img/gm/out.gif]').remove().end().prepend('<font color=red><b>T</b></font>')
 			}else{
-				$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append(' <font color=red><b>Т</b></font>('+players[pnum].last+'\')')
+//				$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append(' <font color=red><b>Т</b></font>('+players[pnum].last+'\')')
+				$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append(' <img src="system/img/refl/krest.gif" width=10></img>('+players[pnum].last+'\')')
 			}
 		}
 

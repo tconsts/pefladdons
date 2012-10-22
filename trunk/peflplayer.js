@@ -1049,6 +1049,7 @@ function CodeForForum(){
 			.replace(/.gif/g,'.gif[/img')
 			.replace(/.png/g,'.png[/img')
 			.replace(/"/g,'')
+			.replace('[img]system/img/refl/krest.gif[/img]','[color=red][b]Т[/b][/color]')
 			//.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
 	}
 
@@ -1302,7 +1303,8 @@ function ShowLastStats(){
 							//var goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
 							var goals	= (mchpl.g!=undefined ? mchpl.g : '&nbsp;')
 							var cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
-							cards		= cards + (mchpl.t==1 ? '&nbsp;<font color=red><b>T</b></font>':'')
+//							cards		= cards + (mchpl.t==1 ? '&nbsp;<font color=red><b>T</b></font>':'')
+							cards		= cards + (mchpl.t==1 ? '&nbsp;<img src="system/img/refl/krest.gif" width=10></img>':'')
 							var inz		= (mchpl['in']!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
 							var pos		= '&nbsp;'
 							if(mchpl.ps!=undefined){
