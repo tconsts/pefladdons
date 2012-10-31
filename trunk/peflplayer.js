@@ -222,7 +222,7 @@ function RelocateGetNomData(){
 		GetNomData(0)
 		//GetFinish('getnomdata', true)
 	}else{
-		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9107893)
+		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9885110) //9107893
 		debug('Storage.getnomdata('+top+')')
 
 		$('td.back4').prepend('<div id=debval style="display: none;"></div>') //
