@@ -8,8 +8,6 @@
 
 var flagMap = [];
 flagMap[1] = 'ee';
-	
-}
 
 var TableToForum = {
 	
