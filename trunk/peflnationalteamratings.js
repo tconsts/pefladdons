@@ -88,6 +88,5 @@ var TableToForum = {
 $().ready(function() {
 	$('td.back4').append('<input type="button" class="code-to-forum" value="Код для форума" /><div class="code2forum"></div>');
 	TableToForum.init({buttonSelector: '.code-to-forum', codeWrapperSelector: '.code2forum', tableSelector: 'td.back4 table table'});
-	alert('test');
 /**/
 }, false);
