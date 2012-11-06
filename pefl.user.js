@@ -190,7 +190,7 @@ if(scflag[22]==0 && url2=='adaptation'){
 }
 //23 tv: removed
 // 23 national teams ratings
-if(scflag[23]==0 && url2.indexOf('p=rating&t=sb2&n=')!=-1){
+if(scflag[23]==0 && url2.indexOf('p=rating&t=sb2&j=')!=-1){
 	var newScriptAd = document.createElement('script');
 	newScriptAd.type = 'text/javascript';
 	newScriptAd.src = source+'peflnationalteamratings.js';
