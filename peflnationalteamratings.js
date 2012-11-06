@@ -82,6 +82,10 @@ var TableToForum = {
 		
 		txt = txt.replace(/\" width\=\"30/ig, '');
 		
+		txt = txt.replace(/\" height\=\"12/ig, '');
+		
+		// fix flags
+		
 		return txt;
 	}
 	
