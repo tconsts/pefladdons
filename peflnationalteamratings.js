@@ -80,6 +80,8 @@ var TableToForum = {
 		// change [br] to '<br />';
 		txt = txt.replace(/\[br\]/ig, '\r\n');
 		
+		txt = txt.replace(/\" width\=\"30/ig, '');
+		
 		return txt;
 	}
 	
