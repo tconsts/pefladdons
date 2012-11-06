@@ -6,6 +6,11 @@
 // @version	       1.0
 // ==/UserScript==
 
+var flagMap = [];
+flagMap[1] = 'ee';
+	
+}
+
 var TableToForum = {
 	
 	buttonSelector: '',
@@ -85,6 +90,8 @@ var TableToForum = {
 		txt = txt.replace(/\" height\=\"12/ig, '');
 		
 		// fix flags
+		// temporary fix: remove flags
+		txt = txt.replace(/\[img\]system\/img\/flags\/\d+\.gif\[\/img\]/ig, '');
 		
 		return txt;
 	}
