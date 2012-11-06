@@ -91,7 +91,7 @@ var TableToForum = {
 		
 		// fix flags
 		// temporary fix: remove flags
-		txt = txt.replace(/\[img\]system\/img\/flags\/\d+\.gif\[\/img\]/ig, '');
+		txt = txt.replace(/\[img\]system\/img\/flags\/([\d]+)\.gif\[\/img\]/ig, '');
 		
 		return txt;
 	}
