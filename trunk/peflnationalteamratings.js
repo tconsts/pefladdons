@@ -108,14 +108,9 @@ var TableToForum = {
 			if (f[cid]) img += (cid == 161 || cid ==214 ? f[cid] : 'system/img/flags/f-' + f[cid] + '.gif')
 			else img += 'system/img/flags/f-00.gif'
 
-			$(val).removeAttr('src')
-			$(val).removeAttr('width')
-			$(val).attr('src',img)
-
-			r_new[i+1] = {}
-			r_new[i+1].chid = cid
-			r_new[i+1].reit = parseInt($(val).parent().next().text())
-			r_new[i+1].edit = 0
+			$(val).removeAttr('src');
+			$(val).removeAttr('width');
+			$(val).attr('src',img);
 		})
 	},
 	
