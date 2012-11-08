@@ -23,7 +23,7 @@ var TableToForum = {
 	},
 	
 	ChangeFlag: function(){
-		$('table.reit').find('img[src*=system/img/flags/]').each(function(i, val){
+		$('td.back4 table').find('img[src*=system/img/flags/]').each(function(i, val){
 			var cid = parseInt($(val).attr('src').split('flags/')[1].split('.')[0])
 
 			var f = []
@@ -185,7 +185,7 @@ var TableToForum = {
 		
 		// fix flags
 		// temporary fix: remove flags
-		txt = txt.replace(/\[img\]system\/img\/flags\/([\d]+)\.gif\[\/img\]/ig, '');
+		//txt = txt.replace(/\[img\]system\/img\/flags\/([\d]+)\.gif\[\/img\]/ig, '');
 		
 		return txt;
 	}
