@@ -40,9 +40,9 @@ var scnames = [
 
 $().ready(function() {
 	if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflags = localStorage.scripts.split(':')
-	var datatop = (localStorage.datatop != undefined ? localStorage.datatop : 9107893)
-	if(datatop==9107892 || datatop==9107893){
-		datatop = 9107893
+	var datatop = (localStorage.datatop != undefined ? localStorage.datatop : 9885110)
+	if(datatop==9107892 || datatop==9107893 || datatop=9885110){
+		datatop = 9885110
 		delete localStorage.datatop
 	}
 
