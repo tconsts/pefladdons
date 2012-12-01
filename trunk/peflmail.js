@@ -7,6 +7,9 @@
 // @include			http://*pefl.*/pm.php?m=send*
 // ==/UserScript==
 
+// временно закрываем, требует доработки
+/**
+
 var mails = []
 var srtflag = 1
 var srtcur = 'id'
@@ -115,3 +118,4 @@ function UrlValue(key,url){
 	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
 	return false
 }
+/**/
