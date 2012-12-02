@@ -14,14 +14,6 @@ function UrlValue(key,url){
 	return false
 }
 
-function CheckNewMail(){
-	var maillast = parseInt(localStorage.maillast)
-	if(!isNaN(maillast) && (localStorage.scripts==undefined || (localStorage.scripts!=null && localStorage.scripts.split(':')[16]==0))){
-		var mailcur = parseInt($('td.topmenu b:last').html())
-		if(mailcur>maillast) $('td.topmenu b:last').append('<sup>+'+(mailcur-maillast)+'</sup>')
-	}
-}
-
 function getIDnum(){
 	var gday = String(localStorage.gday)
 	var datestr = (gday=='undefined' ? 0 : parseInt(gday.split('.')[0]))
@@ -116,7 +108,6 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 	crab += '<hr>'
 	$('td.back3 table td:first span.text1 hr:eq(4)').after(crab)
 
-	CheckNewMail()
 	if (UrlValue("t")=="school") SetNumShcoolers()
 
 })};
