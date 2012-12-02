@@ -104,7 +104,7 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 	if(parseInt(scflag[1])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg	+	' <a id=sostav_n href=\'/?sostav_n\'>Состав+(сбр)</a><br>'
 	if(parseInt(scflag[9])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg2	+	' <a href=\'/?team_n\'>На&nbsp;форум(сбр)</a><br>'
 	if(parseInt(scflag[22])!=1)	crab += adaptimg+	' <a href=\'/?adaptation\'>Адаптация</a><br>'
-	crab += crabimg +	' <a href="/forums.php?m=posts&q=173605">Crab&nbsp;Форум</a><br>'
+	crab += crabimg +	' <a href="/forums.php?m=posts&q=203048">Crab&nbsp;Форум</a><br>'
 	crab += '<hr>'
 	$('td.back3 table td:first span.text1 hr:eq(4)').after(crab)
 
