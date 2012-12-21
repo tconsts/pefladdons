@@ -23,6 +23,11 @@ function debug(text) {
 	}
 }
 
+var int = 	'15.01.13!29.01.13!12.02.13!26.02.13!12.03.13!26.03.13!09.04.13!'
+var ecup = 	'26.12.12!14.01.13!21.01.13!04.02.13!11.02.13!25.02.13!04.03.13!11.03.13!25.03.13!05.04.13!12.04.13!'
+var cup = 	'21.12.12!28.01.13!18.02.13!11.03.13!01.04.13!'
+var excl = 	'31.12.12!02.01.13!04.01.13!07.01.13!09.01.13!'
+
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
 	for (n in pf) {
@@ -57,8 +62,6 @@ function CheckInt(ddn, fl){
 	if(int.indexOf(strn)!=-1) return htmlnew
 	return ''
 }
-
-var int = 	'17.01.12!31.01.12!14.02.12!28.02.12!13.03.12!27.03.12!10.04.12!24.04.12!08.05.12!22.05.12!05.06.12!19.06.12!'
 
 var matches = []
 function returnDate(tmsp){
@@ -150,9 +153,6 @@ $().ready(function() {
 	var imgecup = '<img height=12 src="system/img/g/e.gif">'
 	var imgcup  = '<img height=12 src="plugins/s/topcontributors/img/cup-1.gif">'
 	var imgint  = '<img src="system/img/g/int.gif">'
-	var ecup = 	'16.11.11!25.11.11!02.12.11!14.12.11!19.12.11!26.12.11!13.01.12!18.01.12!25.01.12!03.02.12!13.02.12!20.02.12!27.02.12!12.03.12!19.03.12!02.04.12!09.04.12!23.04.12!07.05.12!18.05.12!25.05.12!01.06.12!'
-	var cup = 	'21.11.11!07.12.11!23.12.11!30.01.12!08.02.12!05.03.12!26.03.12!16.04.12!'
-	var excl = 	'30.12.11!02.01.12!04.01.12!06.01.12!09.01.12!30.04.12!02.05.12!04.05.12!'	
 	var competitions=[];
 	var i=0;
 	$('td.back4 td:contains("Предстоящие игры") table tr:not(:contains("Матч")) td:last-child').contents().each(function(index,value){
