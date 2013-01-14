@@ -6,6 +6,9 @@
 // @version	       2.0
 // ==/UserScript==
 
+// временно закрываем, требует доработки
+/**
+
 
 deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
@@ -246,7 +249,7 @@ $().ready(function() {
 	debug('myteamid:'+myteamid)
 
 	fixColor()
-/**/
+
 	// Get info fom Global or Session Storage
 	var text1 = String(localStorage.peflcountryteams)
 	if (text1 != 'undefined'){
@@ -306,5 +309,6 @@ $().ready(function() {
 	
 	$('td.back4').append('<input type="button" class="code-to-forum" value="Код для форума" /><div class="code2forum"></div>');
 	TableToForum.init({buttonSelector: '.code-to-forum', codeWrapperSelector: '.code2forum', tableSelector: 'td.back4 table table'});
-/**/
+
 }, false);
+**/
