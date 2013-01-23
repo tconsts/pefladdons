@@ -16,7 +16,7 @@ function UrlValue(key,url){
 
 function ChangeFlag(){
 	$('table.reit').find('img[src*=system/img/flags/]').each(function(i, val){
-		var cid = parseInt($(val).attr('src').split('flags/')[1].split('.')[0])
+		var cid = parseInt($(val).attr('src').split('flags/')[1].split('.')[0].replace('mod/',''))
 
 		var f = []
 		f[1]='al';	//Албания
@@ -128,6 +128,8 @@ function ShowTD(){
 }
 
 function TableCodeForForum(continent){
+	$('td.back4').append('<br><hr>Код для форума<br><textarea rows="7" cols="75" readonly="readonly" id="CodeForForum"></textarea>')
+
 	var x = '[url=plug.php?'
 	x += location.search.substring(1)
 	x += ']#[/url] [b]'
@@ -220,15 +222,13 @@ $().ready(function() {
 
 	$('td.back4 table table')
 		.addClass('reit')
-		.find('tr:first').remove().end()
-		.prepend('<tr bgcolor=#a3de8f><td><b>Место</b></td><td><b>Страна</b></td><td><b>Рейтинг</b></td></tr>')
+//		.find('tr:first').remove().end()
+//		.prepend('<tr bgcolor=#a3de8f><td><b>Место</b></td><td><b>Страна</b></td><td><b>Рейтинг</b></td></tr>')
 		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
 //		.find('tr').addClass('save').end()
-
-	$('td.back4').append('<br><hr>Код для форума<br><textarea rows="7" cols="75" readonly="readonly" id="CodeForForum"></textarea>')
 
 	//ShowTD()
 	ChangeFlag()
 	ModifyTable(areanum)
-	TableCodeForForum(area[areanum])
+//	TableCodeForForum(area[areanum])
 })
