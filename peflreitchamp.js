@@ -215,6 +215,7 @@ var r_new = []
 var today = new Date()
 
 $().ready(function() {
+/**
 	var areanum = parseInt(UrlValue('j'))
 	var area = ['','Европа', 'Америка','ЗА']
 	today = check(today.getDate()) + '.' + check(today.getMonth()+1)
@@ -230,5 +231,6 @@ $().ready(function() {
 	//ShowTD()
 	ChangeFlag()
 	ModifyTable(areanum)
-//	TableCodeForForum(area[areanum])
+	TableCodeForForum(area[areanum])
+/**/
 })
