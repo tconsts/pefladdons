@@ -530,13 +530,13 @@ function ShowSU(del) {
 		preparedhtml += '<td></td>'
 		preparedhtml += '<th>N</th>'
 		preparedhtml += '<th nowrap>мин%</th>'
-		if(deb) preparedhtml += '<th nowrap>%(2)</th>'
+//		if(deb) preparedhtml += '<th nowrap>%(2)</th>'
 		preparedhtml += '<th>Имя</th>'
 		preparedhtml += '<th>СУ Минут</th>'
 		preparedhtml += '<th>СУ Матчей</th>'
 		preparedhtml += '<th>СУ Осталось</th>'
 		preparedhtml += '</tr>'
-		var pls = plsu.sort(function(a,b){return (((b.del ? -1000 : 0) + b.minutesu + b.minute*0.001) - ((a.del ? -1000 : 0) + a.minutesu + a.minute*0.001))})
+		var pls = plsu.sort(function(a,b){return (((b.del ? -10000 : 0) + b.minutesu + b.minute*0.001) - ((a.del ? -10000 : 0) + a.minutesu + a.minute*0.001))})
 		var num = 1
 		for(i in pls) {
 			var plsi = pls[i]
@@ -548,7 +548,7 @@ function ShowSU(del) {
 			preparedhtml += '<td align=center width=1%><a href="javascript:void(DeletePl(\''+plsi.name+'\','+plsi.del+'))"><font color=red>X</font></a></td>'
 			preparedhtml += '<td>'+(parseInt(i)+1)+'</td>'
 			preparedhtml += '<td align=right width=5%'+(plsi.tilda!='none' && plsi.tilda<=40 ? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda).toFixed(1)) +'</a></td>'
-			if(deb) preparedhtml += '<td align=right width=5%'+(plsi.tilda2!='none' && plsi.tilda2<=40 && teamm!=0? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda2=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda2).toFixed(1)) +'</a></td>'
+//			if(deb) preparedhtml += '<td align=right width=5%'+(plsi.tilda2!='none' && plsi.tilda2<=40 && teamm!=0? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda2=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda2).toFixed(1)) +'</a></td>'
 			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+plsi.name+'\','+plsi.del+'))"><b>'+plsi.name+'</b></a></td>'
 			preparedhtml += '<td><b>'+plsi.minutesu+'</b>'+(plsi.minute>0 ? '<font size=1> ('+plsi.minute+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+plsi.matches+'</b>'+(plsi.matches2>0 ? '<font size=1> ('+plsi.matches2+')</font>' : '')+'</td>'
