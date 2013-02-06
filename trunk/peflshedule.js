@@ -76,6 +76,7 @@ function returnDate(tmsp){
 
 function showMatches(){
 	if(String(localStorage.matches2)!='undefined') matches = JSON.parse(localStorage.matches2)
+	matches.sort(function(a,b){if(a!=null&&b!=null) return (((a.dt==undefined?(a.hnm!=undefined&&a.anm!=undefined?0:100000000):a.dt) + a.id*0.0000001) - ((b.dt==undefined?(b.hnm!=undefined&&b.anm!=undefined?0:100000000):b.dt) + b.id*0.0000001))})
 	debug('showMatches()')
 	var supic = '<img src="system/img/g/tick.gif" height=12></img>'
 	var myteamid = parseInt(localStorage.myteamid)
