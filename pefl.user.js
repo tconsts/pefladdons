@@ -23,7 +23,7 @@ headID.appendChild(newScriptMenu);
 var url1 = location.pathname.substring(1)
 var url2 = location.search.substring(1)
 
-var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:1:0:1:0'.split(':')
+var scflag = '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
 if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflag = localStorage.scripts.split(':')
 
 // 0 Settings
@@ -69,13 +69,7 @@ if(scflag[5]==0 && url2.indexOf('p=refl&t=s&k=')!=-1){
 	newScriptDiv.src = source+'pefldivtable.js';
 	headID.appendChild(newScriptDiv);
 }
-//  6 ReitChamps
-if(scflag[6]==0 && url2.indexOf('p=rating&t=cn2&j=')!=-1){
-	var newScriptReitCh = document.createElement('script');
-	newScriptReitCh.type = 'text/javascript';
-	newScriptReitCh.src = source+'peflreitchamp.js';
-	headID.appendChild(newScriptReitCh);
-}
+//  6 ReitChamps: removed
 //  7 Shedule
 if(scflag[7]==0 && url2.indexOf('p=refl&t=last&j=')!=-1){
 	var newScriptShedule = document.createElement('script');
@@ -139,13 +133,7 @@ if(scflag[15]==0 && (url1=='index.php' || (url1=='' && url2==''))){
 	newScriptIndex.src = source+'peflindex.js';
 	headID.appendChild(newScriptIndex);
 }
-// 16 Mail
-if(scflag[16]==0 && url1=='pm.php'){
-	var newScriptMail = document.createElement('script');
-	newScriptMail.type = 'text/javascript';
-	newScriptMail.src = source+'peflmail.js';
-	headID.appendChild(newScriptMail);
-}
+// 16 Mail: removed
 // 17 Training
 if(scflag[17]==0 && (url2.indexOf('p=training')!=-1 || url2.indexOf('p=trainplan')!=-1)){
 	var newScriptTrain = document.createElement('script');
@@ -188,11 +176,5 @@ if(scflag[22]==0 && url2=='adaptation'){
 	newScriptAd.src = source+'pefladaptation.js';
 	headID.appendChild(newScriptAd);
 }
-//23 tv: removed
-// 24 national teams ratings
-if(scflag[24]==0 && url2.indexOf('p=rating&t=sb2&j=')!=-1){
-	var newScriptAd = document.createElement('script');
-	newScriptAd.type = 'text/javascript';
-	newScriptAd.src = source+'peflnationalteamratings.js';
-	headID.appendChild(newScriptAd);
-}
+// 23 tv: removed
+// 24 national teams ratings: removed

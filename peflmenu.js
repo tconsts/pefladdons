@@ -81,7 +81,7 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 
 	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
 
-	var scflag = '0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:1:0:1:0'.split(':')
+	var scflag = '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
 	if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflag = localStorage.scripts.split(':')
 	if(scflag[1]==2){
 		scflag[1] = 0
