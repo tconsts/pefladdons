@@ -70,9 +70,6 @@ $().ready(function() {
 		// проверяем и если надо модифицируем и сохраняем данные
 		checkSave(matchespl)
 
-		// запомнить новые футболки
-		saveForm()
-
 		// исправляем таблицу оценок
 		modifyMarksTable()
 
@@ -313,14 +310,6 @@ function getMatchInfo(){
 	debug('getMatchInfo:fres='+fres+':match1.res='+match1.res+':match1.pen='+match1.pen)
 
 	if(deb) for(i in match1) debug('getMatchInfo:'+i+'='+match1[i])
-}
-function saveForm(){
-	debug('saveForm()')
-	var tr = (match1.hid==myteamid ? 'first' : (match1.aid==myteamid ? 'last' : ''))
-	if(tr!=''){
-		localStorage.fp_uniform = $('td.back4 center:first table:first tr:'+tr+' td.field_left:first img').attr('src')
-		localStorage.gk_uniform = $('td.back4 center:first table:first tr:'+tr+' td:eq(2) img').attr('src')
-	}
 }
 
 function SaveCodeForMatch(){

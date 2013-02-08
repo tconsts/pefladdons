@@ -10,7 +10,7 @@ function change_field_player_uniform() {
 	newfp_value = prompt("Вставьте адрес картинки", field_player_img_src);
 	if (newfp_value) {
 		field_player_img_src	= newfp_value;
-		localStorage.fp_uniform	= newfp_value;
+//		localStorage.fp_uniform	= newfp_value;
 		$('img.fp_uniform_image').attr('src', newfp_value);
 		fillTextarea(printtype);
 	}
@@ -20,7 +20,7 @@ function change_goalkeeper_uniform() {
 	newfp_value = prompt("Вставьте адрес картинки", goalkeeper_player_img_src);
 	if (newfp_value) {
 		goalkeeper_player_img_src	= newfp_value;
-		localStorage.gk_uniform		= newfp_value;
+//		localStorage.gk_uniform		= newfp_value;
 		$('img.gk_uniform_image').attr('src', newfp_value);
 		fillTextarea(printtype);	
 	}
@@ -31,7 +31,7 @@ function printClassic (plid,type){
 	var pl = players[plid];
 	var cardhtml = '[td valign=top width=20%][center]';
 
-	cardhtml += '[img]'
+	cardhtml += '[img width=41]'
 	if (type == 0){
 		cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
 	} else {
@@ -55,7 +55,7 @@ function printCard (plid,type){
 	cardhtml += '[tr][td colspan=2][b]' + (pl["firstname"] && pl["firstname"]!='???' && pl["firstname"]!='' ? pl["firstname"][0] + '.' : '') + (pl["secondname"]).replace(/\s/g,'').replace(/-/g,'') + '[/b][/td][/tr]';
 	cardhtml += '[tr][td]'
 //	cardhtml += '[player=' + plid + ']'
-	cardhtml += '[img]';
+	cardhtml += '[img width=41]';
 	if (type == 0) 	cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
 	else 			cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
 	cardhtml += '[/img]'
@@ -94,7 +94,7 @@ function printCard2 (plid,type){
 	cardhtml += '[/b][/td][/tr]';
 	cardhtml += '[tr][td]'
 //	cardhtml += '[player=' + plid + ']'
-	cardhtml += '[img]';
+	cardhtml += '[img width=41]';
 	if (type == 0)	cardhtml += (pl["position"] == "GK" ? goalkeeper_player_img_src : field_player_img_src)
 	else 			cardhtml += (type == 1 ? goalkeeper_player_img_src : field_player_img_src)
 	cardhtml += '[/img]'
@@ -220,7 +220,7 @@ function fillTextarea(pt) {
 		preparedhtml += '\n\n[center]--------------- [url=forums.php?m=posts&q=173605]CrabVIP[/url] ---------------[/center]\n[/spoiler]';
 		
 		$('#sostav_na_match').html(preparedhtml);
-		preparedhtml = preparedhtml.replace(/\[img\]/g,'<img src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>')
+		preparedhtml = preparedhtml.replace(/\[img width=41\]/g,'<img width=41 src="').replace(/\[\/img\]/g,'">').replace(/\[/g,'<').replace(/\]/g,'>').replace(/\n/g,'<br>')
 		$('#preview').html(preparedhtml)
 }
 var printtype = 3
@@ -230,11 +230,18 @@ var players = []; // массив игроков, в котором ключ м�
 var sostav = []; // массив, в котором ключ - позиция на поле, а значение - id игрока
 var positions = [];
 
-var field_player_img_src 		= (String(localStorage.fp_uniform)!='undefined' && String(localStorage.fp_uniform)!='null' ? localStorage.fp_uniform : '/field/img/146cd60f8c4985270b74f7839e98059a.png');
-var goalkeeper_player_img_src	= (String(localStorage.gk_uniform)!='undefined' && String(localStorage.gk_uniform)!='null' ? localStorage.gk_uniform : '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png');
+//system/img/forms/1432a.png
+var field_player_img_src		= (isNaN(parseInt(localStorage.myteamid)) ? '/field/img/146cd60f8c4985270b74f7839e98059a.png' : '/system/img/forms/'+(localStorage.myteampic!=undefined && localStorage.myteampic!=null ? localStorage.myteampic : localStorage.myteamid+'a')+'.png')
+var goalkeeper_player_img_src	= (isNaN(parseInt(localStorage.myteamid)) ? '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png' : (localStorage.myteampic!=undefined && localStorage.myteampic!=null ? '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png' : '/system/img/forms/'+localStorage.myteamid+'c.png'))
+
+//var field_player_img_src 		= (String(localStorage.myteamid)!='undefined' && String(localStorage.myteamid)!='null' ? 'system/img/forms/'+localStorage.myteamid+'a.gif' : '/field/img/146cd60f8c4985270b74f7839e98059a.png');
+//var goalkeeper_player_img_src	= (String(localStorage.gk_uniform)!='undefined' && String(localStorage.gk_uniform)!='null' ? localStorage.gk_uniform : '/field/img/41ccf2617ef2be4688e36fefa1eefcb7.png');
 
 $().ready(function() {
 	printtype = (String(localStorage.printtype)!='undefined' ? parseInt(localStorage.printtype) : printtype)
+
+	delete localStorage.fp_uniform
+	delete localStorage.gk_uniform
 
 	$('.back4').html('<table border="0" cellspacing="0" cellpadding="10" width="100%" height="100%"><tr><td valign="top" class="contentframer"></td></tr></table>');
 	$.get('fieldnew3.php', {}, function(data){
@@ -292,13 +299,13 @@ $().ready(function() {
 		preparedhtml += '<tr><th width=128></th><th>Предосмотр</th></tr>';
 		preparedhtml += '<tr><td valign=top>';
 		preparedhtml += '<b>Форма игрока</b><br><table><tr><td>'
-		preparedhtml += '<img src="'+ field_player_img_src +'" alt="" class="fp_uniform_image" />'
+		preparedhtml += '<img width=41 src="'+ field_player_img_src +'" alt="" class="fp_uniform_image" />'
 		preparedhtml += '</td><td>'
 		preparedhtml += 'Полевого<br />';
 		preparedhtml += '<a href="javascript: change_field_player_uniform();">Поменять</a><br />';
 		preparedhtml += '</td></tr>'
 		preparedhtml += '<tr><td>';
-		preparedhtml += '<img src="'+ goalkeeper_player_img_src +'" alt="" class="gk_uniform_image" />';
+		preparedhtml += '<img width=41 src="'+ goalkeeper_player_img_src +'" alt="" class="gk_uniform_image" />';
 		preparedhtml += '</td><td>'
 		preparedhtml += 'Вратаря<br />';
 		preparedhtml += '<a href="javascript: change_goalkeeper_uniform();">Поменять</a><br /><br />';
