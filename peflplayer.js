@@ -475,6 +475,7 @@ function GetPlayerHistory(n,pid){
 
 	$('a#th2').attr('href',"javascript:void(ShowTable(2))").html('&ndash;')
 	$('div#kar2').remove()
+	$('a#codeforforum').show()
 
 	var head = '<tr><td width=3%>С</td><td width=16%>Трансфер</td><td width=3%>Сб</td><td width=3%>Мл</td><td width=10%>Игры</td><td width=13%>Голы</td><td width=13%>Пасы</td><td width=13%>ИМ</td><td width=8%>СР</td><td width=8%> </td><td width=8%> </td></tr>'
 	$('table#ph'+n).append(head)
@@ -731,6 +732,8 @@ function RememberPl(x){
 function CheckPlayer(nn){
 	// Get data and compare players
 	ShowAll()
+	$('a#codeforforum').show()
+
 //	$('a[id="th2"]').html('+')
 	$('div#kar, div#plst, #th2, table#ph0, table#plst, table#debug').remove()
 
@@ -933,7 +936,7 @@ function CodeForForum(){
 			.find('img').removeAttr('width').end()
 			.html()
 			.replace('\/flags\/','/flags/mod/')
-			.replace(/img src="/g,'img]')
+			.replace(/img src="/g,'img height=12]')
 			.replace(/.gif/g,'.gif[/img')
 			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
 			.replace(/<!-- [а-я] -->/g,'')
@@ -944,8 +947,8 @@ function CodeForForum(){
 			.replace(/\&amp\;/g,'&')
 			.replace(/"/g,'')
 			.replace(/\[br\]/g,'\n')
-			.replace(/\[sup\]/g,'(')
-			.replace(/\[\/sup\]/g,')')
+//			.replace(/\[sup\]/g,'(')
+//			.replace(/\[\/sup\]/g,')')
 			.replace(/font /g,'')
 			.replace(/font/g,'color')
 		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+pl.position+'[b]'
@@ -966,7 +969,7 @@ function CodeForForum(){
 			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
 			.find('td.back1').removeAttr('class').attr('bgcolor','#C9F8B7').end()
 			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
-			.find('sup').remove().end()
+//			.find('sup').remove().end()
 			.html()
 			.replace(/<!-- [а-я] -->/g,'')
 			.replace(/<tbody>/g,'<table width=100%>')
@@ -976,7 +979,7 @@ function CodeForForum(){
 			.replace(/\</g,'[')
 			.replace(/\>/g,']')
 			.replace(/ height=\"12\"/g,'')
-			.replace(/img src="/g,'img]')
+			.replace(/img src="/g,'img height=10]')
 			.replace(/.gif/g,'.gif[/img')
 			.replace(/"/g,'')
 			.replace(/\n/g,'')
@@ -997,7 +1000,7 @@ function CodeForForum(){
 			.replace(/tbody/g,'table')
 			.replace(/\</g,'[')
 			.replace(/\>/g,']')
-			.replace(/img src="/g,'img]')
+			.replace(/img src="/g,'img height=10]')
 			.replace(/.gif/g,'.gif[/img')
 			.replace(/"/g,'')
 			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
@@ -1241,6 +1244,7 @@ function filterPosition(plpos,flpos){
 
 function ShowLastStats(){
 	debug('LastStats()')
+	$('a#codeforforum').show()
 	if($('table#plst tr').length==0){
 		var matches = getJSONlocalStorage('matches2')
 		matches.sort(function(a,b){if(a!=null&&b!=null) return (((a.dt==undefined?(a.hnm!=undefined&&a.anm!=undefined?0:100000000):a.dt) + a.id*0.0000001) - ((b.dt==undefined?(b.hnm!=undefined&&b.anm!=undefined?0:100000000):b.dt) + b.id*0.0000001))})
@@ -1579,7 +1583,7 @@ $().ready(function() {
 	text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
 	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить игрока').fontsize(1)+'</a><br>'
 	text3 += '<div id="compare"></div>'
-	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())">'+('Код для форума').fontsize(1)+'</a><br><br>'
+	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())" style="display:none">'+('Код для форума').fontsize(1)+'</a><br><br>'
 	text3 += '<b>Сила&nbsp;игрока</b><div id=str>'
 	text3 += '<i><font size=1>сходите в Состав+</font></i>'
 	text3 += '</div>'
