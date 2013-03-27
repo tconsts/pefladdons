@@ -550,8 +550,8 @@ function ShowSU(del) {
 		for(i in pls) {
 			var plsi = pls[i]
 			var ost = sumax - plsi.minutesu
-			var ostmatch = Math.floor(ost/93)
-			var ostminute = ost - ostmatch*93
+			var ostmatch = Math.floor(ost/90)
+			var ostminute = ost - ostmatch*90
 			var trclass = (plsi.del ? ' bgcolor='+(num%2==1 ? 'BABDB6' : 'D3D7CF') : ' class=back'+(num%2==1 ? 2 : 1))
 			preparedhtml += '<tr'+trclass+'>'
 			preparedhtml += '<td align=center width=1%><a href="javascript:void(DeletePl(\''+plsi.name+'\','+plsi.del+'))"><font color=red>X</font></a></td>'
@@ -562,7 +562,7 @@ function ShowSU(del) {
 			preparedhtml += '<td><b>'+plsi.minutesu+'</b>'+(plsi.minute>0 ? '<font size=1> ('+plsi.minute+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+plsi.matches+'</b>'+(plsi.matches2>0 ? '<font size=1> ('+plsi.matches2+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+ost+'</b>'
-			preparedhtml += (ost>0 ? '<font size=1> ('+(ostmatch>0 ? '93мин*'+ostmatch+' + ' : '')+ostminute+'мин)</font>' : '')
+			preparedhtml += (ost>0 ? '<font size=1> ('+(ostmatch>0 ? '90мин*'+ostmatch+' + ' : '')+ostminute+'мин)</font>' : '')
 			preparedhtml += '</td>'
 			preparedhtml += '</tr>'
 			num++
