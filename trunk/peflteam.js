@@ -496,12 +496,21 @@ function ShowSU(del) {
 				var countminutes = (mth.h==undefined && (mch2.hnm==undefined || mch2.anm==undefined) ? true : false)
 				var minute = 0
 				if(mth.mr!=undefined){
-					minute = (mth.m==undefined ? parseInt(mch2.m) : parseInt(mth.m))
+					//минут в матче или свои или полный матч.
+					if(mth.m==undefined){
+						minute = parseInt(mch2.m)
+						if(minute>119) minute=120
+						else if(minute>89) minute=90
+					}else{
+						minute = (mth['in']==1 ? parseInt(mth.m) : parseInt(mth.m)+6)
+					}
 					plsu[num].matches2 	+= 1
 					if(countminutes) {
+						//учитывать ли вообще сыграные минуты для высчета тильд
 						plsu[num].minute 	+= minute
 					}
 					if(mch2.su==undefined){
+						// если сверхусталость включена у матча, то добавляем игроку
 						plsu[num].minutesu	+= minute
 						plsu[num].matches 	+= 1
 					}
