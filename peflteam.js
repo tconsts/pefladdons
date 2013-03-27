@@ -502,14 +502,14 @@ function ShowSU(del) {
 						if(minute>119) minute=120
 						else if(minute>89) minute=90
 					}else{
-						minute = (mth['in']==1 ? parseInt(mth.m) : parseInt(mth.m)+6)
+						minute = (mth['in']==1 ? parseInt(mth.m)+5+90-parseInt(mch2.m) : parseInt(mth.m)+5)
 					}
 					plsu[num].matches2 	+= 1
 					if(countminutes) {
 						//учитывать ли вообще сыграные минуты для высчета тильд
 						plsu[num].minute 	+= minute
 					}
-					if(mch2.su==undefined){
+					if(mch2.su==undefined && mth.h!=1){
 						// если сверхусталость включена у матча, то добавляем игроку
 						plsu[num].minutesu	+= minute
 						plsu[num].matches 	+= 1
