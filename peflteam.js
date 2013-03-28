@@ -530,7 +530,7 @@ function ShowSU(del) {
 //		debug('ShowSU:teamm='+teamm)
 		for(i in plsu) {
 			plsu[i].tilda = (plsu[i].del ? 'none' : parseFloat(plsu[i].minute/(teamminutes/countSostavMax)*100))
-			plsu[i].tilda2 = (teamm==0?0:(plsu[i].del ? 'none' : parseFloat(plsu[i].minute/(teamm)*100)))
+			plsu[i].tilda2 = (plsu[i].del ? 'none' : parseInt(plsu[i].minute-(teamminutes/countSostavMax*40/100)))
 			//debug('ShowSU:'+i+':'+plsu[i].minute+':'+teamminutes+':'+countSostavMax)
 		}
 
@@ -538,12 +538,13 @@ function ShowSU(del) {
 		preparedhtml += '<tr align=left>'
 		preparedhtml += '<td></td>'
 		preparedhtml += '<th>N</th>'
-		preparedhtml += '<th nowrap>мин%</th>'
+		preparedhtml += '<th nowrap>~(%)</th>'
+		preparedhtml += '<th nowrap>~(мин)</th>'
 //		if(deb) preparedhtml += '<th nowrap>%(2)</th>'
 		preparedhtml += '<th>Имя</th>'
-		preparedhtml += '<th>СУ Минут</th>'
-		preparedhtml += '<th>СУ Матчей</th>'
-		preparedhtml += '<th>СУ Осталось</th>'
+		preparedhtml += '<th>СУ: Минут</th>'
+		preparedhtml += '<th>Матчей</th>'
+		preparedhtml += '<th>Осталось</th>'
 		preparedhtml += '</tr>'
 		var pls = plsu.sort(function(a,b){return (((b.del ? -10000 : 0) + b.minutesu + b.minute*0.001) - ((a.del ? -10000 : 0) + a.minutesu + a.minute*0.001))})
 		var num = 1
@@ -557,12 +558,13 @@ function ShowSU(del) {
 			preparedhtml += '<td align=center width=1%><a href="javascript:void(DeletePl(\''+plsi.name+'\','+plsi.del+'))"><font color=red>X</font></a></td>'
 			preparedhtml += '<td>'+(parseInt(i)+1)+'</td>'
 			preparedhtml += '<td align=right width=5%'+(plsi.tilda!='none' && plsi.tilda<=40 ? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda).toFixed(1)) +'</a></td>'
+			preparedhtml += '<td align=right width=5%'+(plsi.tilda2!='none' && plsi.tilda2<=0 ? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda2=='none' ? '&nbsp;&nbsp;&nbsp;' : plsi.tilda2) +'</a></td>'
 //			if(deb) preparedhtml += '<td align=right width=5%'+(plsi.tilda2!='none' && plsi.tilda2<=40 && teamm!=0? ' bgcolor=yellow' : '')+'><a href="javascript:void(suMarkDel(\''+plsi.name+'\','+plsi.del+'))">'+(plsi.tilda2=='none' ? '&nbsp;&nbsp;&nbsp;' : (plsi.tilda2).toFixed(1)) +'</a></td>'
 			preparedhtml += '<td><a href="javascript:void(ShowPlM(\''+plsi.name+'\','+plsi.del+'))"><b>'+plsi.name+'</b></a></td>'
 			preparedhtml += '<td><b>'+plsi.minutesu+'</b>'+(plsi.minute>0 ? '<font size=1> ('+plsi.minute+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+plsi.matches+'</b>'+(plsi.matches2>0 ? '<font size=1> ('+plsi.matches2+')</font>' : '')+'</td>'
 			preparedhtml += '<td><b>'+ost+'</b>'
-			preparedhtml += (ost>0 ? '<font size=1> ('+(ostmatch>0 ? '90мин*'+ostmatch+' + ' : '')+ostminute+'мин)</font>' : '')
+			preparedhtml += (ost>0 ? '<font size=1> ('+(ostmatch>0 ? '90*'+ostmatch+' + ' : '')+ostminute+')</font>' : '')
 			preparedhtml += '</td>'
 			preparedhtml += '</tr>'
 			num++
