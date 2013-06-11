@@ -9,7 +9,7 @@ deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
 var flag = '<img height=13 src="/system/img/g/tick.gif"></img>'
-var scflags = '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
+var scflags = '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
 var scnames = [
 	{'name':'Настройки',			'desc':''},
 	{'name':'Состав +',				'desc':''},
@@ -20,7 +20,7 @@ var scnames = [
 	{'name':'Рейтинг чемпионатов',	'desc':'удален так как реализован на проекте','del':true},
 	{'name':'Расписание',			'desc':''},
 	{'name':'Финансы',				'desc':''},
-	{'name':'Состав на матч',		'desc':'команда и сборная'},
+	{'name':'Состав на матч',		'desc':'команда и сборная, удален так как реализован на проекте','del':true},
 	{'name':'Рейтинг школ',			'desc':'временно отключен так как практически реализован на проекте','del':true},
 	{'name':'Ненужные',				'desc':'удален так как реализован на проекте','del':true},
 	{'name':'История',				'desc':''},
@@ -40,6 +40,7 @@ var scnames = [
 
 $().ready(function() {
 	if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflags = localStorage.scripts.split(':')
+
 	var datatop = (localStorage.datatop != undefined ? localStorage.datatop : 9885110)
 	if(datatop==9107892 || datatop==9107893 || datatop==9885110){
 		datatop = 9885110
@@ -52,7 +53,12 @@ $().ready(function() {
 	html += '<br><table width=90% align=center class=back2>'
 	html += '<tr class=back2><th width=5%>N</th><th width=5%>Вкл</th><th colspan=2 width=30%>Имя скрипта</th><th>Описание</th></tr>'
 	for (i=1;i<scnames.length;i++) {
-		html += '<tr class=back'+(scnames[i].del ? 6 : 1)+'>'
+		var trclass = 1;
+		if(scnames[i].del){
+			trclass = 6;
+			scflags[i]=1;
+		}
+		html += '<tr class=back'+trclass+'>'
 		html += '<td>'+i+'</td>'
 		html += '<td id="f'+i+'">'+(parseInt(scflags[i])!=1 && !scnames[i].del ? flag+(parseInt(scflags[i])>1 ? 'v'+parseInt(scflags[i]): '') : '')+'</td>'
 		html += '<td colspan=2>'+(scnames[i].del ? scnames[i].name : '<a href="javascript:void(SwitchScFlag('+i+(scnames[i].versions!=undefined ? ','+parseInt(scnames[i].versions) : '')+'))">'+scnames[i].name+'</a>')+'</td>'
@@ -152,10 +158,6 @@ function SwitchScFlag(scid, ver){
 		scflags[scid] = 1
 		$('td#f'+scid).html('')
 	}
-	scflags[6]	= 1
-	scflags[16]	= 1
-	scflags[23]	= 1
-	scflags[24]	= 1
 	localStorage.scripts = scflags.join(':')
 }
 
