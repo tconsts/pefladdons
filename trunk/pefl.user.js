@@ -23,7 +23,7 @@ headID.appendChild(newScriptMenu);
 var url1 = location.pathname.substring(1)
 var url2 = location.search.substring(1)
 
-var scflag = '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
+var scflag = '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
 if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflag = localStorage.scripts.split(':')
 
 // 0 Settings
@@ -84,19 +84,7 @@ if(scflag[8]==0 && (url2.indexOf('p=fin&z=')!=-1 || url2.indexOf('p=rules&z=')!=
 	newScriptFin.src = source+'peflfinance.js';
 	headID.appendChild(newScriptFin);
 }
-//  9 SostavNaMatch
-if(scflag[9]==0 && url2=='team'){
-	var newScriptTeamC = document.createElement('script');
-	newScriptTeamC.type = 'text/javascript';
-	newScriptTeamC.src = source+'peflsostavnamatch.js';
-	headID.appendChild(newScriptTeamC);
-}
-if(scflag[9]==0 && url2=='team_n'){
-	var newScriptTeamN = document.createElement('script');
-	newScriptTeamN.type = 'text/javascript';
-	newScriptTeamN.src = source+'peflsostavnamatch_n.js';
-	headID.appendChild(newScriptTeamN);
-}
+//  9 SostavNaMatch: removed
 // 10 ReitSchool
 if(scflag[10]==0 && url2.indexOf('p=rating&t=s&n=')!=-1){
 	var newScriptReitSch = document.createElement('script');

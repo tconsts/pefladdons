@@ -81,7 +81,7 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 
 	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
 
-	var scflag = '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
+	var scflag = '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
 	if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflag = localStorage.scripts.split(':')
 	if(scflag[1]==2){
 		scflag[1] = 0
@@ -89,9 +89,7 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 	}
 
     var teamimg 	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>'
-    var teamimg2	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/forms/'+(localStorage.myteampic!=undefined && localStorage.myteampic!=null ? localStorage.myteampic : localStorage.myteamid+'a')+'.png')+'>'
     var intimg  	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/flags/mod/'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
-    var intimg2  	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/forms/n'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'a.png')+'>'
 	var crabimg 	= '<img width=16 height=16 src=\'http://pefladdons.googlecode.com/svn/trunk/img/crab1.png\'>'
 	var sostavimg 	= '<img width=16 height=16 src="system/img/g/sostav.gif">'
 	var settingimg 	= '<img width=16 height=16 src="system/img/g/stats.gif"></img>'
@@ -100,9 +98,7 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 	crab += '<div align=center><b>CrabVIP</b></div>'
 	crab += settingimg+	' <a href=\'/?settings\'>Настройки</a><br>'
 	if(parseInt(scflag[1])!=1)	crab += teamimg +	' <a id=sostav href=\'/?sostav\'>Состав+(ком)</a><br>'
-	if(parseInt(scflag[9])!=1)	crab += teamimg2+	' <a href=\'/?team\'>На&nbsp;форум(ком)</a><br>'
 	if(parseInt(scflag[1])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg	+	' <a id=sostav_n href=\'/?sostav_n\'>Состав+(сбр)</a><br>'
-	if(parseInt(scflag[9])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg2	+	' <a href=\'/?team_n\'>На&nbsp;форум(сбр)</a><br>'
 	if(parseInt(scflag[22])!=1)	crab += adaptimg+	' <a href=\'/?adaptation\'>Адаптация</a><br>'
 	crab += crabimg +	' <a href="/forums.php?m=posts&q=203048">Crab&nbsp;Форум</a><br>'
 	crab += '<hr>'
