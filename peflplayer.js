@@ -1583,7 +1583,7 @@ $().ready(function() {
 	text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
 	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить игрока').fontsize(1)+'</a><br>'
 	text3 += '<div id="compare"></div>'
-	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())" style="display:none">'+('Код для форума').fontsize(1)+'</a><br><br>'
+	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())" style="color: #A3DE8F;">'+('Код для форума').fontsize(1)+'</a><br><br>'
 	text3 += '<b>Сила&nbsp;игрока</b><div id=str>'
 	text3 += '<i><font size=1>сходите в Состав+</font></i>'
 	text3 += '</div>'
