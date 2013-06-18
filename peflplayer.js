@@ -813,7 +813,7 @@ function CheckPlayer(nn){
 	header += '<tr align=center><td>'
 	header += 'сс='+ players[0].sumskills
 	header += '</td>'
-	header += '<td class="forumcodetrigger">'
+	header += '<td>'
 	header += 'сс='+players[nn].sumskills
 	header += '</td></tr>'
 
@@ -880,10 +880,7 @@ function CheckPlayer(nn){
 		$(val).find('td:eq(2)').after('<td>'+(players[nn]['gl'+i]!=undefined ? players[nn]['gl'+i] : '?') +'</td><td class=back1 width=1%> </td>')
 		$(val).find('td:eq(1)').after('<td>'+(players[nn]['ig'+i]!=undefined ? players[nn]['ig'+i] : '?')+'</td><td class=back1 width=1%> </td>').before('<td class=back1 width=1%> </td>')
 	})
-	
-	$('.forumcodetrigger').click(function() {
-		$('a#codeforforum').show();
-	});
+		
 	return false
 }
 
@@ -1421,7 +1418,7 @@ $().ready(function() {
 	players[0].sumskills = skillsum
 
 	//add sum of skills to page
-	$('td.back4 table center:first').append('(сс='+String(skillsum)+')')
+	$('td.back4 table center:first').append('<span class="forumcodetrigger">(сс='+String(skillsum)+')</span>')
 
 	//get player header info
 	var ms = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
@@ -1658,4 +1655,8 @@ $().ready(function() {
 	RelocateGetNomData()
 	GetData('positions')
 	printStrench()
+	
+	$('.forumcodetrigger').click(function() {
+		$('a#codeforforum').show();
+	});
 }, false)
