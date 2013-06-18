@@ -813,7 +813,7 @@ function CheckPlayer(nn){
 	header += '<tr align=center><td>'
 	header += 'сс='+ players[0].sumskills
 	header += '</td>'
-	header += '<td>'
+	header += '<td class="forumcodetrigger">'
 	header += 'сс='+players[nn].sumskills
 	header += '</td></tr>'
 
@@ -880,6 +880,10 @@ function CheckPlayer(nn){
 		$(val).find('td:eq(2)').after('<td>'+(players[nn]['gl'+i]!=undefined ? players[nn]['gl'+i] : '?') +'</td><td class=back1 width=1%> </td>')
 		$(val).find('td:eq(1)').after('<td>'+(players[nn]['ig'+i]!=undefined ? players[nn]['ig'+i] : '?')+'</td><td class=back1 width=1%> </td>').before('<td class=back1 width=1%> </td>')
 	})
+	
+	$('.forumcodetrigger').click(function() {
+		$('a#codeforforum').show();
+	});
 	return false
 }
 
@@ -1583,7 +1587,7 @@ $().ready(function() {
 	text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
 	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить игрока').fontsize(1)+'</a><br>'
 	text3 += '<div id="compare"></div>'
-	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())" style="color: #A3DE8F;">'+('Код для форума').fontsize(1)+'</a><br><br>'
+	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())" style="display:none">'+('Код для форума').fontsize(1)+'</a><br><br>'
 	text3 += '<b>Сила&nbsp;игрока</b><div id=str>'
 	text3 += '<i><font size=1>сходите в Состав+</font></i>'
 	text3 += '</div>'
