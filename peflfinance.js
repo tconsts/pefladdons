@@ -334,7 +334,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 		cur.schoolperc = (cur.sponsors ==0 ? 0+'%' : (cur.school/cur.sponsors*100).toFixed(1)+'%')
 
 		if(finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) cur.fid = fin.fid
-		else cur.fid = (cur.sponsors - cur.bonus)/sponsors
+		else cur.fid = (cur.sponsors==0 ? 0 : (cur.sponsors - cur.bonus)/sponsors)
 
 		if(cur.fid>fin.fid) fin.fid = cur.fid
 
