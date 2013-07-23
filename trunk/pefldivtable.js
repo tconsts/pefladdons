@@ -453,6 +453,7 @@ function CheckMy(){
 		}
 		if(teams[i].did==div_cur.did && teams[i].my) {
 			div_cur.my = true
+			for(g in divs) delete divs[g].my
 			divs[div_cur.did].my = true
 		}
 	}
@@ -513,7 +514,7 @@ function SaveData(dataname){
 					x2.push('?')
 					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
 				}
-//				debug(dataname+':s'+x3[0]+'_'+x3[1])
+				//debug(dataname+':s'+x3[0]+'_'+x3[1])
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
 					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
@@ -525,7 +526,6 @@ function SaveData(dataname){
 }
 
 function GetData(dataname){
-	DeleteCookie('teamdiv')
 	debug(dataname+':GetData')
 	var data = []
 	var idname = 'id'
@@ -760,17 +760,6 @@ function PlusMinus(){
 	})
 }
 
-function DeleteCookie(name) {
-	debug('DeleteCookie: '+name)
-/**/
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate() - 1); // -1 d
-	if (!name) return false;
-	document.cookie = name + '=; expires='+ exdate.toUTCString() + '; path=/'
-/**/
-	return true
-}
-
 function ColorIt(){
 	debug('ColorIt div_cur.did:'+div_cur.did)
 	debug('ColorIt divs[div_cur.did].color:'+divs[div_cur.did].color)
@@ -790,7 +779,6 @@ function ColorIt(){
 				divs[name].color = key.join(',')
 			}
 			SaveData('divs')
-			DeleteCookie('pefltables')
 		}
 	}
 
