@@ -496,8 +496,8 @@ function SaveData(dataname){
 	}else{
 		db.transaction(function(tx) {
 			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
-				function(tx, result){},
-				function(tx, error) {debug(dataname+':drop error:' + error.message)}
+				function(tx, result){debug(dataname+':drop ok')},
+				function(tx, error) {debug(error.message)}
 			);                                           
 			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head+")", [],
 				function(tx, result){debug(dataname+':create ok')},
@@ -514,7 +514,8 @@ function SaveData(dataname){
 					x2.push('?')
 					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
 				}
-				//debug(dataname+':s'+x3[0]+'_'+x3[1])
+				if(x3[0]==43) debug(dataname+':s'+x1[0]+'|'+x1[9]+'|'+x1[10])
+				if(x3[0]==43) debug(dataname+':s'+x3[0]+'|'+x3[9]+'|'+x3[10])
 				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
 					function(tx, result){},
 					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
@@ -692,11 +693,11 @@ function ModifyDivs(){
 	var divt = []
 	var id = div_cur.did
 	if(typeof(divs[id])=='undefined') divs[id] = {}
+	if(div_cur.curtour==0) div_cur.curtour='0'
 	for(var i in div_cur){
 		divt[i] = (div_cur[i] != '' ? div_cur[i] : (typeof(divs[id][i])!='undefined' ? divs[id][i] : ''))
 	}
 	divs[id] = divt
-
 	if(divs[id].drotcom!='') $('td.back4 table:eq(1)').after('<br><i><b>Выдержка из правил о переходах команд между дивизионами</b>:<br>*'+divs[id].drotcom+'</i><br>')
 
 	GetFinish('md_divs',true)
