@@ -362,7 +362,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 		debug(cur.stadion+':'+curhometour+':'+maxhometour+':'+cm)
 		fin.stadion = (cur.fid == 0 ? 0 : (curhometour==0 ? cur.stadion : parseInt((cur.stadion/(curhometour+cm)*(maxhometour+cm)).toFixed(0))))
 
-		fin.priz = cur.priz + divpriz
+		fin.priz = cur.priz + (dtour==0 ? 0 : divpriz)
 		fin.sale = cur.sale
 		fin.allup = fin.sponsors + fin.stadion + fin.priz + fin.sale
 
