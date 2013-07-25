@@ -188,6 +188,8 @@ function Monitor(){
 		teams = teams2
 		SaveData('teams')
 	}
+	SetFilter('teams')
+	SetFilter('teams')
 }
 function checkDiv(mdid){
 	for(p in value) if(mdid==value[p]) return p
