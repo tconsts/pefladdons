@@ -489,7 +489,7 @@ $().ready(function() {
 			school = parseInt($('#debug').html().split(' ')[3])
 			if(!isNaN(school)) $('a:contains("изменить финансирование")').before(' ' + format(school) + ' в ИД | ')
 			else school = 0
-			GetFinish('school',true)
+//			GetFinish('school',true)
 		})
 	}
 }, false)
