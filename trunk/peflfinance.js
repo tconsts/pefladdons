@@ -292,9 +292,7 @@ function GetData(dataname){
 
 function EditFinance(school,divpriz,dteams,dtour){
 	debug('EditFinance('+school+','+divpriz+','+dteams+','+dtour+')')
-//		var fin = {}
 		var finance = []
-//		var cur = {}
 
 		var ffn 		= $('td.back4 > table td:eq(1)').html()
 		var zp 			= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
@@ -485,11 +483,11 @@ $().ready(function() {
 	}else if(urltype == 'fin'){
 		GetData2()
 		$('td.back4').prepend('<div id=debug style="display: none;"></div>')
-		$('#debug').load($('a:contains("изменить финансирование")').attr('href') + ' span.text2b',function(){
+		$('#debug').load($('a:contains("изменить")').attr('href') + ' span.text2b',function(){
 			school = parseInt($('#debug').html().split(' ')[3])
-			if(!isNaN(school)) $('a:contains("изменить финансирование")').before(' ' + format(school) + ' в ИД | ')
+			if(!isNaN(school)) $('a:contains("изменить")').before(' ' + format(school) + ' в ИД | ')
 			else school = 0
-//			GetFinish('school',true)
+			GetFinish('school',true)
 		})
 	}
 }, false)
