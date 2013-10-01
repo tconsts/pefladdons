@@ -34,7 +34,7 @@ $().ready(function() {
 	var mdov1 = $('td.back4 table tr:eq(1) td').text().split('.')[0]
 	var x = $('td.back4 table tr:eq(1) td').text().split(' ')
 	var mdov2 = []
-	mdov2[0] = $('td.back4 table tr:eq(1) td').text().split('. ')[1].split('команда')[0]
+	mdov2[0] = ($('td.back4 table tr:eq(1) td').text().split('. ')[1]==undefined? '&nbsp;' : $('td.back4 table tr:eq(1) td').text().split('. ')[1].split('команда')[0])
 	mdov2[1] = x[x.length-1].split('.')[0]
 
     var text = ''
