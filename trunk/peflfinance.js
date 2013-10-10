@@ -325,7 +325,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 
 		cur.zp =		finance[3]['Зарплаты игрокам']
 		cur.buy =		finance[3]['Покупка игроков']
-		cur.school =	finance[3]['Школа']
+		cur.school =	finance[3]['Школа ']
 		cur.alldown =	finance[3]['Всего']
 		cur.plusminus =	cur.allup - cur.alldown
 		cur.zpperc = 	 (cur.sponsors ==0 ? 0+'%' : (cur.zp/cur.sponsors*100).toFixed(1)+'%')
