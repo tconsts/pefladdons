@@ -309,23 +309,25 @@ function EditFinance(school,divpriz,dteams,dtour){
 			$(val).attr('id', i)
 			curtable.name = $(val).prev().text()
 			$(val).find('td:even').each(function(){
-				curtable[$(this).text()] = parseInt($(this).next().text().replace(/\,/g,'').replace('$',''))
+				curtable[$(this).text().split(' ')[0]] = parseInt($(this).next().text().replace(/\,/g,'').replace('$',''))
 			})
 		})
+		for(i in finance[1]) debug(i+':'+finance[1])
+//		alert(finance[1]['Покупка игроков'])
 
 		if(isNaN(school)) {
-			school = finance[1]['Школа'] - Math.floor(((finance[0]['Продажа игроков'] + finance[1]['Покупка игроков'])*0.05)/1000)*1000
+			school = finance[1]['Школа'] - Math.floor(((finance[0]['Продажа'] + finance[1]['Покупка'])*0.05)/1000)*1000
 		}
 
 		cur.sponsors =	finance[2]['Спонсоры']
 		cur.stadion =	finance[2]['Стадион']
 		cur.priz =		finance[2]['Призовые']
-		cur.sale =		finance[2]['Продажа игроков']
+		cur.sale =		finance[2]['Продажа']
 		cur.allup =		finance[2]['Всего']
 
-		cur.zp =		finance[3]['Зарплаты игрокам']
-		cur.buy =		finance[3]['Покупка игроков']
-		cur.school =	finance[3]['Школа ']
+		cur.zp =		finance[3]['Зарплаты']
+		cur.buy =		finance[3]['Покупка']
+		cur.school =	finance[3]['Школа']
 		cur.alldown =	finance[3]['Всего']
 		cur.plusminus =	cur.allup - cur.alldown
 		cur.zpperc = 	 (cur.sponsors ==0 ? 0+'%' : (cur.zp/cur.sponsors*100).toFixed(1)+'%')
@@ -338,7 +340,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 
 		// set div prizes
 //		var divpriz = 0
-		var divprizmark =	('<i>*1</i>').fontcolor('red').fontsize(1)
+		var divprizmark =	(' <i>*1</i>').fontcolor('red').fontsize(1)
 		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в команду, див и "Правила".</i>').fontcolor('red').fontsize(1)
 		if(divpriz!=0){
 			if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) {
