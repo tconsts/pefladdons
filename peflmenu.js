@@ -95,14 +95,13 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 	var settingimg 	= '<img width=16 height=16 src="system/img/g/stats.gif"></img>'
 	var adaptimg 	= '<img width=16 height=16 src="system/img/g/scout.gif"></img>'
 	var crab = new String()
-	crab += '<div align=center><b>CrabVIP</b></div>'
+	crab += '<hr><div align=center><b>CrabVIP</b></div>'
 	crab += settingimg+	' <a href=\'/?settings\'>Настройки</a><br>'
 	if(parseInt(scflag[1])!=1)	crab += teamimg +	' <a id=sostav href=\'/?sostav\'>Состав+(ком)</a><br>'
 	if(parseInt(scflag[1])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg	+	' <a id=sostav_n href=\'/?sostav_n\'>Состав+(сбр)</a><br>'
 	if(parseInt(scflag[22])!=1)	crab += adaptimg+	' <a href=\'/?adaptation\'>Адаптация</a><br>'
-	crab += crabimg +	' <a href="/forums.php?m=posts&q=203048">Crab&nbsp;Форум</a><br>'
-	crab += '<hr>'
-	$('td.back3 table td:first span.text1 hr:eq(4)').after(crab)
+	crab += crabimg +	' <a href="/forums.php?m=posts&q=203048">Crab&nbsp;Форум</a>'
+	$('td.back3 table td:first a:contains(Ссылки):first').after(crab)
 
 	if (UrlValue("t")=="school") SetNumShcoolers()
 
