@@ -324,36 +324,41 @@ function modifyPage(){
 	$('table#tblRoster').after(preparedhtml)
 }
 
-function RelocateGetNomData(){
-	debug('RelocateGetNomData()')
+function RelocateGetNomData(arch){
+	debug('RelocateGetNomData('+arch+')')
+	if(arch==undefined) arch = '';
 	if(localStorage.getnomdata != undefined && String(localStorage.getnomdata).indexOf('1.1$')!=-1){
-		debug('RelocateGetNomData:ok!')
+		debug('Storage.getnomdata ok!')
 		//GetNomData(0)
 		GetFinish('getnomdata', true)
 	}else{
 		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9885110) //9107893
-		debug('RelocateGetNomData:top='+top)
+		debug('Storage.getnomdata('+top+')')
+		var url_top = 'm=posts'+arch+'&p='+top
 
-		$('td.back4').prepend('<div id=debval hidden></div>') //
-		$('div#debval').load('forums.php?m=posts&p='+top+' td.back3:contains(#CrabNom1.1.'+top+'#) blockquote pre', function(){
-			$('div#debval').find('hr').remove()
-			//$('div#debval').html($('div#debval').html().replace('<br>#t#<br>',''))
-			var data = $('#debval pre').html().split('#').map(function(val,i){
-				return val.split('<br>').map(function(val2,i2){
-					return $.grep(val2.split('	'),function(num, index) {return !isNaN(index)})
+		if($('#debval').length==0) $('td.back4').prepend('<div style="display: none;" id=debval></div>') 
+		$('div#debval').load('forums.php?'+url_top+' td.back3:contains(#CrabNom1.1.'+top+'#) blockquote pre', function(){
+			if($('#debval').html()=='' && arch==''){
+				RelocateGetNomData('&arch=1')
+			}else{
+				$('div#debval').find('hr').remove()
+				var data = $('#debval pre').html().split('#').map(function(val,i){
+					return val.split('<br>').map(function(val2,i2){
+						return $.grep(val2.split('	'),function(num, index) {return !isNaN(index)})
+					})
 				})
-			})
-			var text = ''
-			var nm = []
-			for (i in data){
-				var x = []
-				for(j in data[i]) x[j] = data[i][j].join('!')
-				nm[i] = x.join('|')
+				var text = ''
+				var nm = []
+				for (i in data){
+					var x = []
+					for(j in data[i]) x[j] = data[i][j].join('!')
+					nm[i] = x.join('|')
+				}
+				text = nm.join('#')
+				localStorage.getnomdata ='1.1$'+text.replace('Code','')
+				//GetNomData(0)
+				GetFinish('getnomdata', true)
 			}
-			text = nm.join('#')
-			localStorage.getnomdata ='1.1$'+text.replace('Code','')
-			//GetNomData(0)
-			GetFinish('getnomdata', true)
 		})
 	}
 }
