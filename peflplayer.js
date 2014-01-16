@@ -1524,7 +1524,10 @@ $().ready(function() {
 	var ms2 = $('td.back4 > center:first').html()
 	if (ms2 != null){
 		if(ms2.indexOf('New pos:')!=-1) {
-			players[0].newpos = ms2.split('New pos: ')[1].split('<')[0]
+			var x = ms2.split('New pos: ');
+			players[0].newpos = x[1].split('<')[0]
+			if(x[2]!=undefined) players[0].newpos = players[0].newpos+' ' + x[2].split('<')[0]
+			if(x[3]!=undefined) players[0].newpos = players[0].newpos+' ' + x[3].split('<')[0]
 			$('td.back4 table center:first b:first').after(' ('+players[0].newpos + ')')
 		}
 
