@@ -652,6 +652,7 @@ function getPlayers(){
 			if(players[pl2id]==undefined){
 				players[pl2id] = pl2[k]
 				players[pl2id].flag = 6
+				players[pl2id].syg = 0
 			}
 			//debug('pl2:id='+pl2[k].id+':name='+pl2[k].secondname+':position='+pl2[k].position)
 		}
