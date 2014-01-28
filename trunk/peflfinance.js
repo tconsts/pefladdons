@@ -37,9 +37,10 @@ function GetFinish(type, res){
 	}
 	if((m.dprize && m.tplace) || m.dprize!=undefined || m.tplace!=undefined) {
 		var d = 1000-tplace-dnum2*100-1
-		if(m.school!=undefined){
+		if(m.school!=undefined && m.ed==undefined){
 			debug(tplace+':'+dnum2+':'+dprize+':'+dteams+':'+dtour)
 			EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000, dteams,dtour)
+			m.ed = true;
 		}
 	}	
 }
