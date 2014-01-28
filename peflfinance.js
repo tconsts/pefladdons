@@ -482,7 +482,7 @@ $().ready(function() {
 	var urltype = UrlValue('p')
 	if(urltype== 'rules'){
 		GetData('divs')
-	}else if(urltype == 'fin'){
+	}else if(urltype == 'fin' && $('div.debug').length==0){
 		GetData2()
 		$('td.back4').prepend('<div id=debug style="display: none;"></div>')
 		$('#debug').load($('a:contains("изменить")').attr('href') + ' span.text2b',function(){
