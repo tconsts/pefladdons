@@ -1493,13 +1493,15 @@ function ShowPlayersValue(){
 			numpl++
 			sumval += pls[i].value
 			var bgcolor = ''
+			var style = '';
+			if(i==15) style = ' style="border-bottom:1px black solid;"'
 			if(i<18) bgcolor = ' class=back4'//3
 			if(i<5)  bgcolor = ' class=back3'//1
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
 			nomtext += '<tr id="nom"'+bgcolor+'>'
-			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+' nowrap>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
-			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
+			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+' nowrap'+style+'>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
+			nomtext += '<td align=right'+style+'>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
 			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
 			nomtext += '</tr>'
 		}
