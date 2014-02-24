@@ -7,6 +7,9 @@
 // ==/UserScript==
 
 
+deb = (localStorage.debug == '1' ? true : false)
+var debnum = 1
+
 var nationplayers = {
 11:564,
 12:685,
@@ -22,7 +25,8 @@ var nationplayers = {
 8:1878,
 9:216,
 10:2,
-217:19,
+//217:19,
+0:19,
 14:0,
 16:1,
 17:8,
@@ -295,7 +299,7 @@ var nationteamnum = {
 1:12
 }
 var peflnation ={
-//0:'Афганистан',
+0:'Афганистан',
 1:'Албания',
 2:'Алжир',
 3:'Восточное Самоа',
@@ -503,7 +507,7 @@ var peflnation ={
 214:'Черногория',
 215:'Коморские острова',
 216:'Таити',
-217:'Афганистан'
+//217:'Афганистан'
 }
 
 var peflcountry=[1,2,8,9,11,12,13,18,19,24,25,27,30,41,42,44,47,48,50,51,53,58,59,61,64,66,69,70,73,74,76,84,87,88,91,93,94,95,98,100,105,111,122,123,126,129,137,139,145,147,149,150,152,154,155,160,161,166,167,170,171,172,180,181,191,192,195,196,200,201,202,204,96,207,209,214]
@@ -513,9 +517,12 @@ $().ready(function(){
 	$.getScript("js/adaptation.en.js", function() {
 		for (f=0;f<76;f++) {
 			pfc[f] = []
-			for(i in peflnation) pfc[f][i] = {'name':peflnation[i]}
+			for(i in peflnation){
+				pfc[f][i] = {'name':peflnation[i]}
+			}
 		}
 		for (i in s_adaptationMap) for(j in s_adaptationMap[i]) {
+			if(pfc[j][i]==undefined) pfc[j][i] = {'name':'хз.'+j+'.'+i};
 			pfc[j][i]['num'] = parseInt(s_adaptationMap[i][j])
 			pfc[j][i]['id'] = i
 		}
@@ -562,4 +569,11 @@ function PrintAd(){
 function ShowC(n){
 	if(String($('tr#c'+n+':first').attr('style')).indexOf('display: none') == -1) $('tr#c'+n).hide()
 	else $('tr#c'+n).show()
+}
+function debug(text) {
+	if(deb) {
+		if(debnum==1) $('body').append('<div id=debug></div>')
+		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
+		debnum++;
+	}
 }
