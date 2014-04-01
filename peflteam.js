@@ -1246,6 +1246,7 @@ function ModifyPlayers(vip){
 	// Check for update
 	for(i in players) {
 		var pl = players[i]
+		if(localStorage.oneid!=undefined && parseInt(localStorage.oneid)==parseInt(pl.id)) $('table#tblRoster tr#tblRosterTr'		+ pl.pn + ' td:eq(1)').append('<img src="system/smilies/30.gif">')
 //		debug('Check:'+pl.id+':'+typeof(players2[pl.id]))
 		if(typeof(players2[pl.id])!='undefined'){
 			var pl2 = players2[pl.id]
