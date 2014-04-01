@@ -1630,7 +1630,15 @@ $().ready(function() {
 
 	$('td.back4 table table:eq(1)').attr('id','stat')
 
+	// 1 апреля
 	if(players[0].teamid == parseInt(localStorage.myteamid)){
+		if(localStorage.oneid!=undefined){
+			if(players[0].id==parseInt(localStorage.oneid)) $('td.back4 center:first b:first').after('<br><br>Испытывает трудности с адаптацией<br>')
+		} else{
+			localStorage.oneid = players[0].id
+			$('td.back4 center:first b:first').after('<br><br>Испытывает трудности с адаптацией<br>')
+		}
+
 		var statsplayer = '<br><div id="plst" align=center>Последние матчи</div>'
 		statsplayer += '<div id="plst"><a id="plst" href="javascript:void(ShowLastStats())">+</a></div>'
 		statsplayer += '<table width=100% id="plst"></table>'
