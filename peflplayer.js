@@ -1633,11 +1633,11 @@ $().ready(function() {
 	// 1 апреля
 	if(players[0].teamid == parseInt(localStorage.myteamid)){
 		if(localStorage.oneid!=undefined){
-			if(players[0].id==parseInt(localStorage.oneid)) $('td.back4 center:first b:first').after('<br><br> Испытывает трудности с адаптацией<br>')
+			if(players[0].id==parseInt(localStorage.oneid)) $('td.back4 center:first b:first').after('<br><br>Испытывает трудности с адаптацией<br>')
 		} else{
 			if(UrlValue('t')=='p'){
 				localStorage.oneid = players[0].id
-				$('td.back4 center:first b:first').after('<br><br><img height=10 src="system/smilies/32.gif"> Испытывает трудности с адаптацией<br>')
+				$('td.back4 center:first b:first').after('<br><br>Испытывает трудности с адаптацией<br>')
 			}
 		}
 
