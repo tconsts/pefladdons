@@ -118,5 +118,19 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 		SetNumShcoolers();
 		SetCFF();
 	}
+	if (UrlValue('p')=='tr' && 
+		(	UrlValue('t')=='transfers' 
+		||	UrlValue('t')=='transfers0'
+		||	UrlValue('t')=='transfersr' 
+		||	UrlValue('t')=='transfersn' 
+		||	UrlValue('t')=='transfers3' 
+		||	UrlValue('t')=='transfers4'
+		||	UrlValue('t')=='tlist'
+		||	UrlValue('t')=='alist'
+		||	UrlValue('t')=='nlist'
+		||	UrlValue('t')=='free'
+		||	UrlValue('t')=='staff'
+		)
+	) SetCFF();
 
 })};
