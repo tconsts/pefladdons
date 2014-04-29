@@ -69,13 +69,21 @@ $().ready(function() {
 			szp += wage
 			$(this).find('td:last:not(.sch)').after('<td width=5% align=right>'+((wage*cnt*25)/1000).toFixed(3)+'$</td>')
 		})
-		var szptxt = '<hr><table width=100%><tr><td width=5%></td><td width=30% class=back3><b>Точная сумма зарплат:</b></td><td width=10% ALIGN=right class=back3><b>'+String((szp/1000).toFixed(3)).replace('.',',')+'$</b></td><td colspan=2></td></tr></table>';
+		var szptxt = '<hr><table width=100% id=sum><tr><td width=5%></td><td width=30% class=back3><b>Точная сумма зарплат:</b></td><td width=10% ALIGN=right class=back3><b>'+String((szp/1000).toFixed(3)).replace('.',',')+'$</b></td><td colspan=2></td></tr></table>';
 		$('td.back4 table table:last').after(szptxt)
 		$('td.back4').append('<br>*  - последняя колонка показывает сумму компенсации при увольнении')
 		$('td.back4').append('<br>** - для учета в подсчете школьников сходите в школу')
 		if(UrlValue('j')) showSponsers()
 		//showSponsers()
 
+		var tables = [];
+		$('td.back4 table table').each(function(i,val){
+			if($(val).attr('id')==undefined || $(val).attr('id')=='') $(val).attr('id','x'+i);
+			tables.push($(val).attr('id'));
+		})
+		var text = '</script><script type="text/javascript" src="js/fcode2.js"></script>';
+		text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">код для форума</a></div>';
+		$('td.back4 table table:first').before(text);
 	}
 });
 
