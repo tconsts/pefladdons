@@ -57,7 +57,7 @@ $().ready(function() {
 	})
 	var text = '</script><script type="text/javascript" src="js/fcode2.js"></script>';
 	text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">код для форума</a></div>';
-	$('td.back4 table table:first').before(text);
+	$('td.back4').prepend(text).find('br:first').remove();
 
 }, false);
 //})();
