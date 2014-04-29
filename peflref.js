@@ -57,7 +57,20 @@ $().ready(function() {
 	PrintTable('id')
 //	for(i in refs) $('td.back4').append(i+':'+refs[i].name + ':'+ refs[i].nid +'<br>')
 
+	SetCFF();
+
 });
+
+function SetCFF(){
+	var tables = [];
+	$('td.back4 table table').each(function(i,val){
+		if($(val).attr('id')==undefined || $(val).attr('id')=='') $(val).attr('id','x'+i);
+		tables.push($(val).attr('id'));
+	})
+	var text = '</script><script type="text/javascript" src="js/fcode2.js"></script>';
+	text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">код для форума</a></div>';
+	$('td.back4 table table:first').before(text);
+}
 
 function PrintTable(sorting){
 	if(sorting==srt) srtn = (srtn ? false : true)
