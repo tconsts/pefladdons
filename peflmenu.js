@@ -118,7 +118,8 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 		SetNumShcoolers();
 		SetCFF();
 	}
-	if (UrlValue('p')=='tr' && 
+	if(
+	 (UrlValue('p')=='tr' && 
 		(	UrlValue('t')=='transfers' 
 		||	UrlValue('t')=='transfers0'
 		||	UrlValue('t')=='transfersr' 
@@ -131,6 +132,7 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 		||	UrlValue('t')=='free'
 		||	UrlValue('t')=='staff'
 		)
+	 )||(UrlValue('p')=='search' && UrlValue('t')=='res')
 	) SetCFF();
 
 })};
