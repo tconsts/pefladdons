@@ -71,6 +71,17 @@ function setLogo(){
 	if(String(localStorage.logopic)!='undefined') $('img:first').attr('height','88').attr('src',localStorage.logopic)
 }
 
+function SetCFF(){
+	var tables = [];
+	$('td.back4 table table').each(function(i,val){
+		if($(val).attr('id')==undefined || $(val).attr('id')=='') $(val).attr('id','x'+i);
+		tables.push($(val).attr('id'));
+	})
+	var text = '</script><script type="text/javascript" src="js/fcode2.js"></script>';
+	text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">код для форума</a></div>';
+	$('td.back4 table table:first').before(text);
+}
+
 if(typeof(jQuery)!='undefined'){ $().ready(function() {
 //	delete localStorage.debug
 
@@ -103,6 +114,9 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 	crab += crabimg +	' <a href="/forums.php?m=posts&q=203048">Crab&nbsp;Форум</a>'
 	$('td.back3 table td:first a:contains(Ссылки):first').after(crab)
 
-	if (UrlValue("t")=="school") SetNumShcoolers()
+	if (UrlValue("t")=="school"){
+		SetNumShcoolers();
+		SetCFF();
+	}
 
 })};
