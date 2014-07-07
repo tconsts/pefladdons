@@ -1372,7 +1372,12 @@ function ShowLastStats(){
 }
 
 $().ready(function() {
-/**
+
+	if($('table#hd1').length>0) {
+		debug('new roster: exit');
+		return false;
+	}
+/**/
 	debug('размер0:'+$('table:eq(0)').attr('width'))
 	var bbig = false
 	if($('table:eq(0)').attr('width')>=1000) {
@@ -1620,7 +1625,7 @@ $().ready(function() {
 
 	text3 += '</div>'
 /**/
-/**
+/**/
 	// Modify page and fill data
 	$('td.back4 script').remove()
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
