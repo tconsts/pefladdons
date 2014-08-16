@@ -933,6 +933,8 @@ $().ready(function() {
 
 		//$('td.back4').append(skillname+':'+skilleng+':'+skillvalue+skillarrow+'<br>')
 	})
+	if(players[0].marking==undefined) players[0].marking = '??'
+	if(players[0].corners==undefined) players[0].corners = '??'
 	if(players[0].heading==undefined) players[0].heading = '??'
 	if(players[0].handling==undefined) players[0].handling = '??'
 	if(players[0].reflexes==undefined) players[0].reflexes = '??'
