@@ -678,7 +678,7 @@ function CheckPlayer(nn){
 		case 'stamina':
 			if($('td#'+i).length>0){
 				var x=data[i].split('.');
-				ssn = ssn+parseInt(x[0]);
+				ssn = ssn+(isNaN(parseInt(x[0])) ? 0 : parseInt(x[0]));
 				var ch = parseInt($('td#'+i).next().text())-parseInt(x[0]);
 				if(ch>0) ch = '<font color=green size=1>+'+ch+'</font>';
 				else if(ch<0) ch ='<font color=red size=1>'+ch+'</font>'
