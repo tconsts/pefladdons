@@ -626,13 +626,16 @@ function CheckPlayer(nn){
 		case 'secondname': data['pname'] = (players[nn].nation!=undefined ? players[nn].nation : 217)+'|'+players[nn]['firstname']+' '+players[nn][i]+'|p=refl&t='+players[nn]['t']+'&j='+players[nn]['id']+'&z='+players[nn]['hash'];break;
 		case 'internationalapps': data['int'] =players[nn][i]+'.'+players[nn]['internationalgoals'];break;
 		case 'u21apps':data['u21'] =players[nn][i]+'.'+players[nn]['u21goals'];break;
+		case 'value':
+			data[i]=ShowValueFormat(players[nn][i]/1000);
+			break;
 		default: data[i]=String(players[nn][i]);
 		}
 	}
 	var cur = {
-		'pname':'<b>'+players[0]['firstname']+' '+players[0]['secondname']+'</b>',
+		'pname':'<img height="12" src="system/img/flags/mod/'+players[0].nation+'.gif"> '+'<b>'+players[0]['firstname']+' '+players[0]['secondname']+'</b>',
 		'age':players[0]['age'],
-		'value':players[0]['value'],
+		'value':ShowValueFormat(players[0]['value']/1000),
 		'int':'матчей '+players[0]['internationalapps']+', голов '+players[0]['internationalgoals'],
 		'u21':'матчей '+players[0]['u21apps']+', голов '+players[0]['u21goals'],
 		'position':players[0]['position'],
