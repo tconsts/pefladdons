@@ -619,10 +619,11 @@ function CheckPlayer(nn){
 		case 'morale':
 		case 'form':
 		case 'natfull':
+		case 'nation':
 		case 'internationalgoals':
 		case 'u21goals':
 		case 'firstname':break;
-		case 'secondname': data['pname'] = '217|'+players[nn]['firstname']+' '+players[nn][i]+'|p=refl&t='+players[nn]['t']+'&j='+players[nn]['id']+'&z='+players[nn]['hash'];break;
+		case 'secondname': data['pname'] = (players[nn].nation!=undefined ? players[nn].nation : 217)+'|'+players[nn]['firstname']+' '+players[nn][i]+'|p=refl&t='+players[nn]['t']+'&j='+players[nn]['id']+'&z='+players[nn]['hash'];break;
 		case 'internationalapps': data['int'] =players[nn][i]+'.'+players[nn]['internationalgoals'];break;
 		case 'u21apps':data['u21'] =players[nn][i]+'.'+players[nn]['u21goals'];break;
 		default: data[i]=String(players[nn][i]);
@@ -635,7 +636,8 @@ function CheckPlayer(nn){
 		'int':'матчей '+players[0]['internationalapps']+', голов '+players[0]['internationalgoals'],
 		'u21':'матчей '+players[0]['u21apps']+', голов '+players[0]['u21goals'],
 		'position':players[0]['position'],
-		'wage':players[0]['wage']
+		'wage':players[0]['wage'],
+		'curseason':13
 	}
 
 	$('table#stat,span#err,#dcode1').hide();
@@ -949,6 +951,7 @@ $().ready(function() {
 		players[0].firstname = ''
 		players[0].secondname = name
 	}	
+	players[0].nation = parseInt($('table#hd1 td:eq(1) img').attr('src').split('mod/')[1]);
 	players[0].natfull = $('table#hd1 td:eq(2) font').html().split('<br>')[0];
 
 	var mnat = $('table#hd1 td:eq(3) font').html().split('<br>');
