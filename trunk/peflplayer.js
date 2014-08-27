@@ -538,7 +538,7 @@ function PrintPlayers(cur){
 			htmltext += '<a href="javascript:void(RemovePl('+i+'))">x</a>|'
 			htmltext += '<a'+(players[i].t == 'yp' ? '' : ' href="javascript:hist(\''+players[i].id+'\',\'n\')"')+'>и</a>|'
 			htmltext += players[i].id+'|'
-			htmltext += '<a'+plhref+'>' + secname[secname.length-1] + '</a>'
+			htmltext += '<a'+plhref+'>' + secname[secname.length-1] + (players[i].t==undefined || players[i].t == 'yp' ? '('+players[i].position+')' : '') +'</a>'
 			htmltext += '</font></td></tr>'
 		}
 	}
