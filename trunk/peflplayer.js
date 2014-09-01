@@ -926,7 +926,7 @@ $().ready(function() {
 	$('table#skills td:even').each(function(){
 		var skilleng   = $(this).attr('id');
 		var skillname  = $(this).html();
-		var skillvalue = parseInt($(this).next().html().replace('<b>',''))
+		var skillvalue = parseInt(String($(this).next().html()).replace('<b>',''))
 		var skillarrow = ''
 		if(skilleng=='s') players[0].sumskills = skillvalue;
 		else{
