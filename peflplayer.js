@@ -519,7 +519,7 @@ function OpenAll(){
 	else $("#mydiv").hide()
 }
 
-function RemovePl(rem){
+function RemovePlx(rem){
 	if(rem!=0) players.splice(rem,1);
 	RememberPl(1); // !=1: save w\o player0
 	PrintPlayers();
@@ -535,7 +535,7 @@ function PrintPlayers(cur){
 			var plhref = (players[i].t==undefined || players[i].t == 'yp' ? '' : ' href="plug.php?p=refl&t='+players[i].t+'&j='+players[i].id+'&z='+players[i].hash+'"')
 			htmltext += '<tr><td nowrap><font size=1>'
 			htmltext += '<a id="compare'+i+'" href="javascript:void(CheckPlayer('+i+'))"><</a>|'
-			htmltext += '<a href="javascript:void(RemovePl('+i+'))">x</a>|'
+			htmltext += '<a href="javascript:void(RemovePlx('+i+'))">x</a>|'
 			htmltext += '<a'+(players[i].t == 'yp' ? '' : ' href="javascript:hist(\''+players[i].id+'\',\'n\')"')+'>и</a>|'
 			htmltext += players[i].id+'|'
 			htmltext += '<a'+plhref+'>' + secname[secname.length-1] + (players[i].t==undefined || players[i].t == 'yp' ? '('+players[i].position+')' : '') +'</a>'
