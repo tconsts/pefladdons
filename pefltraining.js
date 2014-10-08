@@ -21,7 +21,7 @@ var num_players = 0
 
 var itrains = []
 itrains[0]	= {level:2,	tr:1,	name: 'Общая'}
-itrains[1]	= {level:0,	tr:2,	name: 'Востановление Формы'}
+itrains[1]	= {level:0,	tr:2,	name: 'Восстановление Формы'}
 itrains[2]	= {level:1,	tr:3,	name: 'Игра на 2 этаже'}
 itrains[3]	= {level:3,	tr:4,	name: 'Кросс'}
 itrains[4]	= {level:1,	tr:5,	name: 'Навесы'}
@@ -361,8 +361,8 @@ function showData(){
 			$('td.back4 table table:eq(1)').after('<br><div align=left><b>*<sup>1</sup></b> - влияют только на 50%<br></div>')
 			$(val).prepend('<th></th>')
 		})
-		// show травмированых и востанавливающихся
-		var prest = '<br><b>Не тренируются так как востанавливают форму:</b><br>'
+		// show травмированых и восстанавливающихся
+		var prest = '<br><b>Не тренируются так как восстанавливают форму:</b><br>'
 		var pinj  = '<br><b>Не могут тренироваться так как травмированы:</b><br>'
 		var pnot  = '<br><b>Не влияют на тренировки командных мячей:</b><br>'
 		var countrest = 0
