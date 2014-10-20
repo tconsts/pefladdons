@@ -1,4 +1,3 @@
-
 // ==UserScript==
 // @name           peflmatch
 // @namespace      pefl
@@ -213,11 +212,14 @@ function getMatchInfo(){
 		})
 		if($(this).find('font ~ img[src*=krest.gif]').length>0){
 			var pnum = 0;
-			var pnum1 = parseInt($(this).find('font ~ img[src*=krest.gif]').next().attr('class').replace('p0','').replace('p',''))
-			var pnum2 = parseInt($(this).find('font ~ img[src*=krest.gif]').next().next().attr('class').replace('p0','').replace('p',''))
-			if(pnum1<12 || (pnum1>18 && pnum1<30)) pnum=pnum1;
-			else pnum=pnum2;
-
+			if($(this).find('font ~ img[src*=krest.gif]').next().length >0){
+				var pnum1 = parseInt($(this).find('font ~ img[src*=krest.gif]').next().attr('class').replace('p0','').replace('p',''))
+				var pnum2 = parseInt($(this).find('font ~ img[src*=krest.gif]').next().next().attr('class').replace('p0','').replace('p',''))
+				if(pnum1<12 || (pnum1>18 && pnum1<30)) pnum=pnum1;
+				else pnum=pnum2;
+			} else {
+				pnum = parseInt($(this).find('font:last').attr('class').replace('p0','').replace('p',''))
+			}
 			players[pnum].inj = true
 			//debug('getMatchInfo:curmin='+curmin+':class=:'+$(this).find('font ~ img[src*=krest.gif]').prev().attr('class'))
 		}
@@ -464,7 +466,7 @@ function getPlayersInfo(){
 			$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append('<img src="system/img/gm/out.gif"></img>('+players[pnum].last+'\')')
 			//debug('getPlayersInfo:'+nameid+':m='+players.m)
 		}
-/**
+/**/
 		if(players[pnum]!=undefined && players[pnum].inj){
 			player.t = 1
 			var injmin = players[pnum].last
