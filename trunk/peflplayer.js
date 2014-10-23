@@ -362,11 +362,11 @@ function ShowAdaptation(plnat,tnat){
 			var adperc1 = '%';
 			var adperc2 = '%';
 			var txt = '<table width=100%><tr align=left><td>Адаптация</td><th>'+plnat+'</th></tr>';
-			txt+='<tr align=left><th>'+localStorage.mycountry.split('.')[1]+'</th><td>'+(ad==10 ? '100' : (ad*6+2)+'%-'+(ad*6+40))+'% ('+ad+')</td></tr>'
+			txt+='<tr align=left><th>'+localStorage.mycountry.split('.')[1]+'</th><td>'+(ad==10 ? '99,9' : (ad*6+2)+'%-'+(ad*6+40))+'% ('+ad+')</td></tr>'
 			if(tnat!=undefined && tnat!=parseInt(localStorage.mycountry)){
 				var tad= s_adaptationMap[peflnation[plnat]][peflcountry[tnat]]
 				for(i in peflnation) if(parseInt(peflnation[i])==parseInt(tnat)) var natname = i;
-				txt+='<tr align=left><th>'+natname+'</th><td>'+(tad==10 ? '100' : (tad*6+2)+'%-'+(tad*6+40))+'% ('+tad+')</td></tr>'
+				txt+='<tr align=left><th>'+natname+'</th><td>'+(tad==10 ? '99,9' : (tad*6+2)+'%-'+(tad*6+40))+'% ('+tad+')</td></tr>'
 			}
 			txt+='</table>'
 			$("#crabright").append('<br><br>'+txt)
