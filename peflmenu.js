@@ -88,7 +88,7 @@ if(typeof(jQuery)!='undefined'){ $().ready(function() {
 	if($('td.topmenu:first table td:eq(1) a:contains("Вход")').length>0) return false
 	setLogo()
 	getIDnum()
-	FixSize()
+	//FixSize()
 
 	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
 
