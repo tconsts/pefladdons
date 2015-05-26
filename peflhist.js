@@ -113,7 +113,10 @@ if (type == 'p') {
 
 } else if(type == 'n') {
 	var text = document.getElementsByName('rtext')
-	text[0].value= (parseInt(localStorage.gday.split('.')[1])+1)+"й ИД: ";
+	var ses = parseInt(localStorage.season, 10);
+	var day = parseInt(localStorage.gday.split('.')[1], 10);
+	if(!isNaN(ses)) text[0].value = ses+'.'+('00' + day).substr(-3,3)+': ';
+	else text[0].value = (day+1)+"й ИД: ";
 	text[0].focus()
 } else {
 
