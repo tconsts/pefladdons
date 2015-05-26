@@ -898,6 +898,12 @@ $().ready(function() {
 	}
 	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') return false
 
+	// берем мерку какой сезон
+	if($('a[href*=SavePl]').length > 0 ) {
+		var ses = parseInt($('a[href*=SavePl]').prev().prev().prev().text(), 10);
+		if(!isNaN(ses)) localStorage.season = ses;
+	}
+
 	debug('размер0:'+$('table:eq(0)').attr('width'))
 	var bbig = false
 	if($('table:eq(0)').attr('width')>=1000) {
