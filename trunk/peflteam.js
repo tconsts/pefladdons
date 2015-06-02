@@ -96,7 +96,6 @@ var skills = {
 
 $().ready(function() {
 
-	fixColors()
 	cid = parseInt($('td.back4 table:first table td:first').text())
 	teams[cid] = {'tid':cid}
 
@@ -183,54 +182,6 @@ function GetFinish(type, res){
 		PrintRightInfoVip()
 		ModifyPlayers('vip')// and Save if need
 	}
-}
-
-function fixColors(){
-	debug('fixColors()')
-	$('td.back4 table table:eq(0)') // заголовок с именем
-		.attr('width','100%')
-		.removeAttr('background')
-		.addClass('back2')
-		.attr('style','border-top:3px double black;border-bottom:3px double black')
-	$('td.back4 table table:eq(1)') // карточка с лого клуба и инфа
-		.attr('width','100%')
-		.removeAttr('bgcolor')
-		.addClass('back1')
-		.find('td:eq(1)')
-			.addClass('back2')
-			.css('border-left','1px solid black')
-			.css('border-right','1px solid black')
-			.css('border-bottom','1px solid black')
-			.css('border-bottom-left-radius','5px')
-			.css('border-bottom-right-radius','5px')
-			.end()
-		.find('td:last')
-			.attr('align','center')
-			.addClass('back2')
-//			.attr('style','border-left:1px solid black;border-top:1px solid black;border-top-left-radius:5px')
-			.css('border-left','1px solid black')
-			.css('border-right','1px solid black')
-			.css('border-top','1px solid black')
-			.css('border-top-left-radius','5px')
-			.css('border-top-right-radius','5px')
-			.end()
-		.find('td').removeAttr('background').end()
-//		.find('tr:first td:eq(1)').attr('width','455').end()
-	$('td.back4 table table:eq(4)') // линки отображения по турнирам
-		.attr('width','100%')
-		.removeAttr('background')
-		.addClass('back2')
-		.attr('style','border-top:3px double black;border-bottom:3px double black;')
-	$('td.back4 table table:eq(6)') // фильтр
-		.addClass('back1')
-		.removeAttr('cellspacing')
-		.find('tr').addClass('back1').end()
-	$('td.back4 table table:eq(7)') // управление фильром
-		.addClass('back1').removeAttr('bgcolor').end()
-	$('td.back4 table table:eq(8)') // игроки
-		.addClass('back3').removeAttr('bgcolor').end()
-		.find('tr[bgcolor*=a3de8f]').addClass('back2').removeAttr('bgcolor').end()
-		.find('tr[bgcolor*=C9F8B7]').addClass('back1').removeAttr('bgcolor').end()
 }
 
 function modifyPage(){
