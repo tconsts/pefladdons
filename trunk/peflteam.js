@@ -894,8 +894,8 @@ function GetInfoPageTm(){
 
 	team_cur.tid	= cid
 	team_cur.tdate	= today
-	team_cur.tname	= $('td.back4 table table:first td:last').text().split(' (')[0]
-	team_cur.ttown	= $('td.back4 table table:first td:last').text().split('(')[1].split(',')[0]
+	team_cur.tname	= $('td.back4 table table table:first td:last').text().split(' (')[0]
+	team_cur.ttown	= $('td.back4 table table table:first td:last').text().split('(')[1].split(',')[0]
 	team_cur.ttask	= (rtasks[task_name]!=undefined ? rtasks[task_name] : task_name)
 	team_cur.twage	= 0
 	team_cur.tvalue	= 0
@@ -905,12 +905,11 @@ function GetInfoPageTm(){
 	team_cur.tplace	= ''
 	team_cur.sname	= $('table.layer1 td.l4:eq(0)').text().split(': ',2)[1]
 	team_cur.ssize	= parseInt($('table.layer1 td.l4:eq(2)').text().split(': ',2)[1])
-	team_cur.ncode	= parseInt(UrlValue('j',$('td.back4 table:first table td:eq(1) a').attr('href')))
-	team_cur.nname	= $('td.back4 table:first table td:eq(3) font').text().split(', ')[1].split(')')[0]
+	team_cur.ncode	= parseInt(UrlValue('j',$('td.back4 table table:first table:first td:eq(1) a').attr('href')))
+	team_cur.nname	= $('td.back4 table table:first table td:eq(3) font').text().split(', ')[1].split(')')[0]
 	team_cur.did	= ''
-	team_cur.mid	= UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href'))
-	team_cur.mname	= $('td.back4 table table:eq(1) table:first td:first span').text()
-	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 table table:eq(1) table:first td:first a').attr('href')))
+	team_cur.mname	= $('td.back4 td.l3:first span').text()
+	team_cur.mid	= parseInt(UrlValue('id',$('td.back4 td.l3:first a').attr('href')))
 	team_cur.pnum	= 0
 	team_cur.scbud	= parseInt($('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0])
 	team_cur.screit	= (rschools[screit_name]!=undefined ? rschools[screit_name] : screit_name)
