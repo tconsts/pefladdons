@@ -85,6 +85,10 @@ function SetCFF(){
 if(typeof(jQuery)!='undefined'){ $().ready(function() {
 //	delete localStorage.debug
 
+	if (UrlValue("p")=="squad4") {
+		if(clubs!=undefined) for(i=0;i<3;i++) if(clubs[i]!=undefined) localStorage['sostavurl'+clubs[i].id] = clubs[i].gurl;
+	}
+
 	if($('td.topmenu:first table td:eq(1) a:contains("Вход")').length>0) return false
 	setLogo()
 	getIDnum()
