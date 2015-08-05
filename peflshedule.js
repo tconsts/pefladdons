@@ -150,7 +150,7 @@ function showMatches(){
 $().ready(function() {
 
 	if(parseInt(localStorage.myteamid)==parseInt(UrlValue('j'))) showMatches()
-
+/*
 	var imgecup = '<img height=12 src="system/img/g/e.gif">'
 	var imgcup  = '<img height=12 src="plugins/s/topcontributors/img/cup-1.gif">'
 	var imgint  = '<img src="system/img/g/int.gif">'
@@ -266,4 +266,5 @@ $().ready(function() {
 		})
 		$('td.now').css("border", "1px solid green");//#a3de8f
 	}
+*/
 })
