@@ -31,7 +31,7 @@ function getIDnum(){
 			idcur = parseInt($('#debugid').text())
 			if(!isNaN(idcur)){
 				localStorage.gday = datecur5+'.'+idcur
-				$('td.topmenu:first table td:last').append('&nbsp;('+(idcur+1)+'й ИД)')
+				//$('td.topmenu:first table td:last').append('&nbsp;('+(idcur+1)+'й ИД)')
 			}
 			$('div#debugid').remove()
 		})
