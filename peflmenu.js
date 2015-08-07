@@ -36,7 +36,7 @@ function getIDnum(){
 			$('div#debugid').remove()
 		})
 	}else{
-		if(!isNaN(idcur)) $('td.topmenu:first table td:last').append('&nbsp;('+(idcur+1)+'й ИД)')
+		//if(!isNaN(idcur)) $('td.topmenu:first table td:last').append('&nbsp;('+(idcur+1)+'й ИД)')
 	}
 }
 
