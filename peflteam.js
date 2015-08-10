@@ -189,7 +189,7 @@ function modifyPage(){
 	var bbig = false
 	if($('table:eq(0)').attr('width')>=1000) {
 		bbig = true
-		$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200)
+		$('table.border:eq(3)').attr('width',$('table:eq(0)').attr('width')-200)
 	}
 	// Draw right panel and fill data
 	var preparedhtml = ''
