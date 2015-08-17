@@ -1,32 +1,11 @@
 // ==UserScript==
-// @name           peflshedule
+// @name           peflschedule
 // @namespace      pefl
-// @description    modification shedule page
-// @include        http://www.pefl.ru/plug.php?p=refl&t=last&j=*
-// @include        http://pefl.ru/plug.php?p=refl&t=last&j=*
-// @include        http://www.pefl.net/plug.php?p=refl&t=last&j=*
-// @include        http://pefl.net/plug.php?p=refl&t=last&j=*
-// @include        http://www.pefl.org/plug.php?p=refl&t=last&j=*
-// @include        http://pefl.org/plug.php?p=refl&t=last&j=*
-// @version        1.2
+// @description    modification schedule page
+// @include        http://*pefl.*/plug.php?p=refl&t=last&j=*
+// @version        1.3
 
 // ==/UserScript==
-
-deb = (localStorage.debug == '1' ? true : false)
-var debnum = 1
-
-function debug(text) {
-	if(deb) {
-		if(debnum==1) $('body').append('<div id=debug>DEBUG INFROMATION<hr></div>')
-		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
-		debnum++;
-	}
-}
-
-var int = 	'11.08.15!25.08.15!08.09.15!22.09.15!06.10.15!20.10.15!03.11.15!17.11.15!01.12.15!15.12.15!29.12.15!19.01.16!02.02.16!16.02.16!01.03.16!15.03.16!29.03.16!';
-var ecup = 	'05.08.15!12.08.15!17.08.15!28.08.15!04.09.15!11.09.15!16.09.15!23.09.15!02.10.15!12.10.15!19.10.15!02.11.15!09.11.15!16.11.15!23.11.15!07.12.15!14.12.15!28.12.15!18.01.16!25.01.16!';
-var cup = 	'31.07.15!24.08.15!02.09.15!28.09.15!07.10.15!26.10.15!30.11.15!21.12.15!13.01.16!';
-var excl = 	'01.01.16!04.01.16!06.01.16!08.01.16!';
 
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
@@ -35,35 +14,6 @@ function UrlValue(key,url){
 	}
 	return false
 }
-
-function filter(criteria){
-//	if(deb) $('td.back4 table:first table').attr('border',1)
-	$('td.back4 table:first table tr:not(#trnow)').each(function(){
-		var txt = $(this).html()
-		debug('filter:1')
-		if (txt.indexOf('Матч')==-1){// && txt.indexOf('now')==-1){
-/**/	    if(txt.indexOf(criteria)==-1){
-		        $(this).hide();
-				debug('filter:fadeOut:')
-		    } else {
-		    	$(this).show();
-				debug('filter:fadeIn:')
-		    }
-/**/
-		}
-	})
-}
-function CheckInt(ddn, fl){
-	var strn = ''
-	strn += (ddn.getDate()<10 ? '0' : '' ) + ddn.getDate() + '.'
-	strn += (ddn.getMonth()<9 ? '0' : '') + (ddn.getMonth()+1) + '.'
-	strn += (ddn.getFullYear()-2000)
-	var htmlnew = '<td rowspan=2 width=1% bgcolor=C9F8B7><table width=100% cellpadding="0" cellspacing="0"><tr><td> </td></tr><tr bgcolor=A3DE8F><td height=20>'+fl+'</td></tr><tr><td> </td></tr></table></td>'
-	if(int.indexOf(strn)!=-1) return htmlnew
-	return ''
-}
-
-var matches = []
 function returnDate(tmsp){
 	if(tmsp!=undefined){
 		var dt = new Date(tmsp*100000)
@@ -77,14 +27,12 @@ function returnDate(tmsp){
 function showMatches(){
 	if(String(localStorage.matches2)!='undefined') matches = JSON.parse(localStorage.matches2)
 	matches.sort(function(a,b){if(a!=null&&b!=null) return (((a.dt==undefined?(a.hnm!=undefined&&a.anm!=undefined?0:100000000):a.dt) + a.id*0.0000001) - ((b.dt==undefined?(b.hnm!=undefined&&b.anm!=undefined?0:100000000):b.dt) + b.id*0.0000001))})
-	debug('showMatches()')
 	var supic = '<img src="system/img/g/tick.gif" height=12></img>'
 	var myteamid = parseInt(localStorage.myteamid)
 	var myteamname = ''
 	$('td.back4 table:first table:eq(1) tr:eq(1) td:eq(0) a').each(function(){
 		if(parseInt(UrlValue('j',$(this).attr('href'))) == myteamid) myteamname = $(this).text()
 	})
-	//for(p in matches)
 
 	$('td.back4 table:first table:eq(1) tr[bgcolor]').addClass('back3').removeAttr('bgcolor')
 	$('td.back4 table:first table:eq(1) tr').each(function(val){
@@ -123,7 +71,6 @@ function showMatches(){
 	for(i in matches){
 		mch = matches[i]
 		if(mch!=null && mch!=undefined && (mch.anm==undefined || mch.hnm==undefined)){
-			debug(mch.id+':'+mch.hnm+' '+mch.res+' '+ mch.anm)
 			var html = '<tr'+(num%2?' class="back3"':'')+'>'
 			html += '<td>'+(mch.su==undefined ? supic : '')+'</td>'
 			html += '<td nowrap>'+returnDate(mch.dt)+(mch.n==1 ? ' N' : '')+'</td>'
@@ -147,124 +94,7 @@ function showMatches(){
 	}
 }
 
+var matches = [];
 $().ready(function() {
-
-	if(parseInt(localStorage.myteamid)==parseInt(UrlValue('j'))) showMatches()
-/*
-	var imgecup = '<img height=12 src="system/img/g/e.gif">'
-	var imgcup  = '<img height=12 src="plugins/s/topcontributors/img/cup-1.gif">'
-	var imgint  = '<img src="system/img/g/int.gif">'
-	var competitions=[];
-	var i=0;
-	$('td.back4 td:contains("Предстоящие игры") table tr:not(:contains("Матч")) td:last-child').contents().each(function(index,value){
-	    if ($.inArray(value.textContent, competitions)<0){
-	        competitions[i++]=value.textContent
-	    }
-	})
-	
-	var filtertext = '<br><b>Фильтр:</b> '
-	
-	for (var i in competitions){
-		filtertext += ' | <a href="#" onclick="filter(\''+competitions[i]+'\'); return false;">'+competitions[i]+'</a>'
-	}
-	filtertext += ' | <t/><a href="#" onclick="$(\'td.back4 tr\').fadeIn(); return false;">Все</a><t/>'
-	$('td.back4').prepend(filtertext)
-	
-	var day = ['вск','пнд','втр','срд','чтв','птн','суб'] 
-	var prevdt = ''
-	var today = new Date()
-	var shownow = 0
-	$('td.back4 td').each(function(i,val){
-		if ($(val).text().search(/[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]/) == 0) {
-			$(val).parent().attr('bgcolor','#a3de8f')
-			var dt = $(val).text().split('.')
-			dt[0] = parseInt((dt[0][0]==0? dt[0][1]:dt[0]))
-			dt[1] = parseInt((dt[1][0]==0? dt[1][1]:dt[1]))-1
-			dt[2] = parseInt((dt[2][0]==0? dt[2][1]:dt[2]))+2000
-
-
-			var curdt = new Date(dt[2],dt[1],dt[0])
-
-			if (curdt.getDate() == today.getDate() && curdt.getMonth() == today.getMonth()) shownow = 1;
-
-			if (prevdt!=''){
-				var p = (prevdt - curdt)/1000/60/60/24
-				var i=1
-				while ( i < p ){
-					var dd  = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
-					var d = day[dd.getDay()]
-					if (d=='пнд' || d=='срд' || d=='птн') {
-						var img = ''
-						var str = ''
-						str += (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
-						str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
-						str += (dd.getFullYear()-2000)
-						if(ecup.indexOf(str)!=-1)	img = imgecup
-						if(cup.indexOf(str)!=-1)	img = imgcup
-						if(excl.indexOf(str) == -1){
-				            var ddaten = new Date(dd.getTime() + 60*60*24*1000);
-							$(val).parent().prev().append(CheckInt(ddaten,imgint))
-
-							str += '&nbsp;' + d
-							var tt = '<tr class="freeId" height=25>'
-							tt += '<td></td>'
-							tt += '<td>'+str.fontcolor('#888A85')+'</td>'
-							tt += '<td colspan=2></td>'
-							tt += '<td>'+img+'</td>'
-							tt += '</tr>'
-							$(val).parent().before(tt)
-						}
-						
-					}
-					i++
-				}
-			}
-            var daten = new Date(curdt.getTime() + 60*60*24*1000);
-			$(val).parent().prev().append(CheckInt(daten,imgint))
-
-			var newtext = $(val).text()+'&nbsp;' + day[curdt.getDay()]
-			if (shownow==1) $(val).css("border", "1px solid green");
-			$(val).html(newtext)
-			prevdt = curdt
-		}
-	})
-	if (shownow == 0) {
-		var td = (today.getDate()<10 ? '0' : '' ) + today.getDate() + '.'
-		td += (today.getMonth()<9 ? '0' : '') + (today.getMonth()+1) + '.'
-		td += (today.getFullYear()-2000) + '&nbsp;' + day[today.getDay()]
-		$('td.back4 td:contains("Предстоящие игры") table:first').each(function(){
-			var p = (prevdt - today)/1000/60/60/24
-			var i=1
-			var img = ''
-			while ( i < p ){
-				var dd = new Date(prevdt - i*60*60*24*1000 + 12*60*60*1000)
-				var d = day[dd.getDay()]
-				if (d=='пнд' || d=='срд' || d=='птн') {
-					var str = (dd.getDate()<10 ? '0' : '' ) + dd.getDate() + '.'
-					str += (dd.getMonth()<9 ? '0' : '') + (dd.getMonth()+1) + '.'
-					str += (dd.getFullYear()-2000)
-					if(ecup.indexOf(str)!=-1)	img = imgecup
-					if(cup.indexOf(str)!=-1)	img = imgcup
-					if(excl.indexOf(str) == -1){
-			            var ddn = new Date(dd.getTime() + 60*60*24*1000);
-						var strn = ''
-						strn += (ddn.getDate()<10 ? '0' : '' ) + ddn.getDate() + '.'
-						strn += (ddn.getMonth()<9 ? '0' : '') + (ddn.getMonth()+1) + '.'
-						strn += (ddn.getFullYear()-2000)
-						//if(int.indexOf(strn)!=-1) strint = '<tr bgcolor=#a3de8f><td></td><td><i>'+'</i></td><td></td><td></td><td>'+imgint+' '+(strn.fontsize(1)).fontcolor('#888A85')+'</td></tr>'
-						str += '&nbsp;' + d
-						$(this).append('<tr><td></td><td height=25>'+str.fontcolor('#888A85')+'</td><td></td><td></td><td>'+img+'</td>'+CheckInt(ddn,imgint)+'</tr>')
-					}
-				}
-				i++
-			}
-			img = ''
-			str = td.split('&nbsp;')[0]
-			if(ecup.indexOf(str)!=-1)	img = imgecup
-			if(cup.indexOf(str)!=-1)	img = imgcup
-			$(this).append('<tr id="trnow"><td></td><td class="now" height=25>' + td.fontcolor('#888A85') + '</td><td></td><td></td><td>'+img+'</td>')
-		})
-		$('td.now').css("border", "1px solid green");//#a3de8f
-	}
-*/
+	if(parseInt(localStorage.myteamid)==parseInt(UrlValue('j'))) showMatches();
 })
