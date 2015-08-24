@@ -6,7 +6,7 @@
 // @include        http://pefl.*/*
 // @exclude        http://*pefl.*/profile.php
 // @exclude        http://*pefl.*/auth.php
-// @version        1.4
+// @version        1.5
 // @author         const
 // ==/UserScript==
 
