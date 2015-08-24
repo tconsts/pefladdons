@@ -466,7 +466,7 @@ function getPlayersInfo(){
 			$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append('<img src="system/img/gm/out.gif"></img>('+players[pnum].last+'\')')
 			//debug('getPlayersInfo:'+nameid+':m='+players.m)
 		}
-/**/
+/**
 		if(players[pnum]!=undefined && players[pnum].inj){
 			player.t = 1
 			var injmin = players[pnum].last
