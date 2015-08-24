@@ -69,7 +69,7 @@ if(scflag[5]==0 && url2.indexOf('p=refl&t=s&k=')!=-1){
 	newScriptDiv.src = source+'pefldivtable.js';
 	headID.appendChild(newScriptDiv);
 }
-//  6 ReitChamps: removed
+//  6 ReitChamps (removed)
 //  7 Shedule
 if(scflag[7]==0 && url2.indexOf('p=refl&t=last&j=')!=-1){
 	var newScriptShedule = document.createElement('script');
@@ -84,14 +84,8 @@ if(scflag[8]==0 && (url2.indexOf('p=fin&z=')!=-1 || url2.indexOf('p=rules&z=')!=
 	newScriptFin.src = source+'peflfinance.js';
 	headID.appendChild(newScriptFin);
 }
-//  9 SostavNaMatch: removed
-// 10 ReitSchool
-if(scflag[10]==0 && url2.indexOf('p=rating&t=s&n=')!=-1){
-	var newScriptReitSch = document.createElement('script');
-	newScriptReitSch.type = 'text/javascript';
-	newScriptReitSch.src = source+'peflreitschool.js';
-	headID.appendChild(newScriptReitSch);
-}
+//  9 SostavNaMatch (removed)
+// 10 ReitSchool (removed)
 // 11 NN (removed)
 // 12 History
 if(scflag[12]==0 && url1=='hist.php'){
