@@ -3,7 +3,7 @@
 // @namespace      pefl
 // @description    calendar modification
 // @include        http://*pefl.*/plug.php?p=calendar&*
-// @version        1.0
+// @encoding	   windows-1251
 // ==/UserScript==
 
 deb = (localStorage.debug == '1' ? true : false)
@@ -100,7 +100,7 @@ function getPageMatches(){
 
 	var count = 0
 	$('td.back3').each(function(){
-		// РµСЃС‚СЊ РёРіСЂРѕРІРѕР№ РґРµРЅСЊ!
+		// есть игровой день!
 		if($(this).find('img').length>0){
 			var date 	  = parseInt($(this).find('b:first').html())
 			var timestamp = parseInt(toTimestamp(checkNum(month)+'/'+checkNum(date)+'/'+year))/100000
@@ -109,7 +109,7 @@ function getPageMatches(){
 			else if($(this).find('img:first').attr('src') == 'system/img/g/int.gif') gdli.iday = true
 
 			if($(this).find('i').length>0){
-				// РµСЃС‚СЊ РјР°С‚С‡!!!
+				// есть матч!!!
 				//club
 				var place = ($(this).find('b a').length>0 ? 'a' : 'h')
 				gdli[place+'id'] = parseInt(UrlValue('j',$(this).find('a:first').attr('href')))
@@ -120,21 +120,21 @@ function getPageMatches(){
 				var weather = ($(this).find('img:eq(1)').attr('src')!=undefined ? parseInt(($(this).find('img:eq(1)').attr('src')).split('/w')[1].split('.')[0]) : false)
 				if(weather) gdli.w = weather
 
-				//РЅРµР№С‚СЂР°Р»СЊРЅРѕРµ РїРѕР»Рµ
-				if($(this).html().indexOf('РќРµР№С‚СЂ. РїРѕР»Рµ')!=-1) gdli.n = 1
+				//нейтральное поле
+				if($(this).html().indexOf('Нейтр. поле')!=-1) gdli.n = 1
 
-				//СЃСѓРґСЊСЏ
+				//судья
 				if($(this).find('b:contains("R")').length>0) {
 					gdli.r = $(this).html().split('<b>R</b>')[1].split('<')[0].trim()
 				}
 
 				var arr = $(this).html().split('<br>')
-				//СЃС‡РµС‚
+				//счет
 				if($(this).html().indexOf(':')!=-1 && $(this).html().indexOf('*:*')==-1){
 					for(h in arr) if(arr[h].indexOf(':')!=-1){
 						var res = arr[h].split('</')[0].trim()
 						if(place == 'h'){
-							// РЅР°РґРѕ РїРµСЂРµРІРµСЂРЅСѓС‚СЊ
+							// надо перевернуть
 							var re = /([0-9]+)\:([0-9]+)/;
 							res = res.replace(re, "$2:$1");
 						}
@@ -154,7 +154,7 @@ debug('getPageMatches:done')
 
 function getTypeMatch(mtype){
 	switch(mtype){
-		case 'РўРѕРІР°СЂРёС‰РµСЃРєРёРµ': return 't'
+		case 'Товарищеские': return 't'
 		default: return mtype
 	}
 }
@@ -202,7 +202,7 @@ function saveJSONlocalStorage(dataname,data){
 	switch(dataname){
 		default:
 			var data2 = []
-			debug('default РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ')
+			debug('default преобразования')
 			for(i in data) data2.push(data[i])
 	}
 	localStorage[dataname] = JSON.stringify(data2)

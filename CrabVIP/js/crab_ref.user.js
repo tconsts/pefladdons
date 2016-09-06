@@ -3,7 +3,9 @@
 // @namespace      pefl
 // @description    referee page modification
 // @include        http://*pefl.*/*&t=ref&*
+// @encoding	   windows-1251
 // ==/UserScript==
+
 
 var srt = 'id'
 var srtn = false
@@ -19,7 +21,7 @@ $().ready(function() {
 	$('table#t1 th:eq(4)').append(' (<a href="javascript:void(PrintTable(\'ycr\'))">#</a>)')
 	$('table#t1 th:eq(5)').html('<a href="javascript:void(PrintTable(\'rcn\'))">'+$('table#t1 th:eq(5)').html()+'</a>')
 	$('table#t1 th:eq(5)').append(' (<a href="javascript:void(PrintTable(\'rcr\'))">#</a>)')
-	$('table#t1 tr:eq(0)').append('<th><a href="javascript:void(PrintTable(\'acr\'))">Р¶Рє+РєРє*3</a> (<a href="javascript:void(PrintTable(\'acr\'))">#</a>)</th>')
+	$('table#t1 tr:eq(0)').append('<th><a href="javascript:void(PrintTable(\'acr\'))">жк+кк*3</a> (<a href="javascript:void(PrintTable(\'acr\'))">#</a>)</th>')
 
 	$('td.back4 table table tr:gt(0)').each(function(){
 		var id = 0
@@ -68,7 +70,7 @@ function SetCFF(){
 		tables.push($(val).attr('id'));
 	})
 	var text = '</script><script type="text/javascript" src="js/fcode2.js"></script>';
-	text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">РєРѕРґ РґР»СЏ С„РѕСЂСѓРјР°</a></div>';
+	text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">код для форума</a></div>';
 	$('td.back4 table table:first').before(text);
 }
 
@@ -87,13 +89,13 @@ function PrintTable(sorting){
 	$('table#t1 tr:gt(0):odd').attr('bgcolor','#a3de8f')
 }
 
-function sSort(i, ii) { //РѕС‚ Р±РѕР»СЊС€РµРіРѕ Рє РјРµРЅСЊС€РµРјСѓ
+function sSort(i, ii) { //от большего к меньшему
     if 		(i[srt] < ii[srt])	return  1
     else if	(i[srt] > ii[srt])	return -1
     else						return  0
 }
 
-function sSortR(i, ii) { //СЂРµРІРµСЂС‚, РѕС‚ РјРµРЅСЊС€РµРіРѕ Рє Р±РѕР»СЊС€РµРјСѓ
+function sSortR(i, ii) { //реверт, от меньшего к большему
     if 		(i[srt] > ii[srt])	return  1
     else if	(i[srt] < ii[srt])	return -1
     else						return  0

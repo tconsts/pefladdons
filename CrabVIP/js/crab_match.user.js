@@ -4,9 +4,10 @@
 // @description    match page modification
 // @include        http://*pefl.*/*&t=if&*
 // @include        http://*pefl.*/*&t=code&*
+// @encoding	   windows-1251
 // ==/UserScript==
 
-// 10Р№ СЃРµР·РѕРЅ, РјР°С‚С‡ СЃ РєРѕС‚РѕСЂРіРѕ СЃС‡РёС‚Р°РµС‚СЃСЏ СЃС‹РіСЂР°РЅРЅРѕСЃС‚СЊ Рё РЎРІРЈСЃ: http://www.pefl.ru/plug.php?p=refl&t=if&j=602078&z=a72e875256e6b57eb52e95dbd2d1b152
+// 10й сезон, матч с которго считается сыгранность и СвУс: http://www.pefl.ru/plug.php?p=refl&t=if&j=602078&z=a72e875256e6b57eb52e95dbd2d1b152
 
 deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
@@ -38,15 +39,15 @@ var sshort = false
 
 $().ready(function() {
 	if(deb) $('body').append('<div id=debug></div>')
-//	$('td.back4 table:first').attr('border','5')	// СЂР°СЃСЃС‚Р°РЅРѕРІРєР°
-//	$('td.back4 table:eq(1)').attr('border','5')	// РІСЃРµ РІРјРµСЃС‚Рµ РєСЂРѕРјРµ СЂР°СЃСЃС‚Р°РЅРѕРІРєРё
-//	$('td.back4 table:eq(2)').attr('border','5')	// РѕС‚С‡РµС‚
-//	$('td.back4 table:eq(3)').attr('border','5')	// Р·Р°РіРѕР»РѕРІРѕРє РјР°С‚С‡Р°
-//	$('td.back4 table:eq(4)').attr('border','5')	// РіРѕР»С‹\Р»РѕРіРѕ
-//	$('td.back4 table:eq(5)').attr('border','5')	// СЃС‚Р°С‚Р°
-//	$('td.back4 table:eq(6)').attr('border','5')	// РѕС†РµРЅРєРё
+//	$('td.back4 table:first').attr('border','5')	// расстановка
+//	$('td.back4 table:eq(1)').attr('border','5')	// все вместе кроме расстановки
+//	$('td.back4 table:eq(2)').attr('border','5')	// отчет
+//	$('td.back4 table:eq(3)').attr('border','5')	// заголовок матча
+//	$('td.back4 table:eq(4)').attr('border','5')	// голы\лого
+//	$('td.back4 table:eq(5)').attr('border','5')	// стата
+//	$('td.back4 table:eq(6)').attr('border','5')	// оценки
 
-	//РґРѕСЂРёСЃРѕРІС‹РІР°РµРј РѕС†РµРЅРєРё РІ РєРѕРґ РґР»СЏ С„РѕСЂСѓРјР°(t=code) Рё СЂРµРґР°РєС‚РёСЂСѓРµРј СЃС‚СЂР°РЅРёС†Сѓ РјР°С‚С‡Р° (t=if)
+	//дорисовываем оценки в код для форума(t=code) и редактируем страницу матча (t=if)
 	if(UrlValue('t') == 'code') {
 		var res = sessionStorage['match'+mid]
 		if(res != undefined){
@@ -56,39 +57,39 @@ $().ready(function() {
 			)
 		}
 	}else{
-		// РґР°РµРј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЃРєСЂС‹С‚СЊ РѕС‚С‡РµС‚
-		$('td.back4 table:eq(2)').before('<br><a id="a2" href="javascript:void(ShowTable(2))">&ndash;</a> <b>РћС‚С‡РµС‚</b><br>')
-		// СЃРѕР±РёСЂР°РµРј РёРЅС„Рѕ РјР°С‚С‡Р°
+		// даем возможность скрыть отчет
+		$('td.back4 table:eq(2)').before('<br><a id="a2" href="javascript:void(ShowTable(2))">&ndash;</a> <b>Отчет</b><br>')
+		// собираем инфо матча
 		getMatchInfo()
 		getPlayersInfo()
 
-		//Р±РµСЂРµРј РґР°РЅРЅС‹Рµ
+		//берем данные
 		getJSONlocalStorage('matches2',matches)
 		getJSONlocalStorage('matchespl2',matchespl)
 
-		// РїСЂРѕРІРµСЂСЏРµРј Рё РµСЃР»Рё РЅР°РґРѕ РјРѕРґРёС„РёС†РёСЂСѓРµРј Рё СЃРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ
+		// проверяем и если надо модифицируем и сохраняем данные
 		checkSave(matchespl)
 
-		// РёСЃРїСЂР°РІР»СЏРµРј С‚Р°Р±Р»РёС†Сѓ РѕС†РµРЅРѕРє
+		// исправляем таблицу оценок
 		modifyMarksTable()
 
-		// СЃРѕС…СЂР°РЅСЏРµРј РєРѕРґ РґР»СЏ С„РѕСЂСѓРјР°
+		// сохраняем код для форума
 		SaveCodeForMatch()
 	}
 
-	//РґРѕР±Р°РІР»СЏРµРј РєРѕСЂРѕС‚РєРёР№ РѕС‚С‡РµС‚ Рѕ СЃРјРµРЅР°С… С‚Р°РєС‚РёРє, РёР·РјРµРЅРµРЅРёР№ СЃС‡РµС‚Р° Рё СЂР°СЃСЃС‚Р°РЅРѕРІРѕРє
-	$('a#a2').before('<a href="javascript:void(ShowSShort())" id="sshort">+</a> <b>РЎРјРµРЅС‹ С‚Р°РєС‚РёРє Рё СЃС‡РµС‚Р°</b><div id="sshort" style="display: none;"><center><hr>'+sshort+'<hr></center></div><br>')
+	//добавляем короткий отчет о сменах тактик, изменений счета и расстановок
+	$('a#a2').before('<a href="javascript:void(ShowSShort())" id="sshort">+</a> <b>Смены тактик и счета</b><div id="sshort" style="display: none;"><center><hr>'+sshort+'<hr></center></div><br>')
 
 }, false);
 
 function checkSave(){
 	debug('checkSave()')
-	// РµСЃС‚СЊ matcheshpl
+	// есть matcheshpl
 	var savematch = false
 	
 //	if(deb) for(i in matchesplh) debug('checkSave(h):'+i+':'+matchesplh[i].m)
 //	if(deb) for(i in matchespla) debug('checkSave(a):'+i+':'+matchespla[i].m)
-//	if(deb) for(i in matchespl['Р .РўР°СЂР°Р»Р°']) debug('checkSave:matchespl[Р .РўР°СЂР°Р»Р°]:'+i)
+//	if(deb) for(i in matchespl['Р.Тарала']) debug('checkSave:matchespl[Р.Тарала]:'+i)
 
 	switch(parseInt(myteamid)){
 		case match1.hid:
@@ -128,7 +129,7 @@ function checkSave(){
 				}
 			}
 	}
-	if(deb) for(i in matchespl['Р .РўР°СЂР°Р»Р°']) debug('checkSave:matchespl[Р .РўР°СЂР°Р»Р°]:'+i)
+	if(deb) for(i in matchespl['Р.Тарала']) debug('checkSave:matchespl[Р.Тарала]:'+i)
 	debug('checkSave:savematch='+savematch)
 	if(savematch) {
 		if(matches[match1.id]==undefined){
@@ -193,11 +194,11 @@ function getMatchInfo(){
 		match1.anm	= aname
 		match1.amn	= $('td.back4 table:eq(3) tr:eq(1) td:eq(2)').text()
 	}
-	if($('td.back4 b:contains(РќРµР№С‚СЂР°Р»СЊРЅРѕРµ РїРѕР»Рµ.)').html()!=undefined) match1.n	= '1'
+	if($('td.back4 b:contains(Нейтральное поле.)').html()!=undefined) match1.n	= '1'
 	if(ycard!=0) match1.yc = ycard
 	if(rcard!=0) match1.rc = rcard
 
-	// РїСЂРѕРІРµСЂСЏРј РЅР° СѓСЃС‚Р°РЅРѕРІРєРё Рё РїРѕРїРѕР»РЅСЏРµРј РєСЂР°С‚РєРёР№ РѕС‚С‡РµС‚
+	// проверям на установки и пополняем краткий отчет
 	var otcharr = []
 	$('td.back4 table:eq(2) center p').each(function(){
 		var fulltext = $(this).html()
@@ -230,9 +231,9 @@ function getMatchInfo(){
 	var chpos = 0
 	for(i in otcharr) {
 
-		// РІС‹СЏСЃРЅСЏРµРј СѓСЃС‚Р°РЅРѕРІРєСѓ
-		if(String(otcharr[i]).indexOf('РїСЂРµРґРµР»СЊРЅРѕ РЅР°СЃС‚СЂРѕРµРЅРЅС‹РјРё') != -1)	match1.ust = 'p'
-		else if(String(otcharr[i]).indexOf('Р°РєС‚РёРІРЅРѕ РЅР°С‡РёРЅР°') != -1) 	match1.ust = 'a'
+		// выясняем установку
+		if(String(otcharr[i]).indexOf('предельно настроенными') != -1)	match1.ust = 'p'
+		else if(String(otcharr[i]).indexOf('активно начина') != -1) 	match1.ust = 'a'
 		if(ust && match1.ust!=undefined){
 			ust = false
 			if(String(otcharr[i]).indexOf(hname) != -1)		 match1.ust += '.h'
@@ -240,11 +241,11 @@ function getMatchInfo(){
 			ustanovka = String(otcharr[i]).split('<br>')[1]
 			debug('getMatchInfo:ustanovka='+ustanovka)
 		}
-		// РёР·РјРµРЅРµРЅРёРµ РІ СЃС‡РµС‚Рµ
-		if(String(otcharr[i]).indexOf('РЎР§Р•Рў') != -1){
+		// изменение в счете
+		if(String(otcharr[i]).indexOf('СЧЕТ') != -1){
 			sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
 		}
-		//СЃРјРµРЅР° СЂР°СЃСЃС‚Р°РЅРѕРІРєРё
+		//смена расстановки
 		if(String(otcharr[i]).indexOf('(*)') != -1){
 			sshort += '<br><b>'+otcharr[i].replace('<br>','</b><br>')+'<br>'
 
@@ -252,7 +253,7 @@ function getMatchInfo(){
 			var curmin = parseInt(otcharr[i])
 			var tbl = otcharr[i].split('showNewFieldWnd(')[3].split('\'')[1]
 			$('td.back4').append('<div id=posdebug'+i+(deb ? '' : ' style="display: none;"')+'></div>')
-			$('div#posdebug'+i).html(curmin+' РјРёРЅ:'+tbl)
+			$('div#posdebug'+i).html(curmin+' мин:'+tbl)
 			var correct = ($('div#posdebug'+i+' table tr:first td').length>3 ? 33 : 0)
 			$('div#posdebug'+i+' table td').each(function(i,val){
 				var pos = i+correct
@@ -275,7 +276,7 @@ function getMatchInfo(){
 			if(!deb) $('div#posdebug'+i).remove()
 			
 		}
-		// РѕР±С‹С‡РЅР°СЏ Р·Р°РјРµРЅР°
+		// обычная замена
 		if(String(otcharr[i]).indexOf('(*)') == -1 && String(otcharr[i]).indexOf('on.gif') != -1){
 			var curmin = parseInt(otcharr[i])
 			var otiarr = otcharr[i].split('"p')
@@ -295,7 +296,7 @@ function getMatchInfo(){
 				plon = pname[2]
 				ploff = pname[1]
 			}
-			debug('Р—Р°РјРµРЅР°:'+curmin+' РјРёРЅ:pl='+pl+':pnum='+pnum+': СѓС€РµР» '+ploff+' Р·Р°С€РµР» '+plon)
+			debug('Замена:'+curmin+' мин:pl='+pl+':pnum='+pnum+': ушел '+ploff+' зашел '+plon)
 			var pos = positions[ploff].ps
 			var curps = String(positions[ploff].ps)
 			if(curps.indexOf(':')!=-1){
@@ -306,12 +307,12 @@ function getMatchInfo(){
 		}
 	}
 
-	// РїРѕР»СѓС‡Р°РµРј СЂРµС„РµСЂРё
+	// получаем рефери
 	var otch = $('td.back4 table:eq(2)').html()
-	if(otch.indexOf('Р“Р»Р°РІРЅС‹Р№ Р°СЂР±РёС‚СЂ:') !=-1) match1.r = (otch.split('Р“Р»Р°РІРЅС‹Р№ Р°СЂР±РёС‚СЂ:')[1].split(' (')[0]).trim()
+	if(otch.indexOf('Главный арбитр:') !=-1) match1.r = (otch.split('Главный арбитр:')[1].split(' (')[0]).trim()
 
-	// РїРѕР»СѓС‡Р°РµРј С„РёРЅР°Р»СЊРЅС‹Р№ СЃС‡РµС‚(Р±С‹Р»Рё Р»Рё РїРµРЅР°Р»СЊС‚Рё)
-	var finschetarr = $('td.back4 table:eq(2) center').html().split('РЎР§Р•Рў ')
+	// получаем финальный счет(были ли пенальти)
+	var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
 	var fres = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
 	if(fres!=match1.res && fres.indexOf(':')!=-1) match1.pen = fres
 	debug('getMatchInfo:fres='+fres+':match1.res='+match1.res+':match1.pen='+match1.pen)
@@ -321,7 +322,7 @@ function getMatchInfo(){
 
 function SaveCodeForMatch(){
 	debug('SaveCodeForMatch()')
-	var finschet = (match1.pen!=undefined ? ' [center]РџРѕ РїРµРЅР°Р»СЊС‚Рё [b][color=red]'+ match1.pen + '[/color][/b][/center]' : '')
+	var finschet = (match1.pen!=undefined ? ' [center]По пенальти [b][color=red]'+ match1.pen + '[/color][/b][/center]' : '')
 	sessionStorage['match'+mid] = finschet + $('td.back4 table:eq(6)')
 //	var x = finschet + $('td.back4 table:eq(6)')
 		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
@@ -338,9 +339,9 @@ function SaveCodeForMatch(){
 		.replace(/font/g,'color')
 		.replace(/\</g,'[')
 		.replace(/\>/g,']')
-		.replace('[img]system/img/refl/krest.gif[/img width=10]','[color=red][b]Рў[/b][/color]')
+		.replace('[img]system/img/refl/krest.gif[/img width=10]','[color=red][b]Т[/b][/color]')
 		+ '[img]system/img/w' + (match1.w==undefined ? 0 : match1.w) + '.png[/img]' 
-		+ (match1.r!=undefined ? ' [b]Р“Р»Р°РІРЅС‹Р№ Р°СЂР±РёС‚СЂ:[/b] ' + match1.r + '.' : '')
+		+ (match1.r!=undefined ? ' [b]Главный арбитр:[/b] ' + match1.r + '.' : '')
 		+ (ustanovka ? '<br>'+ustanovka : '')
 }
 
@@ -349,7 +350,7 @@ function getJSONlocalStorage(dataname,data){
 		var data2 = JSON.parse(localStorage[dataname]);
 		switch(dataname){
 			case 'matchespl2': 
-				//if(deb) for(i in data2['Р .РўР°СЂР°Р»Р°']) debug('getJSONlocalStorage:data2[Р .РўР°СЂР°Р»Р°]:'+data2['Р .РўР°СЂР°Р»Р°'][i].id)
+				//if(deb) for(i in data2['Р.Тарала']) debug('getJSONlocalStorage:data2[Р.Тарала]:'+data2['Р.Тарала'][i].id)
 				for(k in data2){
 					data[k] = []
 					for(l in data2[k]){
@@ -357,7 +358,7 @@ function getJSONlocalStorage(dataname,data){
 						else data[k][l]= data2[k][l]
 					}
 				}
-				//if(deb) for(i in data['Р .РўР°СЂР°Р»Р°']) debug('getJSONlocalStorage:data[Р .РўР°СЂР°Р»Р°]:'+data['Р .РўР°СЂР°Р»Р°'][i].id)
+				//if(deb) for(i in data['Р.Тарала']) debug('getJSONlocalStorage:data[Р.Тарала]:'+data['Р.Тарала'][i].id)
 				break
 			default:
 				for(k in data2) {
@@ -444,7 +445,7 @@ function getPlayersInfo(){
 			if(minutes!=mt) player.m = minutes
 			player.mr = $(val).next().next().text().trim()
 			//debug('getPlayersInfo:'+nameid+':mark='+player.mr)
-			if($(val).find('b:contains("(Рє)")').length>0)	player.cp = 1
+			if($(val).find('b:contains("(к)")').length>0)	player.cp = 1
 //			if(deb && player.cp!=undefined) debug('getPlayersInfo:'+nameid+':cp='+player.cp)
 			if($(val).find('font').length>0)	player.im = 1
 //			if(deb && player.im!=undefined) debug('getPlayersInfo:'+nameid+':im='+player.im)
@@ -452,7 +453,7 @@ function getPlayersInfo(){
 //			if(deb && player.cr!=undefined) debug('getPlayersInfo:'+nameid+':cr='+player.cr)
 			if(parseInt($(val).prev().html())>11) player['in'] = 1
 			//if(deb && player.in!=undefined) debug('getPlayersInfo:'+nameid+':in='+player.in)
-			//РїРѕСЃС‡РёС‚Р°РµРј РіРѕР»С‹
+			//посчитаем голы
 			var goals = 0
 			var td = (pnum<=18 ? 1 : 2)
 			var goalsarr = $('td.back4 table:eq(4) td:eq('+td+')').html().split('br')
@@ -475,7 +476,7 @@ function getPlayersInfo(){
 			if($('td.back4 table:eq(6) td:contains('+nameid+')').next().find('img[src*=system/img/gm/out.gif]').length>0){
 				$('td.back4 table:eq(6) td:contains('+nameid+')').next().find('img[src*=system/img/gm/out.gif]').remove().end().prepend('<font color=red><b>T</b></font>')
 			}else{
-//				$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append(' <font color=red><b>Рў</b></font>('+players[pnum].last+'\')')
+//				$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append(' <font color=red><b>Т</b></font>('+players[pnum].last+'\')')
 				$('td.back4 table:eq(6) td:contains('+nameid+')').next().attr('align','right').append(' <img src="system/img/refl/krest.gif" width=10></img>('+players[pnum].last+'\')')
 			}
 		}
@@ -488,7 +489,7 @@ function getPlayersInfo(){
 			var cname = $(this).text()
 			if(searchname.indexOf(':'+cname+':')==-1) searchname += cname+':'
 		})
-/**/    // СЃРѕС…СЂР°РЅСЏРµРј РёР»Рё РІ РіРѕСЃС‚РµРІРѕР№(a) РёР»Рё РґРѕРјР°С€РЅРёР№(h) СЃРїРёСЃРѕРє
+/**/    // сохраняем или в гостевой(a) или домашний(h) список
 		if(player.mr!=undefined){
 			if(i%2==1){
 				if(matchespla[nameid]!=undefined){

@@ -4,12 +4,12 @@
 // @description    modification player page and school boys
 // @include        http://*pefl.*/plug.php?p=refl&t=p*
 // @include        http://*pefl.*/plug.php?p=refl&t=yp*
+// @require			crab_funcs_db.js
+// @require			crab_funcs_std.js
+// @encoding	   windows-1251
 // ==/UserScript==
 /**/
 
-deb = (localStorage.debug == '1' ? true : false)
-
-var debnum = 0
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var db = false
 var positions = []
@@ -17,19 +17,17 @@ var list = {
 	positions: 'id,filter,name,num,koff'
 }
 function printStrench(){
-	debug('printStrench()')
 	if(positions.length==0) return false
 	var poses = []
 	for(i in positions){
 		for(j in positions[i].pls){
 			if(positions[i].pls[j].id0){
 //				var srt = positions[i].pls[j].srt
-				var srt = (positions[i].pls[j].srt!=undefined ? positions[i].pls[j].srt :positions[i].pls[j]['!srt'])
+				var srt = (positions[i].pls[j].srt!=undefined ? positions[i].pls[j].srt : positions[i].pls[j]['!srt'])
 				var plx = {}
 				plx.name = positions[i].name
 				plx.srt = srt + (positions[i].pls[j].posf ? 1000 : 0) + (positions[i].pls[j].posfempty ? -2000 : 0)
 				plx.strench = srt
-				debug('printStrench:name='+plx.name+':srt='+plx.srt+':strench='+plx.strench)
 				if(!isNaN(plx.srt)) poses.push(plx)
 			}
 		}
@@ -53,7 +51,7 @@ function printStrench(){
 	$('div#str').html(txt)
 }
 
-function sSrt(i, ii) { // РїРѕ СѓР±С‹РІР°РЅРёСЋ
+function sSrt(i, ii) { // по убыванию
 	var s = (i.srt!=undefined ? 'srt' : '!srt')
     if 		(i[s] < ii[s])	return  1
     else if	(i[s] > ii[s])	return -1
@@ -61,7 +59,6 @@ function sSrt(i, ii) { // РїРѕ СѓР±С‹РІР°РЅРёСЋ
 }
 
 function GetData(dataname){
-	debug(dataname+':GetData')
 	var needsave = false
 	var data = []
 	var head = list[dataname].split(',')
@@ -122,18 +119,14 @@ function countPosition(posnum){
 		pl.posf = filterPosition(players[j].position, ps.filter)
 		if(ps.filter=='') pl.posfempty = true
 		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined ? '!srt' : ''))
-//		debug('countPosition:s='+s+':pl[s]='+pl[s])
 		if(s!='' && pl[s]!=undefined) pl[s] = (ps.strmax==0 ? 0 : (countStrength(j,ps.koff)/ps.strmax)*100)
-//		debug('countPosition:filter='+ps.filter+':strmax='+ps.strmax+':!srt='+pl['!srt']+'%:name='+players[j].secondname)
 
 		pls.push(pl)
-//		if(i==positions.length-1) debug('countPosition:'+pl.id+':sostav='+pl.sostav+':str='+pl.srt)
 	}
 	positions[posnum].pls = pls.sort(sSrt)
-//	debug('countPosition:ps.strmax('+posnum+')='+ps.strmax)
 }
 
-function sSrt(i, ii) { // РїРѕ СѓР±С‹РІР°РЅРёСЋ
+function sSrt(i, ii) { // по убыванию
 	var s = (i.srt!=undefined ? 'srt' : '!srt')
     if 		(i[s] < ii[s])	return  1
     else if	(i[s] > ii[s])	return -1
@@ -151,19 +144,16 @@ function checkKoff(kf0){
 			}
 		}
 		if(custom){
-			debug('checkKoff:kf0='+res+'(add custom parametr)')
 			skillnames[res] = {}
 			skillnames[res].rshort = res
-			skillnames[res].rlong = 'Custom РїР°СЂР°РјРµС‚СЂ'
+			skillnames[res].rlong = 'Custom параметр'
 			skillnames[res].type = 'custom'
 		}
 	}
-//	debug('checkKoff:kf0='+kf0+':res='+res)
 	return res
 }
 
 function changeValue(formula,name,value){
-	//debug('changeValue:formula='+formula+':name='+name+':value='+value)
 	if(formula.indexOf(name)!=-1 && name!=''){
 		var reg  = new RegExp(name, "g")
 		formula = formula.replace(reg,value)
@@ -173,7 +163,6 @@ function changeValue(formula,name,value){
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[0] : players[plid])
-	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
 	pkoff = pkoff.split(',')
 	var res = 0
 	for(n in pkoff){
@@ -193,38 +182,30 @@ function countStrength(plid,pkoff){
 				count = changeValue(count,p,0)
 				count = changeValue(count,skillnames[p].rshort,0)
 			}
-			//debug('countStrength:------ count='+count)
 			var countval  = 0
 			if(count!=undefined){
 				try{
 					countval = eval(count)
 				}catch(e){
-					debug('EVAL_ERROR:eval('+count+'):'+e)
 					return 0
 				}
 			}
 			if(plid!='ideal' && skillnames[koffname].type=='custom') {
 				players[plid][koffname] = countval
-				debug('countStrength:'+koffname+'='+countval+'(РЅРѕРІС‹Р№ РїР°СЂР°РјРµС‚СЂ РёРіСЂРѕРєР° '+players[plid].secondname+')')
 			}
 			res += countval
-			//debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 		}
 	}
-	//debug('countStrength:- res='+res)
 	return res
 }
 
 function RelocateGetNomData(arch){
-	debug('RelocateGetNomData('+arch+')')
 	if(arch==undefined) arch = '';
 	if(localStorage.getnomdata != undefined && String(localStorage.getnomdata).indexOf('1.1$')!=-1){
-		debug('Storage.getnomdata ok!')
 		GetNomData(0)
 		//GetFinish('getnomdata', true)
 	}else{
 		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9885110) //9107893
-		debug('Storage.getnomdata('+top+')')
 		var url_top = 'm=posts'+arch+'&p='+top
 
 		if($('#debval').length==0) $('td.back4').prepend('<div style="display: none;" id=debval></div>') 
@@ -271,19 +252,15 @@ function GetNomData(id){
 		}
 	}
 	kpkof = parseFloat(sdata[0][0][0])
-	//debug('GetNomData:pl:'+pl.value+':'+pl.age)
 
 	var saleAge = 0
 	var ages = (sdata[0][0][1]+',100').split(',')
 	for(i in ages) 	if(pl.age<ages[i]) 	{saleAge = i;break;}
-	//debug('SaleAge:'+saleAge+':'+ages[saleAge])
 
 	var saleValue = 0
 	var vals = ('0,'+sdata[0][0][2]+',100000').split(',')
 	for(i in vals) 	if(pl.value<vals[i]*1000)	{saleValue = i-1;break;}
-	//debug('SaleValue:'+saleValue+':'+vals[saleValue])
 
-	//debug('РўРЎР—:'+sdata[0][saleValue+1][0])
 	fp.av = parseFloat(sdata[0][saleValue+1][0])
 	fp.mn = parseFloat(sdata[0][saleValue+1][1])
 	fp.mx = parseFloat(sdata[0][saleValue+1][2])
@@ -315,12 +292,8 @@ function GetNomData(id){
 							plnom[t].psum = plnom[t].psum*Math.pow((skil<1 ? 1 : skil) ,kof)
 							count += kof
 						}
-						//debug(skil+'^'+kof+':'+sdata[i][n][j].split('-')[1])
 					}
 					plnom[t].psum = Math.pow(plnom[t].psum,1/count)
-					//debug(plnom[t].id+':'+plnom[t].pos+':'+(plnom[t].psum).toFixed(2)+':'+plnom[t].tkp)
-				}else{
-					//debug('----- no ----'+sdata[i][n][0])
 				}
 			}
 		}
@@ -329,20 +302,15 @@ function GetNomData(id){
 	fp.res = plnom[0].psum/fp.av
 	fp.res = (fp.res<fp.mn ? fp.mn : (fp.res > fp.mx ? fp.mx : fp.res))
 	tkp = plnom[0].tkp/100
-	//for (i=0;i<2;i++) debug('psum'+plnom[i].id+':'+(plnom[i].psum).toFixed(2))
-	//debug('РљРџ:'+(plnom[0].psum/plnom[1].psum).toFixed(3) + ' < '+kpkof)
 	if(plnom[1].psum!=0 && ((plnom[0].psum/plnom[1].psum)<kpkof)) {
 		tkp = Math.max(plnom[0].tkp,plnom[1].tkp)/100
 	}
-	//for (i=0;i<2;i++) debug('tkp:'+plnom[i].tkp)
 	svalue = parseInt(pl.value*tkp*fp.res/1000)
 	svalue = (svalue == 0 ? 1 : svalue)
-	//debug('Р Рќ='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3)+'='+svalue)
 	$('div#SValue').html('~<font size=2>'+ShowValueFormat(svalue)+'</font>')
-	//return svalue*1000
 }
 
-function sNomPsum(i, ii) { // РЎРѕСЂС‚РёСЂРѕРІРєР°
+function sNomPsum(i, ii) { // Сортировка
     if 		(i.psum < ii.psum)	return  1
     else if	(i.psum > ii.psum)	return -1
     else					return  0
@@ -353,15 +321,14 @@ function ShowValueFormat(value){
 }
 
 function ShowAdaptation(plnat,tnat){
-	debug('ShowAdaptation:natfull='+plnat)
 	if(String(localStorage.mycountry)!='undefined' && plnat!=undefined && plnat!=' '){
 		$.getScript("js/adaptation2.en.js", function() {
-			var peflnation ={'РђР»Р±Р°РЅРёСЏ':1,'РђР»Р¶РёСЂ':2,'Р’РѕСЃС‚РѕС‡РЅРѕРµ РЎР°РјРѕР°':3,'РђРЅРґРѕСЂСЂР°':4,'РђРЅРіРѕР»Р°':5,'РђРЅРіСѓРёР»Р»Р°':6,'РђРЅС‚РёРіСѓР°':7,'РђСЂРіРµРЅС‚РёРЅР°':8,'РђСЂРјРµРЅРёСЏ':9,'РђСЂСѓР±Р°':10,'РђРІСЃС‚СЂР°Р»РёСЏ':11,'РђРІСЃС‚СЂРёСЏ':12,'РђР·РµСЂР±Р°Р№РґР¶Р°РЅ':13,'Р‘Р°РіР°РјС‹':14,'Р‘Р°С…СЂРµР№РЅ':15,'Р‘Р°РЅРіР»Р°РґРµС€':16,'Р‘Р°СЂР±Р°РґРѕСЃ':17,'Р‘РµР»Р°СЂСѓСЃСЊ':18,'Р‘РµР»СЊРіРёСЏ':19,'Р‘РµР»РёР·':20,'Р‘РµРЅРёРЅ':21,'Р‘РµСЂРјСѓРґС‹':22,'Р‘СѓС‚Р°РЅ':23,'Р‘РѕР»РёРІРёСЏ':24,'Р‘РѕСЃРЅРёСЏ':25,'Р‘РѕС‚СЃРІР°РЅР°':26,'Р‘СЂР°Р·РёР»РёСЏ':27,'Р’РёСЂРіРёРЅСЃРєРёРµ Рѕ-РІР°':28,'Р‘СЂСѓРЅРµР№':29,'Р‘РѕР»РіР°СЂРёСЏ':30,'Р‘СѓСЂРєРёРЅР° Р¤Р°СЃРѕ':31,'Р‘СѓСЂСѓРЅРґРё':32,'РљРѕРјР±РѕРґР¶Р°':34,'РљР°РјРµСЂСѓРЅ':35,'РљР°РЅР°РґР°':36,'РљР°Р±Рѕ-Р’РµСЂРґРµ':37,'РљР°Р№РјР°РЅРѕРІС‹ Рѕ-РІР°':38,'Р¦РђР ':39,'Р§Р°Рґ':40,'Р§РёР»Рё':41,'РљРёС‚Р°Р№':42,'РўР°Р№РІР°РЅСЊ':43,'РљРѕР»СѓРјР±РёСЏ':44,'РљРѕРЅРіРѕ':45,'Рћ-РІР° РљСѓРєР°':46,'РљРѕСЃС‚Р° Р РёРєР°':47,'РҐРѕСЂРІР°С‚РёСЏ':48,'РљСѓР±Р°':49,'РљРёРїСЂ':50,'Р§РµС…РёСЏ':51,'Р”Р°РЅРёСЏ':53,'Р”Р¶РёР±СѓС‚Рё':54,'Р”РѕРјРёРЅРёРєР°':55,'Р”РѕРјРёРЅРёРєР°РЅСЃРєР°СЏ СЂ-РєР°':56,'Р­РєРІР°РґРѕСЂ':58,'Р•РіРёРїРµС‚':59,'РЎР°Р»СЊРІР°РґРѕСЂ':60,'РђРЅРіР»РёСЏ':61,'Р­РєРІ. Р“РІРёРЅРµСЏ':62,'Р­СЂРёС‚СЂРµСЏ':63,'Р­СЃС‚РѕРЅРёСЏ':64,'Р­С„РёРѕРїРёСЏ':65,'РњР°РєРµРґРѕРЅРёСЏ':66,'Р¤Р°СЂРµСЂСЃРєРёРµ Рѕ-РІР°':67,'Р¤РёРґР¶Рё':68,'Р¤РёРЅР»СЏРЅРґРёСЏ':69,'Р¤СЂР°РЅС†РёСЏ':70,'Р“Р°Р±РѕРЅ':71,'Р“Р°РјР±РёСЏ':72,'Р“СЂСѓР·РёСЏ':73,'Р“РµСЂРјР°РЅРёСЏ':74,'Р“Р°РЅР°':75,'Р“СЂРµС†РёСЏ':76,'Р“СЂРµРЅР°РґР°':77,'Р“СѓР°Рј':78,'Р“РІР°С‚РµРјР°Р»Р°':79,'Р“РІРёРЅРµСЏ':80,'Р“РІРёРЅРµСЏ-Р‘РёСЃР°Сѓ':81,'Р“Р°Р№Р°РЅР°':82,'Р“Р°РёС‚Рё':83,'Р“РѕР»Р»Р°РЅРґРёСЏ':84,'Р“РѕРЅРґСѓСЂР°СЃ':85,'Р“РѕРЅ-РљРѕРЅРі':86,'Р’РµРЅРіСЂРёСЏ':87,'РСЃР»Р°РЅРґРёСЏ':88,'РРЅРґРёСЏ':89,'РРЅРґРѕРЅРµР·РёСЏ':90,'РСЂР°РЅ':91,'РСЂР°Рє':92,'РСЂР»Р°РЅРґРёСЏ':93,'РР·СЂР°РёР»СЊ':94,'РС‚Р°Р»РёСЏ':95,'РљРѕС‚`Рґ`РРІСѓР°СЂ':96,'РЇРјР°Р№РєР°':97,'РЇРїРѕРЅРёСЏ':98,'РРѕСЂРґР°РЅРёСЏ':99,'РљР°Р·Р°С…СЃС‚Р°РЅ':100,'РљРµРЅРёСЏ':101,'РљСѓРІРµР№С‚':102,'РљРёСЂРіРёР·РёСЏ':103,'Р›Р°РѕСЃ':104,'Р›Р°С‚РІРёСЏ':105,'Р›РёРІР°РЅ':106,'Р›РµСЃРѕС‚Рѕ':107,'Р›РёР±РµСЂРёСЏ':108,'Р›РёРІРёСЏ':109,'Р›РёС…С‚РµРЅС€С‚РµР№РЅ':110,'Р›РёС‚РІР°':111,'Р›СЋРєСЃРµРјР±СѓСЂРі':112,'РњР°РєР°Рѕ':113,'РњР°РґР°РіР°СЃРєР°СЂ':114,'РњР°Р»Р°РІРё':115,'РњР°Р»Р°Р№Р·РёСЏ':116,'РњР°Р»СЊРґРёРІС‹':117,'РњР°Р»Рё':118,'РњР°Р»СЊС‚Р°':119,'РњР°РІСЂРёС‚Р°РЅРёСЏ':120,'РњР°РІСЂРёРєРёР№':121,'РњРµРєСЃРёРєР°':122,'РњРѕР»РґРѕРІР°':123,'РњРѕРЅРіРѕР»РёСЏ':124,'РњРѕРЅСЃРµСЂСЂР°С‚':125,'РњР°СЂРѕРєРєРѕ':126,'РњРѕР·Р°РјР±РёРє':127,'РњСЊСЏРЅРјР°СЂ':128,'РЎРµРІРµСЂРЅР°СЏ РСЂР»Р°РЅРґРёСЏ':129,'РќР°РјРёР±РёСЏ':130,'РќРµРїР°Р»':131,'РљСЋСЂР°СЃР°Рѕ':132,'РќРѕРІР°СЏ РљР°Р»РµРґРѕРЅРёСЏ':133,'РќРѕРІР°СЏ Р—РµР»Р°РЅРґРёСЏ':134,'РќРёРєР°СЂР°РіСѓР°':135,'РќРёРіРµСЂ':136,'РќРёРіРµСЂРёСЏ':137,'РЎРµРІРµСЂРЅР°СЏ РљРѕСЂРµСЏ':138,'РќРѕСЂРІРµРіРёСЏ':139,'РћРјР°РЅ':140,'РџР°РєРёСЃС‚Р°РЅ':141,'РџР°Р»РµСЃС‚РёРЅР°':142,'РџР°РЅР°РјР°':143,'РџР°РїСѓР° РќРѕРІР°СЏ Р“РІРёРЅРµСЏ':144,'РџР°СЂР°РіРІР°Р№':145,'РџРµСЂСѓ':147,'Р¤РёР»РёРїРїРёРЅС‹':148,'РџРѕР»СЊС€Р°':149,'РџРѕСЂС‚СѓРіР°Р»РёСЏ':150,'РџСѓСЌСЂС‚Рѕ-Р РёРєРѕ':151,'РљР°С‚Р°СЂ':152,'Р”Р  РљРѕРЅРіРѕ':153,'Р СѓРјС‹РЅРёСЏ':154,'Р РѕСЃСЃРёСЏ':155,'Р СѓР°РЅРґР°':156,'Р—Р°Рї. РЎР°РјРѕР°':157,'РЎР°РЅ-РњР°СЂРёРЅРѕ':158,'РўРѕРјРµ':159,'РЎР°СѓРґРѕРІСЃРєР°СЏ РђСЂР°РІРёСЏ':160,'РЁРѕС‚Р»Р°РЅРґРёСЏ':161,'РЎРµРЅРµРіР°Р»':162,'РЎРµР№С€РµР»СЊСЃРєРёРµ Рѕ-РІР°':163,'РЎСЊРµСЂСЂР°-Р›РµРѕРЅРµ':164,'РЎРёРЅРіР°РїСѓСЂ':165,'РЎР»РѕРІР°РєРёСЏ':166,'РЎР»РѕРІРµРЅРёСЏ':167,'РЎРѕР»РѕРјРѕРЅРѕРІС‹ Рѕ-РІР°':168,'РЎРѕРјР°Р»Рё':169,'Р®РђР ':170,'Р®Р¶РЅР°СЏ РљРѕСЂРµСЏ':171,'РСЃРїР°РЅРёСЏ':172,'РЁСЂРё-Р›Р°РЅРєР°':173,'РЎРµРЅС‚-РљРёС‚С‚СЃ':174,'Р›СѓСЃРёСЏ':175,'РЎРµРЅС‚-Р’РёРЅСЃРµРЅС‚':176,'РЎСѓРґР°РЅ':177,'РЎСѓСЂРёРЅР°Рј':178,'РЎРІР°Р·РёР»РµРЅРґ':179,'РЁРІРµС†РёСЏ':180,'РЁРІРµР№С†Р°СЂРёСЏ':181,'РЎРёСЂРёСЏ':182,/**'РўР°РёС‚Рё':183,	//РґСѓР±Р»РёСЂСѓРµС‚СЃСЏ 216С‹Рј/**/'РўР°РґР¶РёРєРёСЃС‚Р°РЅ':184,'РўР°РЅР·Р°РЅРёСЏ':185,'РўР°РёР»Р°РЅРґ':186,'РўРѕРіРѕ':188,'РўРѕРЅРіР°':189,'РўСЂРёРЅРёРґР°Рґ Рё РўРѕР±Р°РіРѕ':190,'РўСѓРЅРёСЃ':191,'РўСѓСЂС†РёСЏ':192,'РўСѓСЂРєРјРµРЅРёСЃС‚Р°РЅ':193,'РљР°РёРєРѕСЃ':194,'РћРђР­':195,'РЎРЁРђ':196,'РЈРіР°РЅРґР°':199,'РЈРєСЂР°РёРЅР°':200,'РЈСЂСѓРіРІР°Р№':201,'РЈР·Р±РµРєРёСЃС‚Р°РЅ':202,'Р’Р°РЅСѓР°С‚Сѓ':203,'Р’РµРЅРµСЃСѓСЌР»Р°':204,'Р’СЊРµС‚РЅР°Рј':205,'РЈСЌР»СЊСЃ':207,'Р™РµРјРµРЅ':208,'РЎРµСЂР±РёСЏ':209,'Р—Р°РёСЂ':153, /** 210, СЌС‚ С‰Р°СЃ Р”Р  РљРѕРЅРіРѕ - РїРѕСЌС‚РѕРјСѓ СЃРѕС€Р»РµРјСЃСЏ РЅР° РµРіРѕ id/**/'Р—Р°РјР±РёСЏ':211,'Р—РёРјР±Р°Р±РІРµ':212,'Р“РІР°РґРµР»СѓРїР°':213,'Р§РµСЂРЅРѕРіРѕСЂРёСЏ':214,'РљРѕРјРѕСЂСЃРєРёРµ РѕСЃС‚СЂРѕРІР°':215,'РўР°РёС‚Рё':216,'РђС„РіР°РЅРёСЃС‚Р°РЅ':217}
+			var peflnation ={'Албания':1,'Алжир':2,'Восточное Самоа':3,'Андорра':4,'Ангола':5,'Ангуилла':6,'Антигуа':7,'Аргентина':8,'Армения':9,'Аруба':10,'Австралия':11,'Австрия':12,'Азербайджан':13,'Багамы':14,'Бахрейн':15,'Бангладеш':16,'Барбадос':17,'Беларусь':18,'Бельгия':19,'Белиз':20,'Бенин':21,'Бермуды':22,'Бутан':23,'Боливия':24,'Босния':25,'Ботсвана':26,'Бразилия':27,'Виргинские о-ва':28,'Бруней':29,'Болгария':30,'Буркина Фасо':31,'Бурунди':32,'Комбоджа':34,'Камерун':35,'Канада':36,'Кабо-Верде':37,'Каймановы о-ва':38,'ЦАР':39,'Чад':40,'Чили':41,'Китай':42,'Тайвань':43,'Колумбия':44,'Конго':45,'О-ва Кука':46,'Коста Рика':47,'Хорватия':48,'Куба':49,'Кипр':50,'Чехия':51,'Дания':53,'Джибути':54,'Доминика':55,'Доминиканская р-ка':56,'Эквадор':58,'Египет':59,'Сальвадор':60,'Англия':61,'Экв. Гвинея':62,'Эритрея':63,'Эстония':64,'Эфиопия':65,'Македония':66,'Фарерские о-ва':67,'Фиджи':68,'Финляндия':69,'Франция':70,'Габон':71,'Гамбия':72,'Грузия':73,'Германия':74,'Гана':75,'Греция':76,'Гренада':77,'Гуам':78,'Гватемала':79,'Гвинея':80,'Гвинея-Бисау':81,'Гайана':82,'Гаити':83,'Голландия':84,'Гондурас':85,'Гон-Конг':86,'Венгрия':87,'Исландия':88,'Индия':89,'Индонезия':90,'Иран':91,'Ирак':92,'Ирландия':93,'Израиль':94,'Италия':95,'Кот`д`Ивуар':96,'Ямайка':97,'Япония':98,'Иордания':99,'Казахстан':100,'Кения':101,'Кувейт':102,'Киргизия':103,'Лаос':104,'Латвия':105,'Ливан':106,'Лесото':107,'Либерия':108,'Ливия':109,'Лихтенштейн':110,'Литва':111,'Люксембург':112,'Макао':113,'Мадагаскар':114,'Малави':115,'Малайзия':116,'Мальдивы':117,'Мали':118,'Мальта':119,'Мавритания':120,'Маврикий':121,'Мексика':122,'Молдова':123,'Монголия':124,'Монсеррат':125,'Марокко':126,'Мозамбик':127,'Мьянмар':128,'Северная Ирландия':129,'Намибия':130,'Непал':131,'Кюрасао':132,'Новая Каледония':133,'Новая Зеландия':134,'Никарагуа':135,'Нигер':136,'Нигерия':137,'Северная Корея':138,'Норвегия':139,'Оман':140,'Пакистан':141,'Палестина':142,'Панама':143,'Папуа Новая Гвинея':144,'Парагвай':145,'Перу':147,'Филиппины':148,'Польша':149,'Португалия':150,'Пуэрто-Рико':151,'Катар':152,'ДР Конго':153,'Румыния':154,'Россия':155,'Руанда':156,'Зап. Самоа':157,'Сан-Марино':158,'Томе':159,'Саудовская Аравия':160,'Шотландия':161,'Сенегал':162,'Сейшельские о-ва':163,'Сьерра-Леоне':164,'Сингапур':165,'Словакия':166,'Словения':167,'Соломоновы о-ва':168,'Сомали':169,'ЮАР':170,'Южная Корея':171,'Испания':172,'Шри-Ланка':173,'Сент-Киттс':174,'Лусия':175,'Сент-Винсент':176,'Судан':177,'Суринам':178,'Свазиленд':179,'Швеция':180,'Швейцария':181,'Сирия':182,/**'Таити':183,	//дублируется 216ым/**/'Таджикистан':184,'Танзания':185,'Таиланд':186,'Того':188,'Тонга':189,'Тринидад и Тобаго':190,'Тунис':191,'Турция':192,'Туркменистан':193,'Каикос':194,'ОАЭ':195,'США':196,'Уганда':199,'Украина':200,'Уругвай':201,'Узбекистан':202,'Вануату':203,'Венесуэла':204,'Вьетнам':205,'Уэльс':207,'Йемен':208,'Сербия':209,'Заир':153, /** 210, эт щас ДР Конго - поэтому сошлемся на его id/**/'Замбия':211,'Зимбабве':212,'Гваделупа':213,'Черногория':214,'Коморские острова':215,'Таити':216,'Афганистан':217}
 			var peflcountry={1:0,2:1,8:2,9:3,11:4,12:5,13:6,18:7,19:8,24:9,25:10,27:11,30:12,41:13,42:14,44:15,47:16,48:17,50:18,51:19,53:20,58:21,59:22,61:23,64:24,66:25,69:26,70:27,73:28,74:29,76:30,84:31,87:32,88:33,91:34,93:35,94:36,95:37,98:38,100:39,105:40,111:41,122:42,123:43,126:44,129:45,137:46,139:47,145:48,147:49,149:50,150:51,152:52,154:53,155:54,160:55,161:56,166:57,167:58,170:59,171:60,172:61,180:62,181:63,191:64,192:65,195:66,196:67,200:68,201:69,202:70,204:71,96:72,207:73,209:74,214:75}
 			var ad = s_adaptationMap[peflnation[plnat]][peflcountry[parseInt(localStorage.mycountry)]]
 			var adperc1 = '%';
 			var adperc2 = '%';
-			var txt = '<table width=100%><tr align=left><td>РђРґР°РїС‚Р°С†РёСЏ</td><th>'+plnat+'</th></tr>';
+			var txt = '<table width=100%><tr align=left><td>Адаптация</td><th>'+plnat+'</th></tr>';
 			txt+='<tr align=left><th>'+localStorage.mycountry.split('.')[1]+'</th><td>'+(ad==10 ? '99,9' : (ad*6+2)+'%-'+(ad*6+40))+'% ('+ad+')</td></tr>'
 			if(tnat!=undefined && tnat!=parseInt(localStorage.mycountry)){
 				var tad= s_adaptationMap[peflnation[plnat]][peflcountry[tnat]]
@@ -375,35 +342,26 @@ function ShowAdaptation(plnat,tnat){
 }
 
 function SetValue(vl,vlch){
-	debug('SetValue:'+vl/1000+':'+vlch/1000+':'+players[0].id)
 	if(UrlValue('t')=='p') {
 		if(ff){
-			var text1 = String(localStorage['players']).split('#')
+			var text1 = String(localStorage['players']).split('#');
 			for (i in text1){
 				if(parseInt(text1[i].split('|')[0])==players[0].id){
-					var text2 = text1[i].split('|')
-					text2[7] = vl
-					text2[8] = vlch
-					text1[i] = text2.join('|')
+					var text2 = text1[i].split('|');
+					text2[7] = vl;
+					text2[8] = vlch;
+					text1[i] = text2.join('|');
 				}
 			}
-			localStorage['players'] = text1.join('#')
+			localStorage['players'] = text1.join('#');
 		}else{
 			if(!db) DBConnect()			
-			db.transaction(function(tx) {
-				tx.executeSql("UPDATE players SET value='"+vl+"', valuech='"+vlch+"' WHERE id='"+players[0].id+"'",[],
-					function(tx, result){debug('saved!')},
-					function(tx, error) {debug(error.message)}
-				);                                           
-			})		
+			db.transaction(function(tx) { tx.executeSql( "UPDATE players SET value='"+vl+"', valuech='"+vlch+"' WHERE id='"+players[0].id+"'",[] ); })		
 		}		
 	}
 }
 
 function GetValue(){
-	debug('GetValue')
-	debug('myteam:'+localStorage.myteamid)
-	debug('teamid:'+players[0].teamid)
 	if(localStorage.myteamid == players[0].teamid){
 		var list = {'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name'}
 		var head = list['players'].split(',')
@@ -431,8 +389,7 @@ function GetValue(){
 							var row = result.rows.item(i)
 							if(row['id']==players[0].id) UpdateValue(row['value'],row['valuech'])
 						}
-					},
-					function(tx, error) {debug(error.message)}
+					}
 				);                                           
 			})		
 		}
@@ -440,12 +397,10 @@ function GetValue(){
 }
 
 function UpdateValue(vl,vlch){
-	debug('UpdateValue:'+vl/1000+':'+vlch/1000)
 	if(vl==0){
 		SetValue(players[0].value,0)
 	}else{
 		if(vl!=players[0].value){
-			debug(vl+'!='+players[0].value)
 			players[0].valuech = players[0].value - vl
 			SetValue(players[0].value,players[0].valuech)
 		}else{
@@ -455,28 +410,13 @@ function UpdateValue(vl,vlch){
 	}
 }
 function PrintValue(vlch){
-	debug('PrintValue:'+vlch/1000)
 /**
 	var ttext = $('td.back4 table center:first').html().split('<br>')
 	for(i in ttext){
-		if(ttext[i].indexOf('РќРѕРјРёРЅР°Р»')!=-1) ttext[i]=ttext[i]+(vlch==0?'':' <sup>'+(vlch>0 ? '<font color=green>+'+vlch/1000 : '<font color=red>'+vlch/1000)+'</font></sup>')
+		if(ttext[i].indexOf('Номинал')!=-1) ttext[i]=ttext[i]+(vlch==0?'':' <sup>'+(vlch>0 ? '<font color=green>+'+vlch/1000 : '<font color=red>'+vlch/1000)+'</font></sup>')
 	}
 	$('td.back4 table center:first').html(ttext.join('<br>'))
 /**/
-}
-
-function DBConnect(){
-	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
-	if(!db) {debug('Open DB PEFL fail.');return false;} 
-	else 	{debug('Open DB PEFL ok.')}
-}
-
-function debug(text) {
-	if(deb) {
-		if(debnum==1) $('body').append('<div id=debug></div>')
-		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
-		debnum++;
-	}
 }
 
 function ShowCar(n){
@@ -501,23 +441,9 @@ function ShowTable(n){
 }
 
 function hist(rcode,rtype)
-	{ window.open('hist.php?id='+rcode+'&t='+rtype,'РСЃС‚РѕСЂРёСЏ','toolbar=0,location=0,directories=0,menuBar=0,resizable=0,scrollbars=yes,width=480,height=512,left=16,top=16'); }
+	{ window.open('hist.php?id='+rcode+'&t='+rtype,'История','toolbar=0,location=0,directories=0,menuBar=0,resizable=0,scrollbars=yes,width=480,height=512,left=16,top=16'); }
 
-function getPairValue(str,def,delim) {
-	def	= (def ? def : '')
-	delim	= (delim ? delim : '=')
-	arr	= str.split(delim)
-	return (arr[1] == undefined ? def : arr[1])
-}
-
-function getPairKey(str,def,delim) {
-	def	= (def ? def : '')
-	delim	= (delim ? delim : '=')
-	arr	= str.split(delim)
-	return (arr[0] == str ? def : arr[0])
-}
-
-function sSkills(i, ii) { // РЎРѕСЂС‚РёСЂРѕРІРєР°
+function sSkills(i, ii) { // Сортировка
     if 		(i[0] < ii[0])	return  1
     else if	(i[0] > ii[0])	return -1
     else					return  0
@@ -545,7 +471,7 @@ function PrintPlayers(cur){
 			htmltext += '<tr><td nowrap><font size=1>'
 			htmltext += '<a id="compare'+i+'" href="javascript:void(CheckPlayer('+i+'))"><</a>|'
 			htmltext += '<a href="javascript:void(RemovePlx('+i+'))">x</a>|'
-			htmltext += '<a'+(players[i].t == 'yp' ? '' : ' href="javascript:hist(\''+players[i].id+'\',\'n\')"')+'>Рё</a>|'
+			htmltext += '<a'+(players[i].t == 'yp' ? '' : ' href="javascript:hist(\''+players[i].id+'\',\'n\')"')+'>и</a>|'
 			htmltext += players[i].id+'|'
 			htmltext += '<a'+plhref+'>' + secname[secname.length-1] + (players[i].t==undefined || players[i].t == 'yp' ? '('+players[i].position+')' : '') +'</a>'
 			htmltext += '</font></td></tr>'
@@ -575,7 +501,6 @@ function CheckPlayer(nn){
 	var season = 0;
 	var data ={};
 	for(i in players[nn]){
-		debug('case \''+i+'\':')
 		switch(i){
 		case 'sumskills':
 		case 's':
@@ -646,8 +571,8 @@ function CheckPlayer(nn){
 		'pname':'<img height="12" src="system/img/flags/mod/'+players[0].nation+'.gif"> '+'<b>'+players[0]['firstname']+' '+players[0]['secondname']+'</b>',
 		'age':players[0]['age'],
 		'value':(players[0]['value']==0 ? '' : ShowValueFormat(players[0]['value']/1000)),
-		'int':'РјР°С‚С‡РµР№ '+players[0]['internationalapps']+', РіРѕР»РѕРІ '+players[0]['internationalgoals'],
-		'u21':'РјР°С‚С‡РµР№ '+players[0]['u21apps']+', РіРѕР»РѕРІ '+players[0]['u21goals'],
+		'int':'матчей '+players[0]['internationalapps']+', голов '+players[0]['internationalgoals'],
+		'u21':'матчей '+players[0]['u21apps']+', голов '+players[0]['u21goals'],
 		'position':players[0]['position'],
 		'wage':players[0]['wage'],
 		'curseason':13
@@ -660,9 +585,9 @@ function CheckPlayer(nn){
 		sknum=0;
 		$('table[id^="res"], td[id^="res"]').remove();
 	}
-	if(sknum==0) $('table#stat').before('<table id=res class=back1 align=center width=70% cellpadding=2 cellspacing=1><tr><td nowrap id=thx align=center class=back2>[<a href="javascript:void(SkReset())"><font color=red>РҐ</font> СЃР±СЂРѕСЃРёС‚СЊ</a>]</td></tr></table>');
+	if(sknum==0) $('table#stat').before('<table id=res class=back1 align=center width=70% cellpadding=2 cellspacing=1><tr><td nowrap id=thx align=center class=back2>[<a href="javascript:void(SkReset())"><font color=red>Х</font> сбросить</a>]</td></tr></table>');
 	sknum++;
-	$('td#thx').after('<td nowrap width=30%>'+(season!=0 ? '<b>'+season+' СЃРµР·РѕРЅ</b>' : ' ')+'</td>');
+	$('td#thx').after('<td nowrap width=30%>'+(season!=0 ? '<b>'+season+' сезон</b>' : ' ')+'</td>');
 	var ssn = 0;
 	if(data['pname']==undefined) data['pname']='';
 	for(i in data){
@@ -710,7 +635,7 @@ function CheckPlayer(nn){
 		case 'int':
 		case 'u21':
 			var x=data[i].split('.');
-			$('td#'+i).after('<td nowrap><font color=gray>'+(x[0]>0 ? 'РјР°С‚С‡РµР№ '+x[0]+', РіРѕР»РѕРІ '+x[1] : '')+'</font></td>');
+			$('td#'+i).after('<td nowrap><font color=gray>'+(x[0]>0 ? 'матчей '+x[0]+', голов '+x[1] : '')+'</font></td>');
 			break;
 		case 'pname':
 			var x=data[i].split('|');
@@ -726,23 +651,10 @@ function CheckPlayer(nn){
 	return false
 }
 
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) {
-		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	}
-	return false
-}
-
 function lp(txt){
 	var num = 19-txt.length
 	for(i=0;i<num;i++) txt += '_'
 	return txt
-}
-
-function TrimString(sInString){
-	sInString = sInString.replace(/\&nbsp\;/g,' ');
-	return sInString.replace(/(^\s+)|(\s+$)/g, '');
 }
 
 var players = []
@@ -768,52 +680,52 @@ var ups = {	"a0e":"-2",
 		}
 var plskillmax = 15
 var skillnames = {
-sostav:{rshort:'Р·РІ',rlong:'РРіСЂРѕРє РІ Р·Р°СЏРІРєРµ?'},
-flag:{rshort:'С„Р»',rlong:'РРЅС„РѕСЂРјР°С†РёРѕРЅРЅС‹Р№ С„Р»Р°Рі'},
-pfre:{rshort:'РёС€',rlong:'РСЃРїРѕР»РЅРёС‚РµР»Рё С€С‚СЂР°С„РЅС‹С…'},
-pcor:{rshort:'РёСѓ',rlong:'РСЃРїРѕР»РЅРёС‚РµР»Рё СѓРіР»РѕРІС‹С…'},
-ppen:{rshort:'РїРЅ',rlong:'РСЃРїРѕР»РЅРёС‚РµР»Рё РїРµРЅР°Р»СЊС‚Рё'},
-pcap:{rshort:'РєРї',rlong:'РљР°РїРёС‚Р°РЅС‹'},
-//СЃСЃ
-school:{rshort:'С€РєР»',rlong:'РЁРєРѕР»СЊРЅРёРє?'},
-srt:{rshort:'СЃРёР»Р°',rlong:'Р’ % РѕС‚ РёРґРµР°Р»Р° (РїСЂРѕС„С‹ '+plskillmax+')',type:'float'},
-stdat:{rshort:'СЃР°',rlong:'РРґРµС‚ РЅР° СЃС‚Рґ. Р°С‚Р°РєРё'},
-stdbk:{rshort:'СЃРѕ',rlong:'РРґРµС‚ РЅР° СЃС‚Рґ. РѕР±РѕСЂРѕРЅС‹'},
-nation:{rshort:'РєРЎС‚',rlong:'РљРѕРґ СЃС‚СЂР°РЅС‹'},
-teamnat:{rshort:'РєCС‚',rlong:'РљРѕРґ СЃС‚СЂР°РЅС‹'},
-natfull:{rshort:'СЃС‚СЂ',rlong:'РЎС‚СЂР°РЅР°',align:'left',nowrap:'1'},
-secondname:{rshort:'Р¤Р°Рј',rlong:'Р¤Р°РјРёР»РёСЏ',align:'left',nowrap:'1'},
-firstname:{rshort:'РРјСЏ',rlong:'РРјСЏ',align:'left',nowrap:'1'},
-age:{rshort:'РІР·СЂ',rlong:'Р’РѕР·СЂР°СЃС‚',str:true,strmax:40},
-id:{rshort:'id',rlong:'id РёРіСЂРѕРєР°'},
-internationalapps:{rshort:'РёРЎР±',rlong:'РРіСЂ Р·Р° СЃР±РѕСЂРЅСѓСЋ',str:true,strmax:500},
-internationalgoals:{rshort:'РіРЎР±',rlong:'Р“РѕР»РѕРІ Р·Р° СЃР±РѕСЂРЅСѓСЋ',str:true,strmax:500},
-contract:{rshort:'РєРЅС‚',rlong:'РљРѕРЅС‚СЂР°РєС‚',strmax:5},
-wage:{rshort:'Р·СЂРї',rlong:'Р—Р°СЂРїР»Р°С‚Р°',strmax:100,strinvert:1000100},
-value:{rshort:'РЅРѕРј',rlong:'РќРѕРјРёРЅР°Р»',type:'value',strmax:50000000},
-corners:{rshort:'СѓРі',rlong:'РЈРіР»РѕРІС‹Рµ',str:true},
-crossing:{rshort:'РЅРІ',rlong:'РќР°РІРµСЃС‹',str:true},
-dribbling:{rshort:'РґСЂ',rlong:'Р”СЂРёР±Р»РёРЅРі',str:true},
-finishing:{rshort:'СѓРґ',rlong:'РЈРґР°СЂС‹',str:true},
-freekicks:{rshort:'С€С‚',rlong:'РЁС‚СЂР°С„РЅС‹Рµ',str:true},
-handling:{rshort:'СЂСѓ',rlong:'РРіСЂР° СЂСѓРєР°РјРё',str:true},
-heading:{rshort:'РіР»',rlong:'РРіСЂР° РіРѕР»РѕРІРѕР№',str:true},
-leadership:{rshort:'Р»Рґ',rlong:'Р›РёРґРµСЂСЃС‚РІРѕ',str:true},
-longshots:{rshort:'РґСѓ',rlong:'Р”Р°Р»СЊРЅРёРµ СѓРґР°СЂС‹',str:true},
-marking:{rshort:'РїРѕ',rlong:'РџРµСЂСЃ. РѕРїРµРєР°',str:true},
-pace:{rshort:'СЃРє',rlong:'РЎРєРѕСЂРѕСЃС‚СЊ',str:true},
-passing:{rshort:'РїСЃ',rlong:'РРіСЂР° РІ РїР°СЃ',str:true},
-positioning:{rshort:'РІРї',rlong:'Р’С‹Р±РѕСЂ РїРѕР·РёС†РёРё',str:true},
-reflexes:{rshort:'СЂРµ',rlong:'Р РµР°РєС†РёСЏ',str:true},
-stamina:{rshort:'РІРЅ',rlong:'Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ',str:true},
-strength:{rshort:'РјС‰',rlong:'РњРѕС‰СЊ',str:true},
-tackling:{rshort:'РѕС‚',rlong:'РћС‚Р±РѕСЂ РјСЏС‡Р°',str:true},
-vision:{rshort:'РІРё',rlong:'Р’РёРґРµРЅРёРµ РїРѕР»СЏ',str:true},
-workrate:{rshort:'СЂР±',rlong:'Р Р°Р±РѕС‚РѕСЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ',str:true},
-technique:{rshort:'С‚С…',rlong:'РўРµС…РЅРёРєР°',str:true},
-morale:{rshort:'РјСЂР»',rlong:'РњРѕСЂР°Р»СЊ',str:true,strmax:100},
-form:{rshort:'С„СЂРј',rlong:'Р¤РѕСЂРјР°',str:true,strmax:100},
-position:{rshort:'РџРѕР·',rlong:'РџРѕР·РёС†РёСЏ',align:'left',nowrap:'1'},
+sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
+flag:{rshort:'фл',rlong:'Информационный флаг'},
+pfre:{rshort:'иш',rlong:'Исполнители штрафных'},
+pcor:{rshort:'иу',rlong:'Исполнители угловых'},
+ppen:{rshort:'пн',rlong:'Исполнители пенальти'},
+pcap:{rshort:'кп',rlong:'Капитаны'},
+//сс
+school:{rshort:'шкл',rlong:'Школьник?'},
+srt:{rshort:'сила',rlong:'В % от идеала (профы '+plskillmax+')',type:'float'},
+stdat:{rshort:'са',rlong:'Идет на стд. атаки'},
+stdbk:{rshort:'со',rlong:'Идет на стд. обороны'},
+nation:{rshort:'кСт',rlong:'Код страны'},
+teamnat:{rshort:'кCт',rlong:'Код страны'},
+natfull:{rshort:'стр',rlong:'Страна',align:'left',nowrap:'1'},
+secondname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
+firstname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
+age:{rshort:'взр',rlong:'Возраст',str:true,strmax:40},
+id:{rshort:'id',rlong:'id игрока'},
+internationalapps:{rshort:'иСб',rlong:'Игр за сборную',str:true,strmax:500},
+internationalgoals:{rshort:'гСб',rlong:'Голов за сборную',str:true,strmax:500},
+contract:{rshort:'кнт',rlong:'Контракт',strmax:5},
+wage:{rshort:'зрп',rlong:'Зарплата',strmax:100,strinvert:1000100},
+value:{rshort:'ном',rlong:'Номинал',type:'value',strmax:50000000},
+corners:{rshort:'уг',rlong:'Угловые',str:true},
+crossing:{rshort:'нв',rlong:'Навесы',str:true},
+dribbling:{rshort:'др',rlong:'Дриблинг',str:true},
+finishing:{rshort:'уд',rlong:'Удары',str:true},
+freekicks:{rshort:'шт',rlong:'Штрафные',str:true},
+handling:{rshort:'ру',rlong:'Игра руками',str:true},
+heading:{rshort:'гл',rlong:'Игра головой',str:true},
+leadership:{rshort:'лд',rlong:'Лидерство',str:true},
+longshots:{rshort:'ду',rlong:'Дальние удары',str:true},
+marking:{rshort:'по',rlong:'Перс. опека',str:true},
+pace:{rshort:'ск',rlong:'Скорость',str:true},
+passing:{rshort:'пс',rlong:'Игра в пас',str:true},
+positioning:{rshort:'вп',rlong:'Выбор позиции',str:true},
+reflexes:{rshort:'ре',rlong:'Реакция',str:true},
+stamina:{rshort:'вн',rlong:'Выносливость',str:true},
+strength:{rshort:'мщ',rlong:'Мощь',str:true},
+tackling:{rshort:'от',rlong:'Отбор мяча',str:true},
+vision:{rshort:'ви',rlong:'Видение поля',str:true},
+workrate:{rshort:'рб',rlong:'Работоспособность',str:true},
+technique:{rshort:'тх',rlong:'Техника',str:true},
+morale:{rshort:'мрл',rlong:'Мораль',str:true,strmax:100},
+form:{rshort:'фрм',rlong:'Форма',str:true,strmax:100},
+position:{rshort:'Поз',rlong:'Позиция',align:'left',nowrap:'1'},
 /**
 games
 goals
@@ -845,9 +757,9 @@ fratingav
 vratingav
 training
 /**/
-inj:{rshort:'С‚СЂРІ',rlong:'РўСЂР°РІРјР°'},
-sus:{rshort:'РґСЃРІ',rlong:'Р”РёСЃРєРІР°Р»РёС„РёРєР°С†РёСЏ'},
-syg:{rshort:'СЃС‹Рі',rlong:'РЎС‹РіСЂР°РЅРЅРѕСЃС‚СЊ'},
+inj:{rshort:'трв',rlong:'Травма'},
+sus:{rshort:'дсв',rlong:'Дисквалификация'},
+syg:{rshort:'сыг',rlong:'Сыгранность'},
 /**
 agames
 agoals
@@ -892,24 +804,24 @@ function filterPosition(plpos,flpos){
 
 $().ready(function() {
 /**/
-	if($('table#hd1').length==0) {
-		debug('old roster: exit');
-		return false;
-	}
-	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') return false
+	if($('table#hd1').length==0) { return false; }
 
-	// Р±РµСЂРµРј РјРµСЂРєСѓ РєР°РєРѕР№ СЃРµР·РѕРЅ
+	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') { return false; }
+
+	// берем мерку какой сезон
 	if($('a[href*=SavePl]').length > 0 ) {
 		var ses = parseInt($('a[href*=SavePl]').prev().prev().prev().text(), 10);
 		if(!isNaN(ses)) localStorage.season = ses;
 	}
-
-	debug('СЂР°Р·РјРµСЂ0:'+$('table:eq(0)').attr('width'))
+	
 	var bbig = false
 	if($('table:eq(0)').attr('width')>=1000) {
 		bbig = true
-		if($('table.border:eq(3)').length==0) $('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200)
-		else $('table.border:eq(3)').attr('width',$('table:eq(0)').attr('width')-200)
+		if($('table.border:eq(4)').length==0){
+			$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200);
+		} else {
+			$('table.border:eq(3)').attr('width',$('table:eq(0)').attr('width')-200);
+		}
 	}
 
 //	$('td.back4 table table tr[bgcolor=#a3de8f]').removeAttr('bgcolor').addClass('back3')
@@ -934,7 +846,7 @@ $().ready(function() {
 		sklfr[skillnames[i].rlong] = skillnames[i]
 		sklfr[skillnames[i].rlong].elong = i
 	}
-	sklfr['РРіСЂР° РЅР° РІС‹С…РѕРґР°С…'] = sklfr['РРіСЂР° РіРѕР»РѕРІРѕР№']
+	sklfr['Игра на выходах'] = sklfr['Игра головой']
 /**/
 
 	// get player skills
@@ -998,7 +910,7 @@ $().ready(function() {
 	players[0].t = UrlValue('t')
 
 	if (players[0].t =='p2') {
-		players[0].team = 'СЃРІРѕР±РѕРґРЅС‹Р№'
+		players[0].team = 'свободный'
 	} else {
 		if($('table#hd1').next().find('tr:first font').length>0){
 			players[0].team		= $('table#hd1').next().find('tr:first font:first').text()
@@ -1008,14 +920,14 @@ $().ready(function() {
 		}
 	}
 
-	// С€РєРѕР»СЏСЂ!
+	// школяр!
 	if (players[0].t == 'yp' || players[0].t == 'yp2') {
 		players[0].flag = 5;
 	}
 	players[0].id  = UrlValue('j');
 	players[0].hash = UrlValue('z');
 	if($('a:[href^="plug.php?p=tr&t=ncyf&n=yf"]').length>0){
-		//Р·РЅР°С‡РёС‚ РјРѕР»РѕРґРµР¶СЊ
+		//значит молодежь
 		players[0].flag = 7;
 	}
 
@@ -1029,15 +941,14 @@ $().ready(function() {
 	$('table#hd2 table tr').each(function(){
 		var xname = $(this).find('td:first').html();
 		var xvalue= $(this).find('td:last b').html();
-		debug(xname+':'+xvalue);
 		switch(xname){
-			case 'Р’РѕР·СЂР°СЃС‚:': players[0].age = parseInt(xvalue);break;
-			case 'РџРѕР·РёС†РёСЏ:': players[0].position = xvalue;break;
-			case 'РќРѕРјРёРЅР°Р»:': if(xvalue!='') players[0].value = xvalue.replace(/,/g,'').replace('$','');break;
-			case 'РљРѕРЅС‚СЂР°РєС‚:':
+			case 'Возраст:': players[0].age = parseInt(xvalue);break;
+			case 'Позиция:': players[0].position = xvalue;break;
+			case 'Номинал:': if(xvalue!='') players[0].value = xvalue.replace(/,/g,'').replace('$','');break;
+			case 'Контракт:':
 				if(xvalue!=''){
 					players[0].contract = parseInt(xvalue);
-					players[0].wage = xvalue.split('Рі. ')[1].replace(/,/g,'').replace('$','');
+					players[0].wage = xvalue.split('г. ')[1].replace(/,/g,'').replace('$','');
 				}
 				break;
 		}
@@ -1068,10 +979,9 @@ $().ready(function() {
 
 	players[0].sale = 0;
 	if($('table#hd2').parent().find('div:last').text()!=''){
-		debug('info:'+$('table#hd2').parent().find('div:last').text())
 		var xinfo = $('table#hd2').parent().find('div:last i').html().split('<br>');
 		for(i in xinfo){
-			if(xinfo[i].indexOf('Р’С‹СЃС‚Р°РІР»РµРЅ РЅР° С‚СЂР°РЅСЃС„РµСЂ')!=-1){
+			if(xinfo[i].indexOf('Выставлен на трансфер')!=-1){
 				players[0].sale = 1 //parseInt(xinfo[i].split('<b>')[1])
 			}
 		}
@@ -1081,12 +991,12 @@ $().ready(function() {
 	// fill poss masive
 
 	var text3 = ''
-	text3 += '<br><b>РќРѕРјРёРЅР°Р»+</b>: <b><sup><a href="#" onClick="alert(\'РљРѕСЂСЂРµРєС‚РёСЂРѕРІРєР° РЅРѕРјРёРЅР°Р»Р° РїРѕР»СѓС‡РµРЅР° СЃ РїРѕРјРѕС‰СЊСЋ РѕС†РµРЅРєРё СЃРґРµР»РѕРє РїСЂРµРґС‹РґСѓС‰РµРіРѕ РўРћ РїРѕ РёРіСЂРѕРєР°Рј РґР°РЅРЅРѕР№ РєР°С‚РµРіРѕСЂРёРё (РїРѕР·РёС†РёСЏ, РІРѕР·СЂР°СЃС‚, РЅРѕРјРёРЅР°Р», РЅРµРєРѕС‚РѕСЂС‹Рµ РїСЂРѕС„С‹)\')">?</a></sup></b><br>'
-	text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">РџРѕРєР°Р·Р°С‚СЊ</a></div>'
-	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Р—Р°РїРѕРјРЅРёС‚СЊ РёРіСЂРѕРєР°').fontsize(1)+'</a><br>'
+	text3 += '<br><b>Номинал+</b>: <b><sup><a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></sup></b><br>'
+	text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
+	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить игрока').fontsize(1)+'</a><br>'
 	text3 += '<div id="compare"></div><br><br>'
-	text3 += '<b>РЎРёР»Р°&nbsp;РёРіСЂРѕРєР°</b><div id=str>'
-	text3 += '<i><font size=1>СЃС…РѕРґРёС‚Рµ РІ РЎРѕСЃС‚Р°РІ+</font></i>'
+	text3 += '<b>Сила&nbsp;игрока</b><div id=str>'
+	text3 += '<i><font size=1>сходите в Состав+</font></i>'
 	text3 += '</div>'
 
 	// Modify page and fill data
@@ -1100,8 +1010,8 @@ $().ready(function() {
 
 //	$('td.back4 table table:eq(1)').attr('id','stat')
 
-	// РґРѕР±Р°РІРёРј СЃСЃС‹Р»РєСѓ РЅР° Р·Р°РјРµС‚РєРё
-	if(UrlValue('t')!='yp') $("#crabright").append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Р—Р°РјРµС‚РєРё</a>")
+	// добавим ссылку на заметки
+	if(UrlValue('t')!='yp') $("#crabright").append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
 
 	// Get info from Global or Session Storage
 	var text1 = String(localStorage.peflplayer)

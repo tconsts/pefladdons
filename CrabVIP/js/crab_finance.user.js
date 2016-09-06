@@ -4,7 +4,7 @@
 // @description		finance page modification
 // @include			http://*pefl.*/plug.php?p=fin&z=*
 // @include			http://*pefl.*/plug.php?p=rules&z=*
-// @version		    2.0
+// @encoding	   windows-1251
 // ==/UserScript==
 
 deb = (localStorage.debug == '1' ? true : false)
@@ -296,11 +296,11 @@ function EditFinance(school,divpriz,dteams,dtour){
 		var finance = []
 
 		var ffn 		= $('td.back4 > table td:eq(1)').html()
-		var zp 			= parseInt(ffn.split('РЎСѓРјРјР° Р·Р°СЂРїР»Р°С‚: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
-		var sponsors 	= parseInt(ffn.split('Р’СЃРµРіРѕ ')[1].split(',000$')[0].replace(/\,/g,''))*1000
-		var last_sp		= parseInt(ffn.split(',000$ РІ РР” / 4 Рі.')[0].split('$ РІ РР” / 3 Рі.')[1].split('>')[1].replace(/\,/g,''))
-		cur.bablo 		= parseInt(ffn.split('Р¤РёРЅР°РЅСЃС‹: ')[1].split('$')[0].replace(/\,/g,''))
-		cur.bonus 		= (ffn.indexOf('Р‘РѕРЅСѓСЃ:') != -1 ? parseInt(ffn.split('Р‘РѕРЅСѓСЃ:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
+		var zp 			= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
+		var sponsors 	= parseInt(ffn.split('Всего ')[1].split(',000$')[0].replace(/\,/g,''))*1000
+		var last_sp		= parseInt(ffn.split(',000$ в ИД / 4 г.')[0].split('$ в ИД / 3 г.')[1].split('>')[1].replace(/\,/g,''))
+		cur.bablo 		= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''))
+		cur.bonus 		= (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
 
 		fin.fid = 81
 
@@ -314,42 +314,45 @@ function EditFinance(school,divpriz,dteams,dtour){
 			})
 		})
 		for(i in finance[1]) debug(i+':'+finance[1])
-//		alert(finance[1]['РџРѕРєСѓРїРєР° РёРіСЂРѕРєРѕРІ'])
+//		alert(finance[1]['Покупка игроков'])
 
 		if(isNaN(school)) {
-			school = finance[1]['РЁРєРѕР»Р°'] - Math.floor(((finance[0]['РџСЂРѕРґР°Р¶Р°'] + finance[1]['РџРѕРєСѓРїРєР°'])*0.05)/1000)*1000
+			school = finance[1]['Школа'] - Math.floor(((finance[0]['Продажа'] + finance[1]['Покупка'])*0.05)/1000)*1000
 		}
 
-		cur.sponsors =	finance[2]['РЎРїРѕРЅСЃРѕСЂС‹']
-		cur.stadion =	finance[2]['РЎС‚Р°РґРёРѕРЅ']
-		cur.priz =		finance[2]['РџСЂРёР·РѕРІС‹Рµ']
-		cur.sale =		finance[2]['РџСЂРѕРґР°Р¶Р°']
-		cur.allup =		finance[2]['Р’СЃРµРіРѕ']
+		cur.sponsors =	finance[2]['Спонсоры']
+		cur.stadion =	finance[2]['Стадион']
+		cur.priz =		finance[2]['Призовые']
+		cur.sale =		finance[2]['Продажа']
+		cur.allup =		finance[2]['Всего']
 
-		cur.zp =		finance[3]['Р—Р°СЂРїР»Р°С‚С‹']
-		cur.buy =		finance[3]['РџРѕРєСѓРїРєР°']
-		cur.school =	finance[3]['РЁРєРѕР»Р°']
-		cur.alldown =	finance[3]['Р’СЃРµРіРѕ']
+		cur.zp =		finance[3]['Зарплаты']
+		cur.buy =		finance[3]['Покупка']
+		cur.school =	finance[3]['Школа']
+		cur.alldown =	finance[3]['Всего']
 		cur.plusminus =	cur.allup - cur.alldown
 		cur.zpperc = 	 (cur.sponsors ==0 ? 0+'%' : (cur.zp/cur.sponsors*100).toFixed(1)+'%')
 		cur.schoolperc = (cur.sponsors ==0 ? 0+'%' : (cur.school/cur.sponsors*100).toFixed(1)+'%')
 
-		if(finance[1]['Р—Р°СЂРїР»Р°С‚С‹'] == 0 && cur.zp > zp*10) cur.fid = fin.fid
+/**
+		if(finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) cur.fid = fin.fid
 		else cur.fid = (cur.sponsors==0 ? 0 : (cur.sponsors - cur.bonus)/sponsors)
+**/
+		cur.fid = parseInt($('td.topmenu table td:contains(" ФИД")').text().split('(')[1],10);
 
 		if(cur.fid>fin.fid) fin.fid = cur.fid
 
 		// set div prizes
 //		var divpriz = 0
 		var divprizmark =	(' <i>*1</i>').fontcolor('red').fontsize(1)
-		var divpriztext =	('<i>*1 - Р±РµР· СѓС‡РµС‚Р° Р±РѕРЅСѓСЃР° РїРѕ РёС‚РѕРіР°Рј С‡РµРјРїРёРѕРЅР°С‚Р°, С‚СЂРµР±СѓРµС‚СЃСЏ СЃС…РѕРґРёС‚СЊ РІ РєРѕРјР°РЅРґСѓ, РґРёРІ Рё "РџСЂР°РІРёР»Р°".</i>').fontcolor('red').fontsize(1)
+		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в команду, див и "Правила".</i>').fontcolor('red').fontsize(1)
 		if(divpriz!=0){
-			if (finance[1]['Р—Р°СЂРїР»Р°С‚С‹'] == 0 && cur.zp > zp*10) {
+			if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) {
 				divprizmark = 	('<i>*1</i>').fontsize(1)
-				divpriztext = 	('<i>*1 - Р±РѕРЅСѓСЃ РїРѕ РёС‚РѕРіР°Рј С‡РµРјРїРёРѕРЅР°С‚Р°: '+divpriz/1000+',000$ Р·Р° '+(1000-tplace-dnum2*100)+' РјРµСЃС‚Рѕ.</i>').fontsize(1)
+				divpriztext = 	('<i>*1 - бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontsize(1)
 			} else {
 				divprizmark = 	('<i>*1</i>').fontcolor('green').fontsize(1)
-				divpriztext = 	('<i>*1 - СѓС‡С‚РµРЅ Р±РѕРЅСѓСЃ РїРѕ РёС‚РѕРіР°Рј С‡РµРјРїРёРѕРЅР°С‚Р°: '+divpriz/1000+',000$ Р·Р° '+(1000-tplace-dnum2*100)+' РјРµСЃС‚Рѕ.</i>').fontcolor('green').fontsize(1)
+				divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
 			}
 		}
 
@@ -379,21 +382,21 @@ function EditFinance(school,divpriz,dteams,dtour){
 		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>')
 		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>')
 
-		var preparedhtml = '<tr><th width=40%></th><th width=30% class=back3 colspan=2>РўРµРєСѓС‰РёР№ '+cur.fid+' Р¤РР”</th>'
-		if(fin.fid != cur.fid) preparedhtml += '<th width=30% class=back3 colspan=2>РџСЂРѕРіРЅРѕР· РЅР° '+fin.fid+' Р¤РР”</th>'
-		else if(finance[1]['Р—Р°СЂРїР»Р°С‚С‹'] == 0 && cur.zp > zp*10) preparedhtml += '<th width=30% class=back3 colspan=2>Р’ СЃР»РµРґСѓСЋС‰РµРј СЃРµР·РѕРЅРµ</th>' //bgcolor=#A3DE8F
+		var preparedhtml = '<tr><th width=40%></th><th width=30% class=back3 colspan=2>Текущий '+cur.fid+' ФИД</th>'
+		if(fin.fid != cur.fid) preparedhtml += '<th width=30% class=back3 colspan=2>Прогноз на '+fin.fid+' ФИД</th>'
+		else if(finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) preparedhtml += '<th width=30% class=back3 colspan=2>В следующем сезоне</th>' //bgcolor=#A3DE8F
 		preparedhtml += '</tr>'
 		$('table#2, table#3').prepend(preparedhtml)
 
 		preparedhtml  = '<hr><table width=100% id="4">'
-		preparedhtml += '<tr><td width=40%><b>РџР»СЋСЃ\\РњРёРЅСѓСЃ</b></td>'
+		preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
 		preparedhtml += '<td width=15% align=right>' + (format(cur.plusminus)).bold() + '</td><td></td>'
 
 		if(fin.fid != cur.fid) preparedhtml += '<td width=15% align=right id="fplusminus">' + (format(fin.plusminus)).bold() + '</td><td></td>'
 		else preparedhtml += '<td width=15%></td><td></td>'
 
 		preparedhtml += '</tr>'
-		preparedhtml += '<tr><td><b>РќР° СЃС‡РµС‚Сѓ</b></td>'
+		preparedhtml += '<tr><td><b>На счету</b></td>'
 		preparedhtml += '<td align=right>' + (format(cur.bablo)).bold() + '</td><td></td>'
 		if(fin.fid != cur.fid) preparedhtml += '<td align=right id="fbablo">'+(format(fin.bablo)).bold() + '</td><td></td>'
 		preparedhtml += '</tr>'
@@ -403,14 +406,14 @@ function EditFinance(school,divpriz,dteams,dtour){
 		$('td[id=cur]:eq(7)').next().append(' ('+cur.schoolperc+')')
 
 		$('table#2 tr:eq(2) td:first').append((' <i>*3</i>').fontsize(1))
-		var ttt = '<i>*3 - СЃС‡РёС‚Р°РµРј С‡С‚Рѕ СѓР¶Рµ СЃС‹РіСЂР°РЅРЅРѕ РґРѕРјР°С€РЅРёС… РёРіСЂ:'
-		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;С‡РµРјРїРёРѕРЅР°С‚: '+curhometour+' (РјР°РєСЃРёРјСѓРј '+maxhometour+')'
-		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;РѕСЃС‚Р°Р»СЊРЅРѕРµ: <font size=1 id="cm">'+cm+'</font> (<a href="javascript:void(CountStad(\'-\'))">&ndash;</a> <a href="javascript:void(CountStad(\'+\'))">+</a>)'
+		var ttt = '<i>*3 - считаем что уже сыгранно домашних игр:'
+		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;чемпионат: '+curhometour+' (максимум '+maxhometour+')'
+		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;остальное: <font size=1 id="cm">'+cm+'</font> (<a href="javascript:void(CountStad(\'-\'))">&ndash;</a> <a href="javascript:void(CountStad(\'+\'))">+</a>)'
 		ttt += '</i><br>'
 		$('table#4').after(ttt.fontsize(1))
 
 		$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1))
-		$('table#4').after(('<i>*2 - РІ СЃРєРѕР±РєР°С… СѓРєР°Р·Р°РЅРѕ СЃРѕРѕС‚РЅРѕС€РµРЅРёРµ РІР»РѕР¶РµРЅРёР№ РІ С€РєРѕР»Сѓ РїРѕ СЃСЂР°РІРЅРµРЅРёСЋ СЃРѕ СЃРїРѕРЅСЃРѕСЂСЃРєРёРјРё.</i><br>').fontsize(1))
+		$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1))
 
 		$('table#2 tr:eq(3) td:first').append(divprizmark)
 
@@ -429,15 +432,15 @@ function EditFinance(school,divpriz,dteams,dtour){
 			$('td[id=fin]:eq(7)').html(format(fin.school).bold())
 			$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
 			$('table#4').after(divpriztext+'<br>')
-		}else if (finance[1]['Р—Р°СЂРїР»Р°С‚С‹'] == 0 && cur.zp > zp*10){
+		}else if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10){
 			var spraz = parseInt((sponsors - (cur.sponsors)/fin.fid)/1000)
 			if(spraz != 0){
 				var prev_sp = last_sp-spraz
 				debug('spraz='+spraz+', last_sp='+last_sp+', prev_sp='+prev_sp)
 				if (spraz>0) spraz = '+'+spraz
 				var nhtml = $('td.back4 > table td:eq(1)').html()
-				var sp_text = ('РЎРїРѕРЅСЃРѕСЂСЃРєРёРµ РєРѕРЅС‚СЂР°РєС‚С‹:<br><font color="red">'+prev_sp+',000$ РІ РР” / СѓС€РµРґС€РёР№</font>')
-				$('td.back4 > table td:eq(1)').html(nhtml.replace('РЎРїРѕРЅСЃРѕСЂСЃРєРёРµ РєРѕРЅС‚СЂР°РєС‚С‹:', sp_text))
+				var sp_text = ('Спонсорские контракты:<br><font color="red">'+prev_sp+',000$ в ИД / ушедший</font>')
+				$('td.back4 > table td:eq(1)').html(nhtml.replace('Спонсорские контракты:', sp_text))
 			}
 			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
 			$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())
@@ -477,7 +480,10 @@ function UrlValue(key,url){
 	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
 	return false
 }
-function debug(text) {if(deb) {debnum++;$('td.back4').append(debnum+'&nbsp;\''+text+'\'<br>');}}
+function debug(text) {
+	if (deb) { console.log(text); }
+}
+
 $().ready(function() {
    	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	var urltype = UrlValue('p')
@@ -486,9 +492,9 @@ $().ready(function() {
 	}else if(urltype == 'fin' && $('div.debug').length==0){
 		GetData2()
 		$('td.back4').prepend('<div id=debug style="display: none;"></div>')
-		$('#debug').load($('a:contains("РёР·РјРµРЅРёС‚СЊ")').attr('href') + ' span.text2b',function(){
+		$('#debug').load($('a:contains("изменить")').attr('href') + ' span.text2b',function(){
 			school = parseInt($('#debug').html().split(' ')[3])
-			if(!isNaN(school)) $('a:contains("РёР·РјРµРЅРёС‚СЊ")').before(' ' + format(school) + ' РІ РР” | ')
+			if(!isNaN(school)) $('a:contains("изменить")').before(' ' + format(school) + ' в ИД | ')
 			else school = 0
 			GetFinish('school',true)
 		})

@@ -4,12 +4,12 @@
 // @description		index.php
 // @include			http://*pefl.*/index.php
 // @include			http://*pefl.*/
-// @version		    1.0
+// @encoding	   windows-1251
 // ==/UserScript==
 
 $().ready(function(){
 
-//	$('td.back4 table:eq(0) table:eq(0) tr:eq(0)').after('<tr><td><img src="http://i.gyazo.com/a72fee13dfadf763f93d3c634e9cfb6e.png"></td></tr>');
+	console.log('index go...');
 
 	if($('table:eq(0)').attr('width')>=1000) {
 		$('td.back4 table:eq(0) tr:eq(0) > td:eq(1)').attr('width','250')

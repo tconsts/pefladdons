@@ -3,7 +3,7 @@
 // @namespace      pefl
 // @description    history page modification
 // @include        http://*pefl.*/hist.php?*
-// @version        1.0
+// @encoding	   windows-1251
 // ==/UserScript==
 
 function UrlValue(key,url){
@@ -54,15 +54,15 @@ if (type == 'p') {
 	{ 
 		var cols =  tbody.rows[i].cells;
 
-		if (cols[0].innerHTML.indexOf('РЎРµР·РѕРЅ') >= 0 ||
-			cols[0].innerHTML.indexOf('Р’СЃРµРіРѕ') >= 0) 	
+		if (cols[0].innerHTML.indexOf('Сезон') >= 0 ||
+			cols[0].innerHTML.indexOf('Всего') >= 0) 	
 		{
 			bCanParseStats = true;
 			continue;
 		} 
 
 		if (!bCanParseStats) 		
-			continue; // РЅРµ РґРѕР±СЂР°Р»РёСЃСЊ РµС‰Рµ РґРѕ РєР»СѓР±РѕРІ РІ СЃС‚Р°С‚РёСЃС‚РёРєРµ
+			continue; // не добрались еще до клубов в статистике
 
 		var iCurrentClubIndex = aPlayerStats.length - 1;
 
@@ -104,7 +104,7 @@ if (type == 'p') {
 		newCell.bgColor = "#88C274";
 	}
 
-	resRow.cells[0].innerHTML = "<b>РС‚РѕРіРѕ</b>";
+	resRow.cells[0].innerHTML = "<b>Итого</b>";
 	resRow.cells[2].innerHTML = "<b>"+nTotalGames+"</b>";
 	resRow.cells[3].innerHTML = "<b>"+nTotalGoals+"</b>";
 	resRow.cells[4].innerHTML = "<b>"+nTotalAssists+"</b>";
@@ -116,7 +116,7 @@ if (type == 'p') {
 	var ses = parseInt(localStorage.season, 10);
 	var day = parseInt(localStorage.gday.split('.')[1], 10);
 	if(!isNaN(ses)) text[0].value = ses+'.'+('00' + day).substr(-3,3)+': ';
-	else text[0].value = (day+1)+"Р№ РР”: ";
+	else text[0].value = (day+1)+"й ИД: ";
 	text[0].focus()
 } else {
 

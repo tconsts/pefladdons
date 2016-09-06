@@ -3,15 +3,12 @@
 // @namespace      pefl
 // @description    modification schedule page
 // @include        http://*pefl.*/plug.php?p=refl&t=last&j=*
-// @version        1.3
-
+// @encoding	   windows-1251
 // ==/UserScript==
 
 function UrlValue(key,url){
 	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) {
-		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	}
+	for (n in pf) { if (pf[n].split('=')[0] == key) return pf[n].split('=')[1]; }
 	return false
 }
 function returnDate(tmsp){
@@ -38,7 +35,7 @@ function showMatches(){
 	$('td.back4 table:first table:eq(1) tr').each(function(val){
 		$(this).find('td').attr('nowrap','')
 		if(val==0){
-			$(this).prepend('<td title="РРґРµС‚ РІ Р·Р°С‡РµС‚ СЃРІРµСЂС…СѓСЃС‚Р°Р»РѕСЃС‚Рё">РЎРЈ</td><td>РґР°С‚Р°</td>')
+			$(this).prepend('<td title="Идет в зачет сверхусталости">СУ</td><td>дата</td>')
 			$(this).find('td:eq(5)').attr('colspan',2)
 		}else{
 			$(this).prepend('<td></td><td nowrap></td>')
@@ -54,18 +51,18 @@ function showMatches(){
 					var t2u = ''
 					if(mch.ust!=undefined){
 						var ust = mch.ust.split('.')
-						t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(РїСЂРґ)' : '(Р°РєС‚) ' ).fontcolor('red') : '') //p.h a.h p
-						t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(РїСЂРґ)' : '(Р°РєС‚)' ).fontcolor('red') : '') //p.a a.a p
+						t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт) ' ).fontcolor('red') : '') //p.h a.h p
+						t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.a a.a p
 					}
 					$(this).find('td:eq(2)').append(t2u).html($(this).find('td:eq(2)').html().replace(' -',t1u+' -'))
-					$(this).find('td:eq(3)').append((mch.pen!=undefined ? '&nbsp;(Рї&nbsp;'+mch.pen+')' : ''))
+					$(this).find('td:eq(3)').append((mch.pen!=undefined ? '&nbsp;(п&nbsp;'+mch.pen+')' : ''))
 					$(this).find('td:eq(6)').html('&nbsp;<img height=15 src="/system/img/w'+(mch.w==undefined?0:mch.w)+'.png"></img>&nbsp;'+(mch.r==undefined?'':mch.r))
 					delete matches[k]
 				}
 			}
 		}
 	})
-	// РґРѕСЂРёСЃРѕРІС‹РІР°РµРј Р·Р°Р±С‹С‚С‹Рµ РјР°С‚С‡Рё
+	// дорисовываем забытые матчи
 	$('td.back4 table:first table:eq(1) tr:last').attr('id','last')
 	var num=0
 	for(i in matches){
@@ -78,15 +75,15 @@ function showMatches(){
 			var t2u = ''
 			if(mch.ust!=undefined){
 				var ust = mch.ust.split('.')
-				t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(РїСЂРґ)' : '(Р°РєС‚) ' ).fontcolor('red') : '') //p.h a.h p
-				t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(РїСЂРґ)' : '(Р°РєС‚)' ).fontcolor('red') : '') //p.a a.a p
+				t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт) ' ).fontcolor('red') : '') //p.h a.h p
+				t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.a a.a p
 			}
 			html += '<td nowrap><a>'+(mch.hnm==undefined ? myteamname : mch.hnm)+'</a>'+t1u+' - <a>'+(mch.anm==undefined ? myteamname : mch.anm)+'</a>'+t2u+'</td>'
-			html += '<td nowrap>'+(mch.h!=undefined?'<a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">':'')+mch.res+(mch.h!=undefined?'</a>':'')+(mch.pen!=undefined ? ' (Рї '+mch.pen+')':'')+'</td>'
+			html += '<td nowrap>'+(mch.h!=undefined?'<a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">':'')+mch.res+(mch.h!=undefined?'</a>':'')+(mch.pen!=undefined ? ' (п '+mch.pen+')':'')+'</td>'
 			html += '<td><img src="skins/refl/img/i3.gif" width="15" border="0" align="absmiddle"></img></td>'
 			html += '<td></td>'
 			html += '<td nowrap>&nbsp;<img height=15 src="/system/img/w'+(mch.w==undefined?0:mch.w)+'.png"></img>&nbsp;'+(mch.r==undefined?'':mch.r)+'</td>'
-			html += '<td nowrap>'+(mch.tp!=undefined ? (mch.tp=='t'?'РўРѕРІР°СЂРёС‰РµСЃРєРёР№':mch.tp):'')+'</td>'
+			html += '<td nowrap>'+(mch.tp!=undefined ? (mch.tp=='t'?'Товарищеский':mch.tp):'')+'</td>'
 			html += '</tr>'
 			$('td.back4 table:first table:eq(1) tr'+(mch.h==undefined ? ':eq(0)':'#last')).after(html)
 			num++

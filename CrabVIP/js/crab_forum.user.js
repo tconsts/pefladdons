@@ -3,7 +3,7 @@
 // @namespace      pefl
 // @description    remove not needed info from forum
 // @include        http://*pefl.*/forums.php?m=posts*
-// @version        1.0
+// @encoding	   windows-1251
 // ==/UserScript==
 
 $().ready(function() {
@@ -14,30 +14,30 @@ $().ready(function() {
 	var txt = ''
 	$('td.back4 table tr:gt(2) td[width=128]').each(function(){
 
-		// span.text2b a(РёРјСЏ) img(С‡РµР»РѕРІРµС‡РµРє) img($, РјРѕР¶РµС‚ РЅРµ Р±С‹С‚СЊ)
+		// span.text2b a(имя) img(человечек) img($, может не быть)
 		if(forumflags[1]==1) $(this).find('span.text2b img').remove()
 
-		// a(РєР»СѓР±)
+		// a(клуб)
 		if(forumflags[2]==1) $(this).find('a[href^="plug.php?p=refl&t=k&j="]').remove()
 
-		// span.text1s a(РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ) br
-		if(forumflags[3]==1) $(this).find('span.text1s:has(a:contains(РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ))').remove()
+		// span.text1s a(Пользователь) br
+		if(forumflags[3]==1) $(this).find('span.text1s:has(a:contains(Пользователь))').remove()
 
-		// img(РіСЂСѓР·РѕРІРёС‡РєРё)
+		// img(грузовички)
 		if(forumflags[4]==1) {
 			$(this).find('span.text1s ~ img:first').remove()
 		}
 
-		// СЃРѕРѕР±С‰РµРЅРёР№ РєР»-РІРѕ
+		// сообщений кл-во
 //		if(forumflags[5]==1)
 
-		// СЂРµРїСѓС‚Р°С†РёСЏ a(-1) a(0) a(+1)
+		// репутация a(-1) a(0) a(+1)
 //		if(forumflags[6]==1)
 
-		// СЂРµРїР°[] 
+		// репа[] 
 //		if(forumflags[7]==1)
 
-		//img(СЂРµРїР°)
+		//img(репа)
 		if(forumflags[8]==1){
 			$(this).find('img[src*=system/smilies/]')
 				.next('br').remove().end()
@@ -45,7 +45,7 @@ $().ready(function() {
 		}
 
 		// " "
-		// img(Р°РІР°С‚Р°СЂРєР°, РјРѕР¶РµС‚ РЅРµ Р±С‹С‚СЊ)
+		// img(аватарка, может не быть)
 		if(forumflags[9]==1) {
 			$(this).find('img[src*=datas/users/]')
 				.prev('br').remove().end()
@@ -54,21 +54,21 @@ $().ready(function() {
 		}
 
 		// " "
-		// span.text1xs "РѕС‚РєСѓРґР°" img(flag) <br> РїСЂРѕС„РµСЃСЃРёСЏ <hr> img a(СЃР±РѕСЂРЅР°СЏ) <hr> СЂРµРіР°Р»РёРё
+		// span.text1xs "откуда" img(flag) <br> профессия <hr> img a(сборная) <hr> регалии
 		if(forumflags[10]==1) $(this).find('span.text1xs').remove()
 
 
 	});
 
-	//РїРѕРґРїРёСЃСЊ
+	//подпись
 	if(forumflags[11]==1) $('td.back4 table td.back3 span.text1xs').remove()
 
 
-	// from Р·Р°РіРѕР»РѕРІРѕРє
+	// from заголовок
 	if(forumflags[12]==1) $('td.back4 table tr:gt(2) td.back2:contains(From:)').each(function(){$(this).html($(this).html().replace('GMT','').split('<br>')[0])});
 
-	// РїРѕР¶Р°Р»РѕРІР°С‚СЊСЃСЏ РјРѕРґРµСЂР°С‚РѕСЂСѓ
-	if(forumflags[13]==1) $('td.back4 table tr:gt(2) td.back2:contains(РџРѕР¶Р°Р»РѕРІР°С‚СЊСЃСЏ РјРѕРґРµСЂР°С‚РѕСЂР°Рј)').each(function(){$(this).html($(this).html().split('<br>')[0])});
+	// пожаловаться модератору
+	if(forumflags[13]==1) $('td.back4 table tr:gt(2) td.back2:contains(Пожаловаться модераторам)').each(function(){$(this).html($(this).html().split('<br>')[0])});
 
 
 }, false);

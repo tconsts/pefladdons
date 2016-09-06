@@ -4,9 +4,8 @@
 // @description    modification training page
 // @include        http://*pefl.*/plug.php?p=training*
 // @include        http://*pefl.*/plug.php?p=trainplan*
-// @version        2.0
+// @encoding	   windows-1251
 // ==/UserScript==
-
 
 deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
@@ -20,49 +19,49 @@ var db = false
 var num_players = 0
 
 var itrains = []
-itrains[0]	= {level:2,	tr:1,	name: 'РћР±С‰Р°СЏ'}
-itrains[1]	= {level:0,	tr:2,	name: 'Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ Р¤РѕСЂРјС‹'}
-itrains[2]	= {level:1,	tr:3,	name: 'РРіСЂР° РЅР° 2 СЌС‚Р°Р¶Рµ'}
-itrains[3]	= {level:3,	tr:4,	name: 'РљСЂРѕСЃСЃ'}
-itrains[4]	= {level:1,	tr:5,	name: 'РќР°РІРµСЃС‹'}
-itrains[5]	= {level:1,	tr:6,	name: 'РћС‚Р±РѕСЂ РњСЏС‡Р°'}
-itrains[6]	= {level:1,	tr:7,	name: 'РћС‚СЂР°Р¶РµРЅРёРµ РЈРґР°СЂРѕРІ'}
-itrains[7]	= {level:1,	tr:8,	name: 'РџРµРЅР°Р»СЊС‚Рё'}
-itrains[8]	= {level:2,	tr:9,	name: 'РЎРїСЂРёРЅС‚'}
-itrains[9]	= {level:1,	tr:10,	name: 'РўРµС…РЅРёРєР°'}
-itrains[10]	= {level:4,	tr:11,	name: 'РўСЂРµРЅР°Р¶РµСЂС‹'}
-itrains[11] = {level:1,	tr:12,	name: 'РЈРіР»РѕРІС‹Рµ'}
-itrains[12] = {level:1,	tr:13,	name: 'РЈРґР°СЂС‹ РїРѕ Р’РѕСЂРѕС‚Р°Рј'}
-itrains[13] = {level:1,	tr:14,	name: 'РЁС‚СЂР°С„РЅС‹Рµ'}
-itrains[14] = {level:2,	tr:0,	name: 'РќРѕРІР°СЏ РїРѕР·РёС†РёСЏ SW'}
-itrains[15] = {level:2,	tr:0,	name: 'РќРѕРІР°СЏ РїРѕР·РёС†РёСЏ DF'}
-itrains[16] = {level:2,	tr:0,	name: 'РќРѕРІР°СЏ РїРѕР·РёС†РёСЏ DM'}
-itrains[17] = {level:2,	tr:0,	name: 'РќРѕРІР°СЏ РїРѕР·РёС†РёСЏ AM'}
-itrains[18] = {level:2,	tr:0,	name: 'РќРѕРІР°СЏ РїРѕР·РёС†РёСЏ FW'}
-itrains[19] = {level:2,	tr:0,	name: 'РќРѕРІР°СЏ РїРѕР·РёС†РёСЏ L'}
-itrains[20] = {level:2,	tr:0,	name: 'РќРѕРІР°СЏ РїРѕР·РёС†РёСЏ C'}
-itrains[21] = {level:2,	tr:0,	name: 'РќРѕРІР°СЏ РїРѕР·РёС†РёСЏ R'}
+itrains[0]	= {level:2,	tr:1,	name: 'Общая'}
+itrains[1]	= {level:0,	tr:2,	name: 'Восстановление Формы'}
+itrains[2]	= {level:1,	tr:3,	name: 'Игра на 2 этаже'}
+itrains[3]	= {level:3,	tr:4,	name: 'Кросс'}
+itrains[4]	= {level:1,	tr:5,	name: 'Навесы'}
+itrains[5]	= {level:1,	tr:6,	name: 'Отбор Мяча'}
+itrains[6]	= {level:1,	tr:7,	name: 'Отражение Ударов'}
+itrains[7]	= {level:1,	tr:8,	name: 'Пенальти'}
+itrains[8]	= {level:2,	tr:9,	name: 'Спринт'}
+itrains[9]	= {level:1,	tr:10,	name: 'Техника'}
+itrains[10]	= {level:4,	tr:11,	name: 'Тренажеры'}
+itrains[11] = {level:1,	tr:12,	name: 'Угловые'}
+itrains[12] = {level:1,	tr:13,	name: 'Удары по Воротам'}
+itrains[13] = {level:1,	tr:14,	name: 'Штрафные'}
+itrains[14] = {level:2,	tr:0,	name: 'Новая позиция SW'}
+itrains[15] = {level:2,	tr:0,	name: 'Новая позиция DF'}
+itrains[16] = {level:2,	tr:0,	name: 'Новая позиция DM'}
+itrains[17] = {level:2,	tr:0,	name: 'Новая позиция AM'}
+itrains[18] = {level:2,	tr:0,	name: 'Новая позиция FW'}
+itrains[19] = {level:2,	tr:0,	name: 'Новая позиция L'}
+itrains[20] = {level:2,	tr:0,	name: 'Новая позиция C'}
+itrains[21] = {level:2,	tr:0,	name: 'Новая позиция R'}
 
 var trains = [];
-//trains[0]	= {level:0,	tr:0,	name:'РїСѓСЃС‚Рѕ'};
-trains[1]	= {level:2,	tr:15,	ball:0,	name:'5x5 РЅР° Р±РѕР»СЊС€РѕРј РїРѕР»Рµ (СЃСЂРµРґ)'};
-trains[2]	= {level:2,	tr:16,	ball:1,	name:'Р—Р°С‰РёС‚Р° РІ РјРµРЅСЊС€РёРЅСЃС‚РІРµ (СЃСЂРµРґ)'};
-trains[3]	= {level:0,	tr:17,	ball:0,	name:'РР·СѓС‡РµРЅРёРµ СЃРѕРїРµСЂРЅРёРєР° (РЅРµС‚)'};
-trains[4]	= {level:0,	tr:0,	ball:0,	name:'РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Рµ'};
-trains[5]	= {level:2,	tr:18,	ball:0,	name:'РљРІР°РґСЂР°С‚С‹ (СЃСЂРµРґ)'};
-trains[6]	= {level:3,	tr:19,	ball:0,	name:'РљСЂРѕСЃСЃ (РІС‹СЃ)'};
-trains[7]	= {level:2,	tr:20,	ball:0,	name:'РњРёРЅРёС„СѓС‚Р±РѕР» (СЃСЂРµРґ)'};
-trains[8]	= {level:1,	tr:21,	ball:1,	name:'РћС„С„СЃР°Р№РґРЅС‹Рµ Р»РѕРІСѓС€РєРё (РЅРёР·)'};
-trains[9]	= {level:3,	tr:22,	ball:1,	name:'РџРµСЂРµС…РѕРґ РѕС‚ РѕР±РѕСЂРѕРЅС‹ Рє Р°С‚Р°РєРµ (РІС‹СЃ)'};
-trains[10]	= {level:2,	tr:23,	ball:1,	name:'РџРѕР·РёС†РёРѕРЅРЅР°СЏ Р°С‚Р°РєР° (СЃСЂРµРґ)'};
-trains[11]	= {level:3,	tr:24,	ball:1,	name:'РџСЂРµСЃСЃРёРЅРі (РІС‹СЃ)'};
-trains[12]	= {level:2,	tr:25,	ball:0,	name:'РЎРїСЂРёРЅС‚ (СЃСЂРµРґ)'};
-trains[13]	= {level:1,	tr:26,	ball:1,	name:'РЎС‚Р°РЅРґ.РїРѕР»РѕР¶РµРЅРёСЏ (Р°С‚Р°РєР°, РЅРёР·)'};
-trains[14]	= {level:1,	tr:27,	ball:1,	name:'РЎС‚Р°РЅРґ.РїРѕР»РѕР¶РµРЅРёСЏ (Р·Р°С‰РёС‚Р°, РЅРёР·)'};
-trains[15]	= {level:0,	tr:28,	ball:1,	name:'РўР°РєС‚РёС‡РµСЃРєРѕРµ Р·Р°РЅСЏС‚РёРµ (РЅРµС‚)'};
-trains[16]	= {level:4,	tr:29,	ball:0,	name:'РўСЂРµРЅР°Р¶РµСЂС‹ (РѕС‡.РІС‹СЃ)'};
-trains[17]	= {level:4,	tr:30,	ball:0,	name:'РўСЂРµРЅРёСЂРѕРІРѕС‡РЅС‹Р№ РјР°С‚С‡ (РѕС‡.РІС‹СЃ)'};
-trains[18]	= {level:-1,tr:31,	ball:0,	name:'РћС‚РґС‹С…'};
+//trains[0]	= {level:0,	tr:0,	name:'пусто'};
+trains[1]	= {level:2,	tr:15,	ball:0,	name:'5x5 на большом поле (сред)'};
+trains[2]	= {level:2,	tr:16,	ball:1,	name:'Защита в меньшинстве (сред)'};
+trains[3]	= {level:0,	tr:17,	ball:0,	name:'Изучение соперника (нет)'};
+trains[4]	= {level:0,	tr:0,	ball:0,	name:'Индивидуальные'};
+trains[5]	= {level:2,	tr:18,	ball:0,	name:'Квадраты (сред)'};
+trains[6]	= {level:3,	tr:19,	ball:0,	name:'Кросс (выс)'};
+trains[7]	= {level:2,	tr:20,	ball:0,	name:'Минифутбол (сред)'};
+trains[8]	= {level:1,	tr:21,	ball:1,	name:'Оффсайдные ловушки (низ)'};
+trains[9]	= {level:3,	tr:22,	ball:1,	name:'Переход от обороны к атаке (выс)'};
+trains[10]	= {level:2,	tr:23,	ball:1,	name:'Позиционная атака (сред)'};
+trains[11]	= {level:3,	tr:24,	ball:1,	name:'Прессинг (выс)'};
+trains[12]	= {level:2,	tr:25,	ball:0,	name:'Спринт (сред)'};
+trains[13]	= {level:1,	tr:26,	ball:1,	name:'Станд.положения (атака, низ)'};
+trains[14]	= {level:1,	tr:27,	ball:1,	name:'Станд.положения (защита, низ)'};
+trains[15]	= {level:0,	tr:28,	ball:1,	name:'Тактическое занятие (нет)'};
+trains[16]	= {level:4,	tr:29,	ball:0,	name:'Тренажеры (оч.выс)'};
+trains[17]	= {level:4,	tr:30,	ball:0,	name:'Тренировочный матч (оч.выс)'};
+trains[18]	= {level:-1,tr:31,	ball:0,	name:'Отдых'};
 
 function FixColors(){
 	if(UrlValue('p') == 'trainplan') {
@@ -75,7 +74,7 @@ function FixColors(){
 
 $().ready(function() {
 
-	if(deb) FixColors()
+//	if(deb) FixColors()
 
 	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 
@@ -85,7 +84,7 @@ $().ready(function() {
 
 	trn[0] = [today]
 
-	var srch="Р’С‹ РІРѕС€Р»Рё РєР°Рє "
+	var srch="Вы вошли как "
 	var curManagerNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 
 	$.get('training.php', {}, function(data){
@@ -106,7 +105,7 @@ $().ready(function() {
 		num_players 	= data_assoc["n"];
 		var trnManagerNick	= data_assoc["s0"];
 
-		// РґР°РЅРЅС‹Рµ Рѕ С‚СЂРµРЅРёСЂРѕРІРєР°С…
+		// данные о тренировках
 		for(i=1;i<=3;i++) {
 			var gri = []
 			for(j=1;j<=3;j++) gri[j] = parseInt(data_assoc["t" + i + j])
@@ -125,7 +124,7 @@ $().ready(function() {
 			}
 		}
 
-/**		// РґР°РЅРЅС‹Рµ Рѕ С‚СЂРµРЅРµСЂР°С…
+/**		// данные о тренерах
 	    trnman[0] = {}
 		trnman[0].name	= data_assoc["s0"]
 		trnman[0].group	= data_assoc["sg0"]
@@ -141,7 +140,7 @@ $().ready(function() {
 			}
 		}
 /**/
-		// С‚РµРїРµСЂСЊ СЃРѕР±РёСЂР°РµРј РґР°РЅРЅС‹Рµ РѕР± РёРіСЂРѕРєР°С…
+		// теперь собираем данные об игроках
 		for(i=0;i<num_players;i++) {
 			var tmpplayer = [];
 			var playerid 	= data_assoc["id"+i];
@@ -168,12 +167,12 @@ $().ready(function() {
 				itrains[training]['count'+pg+'2'] = 0
 				itrains[training]['count'+pg+'3'] = 0
 			}
-			// if РёРЅРґРёРІРёРґСѓР°Р»РєР°
+			// if индивидуалка
 			for(j=1;j<=3;j++){
 				if (tmpplayer["tr"+j]==4) itrains[training]['count'+pg+j] += 1
 			}
 
-			// if РЅРµ СЃР»РѕРјР°РЅ РЅРµ РѕС‚РґС‹С…Р°РµС‚ Рё РЅРµ ~
+			// if не сломан не отдыхает и не ~
 			if(tmpplayer["inj"] < 2 && tmpplayer["rest"] == 0 && tmpplayer["notrain"] == 0){
 				for(j=1;j<=3;j++) trains[tmpplayer["tr"+j]]['count'+pg+j] += 1
 			}
@@ -191,7 +190,7 @@ $().ready(function() {
 			tables.push($(val).attr('id'));
 		})
 		var text = '</script><script type="text/javascript" src="js/fcode2.js"></script>';
-		text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">РєРѕРґ РґР»СЏ С„РѕСЂСѓРјР°</a></div>';
+		text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">код для форума</a></div>';
 		$('td.back4 table table:gt(0):first').before(text);
 	}
 }, false)
@@ -201,13 +200,13 @@ function showData(){
 		debug('showData go')
 
 		var xtr = '<br><table id="trn" width=100% class=back1></td></tr>'
-		xtr += '<tr><td class=back1 colspan=15><b>РўСЂРµРЅРёСЂРѕРІРєР° РѕСЃРЅРѕРІС‹:</b>'
-		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>РіСЂ1</th><th class=back1></th><th colspan=3 width=13%>РіСЂ2</th><th class=back1></th><th colspan=3 width=13%>РіСЂ3</th><th class=back1></th><th width=5%>РЅР°Рі</th><th width=70%>С‚СЂРµРЅРёСЂРѕРІРєР°</th>'
-//		xtr += '<th width=30%>С‚СЂРµРЅРµСЂ(РіСЂ)</th>'
+		xtr += '<tr><td class=back1 colspan=15><b>Тренировка основы:</b>'
+		xtr += '<tr id="ball" bgcolor=white><th colspan=3 width=13%>гр1</th><th class=back1></th><th colspan=3 width=13%>гр2</th><th class=back1></th><th colspan=3 width=13%>гр3</th><th class=back1></th><th width=5%>наг</th><th width=70%>тренировка</th>'
+//		xtr += '<th width=30%>тренер(гр)</th>'
 		xtr += '</tr>'
-		xtr += '<tr id="ind1"><td class=back1 colspan=15><b>РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Рµ:</b></td></tr>'
-		xtr += '<tr id="ind2" bgcolor=white><th colspan=3>РіСЂ1</th><th class=back1></th><th colspan=3>РіСЂ2</th><th class=back1></th><th colspan=3>РіСЂ3</th><th class=back1></th><th>РЅР°Рі</th><th>С‚СЂРµРЅРёСЂРѕРІРєР°</th>'
-//		xtr += '<th>С‚СЂРµРЅРµСЂ(РіСЂ)</th>'
+		xtr += '<tr id="ind1"><td class=back1 colspan=15><b>Индивидуальные:</b></td></tr>'
+		xtr += '<tr id="ind2" bgcolor=white><th colspan=3>гр1</th><th class=back1></th><th colspan=3>гр2</th><th class=back1></th><th colspan=3>гр3</th><th class=back1></th><th>наг</th><th>тренировка</th>'
+//		xtr += '<th>тренер(гр)</th>'
 		xtr += '</tr>'
 		xtr += '</table>'
 		$('td.back4 table table:eq(1)').after(xtr)
@@ -287,11 +286,11 @@ function showData(){
 		var tn = [0,8,9,10,2,11,13,14]
 
 		$('td.back4 table table:eq(1)')
-			.before('<div align=right><a id="end" href="javascript:void(ShowEnd())">РџРѕРєР°Р·Р°С‚СЊ -20%</a>&nbsp;</div>')
+			.before('<div align=right><a id="end" href="javascript:void(ShowEnd())">Показать -20%</a>&nbsp;</div>')
 			.attr('width',"100%")
 //			.attr("bgcolor","A3DE8F")
 			.addClass('back2')
-			.prepend('<tr bgcolor=white><th>РќР° '+ num_players +' РёРіСЂРѕРєРѕРІ</th><th>' + ($('img[src="system/img/g/ball1.gif"]').length-1) + ' РјС‡</th></tr>')
+			.prepend('<tr bgcolor=white><th>На '+ num_players +' игроков</th><th>' + ($('img[src="system/img/g/ball1.gif"]').length-1) + ' мч</th></tr>')
 
 		$('td.back4 table table:eq(1) tr').each(function(i,val){
 			if (i>0) {
@@ -356,15 +355,15 @@ function showData(){
 
 		$('td.back4 table table:eq(1) tr:first').each(function(i,val){
 			$(val).prepend('<th>'+('*<sup>2</sup>').fontsize(1)+'</th>')
-			$('td.back4 table table:eq(1)').after('<div align=left><b>*<sup>2</sup></b> - РІР»РёСЏСЋС‚ С‚РѕР»СЊРєРѕ РЅР° 25%</div>')
+			$('td.back4 table table:eq(1)').after('<div align=left><b>*<sup>2</sup></b> - влияют только на 25%</div>')
 			$(val).prepend('<th>'+('*<sup>1</sup>').fontsize(1)+'</th>')
-			$('td.back4 table table:eq(1)').after('<br><div align=left><b>*<sup>1</sup></b> - РІР»РёСЏСЋС‚ С‚РѕР»СЊРєРѕ РЅР° 50%<br></div>')
+			$('td.back4 table table:eq(1)').after('<br><div align=left><b>*<sup>1</sup></b> - влияют только на 50%<br></div>')
 			$(val).prepend('<th></th>')
 		})
-		// show С‚СЂР°РІРјРёСЂРѕРІР°РЅС‹С… Рё РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°СЋС‰РёС…СЃСЏ
-		var prest = '<br><b>РќРµ С‚СЂРµРЅРёСЂСѓСЋС‚СЃСЏ С‚Р°Рє РєР°Рє РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°СЋС‚ С„РѕСЂРјСѓ:</b><br>'
-		var pinj  = '<br><b>РќРµ РјРѕРіСѓС‚ С‚СЂРµРЅРёСЂРѕРІР°С‚СЊСЃСЏ С‚Р°Рє РєР°Рє С‚СЂР°РІРјРёСЂРѕРІР°РЅС‹:</b><br>'
-		var pnot  = '<br><b>РќРµ РІР»РёСЏСЋС‚ РЅР° С‚СЂРµРЅРёСЂРѕРІРєРё РєРѕРјР°РЅРґРЅС‹С… РјСЏС‡РµР№:</b><br>'
+		// show травмированых и восстанавливающихся
+		var prest = '<br><b>Не тренируются так как восстанавливают форму:</b><br>'
+		var pinj  = '<br><b>Не могут тренироваться так как травмированы:</b><br>'
+		var pnot  = '<br><b>Не влияют на тренировки командных мячей:</b><br>'
 		var countrest = 0
 		var countinj  = 0
 		var countnot  = 0
@@ -376,7 +375,7 @@ function showData(){
 			}
 			if(pli.inj >1) {
 				countinj++
-				pinj  += '&nbsp;'+pli.inj+' Рґ. '+pli.firstname+ '&nbsp;'+pli.secondname+'<br>'
+				pinj  += '&nbsp;'+pli.inj+' д. '+pli.firstname+ '&nbsp;'+pli.secondname+'<br>'
 			}         
 			if(pli.notrain==1) {
 				countnot++

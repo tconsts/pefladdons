@@ -4,11 +4,9 @@
 // @description    Display sostav
 // @include        http://*pefl.*/*?sostav
 // @include        http://*pefl.*/*?sostav_n
-// @version        2.0
+// @encoding	   windows-1251
 // ==/UserScript==
 
-var deb = (localStorage.debug == '1' ? true : false)
-var debnum = 1
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var sostavteam = (location.search.substring(1) == 'sostav' ? true : false)
 
@@ -33,52 +31,52 @@ var fl = ['','#EF2929','#A40000','#FCE94F','#E9B96E','green','black']
 var selected = ''
 
 var skillnames = {
-sor:{rshort:'СЃСЂС‚',rlong:'РЎРѕСЂС‚РёСЂРѕРІРєР°',hidden:true},
-sostav:{rshort:'Р·РІ',rlong:'РРіСЂРѕРє РІ Р·Р°СЏРІРєРµ?'},
-flag:{rshort:'С„Р»',rlong:'РРЅС„РѕСЂРјР°С†РёРѕРЅРЅС‹Р№ С„Р»Р°Рі'},
-pfre:{rshort:'РёС€',rlong:'РСЃРїРѕР»РЅРёС‚РµР»Рё С€С‚СЂР°С„РЅС‹С…'},
-pcor:{rshort:'РёСѓ',rlong:'РСЃРїРѕР»РЅРёС‚РµР»Рё СѓРіР»РѕРІС‹С…'},
-ppen:{rshort:'РїРЅ',rlong:'РСЃРїРѕР»РЅРёС‚РµР»Рё РїРµРЅР°Р»СЊС‚Рё'},
-pcap:{rshort:'РєРї',rlong:'РљР°РїРёС‚Р°РЅС‹'},
-//СЃСЃ
-school:{rshort:'С€РєР»',rlong:'РЁРєРѕР»СЊРЅРёРє?'},
-srt:{rshort:'СЃРёР»Р°',rlong:'Р’ % РѕС‚ РёРґРµР°Р»Р°',type:'float'},
-stdat:{rshort:'СЃР°',rlong:'РРґРµС‚ РЅР° СЃС‚Рґ. Р°С‚Р°РєРё'},
-stdbk:{rshort:'СЃРѕ',rlong:'РРґРµС‚ РЅР° СЃС‚Рґ. РѕР±РѕСЂРѕРЅС‹'},
-nation:{rshort:'РєРЎС‚',rlong:'РљРѕРґ СЃС‚СЂР°РЅС‹'},
-natfull:{rshort:'СЃС‚СЂ',rlong:'РЎС‚СЂР°РЅР°',align:'left',nowrap:'1'},
-secondname:{rshort:'Р¤Р°Рј',rlong:'Р¤Р°РјРёР»РёСЏ',align:'left',nowrap:'1'},
-firstname:{rshort:'РРјСЏ',rlong:'РРјСЏ',align:'left',nowrap:'1'},
-age:{rshort:'РІР·СЂ',rlong:'Р’РѕР·СЂР°СЃС‚',str:true,strmax:40},
-id:{rshort:'id',rlong:'id РёРіСЂРѕРєР°'},
-internationalapps:{rshort:'РёРЎР±',rlong:'РРіСЂ Р·Р° СЃР±РѕСЂРЅСѓСЋ',str:true,strmax:500},
-internationalgoals:{rshort:'РіРЎР±',rlong:'Р“РѕР»РѕРІ Р·Р° СЃР±РѕСЂРЅСѓСЋ',str:true,strmax:500},
-contract:{rshort:'РєРЅС‚',rlong:'РљРѕРЅС‚СЂР°РєС‚',str:true,strmax:5},
-wage:{rshort:'Р·СЂРї',rlong:'Р—Р°СЂРїР»Р°С‚Р°',str:true,strmax:100,strinvert:100100},
-value:{rshort:'РЅРѕРј',rlong:'РќРѕРјРёРЅР°Р»',type:'value',str:true,strmax:50000000},
-corners:{rshort:'СѓРі',rlong:'РЈРіР»РѕРІС‹Рµ',str:true},
-crossing:{rshort:'РЅРІ',rlong:'РќР°РІРµСЃС‹',str:true},
-dribbling:{rshort:'РґСЂ',rlong:'Р”СЂРёР±Р»РёРЅРі',str:true},
-finishing:{rshort:'СѓРґ',rlong:'РЈРґР°СЂС‹',str:true},
-freekicks:{rshort:'С€С‚',rlong:'РЁС‚СЂР°С„РЅС‹Рµ',str:true},
-handling:{rshort:'СЂСѓ',rlong:'РРіСЂР° СЂСѓРєР°РјРё',str:true},
-heading:{rshort:'РіР»',rlong:'РРіСЂР° РіРѕР»РѕРІРѕР№',str:true},
-leadership:{rshort:'Р»Рґ',rlong:'Р›РёРґРµСЂСЃС‚РІРѕ',str:true},
-longshots:{rshort:'РґСѓ',rlong:'Р”Р°Р»СЊРЅРёРµ СѓРґР°СЂС‹',str:true},
-marking:{rshort:'РїРѕ',rlong:'РџРµСЂСЃ. РѕРїРµРєР°',str:true},
-pace:{rshort:'СЃРє',rlong:'РЎРєРѕСЂРѕСЃС‚СЊ',str:true},
-passing:{rshort:'РїСЃ',rlong:'РРіСЂР° РІ РїР°СЃ',str:true},
-positioning:{rshort:'РІРї',rlong:'Р’С‹Р±РѕСЂ РїРѕР·РёС†РёРё',str:true},
-reflexes:{rshort:'СЂРµ',rlong:'Р РµР°РєС†РёСЏ',str:true},
-stamina:{rshort:'РІРЅ',rlong:'Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ',str:true},
-strength:{rshort:'РјС‰',rlong:'РњРѕС‰СЊ',str:true},
-tackling:{rshort:'РѕС‚',rlong:'РћС‚Р±РѕСЂ РјСЏС‡Р°',str:true},
-vision:{rshort:'РІРё',rlong:'Р’РёРґРµРЅРёРµ РїРѕР»СЏ',str:true},
-workrate:{rshort:'СЂР±',rlong:'Р Р°Р±РѕС‚РѕСЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ',str:true},
-technique:{rshort:'С‚С…',rlong:'РўРµС…РЅРёРєР°',str:true},
-morale:{rshort:'РјСЂР»',rlong:'РњРѕСЂР°Р»СЊ',str:true,strmax:100},
-form:{rshort:'С„СЂРј',rlong:'Р¤РѕСЂРјР°',str:true,strmax:100},
-position:{rshort:'РџРѕР·',rlong:'РџРѕР·РёС†РёСЏ',align:'left',nowrap:'1'},
+sor:{rshort:'срт',rlong:'Сортировка',hidden:true},
+sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
+flag:{rshort:'фл',rlong:'Информационный флаг'},
+pfre:{rshort:'иш',rlong:'Исполнители штрафных'},
+pcor:{rshort:'иу',rlong:'Исполнители угловых'},
+ppen:{rshort:'пн',rlong:'Исполнители пенальти'},
+pcap:{rshort:'кп',rlong:'Капитаны'},
+//сс
+school:{rshort:'шкл',rlong:'Школьник?'},
+srt:{rshort:'сила',rlong:'В % от идеала',type:'float'},
+stdat:{rshort:'са',rlong:'Идет на стд. атаки'},
+stdbk:{rshort:'со',rlong:'Идет на стд. обороны'},
+nation:{rshort:'кСт',rlong:'Код страны'},
+natfull:{rshort:'стр',rlong:'Страна',align:'left',nowrap:'1'},
+secondname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
+firstname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
+age:{rshort:'взр',rlong:'Возраст',str:true,strmax:40},
+id:{rshort:'id',rlong:'id игрока'},
+internationalapps:{rshort:'иСб',rlong:'Игр за сборную',str:true,strmax:500},
+internationalgoals:{rshort:'гСб',rlong:'Голов за сборную',str:true,strmax:500},
+contract:{rshort:'кнт',rlong:'Контракт',str:true,strmax:5},
+wage:{rshort:'зрп',rlong:'Зарплата',str:true,strmax:100,strinvert:100100},
+value:{rshort:'ном',rlong:'Номинал',type:'value',str:true,strmax:50000000},
+corners:{rshort:'уг',rlong:'Угловые',str:true},
+crossing:{rshort:'нв',rlong:'Навесы',str:true},
+dribbling:{rshort:'др',rlong:'Дриблинг',str:true},
+finishing:{rshort:'уд',rlong:'Удары',str:true},
+freekicks:{rshort:'шт',rlong:'Штрафные',str:true},
+handling:{rshort:'ру',rlong:'Игра руками',str:true},
+heading:{rshort:'гл',rlong:'Игра головой',str:true},
+leadership:{rshort:'лд',rlong:'Лидерство',str:true},
+longshots:{rshort:'ду',rlong:'Дальние удары',str:true},
+marking:{rshort:'по',rlong:'Перс. опека',str:true},
+pace:{rshort:'ск',rlong:'Скорость',str:true},
+passing:{rshort:'пс',rlong:'Игра в пас',str:true},
+positioning:{rshort:'вп',rlong:'Выбор позиции',str:true},
+reflexes:{rshort:'ре',rlong:'Реакция',str:true},
+stamina:{rshort:'вн',rlong:'Выносливость',str:true},
+strength:{rshort:'мщ',rlong:'Мощь',str:true},
+tackling:{rshort:'от',rlong:'Отбор мяча',str:true},
+vision:{rshort:'ви',rlong:'Видение поля',str:true},
+workrate:{rshort:'рб',rlong:'Работоспособность',str:true},
+technique:{rshort:'тх',rlong:'Техника',str:true},
+morale:{rshort:'мрл',rlong:'Мораль',str:true,strmax:100},
+form:{rshort:'фрм',rlong:'Форма',str:true,strmax:100},
+position:{rshort:'Поз',rlong:'Позиция',align:'left',nowrap:'1'},
 /**
 games
 goals
@@ -110,9 +108,9 @@ fratingav
 vratingav
 training
 /**/
-inj:{rshort:'С‚СЂРІ',rlong:'РўСЂР°РІРјР°',str:true,strmax:0,strinvert:85},
-sus:{rshort:'РґСЃРІ',rlong:'Р”РёСЃРєРІР°Р»РёС„РёРєР°С†РёСЏ',str:true,strmax:0,strinvert:40},
-syg:{rshort:'СЃС‹Рі',rlong:'РЎС‹РіСЂР°РЅРЅРѕСЃС‚СЊ',str:true,strmax:20}
+inj:{rshort:'трв',rlong:'Травма',str:true,strmax:0,strinvert:85},
+sus:{rshort:'дсв',rlong:'Дисквалификация',str:true,strmax:0,strinvert:40},
+syg:{rshort:'сыг',rlong:'Сыгранность',str:true,strmax:20}
 /**
 agames
 agoals
@@ -125,10 +123,11 @@ $().ready(function() {
 
 	selected = getDataSelected().split(',')
 
-	var geturl = (sostavteam ? 'fieldnew3.php' : 'fieldnew3_n.php')
+	var geturl = (sostavteam ? 'fieldnew3.php' : 'fieldnew3_n.php');
+	var geturl2 = (sostavteam ? localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))]);
+
 	PrintTables(geturl)
 	$.get(geturl, {}, function(datatext){
-		debug('geturl')
 		var dataarray = datatext.split('&');
 		var i = 0;
 		var pid_num = 0
@@ -140,54 +139,51 @@ $().ready(function() {
 			var tmpvalue = tmparr[1];
 			dataall[tmpkey] = tmpvalue;
 
-			// РґР°РЅРЅС‹Рµ Рѕ Р·Р°СЏРІРєРµ
+			// данные о заявке
 			if (tmpkey.indexOf('pid') != -1) {
 				var tmpnum = parseInt(tmpkey.replace('pid',''))
-//				debug('pid:'+tmpkey+':'+tmpvalue+':'+tmpnum)
 				if(pid[tmpnum]==undefined) pid[tmpnum] = {}
 				pid[tmpnum].pid = tmpvalue;
 			}
-			// РёР·РЅР°С‡Р°Р»СЊРЅР°СЏ С‚Р°РєС‚РёРєР°
+			// изначальная тактика
 			if (tmpkey.indexOf('p0_') != -1) {
 				var tmpnum = parseInt(tmpkey.replace('p0_',''))
-//				debug('p0:'+tmpkey+':'+tmpvalue+':'+tmpnum)
 				pid[tmpnum].p0 = tmpvalue;
 			}
-			// СЃРјРµС‰РµРЅРёСЏ РёР·РЅР°С‡Р°Р»СЊРЅРѕР№ С‚Р°РєС‚РёРєРё 
+			// смещения изначальной тактики 
 			if (tmpkey.indexOf('pm0_') != -1) {
 				var tmpnum = parseInt(tmpkey.replace('pm0_',''))
 				pid[tmpnum].pm0 = tmpvalue;
 			}
-			// РёСЃРїРѕР»СЊРЅРёС‚РµР»Рё С€С‚СЂР°С„РЅС‹С…
+			// испольнители штрафных
 			if (tmpkey.indexOf('fre') != -1) {
 				stds.pfre[tmpvalue] = parseInt(tmpkey.replace('fre',''))
 			}
-			// РёСЃРїРѕР»СЊРЅРёС‚РµР»Рё СѓРіР»РѕРІС‹С…
+			// испольнители угловых
 			if (tmpkey.indexOf('cor') != -1) {
 				stds.pcor[tmpvalue] = parseInt(tmpkey.replace('cor',''))
 			}
-			// РёСЃРїРѕР»СЊРЅРёС‚РµР»Рё penalty
+			// испольнители penalty
 			if (tmpkey.indexOf('pen') != -1) {
 				stds.ppen[tmpvalue] = parseInt(tmpkey.replace('pen',''))
 			}
-			// РєР°РїРёС‚Р°РЅС‹
+			// капитаны
 			if (tmpkey.indexOf('cap') != -1) {
 				stds.pcap[tmpvalue] = parseInt(tmpkey.replace('cap',''))
 			}
 
-			// СЃРѕР±РёСЂР°РµРј z0 (РїРµСЂСЃ Р·Р°РґР°РЅРёСЏ 1Р№ С‚Р°РєС‚РёРєРё)
+			// собираем z0 (перс задания 1й тактики)
 			if (tmpkey.indexOf('z0') != -1) {
 				var tmpnum = parseInt(tmpkey.replace('z0_',''))
 				pid[tmpnum].z0bk = (tmpvalue>=513 ? true : false)
 				pid[tmpnum].z0at = ((tmpvalue>=213 && tmpvalue<500) || tmpvalue>=700 ? true : false)
 			}
 
-			// РєР»СЋС‡Рё СЃРєРёР»РѕРІ РёРіСЂРѕРєРѕРІ
+			// ключи скилов игроков
 			if(tmpkey == 'nation0') check = true
 			if(tmpkey == 'nation1') check = false
 			if(check) plkeys.push(tmpkey.replace('0',''))
 		}
-//		for(h in pid) debug(h+':'+pid[h].z0at+':'+pid[h].z0bk)
 		getPlayers()
 		GetData('positions')
 	})
@@ -196,17 +192,17 @@ $().ready(function() {
 function getDataSelected(){
 	var dataname = (sostavteam ? 'selected' : 'selectedn')
 	var datavalue = String(localStorage[dataname])
-	debug('getDataSelected:'+ dataname +':'+datavalue)
+
 	if(datavalue == 'undefined'){
 		datavalue = ''
-			+',1,2'			// Р»РёРЅРёСЏ Gk & SW
-			+',3,7,7,7,4'	// Р»РёРЅРёСЏ DF
-			+',5,8,8,8,6'	// Р»РёРЅРёСЏ DM
-			+',10,9,9,9,11'	// Р»РёРЅРёСЏ MF
-			+',13,12,12,12,14'	// Р»РёРЅРёСЏ AM
-			+',15,15,15'		// Р»РёРЅРёСЏ FW
-			+',16,17,18,19,0'	// РґРѕРї С‚Р°Р±Р»РёС†С‹ 1
-			+',20,21,22,23,0'	// РґРѕРї С‚Р°Р±Р»РёС†С‹ 2
+			+',1,2'			// линия Gk & SW
+			+',3,7,7,7,4'	// линия DF
+			+',5,8,8,8,6'	// линия DM
+			+',10,9,9,9,11'	// линия MF
+			+',13,12,12,12,14'	// линия AM
+			+',15,15,15'		// линия FW
+			+',16,17,18,19,0'	// доп таблицы 1
+			+',20,21,22,23,0'	// доп таблицы 2
 	}
 	return datavalue
 }
@@ -214,19 +210,12 @@ function getDataSelected(){
 function saveDataSelected(){
 	var dataname = (sostavteam ? 'selected' : 'selectedn')
 	var datavalue = selected.join(',')	
-	debug('saveDataSelected:'+datavalue)
+
 	localStorage[dataname] = datavalue
 }
 
-function debug(text) {
-	if(deb) {
-		if(debnum==1) $('body').append('<div id=debug>DEBUG INFROMATION<hr></div>')
-		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
-		debnum++;
-	}
-}
 
-function sSrt(i, ii) { // РїРѕ СѓР±С‹РІР°РЅРёСЋ
+function sSrt(i, ii) { // по убыванию
 	var s = 'sor'
     if 		(i[s] < ii[s])	return  1
     else if	(i[s] > ii[s])	return -1
@@ -234,7 +223,6 @@ function sSrt(i, ii) { // РїРѕ СѓР±С‹РІР°РЅРёСЋ
 }
 
 function GetData(dataname){
-	debug(dataname+':GetData')
 	refresh = false
 	var needsave = false
 	var data = []
@@ -256,32 +244,32 @@ function GetData(dataname){
 		}
 	}else{
 		needsave = true
-	// TODO: Р·Р°РіСЂСѓР·РёС‚СЊ РґРµС„РѕСѓР»С‚РЅС‹Рµ positions(from forum) РІРјРµСЃС‚Рѕ РєРѕРЅСЃС‚Р°РЅС‚ С‚СѓС‚.
+	// TODO: загрузить дефоултные positions(from forum) вместо констант тут.
 		data = [
 			{filter:'',		name:'&nbsp;',	num:0,	koff:'data=9107892,idealsk=15,idealage=40,idealval=50000000,idealnat=500,maxt=10'},
-/**  1 **/	{filter:'GK', 	name:'GK', 		num:5,	koff:'СЂРµ=СЂРµ*3,РІРї=РІРї*2,РіР»=РіР»*2,СЂСѓ=СЂСѓ*1.5,!РјС‰=РјС‰*0.7,!СЃРє=СЃРє*0.4,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/**  2 **/	{filter:'C SW',	name:'C SW',	num:5,	koff:'РІРї=РІРї*2,РѕС‚=РѕС‚*1.5,РіР»=РіР»,СЃРє=СЃРє,!РјС‰,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/**  3 **/	{filter:'L DF',	name:'L DF',	num:5,	koff:'РІРї=РІРї*2,РѕС‚=РѕС‚*1.5,СЃРє=СЃРє*1.5,РЅРІ=РЅРІ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/**  4 **/	{filter:'R DF',	name:'R DF',	num:5,	koff:'РІРї=РІРї*2,РѕС‚=РѕС‚*1.5,СЃРє=СЃРє*1.5,РЅРІ=РЅРІ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/**  5 **/	{filter:'L DM',	name:'L DM',	num:5,	koff:'РѕС‚=РѕС‚*1.5,СЃРє=СЃРє*1.5,РІРё=РІРё,РЅРІ=РЅРІ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/**  6 **/	{filter:'R DM',	name:'R DM',	num:5,	koff:'РѕС‚=РѕС‚*1.5,СЃРє=СЃРє*1.5,РІРё=РІРё,РЅРІ=РЅРІ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/**  7 **/	{filter:'C DF',	name:'C DF',	num:5,	koff:'РѕС‚=РѕС‚*3,РІРї=РІРї*3,РјС‰=РјС‰*1.5,СЃРє=СЃРє*1.5,РіР»=РіР»*1.5,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/**  8 **/	{filter:'C DM',	name:'C DM',	num:5,	koff:'РІРї=РІРї*3,РѕС‚=РѕС‚*3,РІРё=РІРё*2,СЂР±=СЂР±*2,!С‚С…=С‚С…*1.5,!РїСЃ=РїСЃ*1.5,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/**  9 **/	{filter:'C M',	name:'C M',		num:5,	koff:'РІРї=РІРї*2,РІРё=РІРё*2,РїСЃ=РїСЃ*2,С‚С…=С‚С…*1.5,!РѕС‚=РѕС‚,!РґСѓ=РґСѓ*0.5,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/** 10 **/	{filter:'L M',	name:'L M',		num:5,	koff:'СЃРє=СЃРє*2,РґСЂ=РґСЂ*2,РїСЃ=РїСЃ*2,РІРё=РІРё*2,!РЅРІ=РЅРІ*1.5,!РѕС‚=РѕС‚*1.5,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/** 11 **/	{filter:'R M',	name:'R M',		num:5,	koff:'СЃРє=СЃРє*2,РґСЂ=РґСЂ*2,РїСЃ=РїСЃ*2,РІРё=РІРё*2,!РЅРІ=РЅРІ*1.5,!РѕС‚=РѕС‚*1.5,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/** 12 **/	{filter:'C AM',	name:'C AM',	num:5,	koff:'РІРї=РІРї*2,РІРё=РІРё*2,РїСЃ=РїСЃ*2,С‚С…=С‚С…*2,!РґСѓ=РґСѓ,!РґСЂ=РґСЂ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/** 13 **/	{filter:'L AM',	name:'L AM',	num:5,	koff:'СЃРє=СЃРє*3,РґСЂ=РґСЂ*2.5,РЅРІ=РЅРІ*2,РІРё=РІРё*1.5,!РїСЃ=РїСЃ*1.5,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/** 14 **/	{filter:'R AM',	name:'R AM',	num:5,	koff:'СЃРє=СЃРє*3,РґСЂ=РґСЂ*2.5,РЅРІ=РЅРІ*2,РІРё=РІРё*1.5,!РїСЃ=РїСЃ*1.5,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/** 15 **/	{filter:'C FW',	name:'C FW',	num:5,	koff:'СѓРґ=СѓРґ*3,РІРї=РІРї*2,СЃРє=СЃРє*2,РґСЂ=РґСЂ*1.5,!РіР»=РіР»*1.5,!РјС‰=РјС‰*1.5,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
-/** 16 **/	{filter:'',		name:'РЎС‚Рґ. Р°С‚Р°РєРё',	num:18,	koff:'Р·РІ=Р·РІ*200,РіР»=РіР»*5,РІРї=РІРї,РјС‰=РјС‰*0.5,СЃР°,СЃРёР»Р°,С„Р»,Р¤Р°Рј,РѕС‚,СЃРє'},
-/** 17 **/	{filter:'',		name:'РЎС‚Рґ. РѕР±РѕСЂРѕРЅС‹',num:18,	koff:'Р·РІ=Р·РІ*200,РіР»=РіР»*5,РІРї=РІРї,РјС‰=РјС‰*0.5,СЃРѕ,СЃРёР»Р°,С„Р»,Р¤Р°Рј,РґСЂ,СЃРє'},
-/** 18 **/	{filter:'',		name:'РСЃРї. СѓРіР»РѕРІС‹С…',num:18,	koff:'Р·РІ=Р·РІ*200,СѓРі=СѓРі*10,РЅРІ=РЅРІ*2,РІРё,С„Р»,Р¤Р°Рј,РёСѓ,СЃРёР»Р°'},
-/** 19 **/	{filter:'',		name:'РСЃРї. С€С‚СЂР°С„РЅС‹С…',num:18,koff:'Р·РІ=Р·РІ*200,С€С‚=С€С‚*10,РґСѓ=РґСѓ,РЅРІ=РЅРІ,РІРё,С„Р»,Р¤Р°Рј,РёС€,СЃРёР»Р°'},
-/** 20 **/	{filter:'',		name:'РСЃРї. РїРµРЅР°Р»СЊС‚Рё',num:18,koff:'Р·РІ=Р·РІ*200,РІР·СЂ=РІР·СЂ,СѓРґ=СѓРґ*0.3,Р»Рґ=Р»Рґ*0.3,С„Р»,Р¤Р°Рј,РїРЅ,СЃРёР»Р°'},
-/** 21 **/	{filter:'',		name:'!РЎС‹РіСЂР°РЅРЅРѕСЃС‚СЊ',	num:0,	koff:'Р·РІ,СЃС‹Рі=СЃС‹Рі,С„Р»,Р¤Р°Рј,РџРѕР·,!СЃРёР»Р°'},
-/** 22 **/	{filter:'',		name:'!Р—Р°СЂРїР»Р°С‚С‹',	num:0,	koff:'Р·СЂРї=Р·СЂРї,РєРЅС‚=-РєРЅС‚*100,С„Р»,Р¤Р°Рј,!СЃРёР»Р°'},
-/** 23 **/	{filter:'',		name:'!РќРѕРјРёРЅР°Р»С‹',	num:0,	koff:'РЅРѕРј=РЅРѕРј,РІР·СЂ,С„Р»,Р¤Р°Рј,!СЃРёР»Р°'}
+/**  1 **/	{filter:'GK', 	name:'GK', 		num:5,	koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,фл,Фам,сила,зв'},
+/**  2 **/	{filter:'C SW',	name:'C SW',	num:5,	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,фл,Фам,сила,зв'},
+/**  3 **/	{filter:'L DF',	name:'L DF',	num:5,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,фл,Фам,сила,зв'},
+/**  4 **/	{filter:'R DF',	name:'R DF',	num:5,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,фл,Фам,сила,зв'},
+/**  5 **/	{filter:'L DM',	name:'L DM',	num:5,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,фл,Фам,сила,зв'},
+/**  6 **/	{filter:'R DM',	name:'R DM',	num:5,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,фл,Фам,сила,зв'},
+/**  7 **/	{filter:'C DF',	name:'C DF',	num:5,	koff:'от=от*3,вп=вп*3,мщ=мщ*1.5,ск=ск*1.5,гл=гл*1.5,фл,Фам,сила,зв'},
+/**  8 **/	{filter:'C DM',	name:'C DM',	num:5,	koff:'вп=вп*3,от=от*3,ви=ви*2,рб=рб*2,!тх=тх*1.5,!пс=пс*1.5,фл,Фам,сила,зв'},
+/**  9 **/	{filter:'C M',	name:'C M',		num:5,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*1.5,!от=от,!ду=ду*0.5,фл,Фам,сила,зв'},
+/** 10 **/	{filter:'L M',	name:'L M',		num:5,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,фл,Фам,сила,зв'},
+/** 11 **/	{filter:'R M',	name:'R M',		num:5,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,фл,Фам,сила,зв'},
+/** 12 **/	{filter:'C AM',	name:'C AM',	num:5,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*2,!ду=ду,!др=др,фл,Фам,сила,зв'},
+/** 13 **/	{filter:'L AM',	name:'L AM',	num:5,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,фл,Фам,сила,зв'},
+/** 14 **/	{filter:'R AM',	name:'R AM',	num:5,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,фл,Фам,сила,зв'},
+/** 15 **/	{filter:'C FW',	name:'C FW',	num:5,	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,фл,Фам,сила,зв'},
+/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,са,сила,фл,Фам,от,ск'},
+/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,со,сила,фл,Фам,др,ск'},
+/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'зв=зв*200,уг=уг*10,нв=нв*2,ви,фл,Фам,иу,сила'},
+/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'зв=зв*200,шт=шт*10,ду=ду,нв=нв,ви,фл,Фам,иш,сила'},
+/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'зв=зв*200,взр=взр,уд=уд*0.3,лд=лд*0.3,фл,Фам,пн,сила'},
+/** 21 **/	{filter:'',		name:'!Сыгранность',	num:0,	koff:'зв,сыг=сыг,фл,Фам,Поз,!сила'},
+/** 22 **/	{filter:'',		name:'!Зарплаты',	num:0,	koff:'зрп=зрп,кнт=-кнт*100,фл,Фам,!сила'},
+/** 23 **/	{filter:'',		name:'!Номиналы',	num:0,	koff:'ном=ном,взр,фл,Фам,!сила'}
 		]
 	}
 	//translate all to rshort and fix order
@@ -290,13 +278,11 @@ function GetData(dataname){
 		for(j in skillnames) changeValue(data[i].koff,j,skillnames[j].rshort)
 		if(data[i].order == ''|| data[i].order ==undefined) data[i].order = i
 		if(fixorder.indexOf(':'+data[i].order+':') !=-1) {
-			debug('fixed order:'+data[i].order+'->'+(posmaxorder + 1))
 			data[i].order = posmaxorder + 1
 		}
 		fixorder += data[i].order+':'
 		if(posmaxorder<parseInt(data[i].order)) {
 			posmaxorder = parseInt(data[i].order)
-			debug('new posmaxorder='+posmaxorder)
 		}
 
 	}
@@ -316,7 +302,6 @@ function getParams(){
 	for(k in params){
 		var pname = params[k].split('=')[0]
 		var pvalue = parseInt(params[k].split('=')[1])
-		debug('getParams:param='+pname+':value='+pvalue)
 		switch (pname){
 			case 'data': break;
 			case 'idealsk': plskillmax=pvalue; break;
@@ -331,13 +316,12 @@ function getParams(){
 							break;
 			case 'idealnat':skillnames.internationalapps.strmax = pvalue;
 							skillnames.internationalgoals.strmax = pvalue;break;
-			default: debug('getParams:param='+pname+':value='+pvalue+'(Unknown!)')
+			default:
 		}
 	}
 }
 
 function SaveData(dataname){
-	debug(dataname+':SaveData')
 	var data = []
 	var head = list[dataname].split(',')
 	switch (dataname){
@@ -392,7 +376,6 @@ function countPosition(posnum){
 			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
 		}
 		pl.posf = filterPosition(String(players[j].position), ps.filter)
-		//debug('countPosition:pl='+j+':pos='+players[j].position+':filter='+ps.filter+':posf='+pl.posf)
 		if(ps.filter=='') pl.posfempty = true
 		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined ? '!srt' : ''))
 		if(s!='' && pl[s]!=undefined) {
@@ -400,13 +383,9 @@ function countPosition(posnum){
 			pl[s] = (ps.strmax==0 ? 0 : (sfp[0]/ps.strmax)*100)
 			pl.sor = (ps.sormax==0 ? 0 : (sfp[1]/ps.sormax)*100)
 		}
-//		debug('countPosition:'+ps.filter+':'+'/'+ps.strmax+'='+pl.srt+'%:'+players[j].secondname)
-
 		pls.push(pl)
-//		if(i==positions.length-1) debug('countPosition:'+pl.id+':sostav='+pl.sostav+':str='+pl.srt)
 	}
 	positions[posnum].pls = pls.sort(sSrt)
-	debug('countPosition:ps.strmax('+posnum+')='+ps.strmax)
 }
 function checkKoff(kf0){
 	var res = kf0.replace(/!/g,'')
@@ -419,19 +398,16 @@ function checkKoff(kf0){
 			}
 		}
 		if(custom){
-			debug('checkKoff:kf0='+res+'(add custom parametr)')
 			skillnames[res] = {}
 			skillnames[res].rshort = res
-			skillnames[res].rlong = 'Custom РїР°СЂР°РјРµС‚СЂ'
+			skillnames[res].rlong = 'Custom параметр'
 			skillnames[res].type = 'custom'
 		}
 	}
-//	debug('checkKoff:kf0='+kf0+':res='+res)
 	return res
 }
 
 function changeValue(formula,name,value){
-	//debug('changeValue:formula='+formula+':name='+name+':value='+value)
 	if(formula.indexOf(name)!=-1 && name!=''){
 		var reg  = new RegExp(name, "g")
 		formula = formula.replace(reg,value)
@@ -442,14 +418,12 @@ function tryEval(formula){
 	try{
 		return eval(formula)
 	}catch(e){
-		debug('tryEval:error:'+formula+':'+e)
 		return 'x'
 	}
 }
 
 function countStrength(plid,pkoff){
 	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
-	//debug('countStrength:plid='+plid+':secondname='+(plid=='ideal' ? 'ideal' : pl.secondname)+':pkoff='+pkoff)
 	pkoff = pkoff.split(',')
 	var res  = 0
 	var res2 = 0
@@ -477,36 +451,30 @@ function countStrength(plid,pkoff){
 				count2 = changeValue(count2,p,0)
 				count2 = changeValue(count2,skillnames[p].rshort,0)
 			}
-			//debug('countStrength:------ count='+count)
 			var countval  = tryEval(count)
 			var countval2 = tryEval(count2)
 			if(countval=='x') {
-				debug('countStrength:countval==x, ERROR EXIT!')
-				if(plid=='ideal') alert('!!РћС€РёР±РєР° РїРѕРґСЃС‡РµС‚Р° РІ "'+pkoff[n]+'":('+koff[1]+')')
+				if(plid=='ideal') alert('!!Ошибка подсчета в "'+pkoff[n]+'":('+koff[1]+')')
 				return '0:0'
 			}
 			if(plid!='ideal' && skillnames[koffname].type=='custom') {
 				players[plid][koffname] = countval
-				debug('countStrength:'+koffname+'='+countval+'(РЅРѕРІС‹Р№ РїР°СЂР°РјРµС‚СЂ РёРіСЂРѕРєР° '+players[plid].secondname+')')
 			}
 			res  += countval
 			res2 += countval2
-			//debug('countStrength:- res='+res+'('+eval(count)+'):koff1='+koff[1])
 		}
 	}
-	//debug('countStrength:- res='+res)
 	return res2+':'+res
 }
 
 function krPrint(val,sn){
-//	debug('krPrint('+val+','+sn+')')
 	switch(skillnames[sn].type){
 		case 'float':
 			return (val).toFixed(1)
 		case 'value':
-			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'Рј'
+			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'м'
 			else if(val==0) return '??'
-			else return parseInt(val/1000)+'С‚'
+			else return parseInt(val/1000)+'т'
 		default:
 			return (skillnames[sn].str ? parseInt(val) : val)
 	}
@@ -520,12 +488,10 @@ function FillData(nt){
 		np = g
 		break
 	}
-	debug('FillData:nt='+nt+':ns='+ns+':np='+np+':length='+$('#select'+nt+' option:selected').length)
 
 	if(np!=0){
 		if(positions[np].pls==undefined) {
 //			refresh = true
-//			debug('FillData:positions['+np+'].pls=undefined (need refresh)')
 //			return false
 			countPosition(np)
 		}
@@ -560,7 +526,7 @@ function FillData(nt){
 					var skp = skillnames[p]
 					var align = (skp!=undefined && skp.align!=undefined ? ' align='+skp.align : '')
 					var nowrap = (skp!=undefined && skp.nowrap!=undefined ? ' nowrap' : '')
-					//debug('FillData:'+nt+':'+pp+':'+p)
+
 					plhtml += '<td'+align+hidden+nowrap+'>'+font1
 					plhtml += krPrint(pl[pp],p)
 					plhtml += font2+'</td>'
@@ -581,12 +547,11 @@ function FillData(nt){
 	}
 	if(selected[nt]!=positions[np].order) {
 		if(np==0 && nt<=25){
-			debug('FillData:np=0 nt='+nt+'(selected РЅРµРЅР°РґРѕ Р·Р°РїРёСЃС‹РІР°С‚СЊ)')
+
 		}else{
 			selected[nt] = positions[np].order
 			saveDataSelected()
 		}
-//		debug('FillData('+nt+') -- '+selected[nt]+':selected='+selected.join(','))
 	}
 	MouseOff(nt)
 /**/
@@ -594,7 +559,6 @@ function FillData(nt){
 
 function getPlayers(){
 	var numPlayers = parseInt(dataall['n'])
-	debug('numPlayers:'+numPlayers)
 	for(i=0;i<numPlayers;i++){
 		var pl = {}
 		for(j in plkeys) {
@@ -606,7 +570,7 @@ function getPlayers(){
 				case 'wage':
 					val = (parseInt(val)==0 ? 100 : parseInt((val).replace(/\,/g,''))); break;
 				case 'value':
-					if(parseInt(val)==0) pl.school = true // Р·РЅР°С‡РёС‚ СЌС‚Рѕ С€РєРѕР»СЊРЅРёРє!
+					if(parseInt(val)==0) pl.school = true // значит это школьник!
 					val = parseInt((val).replace(/\,/g,''));break;
 //				default:
 			}
@@ -619,7 +583,7 @@ function getPlayers(){
 				pl.stdat = (pid[k].z0at ? '*' : '')
 				pl.stdbk = (pid[k].z0bk ? '*' : '')
 			}
-//			if(i==0) debug(k+':'+pid[k].z0at+':'+pid[k].z0bk)
+
 		}
 		for(k in stds) pl[k] = (stds[k][pl.id]!=undefined ? stds[k][pl.id] : '')
 
@@ -630,11 +594,9 @@ function getPlayers(){
 		else if(dataall['morale'+i]<80) pl.flag = 4
 		else if(dataall['value'+i]==0) pl.flag = 5
 
-//		debug(pl.secondname+':'+pl.flag)
 		players[pl.id] = pl
-		//debug('pl1:id='+pl.id+':name'+pl.secondname+':position='+pl.position)
 	}
-	// РџРѕРґРіСЂСѓР·РёС‚СЊ РёРіСЂРѕРєРѕРІ РёР· СЃРїРёСЃРєР° РјРѕРЅРёС‚РѕСЂРёРЅРіР° РµСЃР»Рё РёС… С‚СѓС‚ РЅРµС‚Сѓ РµС‰Рµ СЃ С„Р»Р°РіРѕРј "С‡СѓР¶РѕР№".
+	// Подгрузить игроков из списка мониторинга если их тут нету еще с флагом "чужой".
 	if(showscout){
 		var text1 = String(localStorage.peflplayer)
 		var pl2 = []
@@ -654,16 +616,12 @@ function getPlayers(){
 				players[pl2id].flag = 6
 				players[pl2id].syg = 0
 			}
-			//debug('pl2:id='+pl2[k].id+':name='+pl2[k].secondname+':position='+pl2[k].position)
 		}
 	}
 }
 
 function FillHeaders(){
-	debug('FillHeaders:maxtables='+maxtables)
-//	debug('FillHeaders:-- selected='+selected)
 	for(i=1;i<=maxtables;i++){
-//		if(i<4)	for(j in pid) debug(i+':'+j+':pid='+pid[j].pid+':p0='+pid[j].p0)
         var sel = false
 		var selnum = selected[i]
 		for(j in pid) if(pid[j].p0 == i) sel = true
@@ -690,7 +648,6 @@ function FillHeaders(){
 }
 
 function printToBackUp(){
-	debug('printToBackUp()')
 	var text = JSON.stringify(positions)
 		.replace(/\{/g,'\n{')
 		.replace(']','[/code][/spoiler]')
@@ -699,27 +656,26 @@ function printToBackUp(){
 }
 
 function fillPosEdit(num){
-	debug('fillPosEdit:num='+num)
 	var html = ''
 	html += '<table width=100% class=back1><tr valign=top><td width=150>'
 	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
-	html += '<option value=0'+(num==0 ? ' selected' :'')+'>--- РЎРѕР·РґР°С‚СЊ ---</option>'
-	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- РЎРѕР·РґР°С‚СЊ ---' : positions[i].name)+'</option>'
+	html += '<option value=0'+(num==0 ? ' selected' :'')+'>--- Создать ---</option>'
+	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
 	html += '</select></td>'
 	html += '<td><table width=100%>'
-	html += '<tr><th colspan=2 class=back2>РљРѕСЌС„С„РёС†РёРµРЅС‚</th></tr>'
-	html += '<tr><th width=10% align=right>РќР°Р·РІР°РЅРёРµ:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td></tr>'
-	html += '<tr><th align=right>РљРѕР»-РІРѕ:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"> РЎРєРѕР»СЊРєРѕ max РѕС‚РѕР±СЂР°Р¶Р°С‚СЊ(0=РІСЃРµ)</td></tr>'
-	html += '<tr><th align=right>Р¤РёР»СЊС‚СЂ:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="10" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"> "LC DF/DM"(РїСѓСЃС‚Рѕ=РІСЃРµ)</td></tr>'
+	html += '<tr><th colspan=2 class=back2>Коэффициент</th></tr>'
+	html += '<tr><th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td></tr>'
+	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"> Сколько max отображать(0=все)</td></tr>'
+	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="10" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"> "LC DF/DM"(пусто=все)</td></tr>'
 	html += '<tr><td colspan=2><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="50" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td></tr>'
 	html += '<tr><th colspan=2>&nbsp;</th></tr>'
 	html += '</table><br><table>'
-	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">РЎРѕС…СЂР°РЅРёС‚СЊ</th><td></td></tr>'
-//	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">РЈРґР°Р»РёС‚СЊ</th><td></td></tr>'
+	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
+//	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Удалить</th><td></td></tr>'
 	html += '</table></td>'
 	html += '<td><table width=100% align=top>'
-	html += '<tr><td>!</td><td colspan=2>Р·РЅР°С‡РёС‚ РїРѕ РґРµС„РѕСѓР»С‚Сѓ РїРѕР»Рµ РЅРµ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊ</td></tr>'
-	html += '<tr><td>=</td><td colspan=2>СЌС‚Рё СЃРєРёР»С‹ СѓС‡Р°РІСЃС‚РІСѓСЋС‚ РІ РїРѕРґСЃС‡РµС‚Рµ СЃРёР»С‹</td></tr>'
+	html += '<tr><td>!</td><td colspan=2>значит по дефоулту поле не отображать</td></tr>'
+	html += '<tr><td>=</td><td colspan=2>эти скилы учавствуют в подсчете силы</td></tr>'
 	for(m in skillnames) if(!skillnames[m].hidden) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
 	html += '</table></td></tr>'
 	html += '</table>'
@@ -727,26 +683,26 @@ function fillPosEdit(num){
 
 	html = '<table width=100% class=back1><tr valign=top>'
 	html += '<td width=50%><table width=100%>'
-	html += '<tr><th colspan=2 class=back2>РћСЃРЅРѕРІРЅС‹Рµ</th></tr>'
-	html += '<tr><th width=15% align=right nowrap>РЎ С„РѕСЂСѓРјР°:</th><td><input class=back1 style="border:1px solid;" id=iforum name="iforum" type="text" size="10" value="'+getforumid+'"></td></tr>'
-	html += '<tr><th width=15% align=right>РўР°Р±Р»РёС†:</th><td><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (РљРѕР»-РІРѕ РґРѕРї. С‚Р°Р±Р»РёС†)</td></tr>'
+	html += '<tr><th colspan=2 class=back2>Основные</th></tr>'
+	html += '<tr><th width=15% align=right nowrap>С форума:</th><td><input class=back1 style="border:1px solid;" id=iforum name="iforum" type="text" size="10" value="'+getforumid+'"></td></tr>'
+	html += '<tr><th width=15% align=right>Таблиц:</th><td><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (Кол-во доп. таблиц)</td></tr>'
 	html += '<tr><th colspan=2>&nbsp;</th></tr>'
 	html += '</table></td>'
 	html += '<td width=50%><table width=100%>'
-	html += '<tr><th colspan=2 class=back2>РРґРµР°Р»СЊРЅС‹Р№ РёРіСЂРѕРє</th></tr>'
-	html += '<tr><th width=15% align=right>РЎРєРёР»Р»С‹:</th><td><input class=back1 style="border:1px solid;" id=iskills name="iskills" type="text" size="10" value="'+plskillmax+'"></td></tr>'
-	html += '<tr><th width=15% align=right>РќРѕРјРёРЅР°Р»:</th><td><input class=back1 style="border:1px solid;" id=inominal name="inominal" type="text" size="10" value="'+skillnames.value.strmax+'"></td></tr>'
-	html += '<tr><th width=15% align=right>Р’РѕР·СЂР°СЃС‚:</th><td><input class=back1 style="border:1px solid;" id=iage name="iage" type="text" size="10" value="'+skillnames.age.strmax+'"></td></tr>'
-	html += '<tr><th width=15% align=right>РЎР±РѕСЂРЅР°СЏ:</th><td><input class=back1 style="border:1px solid;" id=inational name="inational" type="text" size="10" value="'+skillnames.internationalapps.strmax+'"> (РРіСЂ Рё РіРѕР»РѕРІ)</td></tr>'
+	html += '<tr><th colspan=2 class=back2>Идеальный игрок</th></tr>'
+	html += '<tr><th width=15% align=right>Скиллы:</th><td><input class=back1 style="border:1px solid;" id=iskills name="iskills" type="text" size="10" value="'+plskillmax+'"></td></tr>'
+	html += '<tr><th width=15% align=right>Номинал:</th><td><input class=back1 style="border:1px solid;" id=inominal name="inominal" type="text" size="10" value="'+skillnames.value.strmax+'"></td></tr>'
+	html += '<tr><th width=15% align=right>Возраст:</th><td><input class=back1 style="border:1px solid;" id=iage name="iage" type="text" size="10" value="'+skillnames.age.strmax+'"></td></tr>'
+	html += '<tr><th width=15% align=right>Сборная:</th><td><input class=back1 style="border:1px solid;" id=inational name="inational" type="text" size="10" value="'+skillnames.internationalapps.strmax+'"> (Игр и голов)</td></tr>'
 	html += '<tr><th colspan=2>&nbsp;</th></tr>'
 	html += '</table></td><tr>'
 	html += '<tr><td clospan=2><table>'
-	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">РЎРѕС…СЂР°РЅРёС‚СЊ</th><td></td></tr>'
+	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
 	html += '</table></td><tr>'
-	if(deb){
+//	if(deb){
 		html += '<tr><th colspan=2>&nbsp;</th></tr>'
-		html += '<tr><td colspan=2><b>Р‘РµРєР°Рї</b>(РІС‹РґРµР»РёС‚СЊ, СЃРєРѕРїРёСЂРѕРІР°С‚СЊ РЅР° С„РѕСЂСѓРј):<br><textarea class=back1 style="border:1px solid;" id=bk name="bk" cols="100" rows="20">'+printToBackUp()+'</textarea></td></tr>'
-	}
+		html += '<tr><td colspan=2><b>Бекап</b>(выделить, скопировать на форум):<br><textarea class=back1 style="border:1px solid;" id=bk name="bk" cols="100" rows="20">'+printToBackUp()+'</textarea></td></tr>'
+//	}
 	html += '</table>'
 	$('div#divedit').html(html)
 
@@ -754,13 +710,11 @@ function fillPosEdit(num){
 
 function PosChange(){
 	var selnum = $('#selpos option:selected').val()
-	debug('PosChange():'+selnum)
 	fillPosEdit(selnum)
 }
 function PosDel(){
 	var selnum = $('#selpos option:selected').val()
-	debug('PosDel:'+selnum)
-	if(selnum==0) {debug('PosDel:cancel');return false}
+	if(selnum==0) {return false;}
 	positions.splice(selnum,1)
 	SaveData('positions')
 	chMenu('tdsost')
@@ -786,7 +740,6 @@ function PosSaveAll(){
 		inational: ($('#inational').val() == '' ? 500 : $('#inational').val()),
 	}
 	if(pr.itables>30) pr.itables = 30
-	for(g in pr) debug('PosSave:g='+g+':pr[g]='+pr[g])
 
 	if(pr.iforum!=parseInt(pr.iforum) ||
 		pr.itables!=parseInt(pr.itables) ||
@@ -794,8 +747,7 @@ function PosSaveAll(){
 		pr.inominal!=parseInt(pr.inominal) ||
 		pr.iage!=parseInt(pr.iage) ||
 		pr.inational!=parseInt(pr.inational)){
-			debug('PosSave:pr wrong!')
-			alert('РќРµРїСЂР°РІРёР»СЊРЅРѕ РІРІРµРґРµРЅС‹ РїР°СЂР°РјРµС‚СЂС‹!')
+			alert('Неправильно введены параметры!')
 			return false
 	}
 	positions[0].koff = 'data='+pr.iforum+',idealsk='+pr.iskills+',idealage='+pr.iage+',idealval='+pr.inominal+',idealnat='+pr.inational+',maxt='+pr.itables
@@ -816,7 +768,6 @@ function PosSave(){
 	}else{
 		order = positions[num].order
 	}
-	debug('PosSave:num='+num)
 	var ps = {
 		name: 	$('#iname').val(),
 		num: 	($('#inum').val() == '' ? 0 : $('#inum').val()),
@@ -824,11 +775,11 @@ function PosSave(){
 		koff: 	$('#ikoff').val(),
 		order:	order
 	}
-	// РїСЂРѕРІР°Р»РёРґРёСЂРѕРІР°С‚СЊ РїРѕР»СЏ Рё РѕР±РЅРѕРІРёС‚СЊ
+	// провалидировать поля и обновить
 	if(ps.num!=parseInt(ps.num) ||
 		ps.name == '' ||
 		ps.koff == ''){
-			alert('РќРµРїСЂР°РІРёР»СЊРЅРѕ РІРІРµРґРµРЅС‹ РїР°СЂР°РјРµС‚СЂС‹!')
+			alert('Неправильно введены параметры!')
 			return false
 	}
 	positions[num] = ps
@@ -840,7 +791,7 @@ function PosSave(){
 }
 
 function chMenu(mid){
-	debug('chMenu('+mid+')')
+
 	switch (mid){
 		case 'tdedit':
 			$('th#tdsost,th#tddopt,th#tdkoff').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
@@ -882,17 +833,16 @@ function krOpen(){
 }
 
 function PrintTables(geturl) {
-	debug('PrintTables()')
 	krOpen()
 
-	var html = '<div align=right><a href="javascript:void(close())">Р·Р°РєСЂС‹С‚СЊ</a>&nbsp;</div>'
-	html += '<div align=right><a href="javascript:void(PosDrop())" >СЃР±СЂРѕСЃРёС‚СЊ РєРѕС„С‹</a>&nbsp;</div>'
+	var html = '<div align=right><a href="javascript:void(close())">закрыть</a>&nbsp;</div>'
+	html += '<div align=right><a href="javascript:void(PosDrop())" >сбросить кофы</a>&nbsp;</div>'
 	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
 	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
-	html += '<th id=tdsost width=130 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">РЎРѕСЃС‚Р°РІ+</th>'
-	html += '<th id=tddopt width=130 onmousedown="javascript:void(chMenu(\'tddopt\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Р”РѕРї. С‚Р°Р±Р»РёС†С‹</th>'
-	html += '<th id=tdkoff width=130 onmousedown="javascript:void(chMenu(\'tdkoff\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">РљРѕСЌС„РёС†РёРµРЅС‚С‹</th>'
-	html += '<th id=tdedit width=130 onmousedown="javascript:void(chMenu(\'tdedit\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">РќР°СЃС‚СЂРѕР№РєРё</th>'
+	html += '<th id=tdsost width=130 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
+	html += '<th id=tddopt width=130 onmousedown="javascript:void(chMenu(\'tddopt\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Доп. таблицы</th>'
+	html += '<th id=tdkoff width=130 onmousedown="javascript:void(chMenu(\'tdkoff\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Коэфициенты</th>'
+	html += '<th id=tdedit width=130 onmousedown="javascript:void(chMenu(\'tdedit\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Настройки</th>'
 	html += '<td style="border-bottom:1px solid;">&nbsp;</td><tr>'
 	html += '<tr><td style="border-left:1px solid;border-right:1px solid;border-bottom:1px solid;" colspan=6>'
 	html += '<br><table id=tablesost width=100% class=back1>' //#C9F8B7	#A3DE8F
@@ -931,7 +881,6 @@ function PrintAdditionalTables(){
 	var html = '<tr><td>'
 	html += '<table witdh=100% bgcolor=black><tr class=back2 align=center>'
 	for(i=26;i<=maxtables;i++){
-		debug('PrintAdditionalTables:i='+i+':i%5='+(i%5)+':mt='+maxtables)
 		html += PrintTd(i)
 		if(i%5==0 && i!=25 && i!=(maxtables)) html += '</tr></table><br><table witdh=100% bgcolor=black><tr class=back2 align=center>'
 	}
@@ -988,15 +937,15 @@ function ShowHelp(){
 	var html = ''
 	html += '<table class=back2>'
 	html += '<tr><th colspan=4>'+'HELP'.fontsize(1)+'</th></tr>'
-	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'РѕСЃРЅРѕРІР°'.fontsize(1)+'</td>'
-	html += '<td bgcolor=#BABDB6 colspan=2>'+'РІ Р·Р°СЏРІРєРµ'.fontsize(1)+'</td></tr>'
-	html += '<tr><td colspan=4><font color=red size=1>РЅРµ СЃРІРѕСЏ РїРѕР·РёС†РёСЏ</font></td></tr>'
-	html += '<tr><td bgcolor='+fl[1]+'></td><td>'+'С‚СЂРІ'.fontsize(1)+'</td>'
-	html += '<td bgcolor='+fl[2]+'></td><td>'+'РґСЃРє'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor='+fl[3]+'></td><td>'+'С„СЂРј<90'.fontsize(1)+'</td>'
-	html += '<td bgcolor='+fl[4]+'></td><td>'+'РјСЂР»<80'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor='+fl[5]+'></td><td>'+'С€РєР»'.fontsize(1)+'</td>'
-	html += '<td bgcolor='+fl[6]+'></td><td><font color=888A85>'+'С‡СѓР¶РѕР№'.fontsize(1)+'</font></td>'
+	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'основа'.fontsize(1)+'</td>'
+	html += '<td bgcolor=#BABDB6 colspan=2>'+'в заявке'.fontsize(1)+'</td></tr>'
+	html += '<tr><td colspan=4><font color=red size=1>не своя позиция</font></td></tr>'
+	html += '<tr><td bgcolor='+fl[1]+'></td><td>'+'трв'.fontsize(1)+'</td>'
+	html += '<td bgcolor='+fl[2]+'></td><td>'+'дск'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor='+fl[3]+'></td><td>'+'фрм<90'.fontsize(1)+'</td>'
+	html += '<td bgcolor='+fl[4]+'></td><td>'+'мрл<80'.fontsize(1)+'</td></tr>'
+	html += '<tr><td bgcolor='+fl[5]+'></td><td>'+'шкл'.fontsize(1)+'</td>'
+	html += '<td bgcolor='+fl[6]+'></td><td><font color=888A85>'+'чужой'.fontsize(1)+'</font></td>'
 	html += '</tr>'
 	html += '</table>'
 	return html
