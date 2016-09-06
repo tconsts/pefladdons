@@ -2,161 +2,123 @@
 // @name           peflmain
 // @namespace      pefl
 // @description    modify site
-// @include        http://www.pefl.*/*
-// @include        http://pefl.*/*
+// @include        http://*pefl.*/*
 // @exclude        http://*pefl.*/profile.php
 // @exclude        http://*pefl.*/auth.php
-// @version        1.5
 // @author         const
 // ==/UserScript==
 
-var headID = document.getElementsByTagName("head")[0];
-var source = 'http://pefladdons.googlecode.com/svn/trunk/'
-//var source = 'http://localhost/web/'
+var scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1:0').split(':'),
+scriptnames = [
+	'settings', 
+	'sostav', 
+	'player', 
+	'contracts', 
+	'team', 
+	'div', 
+	'', //  6 ReitChamps (removed)
+	'schedule', 
+	'finance', 
+	'', //  9 SostavNaMatch (removed)
+	'', // 10 ReitSchool (removed)
+	'', // 11 NN (removed)
+	'hist', 
+	'dov', 
+	'match', 
+	'index', 
+	'', // 16 Mail: removed
+	'train', 
+	'tournaments', 
+	'calendar', 
+	'forum', 
+	'ref', 
+	'adaptation',
+	'', // TV: removed
+	'', // reit int: removed
+	'school'
+],
+url2 = location.search.substring(1),
+t = UrlValue('t');
 
-// Show always
+console.log('crab.UrlValue: p(%s), t(%s)',UrlValue('p'),UrlValue('t'));
+
 var newScriptMenu = document.createElement('script');
 newScriptMenu.type = 'text/javascript';
-newScriptMenu.src = source+'peflmenu.js';
-headID.appendChild(newScriptMenu);
+newScriptMenu.src = chrome.extension.getURL('js/crab_funcs_std.js');
+document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
 
-var url1 = location.pathname.substring(1)
-var url2 = location.search.substring(1)
+var newScriptMenu = document.createElement('script');
+newScriptMenu.type = 'text/javascript';
+newScriptMenu.src = chrome.extension.getURL('js/crab_funcs_db.js');
+document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
 
-var scflag = '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
-if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflag = localStorage.scripts.split(':')
+AddScriptJS();
+switch (location.pathname.substring(1)) {
+	case 'forums.php':
+		if (UrlValue('m') == 'posts') { AddScriptJS(20); }
+		break;
+	
+	case 'index.php':
+	case '':
+		if (url2 == '') {AddScriptJS(15); }
+		if (url2 == 'settings') {AddScriptJS(0); }
+		if (url2 == 'sostav' || url2 == 'sostav_n') { AddScriptJS(1); }
+		if (url2 == 'adaptation') { AddScriptJS(22); }
+		break;
+		
+	case 'hist.php': AddScriptJS(12); break;
+	
+	case 'plug.php':
+		switch (UrlValue('p')) {
+			case 'refl':
+				if (t == 'p' || t == 'p2' || t == 'pp' || t == 'yp2' || t == 'yp') { AddScriptJS(2); }
+				if (t == 'k') { AddScriptJS(4); }
+				if (t == 's') { AddScriptJS(5); }
+				if (t == 'last') { AddScriptJS(7); }
+				if (t == 'dov') { AddScriptJS(13); }
+				if (t == 'if' || t == 'code') { AddScriptJS(14); }
+				if (t == 'cup' || t == 'ec' || t == 't' || t == 'f') { AddScriptJS(18); }
+				if (t == 'ref') { AddScriptJS(21); }
+				if (t == 'school') { AddScriptJS(25); }
+				break;
 
-// 0 Settings
-if(url2=='settings'){
-	var newScriptSettings = document.createElement('script');
-	newScriptSettings.type = 'text/javascript';
-	newScriptSettings.src = source+'peflsettings.js';
-	headID.appendChild(newScriptSettings);
-}
-// 1 Sostav
-if(scflag[1]==0 && (url2=='sostav' || url2=='sostav_n')){
-	var newScriptSostav = document.createElement('script');
-	newScriptSostav.type = 'text/javascript';
-	newScriptSostav.src = source+'peflsostav.js';
-	headID.appendChild(newScriptSostav);
+			case 'fin':
+				if (t == 'ctr') { AddScriptJS(3); }
+				if (!t) { AddScriptJS(8); }
+				break;
+				
+			case 'rules':
+				AddScriptJS(8);
+				break;
+				
+			case 'tr':
+				AddScriptJS(3);
+				break;
+			
+			case 'training':
+			case 'trainplan':
+				AddScriptJS(17);
+				break;
+			
+			case 'calendar':
+				AddScriptJS(19);
+				break;
+		}
+		break;
 }
 
-// 2 Player
-if(scflag[2]==0 && (url2.indexOf('p=refl&t=p')!=-1 || url2.indexOf('p=refl&t=yp')!=-1)){
-	var newScriptPlayer = document.createElement('script');
-	newScriptPlayer.type = 'text/javascript';
-	newScriptPlayer.src = source+'peflplayer.js';
-	headID.appendChild(newScriptPlayer);
+function AddScriptJS(flag) {
+	if(flag!=undefined && scflag[flag] == undefined) scflag[flag]=0;
+	if (flag == undefined || scflag[flag] == 0) {
+		var newScriptMenu = document.createElement('script');
+		newScriptMenu.type = 'text/javascript';
+		newScriptMenu.src = chrome.extension.getURL('js/crab_' + (flag == undefined ? 'common' : scriptnames[flag]) + '.user.js');
+		document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
+	}
 }
-//3 Contracts
-if(scflag[3]==0 && (url2.indexOf('p=fin&t=ctr&')!=-1 || url2.indexOf('p=tr&')!=-1)){
-	var newScriptContract = document.createElement('script');
-	newScriptContract.type = 'text/javascript';
-	newScriptContract.src = source+'peflcontracts.js';
-	headID.appendChild(newScriptContract);
+
+function UrlValue (key, url) {
+	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&');
+	for (n in pf) { if(pf[n].split('=')[0] == key) { return pf[n].split('=')[1]; }}
+	return false;
 }
-// 4 Team
-if(scflag[4]==0 && url2.indexOf('p=refl&t=k&j=')!=-1){
-	var newScriptTeam= document.createElement('script');
-	newScriptTeam.type = 'text/javascript';
-	newScriptTeam.src = source+'peflteam.js';
-	headID.appendChild(newScriptTeam);
-}
-//  5 DivTable
-if(scflag[5]==0 && url2.indexOf('p=refl&t=s&k=')!=-1){
-	var newScriptDiv = document.createElement('script');
-	newScriptDiv.type = 'text/javascript';
-	newScriptDiv.src = source+'pefldivtable.js';
-	headID.appendChild(newScriptDiv);
-}
-//  6 ReitChamps (removed)
-//  7 Shedule
-if(scflag[7]==0 && url2.indexOf('p=refl&t=last&j=')!=-1){
-	var newScriptShedule = document.createElement('script');
-	newScriptShedule.type = 'text/javascript';
-	newScriptShedule.src = source+'peflshedule.js';
-	headID.appendChild(newScriptShedule);
-}
-//  8 Finance
-if(scflag[8]==0 && (url2.indexOf('p=fin&z=')!=-1 || url2.indexOf('p=rules&z=')!=-1)){
-	var newScriptFin = document.createElement('script');
-	newScriptFin.type = 'text/javascript';
-	newScriptFin.src = source+'peflfinance.js';
-	headID.appendChild(newScriptFin);
-}
-//  9 SostavNaMatch (removed)
-// 10 ReitSchool (removed)
-// 11 NN (removed)
-// 12 History
-if(scflag[12]==0 && url1=='hist.php'){
-	var newScriptHist = document.createElement('script');
-	newScriptHist.type = 'text/javascript';
-	newScriptHist.src = source+'peflhist.js';
-	headID.appendChild(newScriptHist);
-}
-// 13 Doverie
-if(scflag[13]==0 && url2.indexOf('&t=dov&')!=-1){
-	var newScriptDov = document.createElement('script');
-	newScriptDov.type = 'text/javascript';
-	newScriptDov.src = source+'pefldoverie.js';
-	headID.appendChild(newScriptDov);
-}
-// 14 Match
-if(scflag[14]==0 && (url2.indexOf('&t=if&')!=-1 || url2.indexOf('&t=code&')!=-1)){
-	var newScriptMatch = document.createElement('script');
-	newScriptMatch.type = 'text/javascript';
-	newScriptMatch.src = source+'peflmatch.js';
-	headID.appendChild(newScriptMatch);
-}
-// 15 Index
-if(scflag[15]==0 && (url1=='index.php' || (url1=='' && url2==''))){
-	var newScriptIndex = document.createElement('script');
-	newScriptIndex.type = 'text/javascript';
-	newScriptIndex.src = source+'peflindex.js';
-	headID.appendChild(newScriptIndex);
-}
-// 16 Mail: removed
-// 17 Training
-if(scflag[17]==0 && (url2.indexOf('p=training')!=-1 || url2.indexOf('p=trainplan')!=-1)){
-	var newScriptTrain = document.createElement('script');
-	newScriptTrain.type = 'text/javascript';
-	newScriptTrain.src = source+'pefltraining.js';
-	headID.appendChild(newScriptTrain);
-}
-// 18 Tournaments
-if(scflag[18]==0 && (url2.indexOf('p=refl&t=cup&j=')!=-1 || url2.indexOf('p=refl&t=ec&j=')!=-1 || url2.indexOf('p=refl&t=t&j=')!=-1 || url2.indexOf('p=refl&t=f&j=')!=-1)){
-	var newScriptTours= document.createElement('script');
-	newScriptTours.type = 'text/javascript';
-	newScriptTours.src = source+'pefltournaments.js';
-	headID.appendChild(newScriptTours);
-}
-// 19 Calendar
-if(scflag[19]==0 && url2.indexOf('p=calendar&')!=-1){
-	var newScriptCal = document.createElement('script');
-	newScriptCal.type = 'text/javascript';
-	newScriptCal.src = source+'peflcalendar.js';
-	headID.appendChild(newScriptCal);
-}
-// 20 Forum
-if(scflag[20]==0 && url1=='forums.php' && url2.indexOf('m=posts')!=-1){
-	var newScriptForum = document.createElement('script');
-	newScriptForum.type = 'text/javascript';
-	newScriptForum.src = source+'peflforum.js';
-	headID.appendChild(newScriptForum);
-}
-// 21 referee
-if(scflag[21]==0 && url2.indexOf('t=ref&')!=-1){
-	var newScriptRef = document.createElement('script');
-	newScriptRef.type = 'text/javascript';
-	newScriptRef.src = source+'peflref.js';
-	headID.appendChild(newScriptRef);
-}
-// 22 adaptation
-if(scflag[22]==0 && url2=='adaptation'){
-	var newScriptAd = document.createElement('script');
-	newScriptAd.type = 'text/javascript';
-	newScriptAd.src = source+'pefladaptation.js';
-	headID.appendChild(newScriptAd);
-}
-// 23 tv: removed
-// 24 national teams ratings: removed
