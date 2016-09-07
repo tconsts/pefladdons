@@ -47,12 +47,20 @@ newScriptMenu.type = 'text/javascript';
 newScriptMenu.src = chrome.extension.getURL('js/crab_funcs_std.js');
 document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
 
+newScriptMenu.onload = function(){
+	var url=chrome.runtime.getURL("img/crab1.png");
+	var evt=document.createEvent("CustomEvent");
+	evt.initCustomEvent("getCrabImageUrlEvent", true, true, url);
+	document.dispatchEvent(evt);
+};
+
 var newScriptMenu = document.createElement('script');
 newScriptMenu.type = 'text/javascript';
 newScriptMenu.src = chrome.extension.getURL('js/crab_funcs_db.js');
 document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
 
 AddScriptJS();
+
 switch (location.pathname.substring(1)) {
 	case 'forums.php':
 		if (UrlValue('m') == 'posts') { AddScriptJS(20); }

@@ -1,3 +1,11 @@
+var crabImageUrl;
+
+document.addEventListener('getCrabImageUrlEvent', function (e)
+{
+    crabImageUrl=e.detail;
+});
+
+
 function debug(text) {
 	console.log(text);
 }
