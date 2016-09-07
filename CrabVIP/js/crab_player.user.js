@@ -16,6 +16,8 @@ var positions = []
 var list = {
 	positions: 'id,filter,name,num,koff'
 }
+var isOldRoster=false;
+
 function printStrench(){
 	if(positions.length==0) return false
 	var poses = []
@@ -335,7 +337,7 @@ function ShowAdaptation(plnat,tnat){
 				for(i in peflnation) if(parseInt(peflnation[i])==parseInt(tnat)) var natname = i;
 				txt+='<tr align=left><th>'+natname+'</th><td>'+(tad==10 ? '99,9' : (tad*6+2)+'%-'+(tad*6+40))+'% ('+tad+')</td></tr>'
 			}
-			txt+='</table>'
+			txt+='</table>';
 			$("#crabright").append('<br><br>'+txt)
 		});
 	}
@@ -419,6 +421,7 @@ function PrintValue(vlch){
 /**/
 }
 
+
 function ShowCar(n){
 	if ($('a#th2').html() == '+'){
 		$('tr#carpl'+n).show()
@@ -443,11 +446,39 @@ function ShowTable(n){
 function hist(rcode,rtype)
 	{ window.open('hist.php?id='+rcode+'&t='+rtype,'История','toolbar=0,location=0,directories=0,menuBar=0,resizable=0,scrollbars=yes,width=480,height=512,left=16,top=16'); }
 
+
 function sSkills(i, ii) { // Сортировка
     if 		(i[0] < ii[0])	return  1
     else if	(i[0] > ii[0])	return -1
     else					return  0
 }
+
+function ShowAll(){
+	$('td.back4 table:first table:not(#plheader):first td').each(function(){
+		$(this).removeAttr('class').find('img').removeAttr('style')
+	})
+}
+
+function ShowSkills(skl){
+	ShowAll()
+	if(compare == true) {
+		$('td.back4 table:first table:not(#plheader):first td').each(function(i,val){
+			if (i%3 == 0 && skl.indexOf($(val).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
+				$(val).attr('class','back1')
+					.next().attr('class','back1').find('img').hide().end()
+					.next().attr('class','back1').find('img').hide();
+			}
+		})
+	} else {
+		$('td.back4 table:first table:not(#plheader):first td:even').each(function(){
+			if (skl.indexOf($(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'')) == -1){
+				$(this).attr('class','back1')
+				.next().attr('class','back1').find('img').hide();
+			}
+		})
+	}
+}
+
 
 function OpenAll(){
 	if ($("#mydiv").attr('style')) $("#mydiv").removeAttr('style')
@@ -469,7 +500,7 @@ function PrintPlayers(cur){
 			var fname = String(players[i].firstname)
 			var plhref = (players[i].t==undefined || players[i].t == 'yp' ? '' : ' href="plug.php?p=refl&t='+players[i].t+'&j='+players[i].id+'&z='+players[i].hash+'"')
 			htmltext += '<tr><td nowrap><font size=1>'
-			htmltext += '<a id="compare'+i+'" href="javascript:void(CheckPlayer('+i+'))"><</a>|'
+			htmltext += '<a id="compare'+i+'" href="javascript:void(CheckPlayer'+(isOldRoster?'Old':'')+'('+i+'))"><</a>|'
 			htmltext += '<a href="javascript:void(RemovePlx('+i+'))">x</a>|'
 			htmltext += '<a'+(players[i].t == 'yp' ? '' : ' href="javascript:hist(\''+players[i].id+'\',\'n\')"')+'>и</a>|'
 			htmltext += players[i].id+'|'
@@ -494,6 +525,163 @@ function RememberPl(x){
 	if (x==0)	PrintPlayers(0)
 	else 		PrintPlayers()
 }
+
+
+function CheckPlayerOld(nn){
+	// Get data and compare players
+	ShowAll()
+	$('a#codeforforum').show()
+
+//	$('a[id="th2"]').html('+')
+	$('div#kar, div#plst, #th2, table#ph0, table#plst, table#debug').remove()
+
+	$('td.back4').prepend('<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>')
+	$('a#remember, a[id^="compare"]').removeAttr('href')
+	compare = true
+
+	var header = '<table width=100% id="plheader">'
+	// имя, команда
+	header += '<tr align=center><td width=50% valign=top>'
+	header += '<b>' + players[0].firstname + ' ' + players[0].secondname + '</b>'
+	header += (players[0].teamid != undefined ? ' (<a href="plug.php?p=refl&t=k&j='+players[0].teamid+'&z='+players[0].teamhash+'">' : ' (')
+	header += players[0].team
+	header += (players[0].teamid != undefined ? '</a>)' : ')')
+	header += '</td>'
+	header += '<td width=50% valign=top>'
+	header += '<b>' + players[nn].firstname + ' ' + players[nn].secondname + '</b>'
+	header += (players[nn].teamid != undefined ? ' (<a href="plug.php?p=refl&t=k&j='+players[nn].teamid+'&z='+players[nn].teamhash+'">' : ' (')
+	header += players[nn].team
+	header += (players[nn].teamid != undefined ? '</a>)' : ')')
+	header += '</td></tr>'
+	// возраст, гражданство, игры за сборные
+	header += '<tr align=center><td valign=top>'
+	header += players[0].age +' лет' + (players[0].natfull != ' ' ? ', ' + players[0].natfull : '')
+	if(	parseInt(players[0].internationalapps) != 0
+		|| parseInt(players[nn].internationalapps) != 0
+		|| parseInt(players[0].u21apps) != 0
+		|| parseInt(players[nn].u21apps) != 0)
+	{
+		header += ', ' + players[0].internationalapps +'('+players[0].u21apps+') матчей, '+players[0].internationalgoals+'('+players[0].u21goals+') голов'
+	}
+	header += '</td>'
+	header += '<td valign=top>'
+	header += players[nn].age +' лет'+ (players[nn].natfull != ' ' ? ', ' + players[nn].natfull : '')
+	if(	parseInt(players[0].internationalapps) != 0
+		|| parseInt(players[nn].internationalapps) != 0
+		|| parseInt(players[0].u21apps) != 0
+		|| parseInt(players[nn].u21apps) != 0)
+	{
+		header += ', ' + players[nn].internationalapps +'('+players[nn].u21apps +') матчей, '+players[nn].internationalgoals+'('+players[nn].u21goals+') голов'
+	}
+	header += '</td></tr>'
+	//контракты
+	header += '<tr align=center><td>'
+	if(players[0].wage != 0){
+		header += players[0].contract +' г. по '
+		header += (players[0].wage > 999 ? String((players[0].wage/1000).toFixed(3)).replace(/\./g,',') : players[0].wage)
+		header += '$ в ИД'
+	}
+	header += ' </td>'
+	header += '<td>'
+	if(players[nn].wage != 0){
+		header += players[nn].contract +' г. по '
+		header += (players[nn].wage > 999 ? String((players[nn].wage/1000).toFixed(3)).replace(/\./g,',') : players[nn].wage)
+		header += '$ в ИД'
+	}
+	header += ' </td></tr>'
+	// Номиналы
+	if( players[0].value != 0 || players[nn].value != 0){
+		header += '<tr align=center><td>'
+		if (players[0].value != 0)	header += 'Номинал: '+String(players[0].value < 1000000 ? (players[0].value/1000).toFixed(3) : (players[0].value/1000000).toFixed(3) + ',000').replace(/\./g,',')+'$'
+		header += ' </td>'
+		header += '<td>'
+		if (players[nn].value != 0)	header += 'Номинал: '+String(players[nn].value < 1000000 ? (players[nn].value/1000).toFixed(3) : (players[nn].value/1000000).toFixed(3) + ',000').replace(/\./g,',')+'$'
+		header += ' </td></tr>'
+	}
+	// позиция
+	header += '<tr align=center><td>'
+	header += '<b>' + players[0].position + '</b>'
+	if(players[0].newpos != '' && players[0].newpos != undefined) header += ' (' + players[0].newpos + ')'
+	header += '</td>'
+	header += '<td>'
+	header += '<b>' + players[nn].position + '</b>'
+	if(players[nn].newpos != '' && players[nn].newpos != undefined) header += ' (' + players[nn].newpos + ')'
+	header += '</td></tr>'
+	// умения
+	header += '<tr align=center><td>'
+	header += 'сс='+ players[0].sumskills
+	header += '</td>'
+	header += '<td>'
+	header += 'сс='+players[nn].sumskills
+	header += '</td></tr>'
+
+	header += '</table>'
+
+	$('td.back4 table:first center:first').remove()
+	$('div#th0').before(header)
+
+	var skillupsumm = 0
+	var skillupsumm2 = 0
+	// Skills:
+	$('td.back4 table:first table:not(#plheader):first td:even').each(function(i, val){
+		var skillname = sklfr[$(val).text()].elong
+		var skillvalue0 = players[0][skillname]
+		var skillvalue1 = (players[nn][skillname] == undefined ? '??' : players[nn][skillname])
+		var skillup0 = parseInt(skillvalue0)*7 + parseInt(ups[String(skillvalue0).split('.')[1]])
+		var skillup1 = parseInt(skillvalue1)*7 + parseInt(ups[String(skillvalue1).split('.')[1]])
+		var skillup2 = parseInt(skillvalue1)*7 + parseInt(ups[(String(skillvalue1).split('.')[1] == 'next' ? 'a1e' : String(skillvalue1).split('.')[1])])
+		var raz = parseInt(skillvalue0)-parseInt(skillvalue1)
+		skillupsumm += skillup0 - skillup1
+		skillupsumm2 += skillup0 - skillup2
+		var razcolor = 'red'
+		if(raz == 0 || isNaN(raz)) raz = '&nbsp;&nbsp;&nbsp;&nbsp;'
+		else if (raz>0) {
+				raz = '+' + raz
+				razcolor = 'green'
+		}
+		var skilltext0 = String(skillvalue0).split('.')[0]
+		skilltext0 += '<sup><font color="' + razcolor + '">'+raz+'</font></sup>'
+		if (String(skillvalue0).split('.')[1]){
+			skilltext0 += ' <img height="12" src="system/img/g/' + String(skillvalue0).split('.')[1] + '.gif">'
+		}
+		var skilltext = '<td width=10%>'
+		skilltext += String(skillvalue1).split('.')[0]
+		if (String(skillvalue1).split('.')[1]){
+			skilltext += ' <img height="12" src="system/img/g/' + String(skillvalue1).split('.')[1] + '.gif">'
+		}
+		skilltext += '</td>'
+		$(val)
+			.next().attr('width','10%')
+			.html(skilltext0)
+			.after(skilltext)
+	})
+	if(players[0].id == players[nn].id && (players[0].t == 'yp' || players[0].t == 'yp2')){
+		var skilltext =  '<tr><td colspan=6>&nbsp;</td></tr>'
+		skilltext += '<tr><td colspan=6 align=center><b>Изменения</b> (апы): '
+		skilltext +=  '<font color='+(skillupsumm < 0 ? 'red' : 'green')+'>'+ (skillupsumm > 0 ? '+' : '') + skillupsumm + '</font>'
+		skilltext += '</td></tr>'
+		skilltext += '<tr><td colspan=6 align=center><b>зел = жел</b> (апы): '
+		skilltext +=  '<font color="'+(skillupsumm2 < 0 ? 'red' : 'green')+'">'+ (skillupsumm2 > 0 ? '+' : '') + skillupsumm2 + '</font>'
+		skilltext += '</td></tr>'
+		skilltext += '<tr><td colspan=6>&nbsp;</td></tr>'
+		$('td.back4 table:first table:not(#plheader):eq(0)').append(skilltext)
+	}
+
+	$('td.back4 table:first table:not(#plheader):eq(1) tr:first td:gt(0)').attr('colspan','3').attr('align','center')
+	$('td.back4 table:first table:not(#plheader):eq(1) tr:gt(0)').each(function(i,val){
+		if(i!=1) $(val).find('td:eq(7)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['kk'+i]!=undefined ? players[nn]['kk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' class=back1 width=1%> </td>')
+		if(i!=1) $(val).find('td:eq(6)').after('<td'+(i==0 ? ' rowspan=2':'')+'>'+(players[nn]['zk'+i]!=undefined ? players[nn]['zk'+i] : '?')+'</td><td'+(i==0 ? ' rowspan=2':'')+' class=back1 width=1%> </td>')
+
+		$(val).find('td:eq(5)').after('<td>'+(parseFloat(players[nn]['sr'+i])==0 || players[nn]['sr'+i]==undefined ? '0,00' : String((parseFloat(players[nn]['sr'+i])).toFixed(2)).replace('.',','))+'</td><td class=back1 width=1%> </td>')
+		$(val).find('td:eq(4)').after('<td>'+(players[nn]['im'+i]!=undefined ? players[nn]['im'+i] : '?')+'</td><td class=back1 width=1%> </td>')
+		$(val).find('td:eq(3)').after('<td>'+(players[nn]['ps'+i]!=undefined ? players[nn]['ps'+i] : '?')+'</td><td class=back1 width=1%> </td>')
+		$(val).find('td:eq(2)').after('<td>'+(players[nn]['gl'+i]!=undefined ? players[nn]['gl'+i] : '?') +'</td><td class=back1 width=1%> </td>')
+		$(val).find('td:eq(1)').after('<td>'+(players[nn]['ig'+i]!=undefined ? players[nn]['ig'+i] : '?')+'</td><td class=back1 width=1%> </td>').before('<td class=back1 width=1%> </td>')
+	})
+		
+	return false
+}
+
 
 function CheckPlayer(nn){
 	// Get data and compare players
@@ -651,6 +839,203 @@ function CheckPlayer(nn){
 	return false
 }
 
+function CodeForForum(){
+	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
+	var pl = players[0]
+	var ptype = UrlValue('t')
+	var skillsshow		= ($('a#th0').html() == '+' ? false : true)
+	var seasonstatshow	= ($('a#th1').html() == '+' ? false : true)
+	var fullstatshow 	= ($('a#th2').html() == '+' ? false : true)
+	var lastplstatshow	= ($('a#plst').length>0 && $('a#plst').html() == '+' ? false : true)
+
+	$('td.back4 table:first table:not(#plheader):first img').removeAttr('style')
+	x += '<br><hr><b>Полный вариант</b>:<br>'
+	x += '<textarea rows="20" cols="80" readonly="readonly" id="CodeForForum">'
+	x += '[spoiler]'
+	x += '[table width=100% bgcolor=#C9F8B7][tr][td]\n[center]'
+	if (compare == true) {
+		x += $('table#plheader')
+			.find('a:contains("интересуются")').removeAttr('href').end()
+			.find('a[id="th0"]').remove().end()
+			.find('center, b, td').removeAttr('id').end()
+			.find('img').removeAttr('width').end()
+			.html()
+			.replace('\/flags\/','/flags/mod/')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/a href=\"/g,'url=')
+			.replace(/\/a/g,'/url')
+			.replace(/\&amp\;/g,'&')
+			.replace(/"/g,'')
+			.replace(/\[br\]/g,'\n')
+//		x += '\n'
+
+	} else {
+//		x += '[url=plug.php?' + location.search.substring(1) + ']#[/url] [b]'
+		x += '[url=plug.php?p=refl&t='+pl.t+'&j='+pl.id+'&z='+pl.hash+']#[/url] [b]'
+		x += $('td.back4 table center:first b:first')
+			.find('a[id="th0"]').remove().end()
+			.find('img').removeAttr('width').end()
+			.html()
+			.replace('\/flags\/','/flags/mod/')
+			.replace(/img src="/g,'img height=12]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/\<a\>интересуются\<\/a\>/g,'интересуются')
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/a href=\"/g,'url=')
+			.replace(/\/a/g,'/url')
+			.replace(/\&amp\;/g,'&')
+			.replace(/"/g,'')
+			.replace(/\[br\]/g,'\n')
+//			.replace(/\[sup\]/g,'(')
+//			.replace(/\[\/sup\]/g,')')
+			.replace(/font /g,'')
+			.replace(/font/g,'color')
+		if(ptype == 'yp' || ptype == 'yp2') x += '[/b]\n'+pl.position+'[b]'
+		if(pl.newpos != '' && pl.newpos != undefined) x += '[/b] (' +pl.newpos + ')[b]'
+		x += '\n\nУмения[/b](сс='+pl.sumskills
+		x += (pl.flag==5 ? ', школьник':'')
+		x += (pl.flag==7 ? ', молодёжь':'')
+		x += (pl.t=='p2' ? ', свободный':'')
+		x += ')[/center]'
+
+	}
+
+	// skills
+	if(skillsshow){
+		x += '\n'
+		x += $('td.back4 table table:not(#plheader):first')
+			.find('tr.back2').removeAttr('class').end()
+			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
+			.find('td.back1').removeAttr('class').attr('bgcolor','#C9F8B7').end()
+			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+//			.find('sup').remove().end()
+			.html()
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/<font /g,'[')
+			.replace(/\/font/g,'/color')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/ height=\"12\"/g,'')
+			.replace(/img src="/g,'img height=10]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/"/g,'')
+			.replace(/\n/g,'')
+	}
+	var y = x 
+	
+	// stat of season
+	if (seasonstatshow && (ptype == 'p' || ptype == 'pp')){
+		x += '\n[center][b]Статистика сезона[/b][/center]\n'
+		x += $('table#stat')
+			.find('tr.back2').removeAttr('class').end()
+			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
+			.find('td.back1').removeAttr('class').attr('bgcolor','#C9F8B7').end()
+			.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+			.html()
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/img src="/g,'img height=10]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/"/g,'')
+			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
+	}
+	// fullstat
+	if ($('table#ph0').html()!=null && fullstatshow && (ptype == 'p' || ptype == 'pp')){
+		x += '\n[center][b][url=hist.php?id=' + pl.id + '&t=p]Карьера[/url][/b][/center]\n'
+		x += $('table#ph0')
+			.find('tr.back2').removeAttr('class').end()
+			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
+			.find('img')
+				.removeAttr('ilo-full-src')		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+				.removeAttr('width')
+				.end()
+			.find('a#th2').remove().end()
+			.find('tr').removeAttr('style').removeAttr('id').end()
+			.html()
+			.replace(/<!-- [а-я] -->/g,'')
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/"/g,'')
+			.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
+	}
+	if($('table#plst').html()!=null && lastplstatshow){
+		x += '\n[center][b]Последние матчи[/b][/center]\n'
+		x += $('table#plst')
+			.find('tr.back2').removeAttr('class').end()
+			.find('tr.back3').removeAttr('class').attr('bgcolor','#A3DE8F').end()
+			.find('td.back1').removeAttr('class').attr('bgcolor','#C9F8B7').end()
+			.find('img')
+				.removeAttr('ilo-full-src')		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
+				.removeAttr('width')
+				.end()
+			.find('tr').removeAttr('style').removeAttr('id').end()
+			.html()
+			.replace(/<tbody>/g,'<table width=100%>')
+			.replace(/tbody/g,'table')
+			.replace(/<font /g,'[')
+			.replace(/\/font/g,'/color')
+			.replace(/a href=\"/g,'url=')
+			.replace(/\/a/g,'/url')
+			.replace(/\</g,'[')
+			.replace(/\>/g,']')
+			.replace(/img src="/g,'img]')
+			.replace(/.gif/g,'.gif[/img')
+			.replace(/.png/g,'.png[/img')
+			.replace(/"/g,'')
+			.replace('[img]system/img/refl/krest.gif[/img]','[color=red][b]Т[/b][/color]')
+			//.replace(/\[td\]\[\/td\]/g,'[td] [/td]')
+	}
+
+	x += '[/td][/tr][/table]'
+	x += '\n\n'
+	x +='[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
+	x += '[/spoiler]'
+	x += '</textarea><hr>'
+/**
+	x += '<b>Текстовый вариант:</b><br><br>'
+	x += pl.firstname + ' ' +pl.secondname+' (' + pl.team +')<br>'
+	x += pl.age +' лет, '+ pl.natfull+'<br>'
+	x += 'Контракт: '+pl.contract +' г., '+ pl.wage+' в игровой день<br>'
+	x += 'Номинал: '+pl.value +'<br>'
+	x += pl.position + ' (' + pl.newpos+ ')'+'<br>'
+	x += '<br>'
+	x += 'Умения ('+pl.sumskills+')<br>'
+	x += lp('Лидерство')		+parseInt(pl.leadership)+' '+lp('Дриблинг')		+parseInt(pl.dribbling)+'<br>'
+	x += lp('Удары')			+parseInt(pl.finishing)+' '	+lp('Игра в пас')	+parseInt(pl.passing)+'<br>'
+	x += lp('Видение поля')		+parseInt(pl.vision)+' '	+lp('Игра головой')	+parseInt(pl.heading)+'<br>'
+	x += lp('Навесы','.')		+parseInt(pl.crossing)+' '	+lp('Дальние удары')+parseInt(pl.longshots)+'<br>'
+	x += lp('Перс. опека')		+parseInt(pl.marking)+' '	+lp('Скорость')		+parseInt(pl.pace)+'<br>'
+	x += lp('Штрафные')			+parseInt(pl.freekicks)+' '	+lp('Выбор позиции')+parseInt(pl.positioning)+'<br>'
+	x += lp('Угловые')			+parseInt(pl.corners)+' '	+lp('Техника')		+parseInt(pl.technique)+'<br>'
+	x += lp('Мощь')				+parseInt(pl.strenght)+' '	+lp('Отбор мяча')	+parseInt(pl.tackling)+'<br>'
+	x += lp('Работоспособность')+parseInt(pl.workrate)+' '	+lp('Выносливость')	+parseInt(pl.stamina)+'<br>'
+	x += '<br>'
+	x += 'Форма: '+pl.form+'% | Мораль: '+pl.morale+'%<br>'
+/**/
+	$('td.back4').html(x)
+	$('td#crabglobalright').empty()
+
+	return true
+}
+
 function lp(txt){
 	var num = 19-txt.length
 	for(i=0;i<num;i++) txt += '_'
@@ -802,10 +1187,427 @@ function filterPosition(plpos,flpos){
 		return (pos0 && pos1 ? true : false)
 }
 
-$().ready(function() {
-/**/
-	if($('table#hd1').length==0) { return false; }
 
+function ShowLastStats(){
+	debug('LastStats()')
+	$('a#codeforforum').show()
+	if($('table#plst tr').length==0){
+		var matches = getJSONlocalStorage('matches2')
+		matches.sort(function(a,b){if(a!=null&&b!=null) return (((a.dt==undefined?(a.hnm!=undefined&&a.anm!=undefined?0:100000000):a.dt) + a.id*0.0000001) - ((b.dt==undefined?(b.hnm!=undefined&&b.anm!=undefined?0:100000000):b.dt) + b.id*0.0000001))})
+		var matchespl = getJSONlocalStorage('matchespl2')
+		var html = '<tr><td>нет данных</td></tr>'
+		if(matches && matchespl){
+			html = ''
+			var num = 1
+			for(i in matchespl){
+				var mpl = matchespl[i]
+//				debug(String(players[0].firstname)[0]+'.'+players[0].secondname + ':'+i)
+				if(i==String(players[0].firstname)[0]+'.'+players[0].secondname){
+					var matchpos = [,'GK',,
+					,,'SW',,,
+					'R DF','C DF','C DF','C DF','L DF',
+					'R DM','C DM','C DM','C DM','L DM',
+					'R M','C M','C M','C M','L M',
+					'R AM','C AM','C AM','C AM','L AM',
+					,'FW','FW','FW',,
+					,'FW','FW','FW',,
+					'L AM','C AM','C AM','C AM','R AM',
+					'L M','C M','C M','C M','R M',
+					'L DM','C DM','C DM','C DM','R DM',
+					'L DF','C DF','C DF','C DF','R DF',
+					,,'SW',,,
+					,'GK']
+
+					for(j in matches){
+						var mch = matches[j]
+						if(mpl[mch.id]!=undefined){
+							var mchpl = mpl[mch.id]
+							var date = '&nbsp;'
+							if(mch.dt!=undefined){
+								var dt = new Date(mch.dt*100000)
+								mdate = parseInt(dt.getDate())
+								mmonth = parseInt(dt.getMonth())+1
+								date =  (mdate<10?'0':'')+mdate+'.'+(mmonth<10?0:'')+mmonth//+ '.'+dt.getFullYear()
+							}
+							var type	= '&nbsp;'
+							if(mch.tp!=undefined){
+								switch(mch.tp){
+									case 't': type='Товарищеский';break;
+									//case 'c': type='Кубок'
+									default: type = mch.tp
+								}
+							}
+							var t1 	= (mch.hnm==undefined ? '<b>'+players[0].team+'</b>' : mch.hnm)
+							var t2 	= (mch.anm==undefined ? '<b>'+players[0].team+'</b>' : mch.anm)
+							var t1u = ''
+							var t2u = ''
+							if(mch.ust!=undefined){
+								var ust = mch.ust.split('.')
+								t1u = (ust[1]==undefined || ust[1]=='h' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.h a.h p
+								t2u = (ust[1]==undefined || ust[1]=='a' ? (ust[0]=='p' ? '(прд)' : '(акт)' ).fontcolor('red') : '') //p.a a.a p
+							}
+							var minute	= (mchpl.m==undefined ? (mch.m==undefined?'&nbsp;':mch.m) : mchpl.m)
+							var im		= (mchpl.im!=undefined ? true : false)
+							var mark	= (mchpl.mr!=undefined ? (im?'<b>':'')+mchpl.mr+(im?'</b>':'') : '&nbsp;')
+							var cp		= (mchpl.cp!=undefined ? 'кэп' : '')+'&nbsp;'
+							//var goals	= (mchpl.g!=undefined ? '<img src="system/img/refl/ball.gif" width=10></img>'+(mchpl.g==2 ? '<img src="system/img/refl/ball.gif" width=10></img>' : (mchpl.g>2 ? '('+mchpl.g+')' : '')) : '&nbsp;')
+							var goals	= (mchpl.g!=undefined ? mchpl.g : '&nbsp;')
+							var cards	= (mchpl.cr!=undefined ? '<img src="system/img/gm/'+mchpl.cr+'.gif"></img>' : '&nbsp;')
+//							cards		= cards + (mchpl.t==1 ? '&nbsp;<font color=red><b>T</b></font>':'')
+							cards		= cards + (mchpl.t==1 ? '&nbsp;<img src="system/img/refl/krest.gif" width=10></img>':'')
+							var inz		= (mchpl['in']!=undefined ? '<img src="system/img/gm/in.gif"></img>' : (minute<mch.m ? '<img src="system/img/gm/out.gif"></img>':'&nbsp;'))
+							var pos		= '&nbsp;'
+							if(mchpl.ps!=undefined){
+								pos = ''
+								var posarr = String(mchpl.ps).split(':')
+								for(n in posarr){
+									var posname = matchpos[parseInt(posarr[n])]
+									var red1 = ''
+									var red2 = ''
+									if(players[0].position && !filterPosition(players[0].position,posname)){
+										red1 = '<font color=red>'
+										red2 = '</font>'
+									}
+									pos	+= (n==0?'':',')+red1+posname+red2
+								}
+							}
+							minute = minute +'\''
+
+							var tr = '<tr class=back3>'
+							tr += '<td align=right>'+date+'</td>'
+							tr += '<td align=right>'+inz+minute+'</td>'
+							tr += '<td>'+pos+'</td>'
+							tr += '<td align=right>'+mark+'</td>'
+							tr += '<td align=center>'+goals+'</td>'
+							tr += '<td>'+cards+cp+'</td>'
+							//tr += '<td><img src="system/img/w'+(mch.w==undefined?0:mch.w)+'.png"></img> '+(mch.n!=undefined?'N':'')+'</td>'
+							tr += '<td align=right>'+t1+t1u+'</td>'
+							tr += '<td align=center>'+(mch.h!=undefined?'<a href="plug.php?p=refl&t=if&j='+mch.id+'&z='+mch.h+'">':'')+mch.res+(mch.h!=undefined?'</a>':'')+'</td>'
+							tr += '<td>'+t2+t2u+'</td>'
+							//tr += '<td>'+type+'</td>'
+							tr += '</tr>'
+							html = tr+html
+							num++
+						}
+					}
+					html = '<tr class=back2 height=20><td>N</td><td>мин</td><td>поз</td><td>рейт</td><td>голы</td><td>&nbsp;</td>'
+					//		+'<td>&nbsp;</td>'
+							+'<td colspan=3 align=center>матч</td>'
+					//		+'<td>турнир</td>'
+							+'</tr>'
+							+html
+					break
+				}
+			}
+		}
+		$('table#plst').append(html)
+	}
+	if ($('a#plst').html() == '+'){
+		$('table#plst tr').show()
+		$('a#plst').html('&ndash;')
+	}else{
+		$('table#plst tr').hide()
+		$('a#plst').html('+')
+	}
+}
+
+function doOldRoster () {
+	debug('размер0:'+$('table:eq(0)').attr('width'))
+	var bbig = false
+	if($('table:eq(0)').attr('width')>=1000) {
+		bbig = true
+		$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200)
+	}
+
+	$('td.back4 table table tr[bgcolor=#a3de8f]').removeAttr('bgcolor').addClass('back3')
+
+	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') return false
+	today = new Date()
+	todayTmst = today.valueOf()
+
+	// Draw left and right panels
+	var preparedhtml = ''
+	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr>'
+	preparedhtml += '<td id="crabgloballeft" width='+(bbig ? 0 : 200)+' valign=top></td>'
+	preparedhtml += '<td id="crabglobalcenter" valign=top></td>'
+	preparedhtml += '<td id="crabglobalright" width=200 valign=top>'
+	preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
+	preparedhtml += '</td></tr></table>'
+	$('body table.border:last').before(preparedhtml)
+
+	var ssp = 0
+
+
+	for(i in skillnames){
+		sklfr[skillnames[i].rlong] = skillnames[i]
+		sklfr[skillnames[i].rlong].elong = i
+	}
+	sklfr['Игра на выходах'] = sklfr['Игра головой']
+
+	// get player skills
+	var skillsum = 0
+	$('td.back4 table:first table:first td:even').each(function(){
+		var skillarrow = ''
+		var skillname = $(this).find('script').remove().end().html().replace(/<!-- [а-я] -->/g,'');
+		var skillvalue = parseInt($(this).next().find('script').remove().end().html().replace('<b>',''));
+		if ($(this).next().find('img').attr('src') != undefined){
+			skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
+		}
+		skillsum += (isNaN(skillvalue) ? 0 : skillvalue);
+		if(sklfr[skillname]!=undefined) players[0][sklfr[skillname].elong] = skillvalue + skillarrow;
+	})
+	if(players[0].heading==undefined) players[0].heading = '??'
+	if(players[0].handling==undefined) players[0].handling = '??'
+	if(players[0].reflexes==undefined) players[0].reflexes = '??'
+
+	players[0].sumskills = skillsum
+
+	//add sum of skills to page
+	$('td.back4 table center:first').append('<span class="forumcodetrigger">(сс='+String(skillsum)+')</span>')
+
+	//get player header info
+	var ms = $('td.back4 table center:first').html().replace('<b>','').replace('</b>','').replace(/<!-- [а-я] -->/g,'').split('<br>',6)
+	var j = 0
+
+	var name = ms[j].split(' (',1)[0].split(' <',1)[0]
+	if (name.indexOf(' ')!=-1){
+		players[0].firstname = name.split(' ',1)[0]
+		players[0].secondname = name.replace(players[0].firstname+' ' ,'')
+	} else {
+		players[0].firstname = ''
+		players[0].secondname = name
+	}	
+
+	players[0].team = ''
+	players[0].sale = 0
+
+	players[0].t = UrlValue('t')
+
+	if (players[0].t =='p' ||players[0].t =='pp') {
+		players[0].team		= $('td.back4 a:first').text()
+		players[0].teamid	= UrlValue('j',$('td.back4 a:first').attr('href'))
+		players[0].teamhash = UrlValue('z',$('td.back4 a:first').attr('href'))
+	} else if (players[0].t =='p2'){
+		players[0].team = 'свободный'
+	}
+	// школяр!
+	if (players[0].t == 'yp' || players[0].t == 'yp2') {
+		players[0].flag = 5
+	}
+	players[0].id  = UrlValue('j')
+	players[0].hash = UrlValue('z')
+	if($('a:[href^="plug.php?p=tr&t=ncyf&n=yf"]').length>0){
+		//значит молодежь
+		players[0].flag = 7
+	}
+
+ 	j++
+	if (ms[j].indexOf('в аренде') !=-1) j++
+	players[0].age = +ms[j].split(' ',1)[0]
+	if (ms[j].indexOf('(матчей')>-1){
+		players[0].natfull = ms[j].split(', ',2)[1].split(' (',1)[0]
+		players[0].internationalapps = +ms[j].split(', ',2)[1].split('матчей ',2)[1]
+		players[0].internationalgoals = +ms[j].split(', ',3)[2].split(' ',2)[1].replace(')','')
+		if (ms[j].indexOf('U21')>-1){
+			players[0].u21apps = +ms[j].split('/ U21 матчей ',2)[1].split(',',1)[0]
+			players[0].u21goals = +ms[j].split('/ U21 матчей ',2)[1].split(', голов ',2)[1].replace(')','')
+		} else {
+			players[0].u21apps = 0
+			players[0].u21goals = 0
+		}
+	} else {
+		players[0].natfull = ' '
+		players[0].internationalapps = 0
+		players[0].internationalgoals = 0
+		players[0].u21apps = 0
+		players[0].u21goals = 0
+	}
+//	$('td.back4').prepend('get '+players[0].internationalapps+players[0].u21apps +'<br>')
+	j++
+	if (ms[j].indexOf('Контракт:')!=-1) {
+		players[0].contract = +ms[j].split(' ',4)[1]
+		players[0].wage = +ms[j].split(' ',4)[3].replace(/,/g,'').replace('$','')
+		j++
+	} else {
+		if (UrlValue('t') == 'yp' || UrlValue('t') == 'yp2'){
+			players[0].contract = 21 - players[0].age
+			players[0].wage = 100
+		} else {
+			players[0].contract = 0
+			players[0].wage = 0
+		}
+	}
+	if (ms[j].indexOf('Номинал:') != -1) {
+		players[0].value = +ms[j].split(' ',2)[1].replace(/,/g,'').replace('$','')
+		j++
+	} else {
+		players[0].value = 0
+	}
+	players[0].valuech = 0
+
+	if (ms[j].indexOf('Клуб требует:') != -1) {
+		j++
+		players[0].sale = 1
+	}
+	players[0].position = ms[j]
+
+	$('td.back4 table:first table:eq(1) tr:gt(0)').each(function(i, val){
+		players[0]['ig'+i] = parseInt($(val).find('td:eq(1)').text())
+		players[0]['gl'+i] = parseInt($(val).find('td:eq(2)').text())
+		players[0]['ps'+i] = parseInt($(val).find('td:eq(3)').text())
+		players[0]['im'+i] = parseInt($(val).find('td:eq(4)').text())
+		players[0]['sr'+i] = parseFloat(($(val).find('td:eq(5)').text() == '' ? 0 : $(val).find('td:eq(5)').text()))
+	})
+
+	players[0].newpos = ''	
+	// get post-info
+	var ms2 = $('td.back4 > center:first').html()
+	if (ms2 != null){
+		if(ms2.indexOf('New pos:')!=-1) {
+			var x = ms2.split('New pos: ');
+			players[0].newpos = x[1].split('<')[0]
+			if(x[2]!=undefined) players[0].newpos = players[0].newpos+' ' + x[2].split('<')[0]
+			if(x[3]!=undefined) players[0].newpos = players[0].newpos+' ' + x[3].split('<')[0]
+			$('td.back4 table center:first b:first').after(' ('+players[0].newpos + ')')
+		}
+
+		var j2 = 0
+		ms2 = ms2.replace(/<!-- [а-я] -->/g,'').split('<br>')
+		players[0].form = +ms2[j2].split(': ',2)[1].split('%',1)[0]
+		players[0].morale = +ms2[j2].split(': ',3)[2].replace('%</i>','')
+		j2++;j2++;j2++;j2++
+		// Национальные турниры:
+		if(ms2[j2].split(': ',2)[0]=='Дисквалифицирован') j2++
+		players[0].zk0 = +ms2[j2].split(': ',2)[1]
+		j2++
+		players[0].kk0 = +ms2[j2].split(': ',2)[1]
+		j2++;j2++;j2++
+		// Международные турниры:
+		if(ms2[j2].split(': ',2)[0]=='Дисквалифицирован') j2++
+		players[0].zk2 = +ms2[j2].split(': ',2)[1]
+		j2++
+		players[0].kk2 = +ms2[j2].split(': ',2)[1]
+		j2++;j2++;j2++
+		// Сборная:
+		if(ms2[j2].split(': ',2)[0]=='Дисквалифицирован') j2++
+		players[0].zk3 = +ms2[j2].split(': ',2)[1]
+		j2++
+		players[0].kk3 = +ms2[j2].split(': ',2)[1]
+
+		players[0].zk4 = ' '
+		players[0].kk4 = ' '
+
+		$('td.back4 table:first table:eq(1) tr:first')
+			.find('td:eq(0)').attr('width','27%').end()
+			.find('td:eq(1)').attr('width','10%').end()
+			.find('td:gt(1)').attr('width','13%').end()
+			.find('td:last').attr('width','8%').end()
+			.append('<td width=8%>ЖК <img src="system/img/gm/y.gif"></img></td><td width=8%>КК <img src="system/img/gm/r.gif"></img></td>')
+		$('td.back4 table:first table:eq(1) tr:gt(0)').each(function(i,val){
+			if(i==0)		$(val).append('<td rowspan=2>'+players[0].zk0+'</td><td rowspan=2>'+players[0].kk0+'</td>')
+			else if(i==2)	$(val).append('<td>'+players[0].zk2+'</td><td>'+players[0].kk2+'</td>')
+			else if(i==3)	$(val).append('<td>'+players[0].zk3+'</td><td>'+players[0].kk3+'</td>')
+			else if(i==4)	$(val).append('<td></td><td></td>')
+		})
+	} else {
+		players[0].form = 0
+		players[0].morale = 0
+		for(i=0;i<=4;i++){
+			players[0]['ig'+i] = 0
+			players[0]['gl'+i] = 0
+			players[0]['ps'+i] = 0
+			players[0]['im'+i] = 0
+			players[0]['sr'+i] = 0
+			players[0]['zk'+i] = 0
+			players[0]['kk'+i] = 0
+		}
+
+	}
+
+	var mm = ''
+	// fill poss masive
+
+	var text3 = ''
+	text3 += '<br><b>Номинал+</b>: <b><sup><a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></sup></b><br>'
+	text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
+	text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">'+('Запомнить игрока').fontsize(1)+'</a><br>'
+	text3 += '<div id="compare"></div>'
+	text3 += '<br><br><a id="codeforforum" href="javascript:void(CodeForForum())" style="display:none">'+('Код для форума').fontsize(1)+'</a><br><br>'
+	text3 += '<b>Сила&nbsp;игрока</b><div id=str>'
+	text3 += '<i><font size=1>сходите в Состав+</font></i>'
+	text3 += '</div>'
+//	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
+
+	var hidden = 0
+	var pfs3pre = ''
+	var pflinkpre = ''
+/**
+	for (var s in posfilter) {
+		if (!isNaN(posfilter[s][2])) {
+			var linktext = String(posfilter[s][2]+':'+posfilter[s][1].replace(' ','&nbsp;'))
+			if (posfilter[s][0]<1 && hidden == 0) hidden = 1
+			if ( hidden ==1) {
+				hidden = 2
+				text3 += '<br><a id="mya" href="javascript:void(OpenAll())">...</a>'
+				text3 += '<div id="mydiv">'
+			}
+			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a href="javascript:void(ShowSkills(\''+posfilter[s][3]+'\'))">'+linktext.fontsize(1)+'</a>'
+		}
+		var pfs3pre = posfilter[s][3]
+		var pflinkpre = linktext
+	}
+
+	text3 += '</div>'
+/**/
+/**/
+	// Modify page and fill data
+	$('td.back4 script').remove()
+	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
+	$('#crabrighttable').addClass('border') 
+	$("#crabright").html(text3)
+	$("#mydiv").hide()
+	$('center:eq(1) ~ br:first').before('<div id="th0"><a id="th0" href="javascript:void(ShowTable(0))">&ndash;</a></div>').remove()
+	$('center:eq(2) ~ br').before('<div id="th1"><a id="th1" href="javascript:void(ShowTable(1))">&ndash;</a></div>').remove()
+
+	$('td.back4 table table:eq(1)').attr('id','stat')
+
+	// 1 апреля
+	if(players[0].teamid == parseInt(localStorage.myteamid)){
+		delete localStorage.oneid
+		var statsplayer = '<br><div id="plst" align=center>Последние матчи</div>'
+		statsplayer += '<div id="plst"><a id="plst" href="javascript:void(ShowLastStats())">+</a></div>'
+		statsplayer += '<table width=100% id="plst"></table>'
+		$('td.back4 table table:eq(1)').after(statsplayer)
+	}
+
+	// добавим ссылку на заметки
+	if(UrlValue('t')!='yp') $('td.back4'+(UrlValue('t')!='yp2' ? ' center:last' : '')).append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
+
+	// Get info fom Global or Session Storage
+	var text1 = String(localStorage.peflplayer)
+	if (text1 != 'undefined'){
+		var pl = text1.split(',');
+		for (i in pl) {
+			key = pl[i].split('=')
+			var pn = (key[0].split('_')[1] == undefined ? 2 : key[0].split('_')[1])
+			players[pn][key[0].split('_')[0]] = [key[1]]
+		}
+		PrintPlayers()
+	}
+
+	GetValue()
+	ShowAdaptation(players[0].natfull)
+	RelocateGetNomData()
+	GetData('positions')
+	printStrench()
+	
+	$('.forumcodetrigger').click(function() {
+		$('a#codeforforum').show();
+	});
+/**/	
+}
+
+function doNewRoster () {
 	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') { return false; }
 
 	// берем мерку какой сезон
@@ -1030,5 +1832,11 @@ $().ready(function() {
 	RelocateGetNomData();
 	GetData('positions');
 	printStrench();
+	
+}
 
+$().ready(function() {
+	if($('table#hd1').length==0) 
+		{ isOldRoster=true; doOldRoster();}
+	else {doNewRoster();}
 }, false)
