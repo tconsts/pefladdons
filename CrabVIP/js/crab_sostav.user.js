@@ -124,7 +124,7 @@ $().ready(function() {
 	selected = getDataSelected().split(',')
 
 	var geturl = (sostavteam ? 'fieldnew3.php' : 'fieldnew3_n.php');
-	var geturl2 = (sostavteam ? localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))]);
+	var geturl2 = (sostavteam ? 'jsonsostav.php?'+localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))]);
 
 	PrintTables(geturl)
 	$.get(geturl, {}, function(datatext){
@@ -185,7 +185,10 @@ $().ready(function() {
 			if(check) plkeys.push(tmpkey.replace('0',''))
 		}
 		getPlayers()
-		GetData('positions')
+		$.get(geturl2, {}, function(datatext2){
+			var obj = JSON.parse(datatext2);
+			GetData('positions',obj)
+		})
 	})
 })
 
@@ -222,7 +225,7 @@ function sSrt(i, ii) { // по убыванию
     return  0
 }
 
-function GetData(dataname){
+function GetData(dataname, obj){
 	refresh = false
 	var needsave = false
 	var data = []
@@ -294,7 +297,7 @@ function GetData(dataname){
 	fillPosEdit(0)
 	PrintAdditionalTables()
 	//for(i=1;i<positions.length;i++) countPosition(i)
-	FillHeaders()
+	FillHeaders(obj)
 	if(needsave) SaveData('positions')
 }
 function getParams(){
@@ -620,11 +623,14 @@ function getPlayers(){
 	}
 }
 
-function FillHeaders(){
+function FillHeaders(obj){
 	for(i=1;i<=maxtables;i++){
         var sel = false
 		var selnum = selected[i]
-		for(j in pid) if(pid[j].p0 == i) sel = true
+        for (j in obj.sostav1) {
+        	if (obj.sostav1[j].pos == i) sel = true
+        }
+		//for(j in pid) if(pid[j].p0 == i) sel = true
 
 		$('#select'+i).empty()
 		for(j in positions) {
