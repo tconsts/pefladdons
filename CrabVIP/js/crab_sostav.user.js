@@ -501,14 +501,18 @@ function FillData(nt){
 			countPosition(np)
 		}
 		var selpl = 0
-		for(h in jsonSostav.sostav1) if(jsonSostav.sostav1[h].pos == nt) selpl = jsonSostav.sostav[h]
+		if (jsonSostav.sostav1 != undefined) {
+			for(h in jsonSostav.sostav1) if(jsonSostav.sostav1[h].pos == nt) selpl = jsonSostav.sostav[h]
+		}
 		var html = '<table id=table'+nt+' width=100% border=0 rules=none>'
 		var head = true
 		var nummax = (positions[np].num==0 ? positions[np].pls.length : positions[np].num)
 		var numshow = 0
     	for(t=0;t<positions[np].pls.length;t++){
 			var pl = positions[np].pls[t]
-			var trbgcolor = (selpl==pl.id  ? ' bgcolor=white' : ((jsonSostav.sostav.indexOf(parseInt(pl.id))>0 && jsonSostav.sostav.indexOf(parseInt(pl.id)) < 12 ) ? ' bgcolor=#BABDB6' : ''))
+			if (jsonSostav.sostav != undefined){
+				var trbgcolor = (selpl==pl.id  ? ' bgcolor=white' : ((jsonSostav.sostav.indexOf(parseInt(pl.id))>0 && jsonSostav.sostav.indexOf(parseInt(pl.id)) < 12 ) ? ' bgcolor=#BABDB6' : ''))
+			}
 			var plhtml = '<tr align=right'
 			if((!pl.posf || numshow>=nummax) && selpl!=pl.id) 	plhtml += ' hidden abbr=wrong'
 			else numshow++
@@ -629,7 +633,7 @@ function FillHeaders(){
 	for(i=1;i<=maxtables;i++){
         var sel = false
 		var selnum = selected[i]
-        if (jsonSostav != undefined){
+        if (jsonSostav.sostav1 != undefined){
 	        for (j in jsonSostav.sostav1) {
 	        	if (jsonSostav.sostav1[j].pos == i) sel = true
 	        }
