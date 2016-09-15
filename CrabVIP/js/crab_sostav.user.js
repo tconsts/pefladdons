@@ -23,6 +23,7 @@ var tabslist = ''
 var maxtables = 25//25+10
 var showscout = true
 var refresh = false
+var jsonSostav = [];
 var list = {
 	positions: 'id,filter,name,num,koff,order'
 }
@@ -125,6 +126,10 @@ $().ready(function() {
 
 	var geturl = (sostavteam ? 'fieldnew3.php' : 'fieldnew3_n.php');
 	var geturl2 = (sostavteam ? 'jsonsostav.php?'+localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))]);
+	
+	$.get(geturl2, {}, function(datatext2){
+		jsonSostav = JSON.parse(datatext2);
+	})
 
 	PrintTables(geturl)
 	$.get(geturl, {}, function(datatext){
@@ -185,10 +190,7 @@ $().ready(function() {
 			if(check) plkeys.push(tmpkey.replace('0',''))
 		}
 		getPlayers()
-		$.get(geturl2, {}, function(datatext2){
-			var obj = JSON.parse(datatext2);
-			GetData('positions',obj)
-		})
+		GetData('positions')
 	})
 })
 
@@ -225,7 +227,7 @@ function sSrt(i, ii) { // по убыванию
     return  0
 }
 
-function GetData(dataname, obj){
+function GetData(dataname){
 	refresh = false
 	var needsave = false
 	var data = []
@@ -297,7 +299,7 @@ function GetData(dataname, obj){
 	fillPosEdit(0)
 	PrintAdditionalTables()
 	//for(i=1;i<positions.length;i++) countPosition(i)
-	FillHeaders(obj)
+	FillHeaders()
 	if(needsave) SaveData('positions')
 }
 function getParams(){
@@ -506,7 +508,7 @@ function FillData(nt){
 		var numshow = 0
     	for(t=0;t<positions[np].pls.length;t++){
 			var pl = positions[np].pls[t]
-			var trbgcolor = (selpl==pl.id || (positions[np].filter == '' && pl.sostav==2) ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''))
+			var trbgcolor = ((jsonSostav.sostav.indexOf(parseInt(pl.id))>0 && jsonSostav.sostav.indexOf(parseInt(pl.id)) < 12 ) ? ' bgcolor=white' : (jsonSostav.sostav.indexOf(parseInt(pl.id))>0 ? ' bgcolor=#BABDB6' : ''))
 			var plhtml = '<tr align=right'
 			if((!pl.posf || numshow>=nummax) && selpl!=pl.id) 	plhtml += ' hidden abbr=wrong'
 			else numshow++
@@ -623,12 +625,14 @@ function getPlayers(){
 	}
 }
 
-function FillHeaders(obj){
+function FillHeaders(){
 	for(i=1;i<=maxtables;i++){
         var sel = false
 		var selnum = selected[i]
-        for (j in obj.sostav1) {
-        	if (obj.sostav1[j].pos == i) sel = true
+        if (jsonSostav != undefined){
+	        for (j in jsonSostav.sostav1) {
+	        	if (jsonSostav.sostav1[j].pos == i) sel = true
+	        }
         }
 		//for(j in pid) if(pid[j].p0 == i) sel = true
 
