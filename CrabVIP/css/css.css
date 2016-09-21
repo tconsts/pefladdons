@@ -1,3 +1,4 @@
+/*
 body {
 	font: normal 12px arial, serif;
 	background: #C9F8B7;
@@ -7,4 +8,58 @@ body {
 	width: 600px;
 	position: relative;
 	background: #A3DE8F;
-	}
+	}*/
+
+.uglovoi, .shtrafnoi, .offside, .zamena, .goal, .penaliti, .smena_taktiki, .extra_time, .travma, .jeltaia, .krasnaia {
+	float: right;
+	-webkit-margin-before: 0;
+	-webkit-margin-after: 0;
+	bottom:0;
+	right:0;
+	width: 36px;
+    height: 36px;
+}
+
+.uglovoi {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/SoccerCorner-32.png');
+}
+
+.shtrafnoi {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/Referee-32.png');
+}
+
+.offside {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/011.png');
+}
+
+.zamena {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/PlayerChange-32.png');
+}
+
+.goal {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/Football3-32.png');
+}
+
+.penaliti {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/Penalty-32.png');
+}
+
+.smena_taktiki {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/StrategyBoard-32.png');
+}
+
+.extra_time {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/Stopwatch-32.png');
+}
+
+.travma {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/DoctorsBag-32.png');
+}
+
+.jeltaia {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/SoccerYellowCard-32.png');
+}
+
+.krasnaia {
+	background-image: url('http://imgdisk.ru/images/2016/09/20/Foul-32.png');
+}

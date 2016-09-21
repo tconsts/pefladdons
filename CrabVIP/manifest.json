@@ -19,6 +19,7 @@
   },
   "content_scripts": [
     {
+    "css": [ "css/css.css" ],
 	"matches": [
 		"http://pefl.ru/*",
 		"http://pefl.net/*",
@@ -37,7 +38,7 @@
     }
   ],
   "web_accessible_resources": [
-	"img/crab1.png",
+	"img/*",
 	"js/crab_funcs_db.js",
 	"js/crab_funcs_std.js",
 	"js/crab_common.user.js",

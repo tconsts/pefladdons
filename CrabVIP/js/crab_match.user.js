@@ -39,48 +39,112 @@ var sshort = false
 
 $().ready(function() {
 	if(deb) $('body').append('<div id=debug></div>')
-//	$('td.back4 table:first').attr('border','5')	// расстановка
-//	$('td.back4 table:eq(1)').attr('border','5')	// все вместе кроме расстановки
-//	$('td.back4 table:eq(2)').attr('border','5')	// отчет
-//	$('td.back4 table:eq(3)').attr('border','5')	// заголовок матча
-//	$('td.back4 table:eq(4)').attr('border','5')	// голы\лого
-//	$('td.back4 table:eq(5)').attr('border','5')	// стата
-//	$('td.back4 table:eq(6)').attr('border','5')	// оценки
-
-	//дорисовываем оценки в код для форума(t=code) и редактируем страницу матча (t=if)
-	if(UrlValue('t') == 'code') {
-		var res = sessionStorage['match'+mid]
-		if(res != undefined){
-			var text = ' <font color=555753>'+res+'</font>[/spoiler]'
-			$('td.back4 table td:last').html(
-				$('td.back4 table td:last').html().replace('[/spoiler]',text)
-			)
-		}
-	}else{
-		// даем возможность скрыть отчет
-		$('td.back4 table:eq(2)').before('<br><a id="a2" href="javascript:void(ShowTable(2))">&ndash;</a> <b>Отчет</b><br>')
-		// собираем инфо матча
-		getMatchInfo()
-		getPlayersInfo()
-
-		//берем данные
-		getJSONlocalStorage('matches2',matches)
-		getJSONlocalStorage('matchespl2',matchespl)
-
-		// проверяем и если надо модифицируем и сохраняем данные
-		checkSave(matchespl)
-
-		// исправляем таблицу оценок
-		modifyMarksTable()
-
-		// сохраняем код для форума
-		SaveCodeForMatch()
-	}
-
-	//добавляем короткий отчет о сменах тактик, изменений счета и расстановок
-	$('a#a2').before('<a href="javascript:void(ShowSShort())" id="sshort">+</a> <b>Смены тактик и счета</b><div id="sshort" style="display: none;"><center><hr>'+sshort+'<hr></center></div><br>')
-
+	dobaviti_ikonku_gola();
+	pokazati_uglovye();
+ 	dobaviti_ikonki_karto4ek();
+	pokazati_shtrafnye();
+	zameniti_ikonku_zamen();
+	dobaviti_ikonku_travmy();
+	pokazati_ofsaidy();
+	pokazati_penaliti();
+	pokazati_smeny_taktik();
+	dobavlennoe_vremea();
+ 
 }, false);
+
+function pokazati_uglovye(){
+	var uglovye = ['Боковой судья показывает на угловой...','зарабатывает угловой...','Судья назначает угловой удар...','Мяч покидает пределы поля... Угловой...','Судья показывает, что нужно выполнить угловой удар...'];
+	 
+	 for (i=0;i<uglovye.length;i++){
+		 var img_uglovoi = $("<p class='uglovoi'/>" );
+		 $('p.key:contains('+uglovye[i]+')').append(img_uglovoi);
+		 $('p.key:contains('+uglovye[i]+')').css({'padding-bottom':'28px'});
+	 }
+}
+
+function pokazati_shtrafnye(){
+	var shtrafnye = ['Арбитр дает штрафной в пользу команды','Штрафной удар в пользу команды','Штрафной в пользу команды','Штрафной удар...','выполняет штрафной удар...','... Штрафной...',' пробьет штрафной...','Назначен штрафной...'];
+	 
+	 for (i=0;i<shtrafnye.length;i++){
+		 var img_shtrafnoi = $("<p class='shtrafnoi'/>" );
+		 $('p.key:contains('+shtrafnye[i]+')').append(img_shtrafnoi);
+		 $('p.key:contains('+shtrafnye[i]+')').css({'padding-bottom':'28px'});
+	 }
+}
+
+function pokazati_ofsaidy(){
+	var ofsaidy = ['Но боковой арбитр уже поднял флажок. Вне игры.','Лайнсмен показывает, что','Но боковой судья уже поднял флажок.'];
+	 
+	 for (i=0;i<ofsaidy.length;i++){
+		 var img_offside = $("<p class='offside'/>" );
+		 $('p.key:contains('+ofsaidy[i]+')').append(img_offside);
+		 $('p.key:contains('+ofsaidy[i]+')').css({'padding-bottom':'28px'});
+		 $('p.full:contains('+ofsaidy[i]+')').append(img_offside);
+		 $('p.full:contains('+ofsaidy[i]+')').css({'padding-bottom':'28px'});
+	 }
+}
+
+function zameniti_ikonku_zamen(){
+	var ikonka = 'system/img/g/on.gif';
+	var img_zamena = $("<p class='zamena' />" );
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().append(img_zamena);
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().css({'padding-bottom':'28px'});
+//	$('p.key span img[src="'+ikonka+'"]').remove();
+}
+
+function dobaviti_ikonku_gola(){
+	var ikonka = 'system/img/refl/ball.gif';
+	var img_goal = $("<p class='goal'/>" );
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().append(img_goal);
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().css({'padding-bottom':'28px'});
+}
+
+function dobaviti_ikonku_travmy(){
+	var ikonka = 'system/img/refl/krest.gif';
+	var img_travma = $("<p class='travma'/>" );
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().append(img_travma);
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().css({'padding-bottom':'28px'});
+}
+
+function dobaviti_ikonki_karto4ek(){
+	var ikonka = 'system/img/refl/yel.gif';
+	var img_jeltaia = $("<p class='jeltaia'/>" );
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().append(img_jeltaia);
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().css({'padding-bottom':'28px'});
+	
+	var ikonka = 'system/img/refl/red.gif';
+	var img_krasnaia = $("<p class='krasnaia'/>" );
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().append(img_krasnaia);
+	$('p.key span img[src="'+ikonka+'"]').parent().parent().css({'padding-bottom':'28px'});
+}
+
+function pokazati_penaliti(){
+	var penki = ['Назначается пенальти!!!...','Пенальти!...','Арбитр указывает на одиннадцатиметровую отметку!...','Судья назначает пенальти!!'];
+	 
+	 for (i=0;i<penki.length;i++){
+		 var img_penaliti = $("<p class='penaliti'/>" );
+		 $('p.key:contains('+penki[i]+')').append(img_penaliti);
+		 $('p.key:contains('+penki[i]+')').css({'padding-bottom':'28px'});
+	 }
+}
+
+function pokazati_smeny_taktik() {
+	var smena = '(*)';
+	var img_smena = $("<p class='smena_taktiki'/>" );
+	$('p.key:contains("(*)")').after(img_smena);
+	$('p.key:contains("(*)")').css({'width':'80%','display':'inline-block'});
+}
+
+function dobavlennoe_vremea(){
+	var dobavl_komment = ['К основному времени матча добавлен','Судья добавляет','Главный судья добавляет к основному времени матча','Запасной судья поднимает табличку'];
+	 
+	 for (i=0;i<dobavl_komment.length;i++){
+		 var img_extra = $("<p class='extra_time'/>" );
+		 $('p.key:contains('+dobavl_komment[i]+')').append(img_extra);
+		 $('p.key:contains('+dobavl_komment[i]+')').css({'padding-bottom':'28px'});
+	 }
+}
+
 
 function checkSave(){
 	debug('checkSave()')
@@ -141,15 +205,6 @@ function checkSave(){
 		saveJSONlocalStorage('matches2',matches)
 		saveJSONlocalStorage('matchespl2',matchespl)
 	}
-}
-
-function modifyMarksTable(){
-	debug('modifyMarksTable()')
-	$('td.back4 table:eq(6)')
-		.find('td').removeAttr('width').end()
-		.find('td').removeAttr('bgcolor').end()
-		.find('tr:odd').attr('bgcolor','#a3de8f').end() //#a3de8f #c9f8b7
-		.find('tr:eq(10)').after('<tr bgcolor=white><td colspan=10> </td></tr>')
 }
 
 function getMatchInfo(){
@@ -312,37 +367,12 @@ function getMatchInfo(){
 	if(otch.indexOf('Главный арбитр:') !=-1) match1.r = (otch.split('Главный арбитр:')[1].split(' (')[0]).trim()
 
 	// получаем финальный счет(были ли пенальти)
-	var finschetarr = $('td.back4 table:eq(2) center').html().split('СЧЕТ ')
-	var fres = (finschetarr[finschetarr.length-1].split('<br>')[0].split('<')[0].split('...')[0]).trim()
+	var finschetarr = $('td.schet')
+	var fres = $('td.schet b').html()
 	if(fres!=match1.res && fres.indexOf(':')!=-1) match1.pen = fres
 	debug('getMatchInfo:fres='+fres+':match1.res='+match1.res+':match1.pen='+match1.pen)
 
 	if(deb) for(i in match1) debug('getMatchInfo:'+i+'='+match1[i])
-}
-
-function SaveCodeForMatch(){
-	debug('SaveCodeForMatch()')
-	var finschet = (match1.pen!=undefined ? ' [center]По пенальти [b][color=red]'+ match1.pen + '[/color][/b][/center]' : '')
-	sessionStorage['match'+mid] = finschet + $('td.back4 table:eq(6)')
-//	var x = finschet + $('td.back4 table:eq(6)')
-		.find('img').removeAttr('ilo-full-src').end()		// fix: http://forum.mozilla-russia.org/viewtopic.php?id=8933
-		.prepend('<tr><td colspan=5 width=50%> </td><td colspan=5 width=50%> </td></tr>')
-		.html()
-		.replace(/<tbody>/g,'<table width=100% bgcolor=c9f8b7>')
-		.replace(/tbody/g,'table')
-		.replace(/\<a href=\"javascript\:void\(ShowPlayer\(\'(.*)\'\)\)\"\>(.*)/g,'$2')
-		.replace(/\<\/a\>/g,'')
-		.replace(/img src="/g,'img]')
-		.replace(/.gif/g,'.gif[/img')
-		.replace(/"/g,'')
-		.replace(/font /g,'')
-		.replace(/font/g,'color')
-		.replace(/\</g,'[')
-		.replace(/\>/g,']')
-		.replace('[img]system/img/refl/krest.gif[/img width=10]','[color=red][b]Т[/b][/color]')
-		+ '[img]system/img/w' + (match1.w==undefined ? 0 : match1.w) + '.png[/img]' 
-		+ (match1.r!=undefined ? ' [b]Главный арбитр:[/b] ' + match1.r + '.' : '')
-		+ (ustanovka ? '<br>'+ustanovka : '')
 }
 
 function getJSONlocalStorage(dataname,data){
@@ -407,17 +437,6 @@ function ShowSShort(){
 	}
 }
 
-function ShowTable(n){
-	var style = $('td.back4 table:eq('+n+')').attr('style')
-	if(style == "display: none" || style == "display: none;" || style == "display: none; "){
-		$('td.back4 table:eq('+n+')').show()
-		$('a#a'+n).html('&ndash;')
-	} else {
-		$('td.back4 table:eq('+n+')').hide()
-		$('a#a'+n).html('+')
-	}
-}
-
 function TrimString(sInString){
 	sInString = sInString.replace(/\&nbsp\;/g,' ');
 	return sInString.replace(/(^\s+)|(\s+$)/g, '');
@@ -432,7 +451,7 @@ function getPlayersInfo(){
 	// get info from postmatch table
 	var unih = 2
 	var unia = 2
-	$('td.back4 table:eq(6) td:has(a[href^=javascript])').each(function(i,val){
+	$('td.back4 table:eq(6) td[id^=p]').each(function(i,val){
 		var player	= {id:mid}
 		var nameid	= TrimString($(val).find('a[href^=javascript]').text())
 		if(positions[nameid]!=undefined && positions[nameid].ps!=undefined) player.ps = positions[nameid].ps
