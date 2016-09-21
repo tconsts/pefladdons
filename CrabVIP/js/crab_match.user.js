@@ -132,7 +132,7 @@ function pokazati_smeny_taktik() {
 	var smena = '(*)';
 	var img_smena = $("<p class='smena_taktiki'/>" );
 	$('p.key:contains("(*)")').after(img_smena);
-	$('p.key:contains("(*)")').css({'width':'80%','display':'inline-block'});
+	$('p.key:contains("(*)")').css({'padding-left':'36px','display':'inline-block'});
 }
 
 function dobavlennoe_vremea(){
