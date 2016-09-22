@@ -69,6 +69,9 @@ function pokazati_shtrafnye(){
 		 var img_shtrafnoi = $("<p class='shtrafnoi'/>" );
 		 $('p.key:contains('+shtrafnye[i]+')').append(img_shtrafnoi);
 		 $('p.key:contains('+shtrafnye[i]+')').css({'padding-bottom':'28px'});
+		 
+		 $('p.full:contains('+shtrafnye[i]+')').append(img_shtrafnoi);
+		 $('p.full:contains('+shtrafnye[i]+')').css({'padding-bottom':'28px'});
 	 }
 }
 
