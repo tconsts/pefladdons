@@ -38,6 +38,7 @@ var plhead	= 'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
 var sshort = false
 
 $().ready(function() {
+//	$('head').append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">');
 	if(deb) $('body').append('<div id=debug></div>')
 	dobaviti_ikonku_gola();
 	pokazati_uglovye();
@@ -76,12 +77,13 @@ function pokazati_shtrafnye(){
 }
 
 function pokazati_ofsaidy(){
-	var ofsaidy = ['Но боковой арбитр уже поднял флажок. Вне игры.','Лайнсмен показывает, что','Но боковой судья уже поднял флажок.'];
+	var ofsaidy = ['Но боковой арбитр уже поднял флажок. Вне игры.','Лайнсмен показывает, что','Но боковой судья уже поднял флажок.','оказался в офсайде.','попал в офсайд.'];
 	 
 	 for (i=0;i<ofsaidy.length;i++){
 		 var img_offside = $("<p class='offside'/>" );
 		 $('p.key:contains('+ofsaidy[i]+')').append(img_offside);
 		 $('p.key:contains('+ofsaidy[i]+')').css({'padding-bottom':'28px'});
+		 
 		 $('p.full:contains('+ofsaidy[i]+')').append(img_offside);
 		 $('p.full:contains('+ofsaidy[i]+')').css({'padding-bottom':'28px'});
 	 }

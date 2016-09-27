@@ -19,47 +19,55 @@ body {
 	width: 36px;
     height: 36px;
 }
+/*
+* {
+    box-sizing: border-box;
+}
 
+.cback33 {
+    height: 34px !important;
+}
+*/
 .uglovoi {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/SoccerCorner-32.png');
+	background-image: url('system/img/icons/Soccer%20Corner.png');
 }
 
 .shtrafnoi {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/Referee-32.png');
+	background-image: url('system/img/icons/Referee.png');
 }
 
 .offside {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/011.png');
+	background-image: url('system/img/icons/011.png');
 }
 
 .zamena {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/PlayerChange-32.png');
+	background-image: url('system/img/icons/Player%20Change.png');
 }
 
 .goal {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/Football3-32.png');
+	background-image: url('/system/img/icons/Football%202.png');
 }
 
 .penaliti {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/Penalty-32.png');
+	background-image: url('system/img/icons/Penalty.png');
 }
 
 .smena_taktiki {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/StrategyBoard-32.png');
+	background-image: url('system/img/icons/Strategy%20Board.png');
 }
 
 .extra_time {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/Stopwatch-32.png');
+	background-image: url('system/img/icons/Stopwatch-32.png');
 }
 
 .travma {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/DoctorsBag-32.png');
+	background-image: url('system/img/icons/Doctors%20Bag.png');
 }
 
 .jeltaia {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/SoccerYellowCard-32.png');
+	background-image: url('system/img/icons/Soccer%20Yellow%20Card.png');
 }
 
 .krasnaia {
-	background-image: url('http://imgdisk.ru/images/2016/09/20/Foul-32.png');
+	background-image: url('system/img/icons/Foul.png');
 }
