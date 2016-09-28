@@ -29,45 +29,45 @@ body {
 }
 */
 .uglovoi {
-	background-image: url('system/img/icons/Soccer%20Corner.png');
+	background-image: url('http://pefl.ru/system/img/icons/Soccer%20Corner.png');
 }
 
 .shtrafnoi {
-	background-image: url('system/img/icons/Referee.png');
+	background-image: url('http://pefl.ru/system/img/icons/Referee.png');
 }
 
 .offside {
-	background-image: url('system/img/icons/011.png');
+	background-image: url('http://pefl.ru/system/img/icons/011.png');
 }
 
 .zamena {
-	background-image: url('system/img/icons/Player%20Change.png');
+	background-image: url('http://pefl.ru/system/img/icons/Player%20Change.png');
 }
 
 .goal {
-	background-image: url('/system/img/icons/Football%202.png');
+	background-image: url('http://pefl.ru//system/img/icons/Football%202.png');
 }
 
 .penaliti {
-	background-image: url('system/img/icons/Penalty.png');
+	background-image: url('http://pefl.ru/system/img/icons/Penalty.png');
 }
 
 .smena_taktiki {
-	background-image: url('system/img/icons/Strategy%20Board.png');
+	background-image: url('http://pefl.ru/system/img/icons/Strategy%20Board.png');
 }
 
 .extra_time {
-	background-image: url('system/img/icons/Stopwatch-32.png');
+	background-image: url('http://pefl.ru/system/img/icons/Stopwatch-32.png');
 }
 
 .travma {
-	background-image: url('system/img/icons/Doctors%20Bag.png');
+	background-image: url('http://pefl.ru/system/img/icons/Doctors%20Bag.png');
 }
 
 .jeltaia {
-	background-image: url('system/img/icons/Soccer%20Yellow%20Card.png');
+	background-image: url('http://pefl.ru/system/img/icons/Soccer%20Yellow%20Card.png');
 }
 
 .krasnaia {
-	background-image: url('system/img/icons/Foul.png');
+	background-image: url('http://pefl.ru/system/img/icons/Foul.png');
 }
