@@ -1,5 +1,5 @@
-/*
-body {
+
+#options, #popup {
 	font: normal 12px arial, serif;
 	background: #C9F8B7;
 	overflow-x: hidden;
@@ -8,7 +8,7 @@ body {
 	width: 600px;
 	position: relative;
 	background: #A3DE8F;
-	}*/
+	}
 
 .uglovoi, .shtrafnoi, .offside, .zamena, .goal, .penaliti, .smena_taktiki, .extra_time, .travma, .jeltaia, .krasnaia {
 	float: right;
