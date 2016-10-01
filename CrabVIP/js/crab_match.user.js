@@ -42,12 +42,12 @@ $().ready(function() {
 	if(deb) $('body').append('<div id=debug></div>')
 	dobaviti_ikonku_gola();
 	pokazati_uglovye();
+	pokazati_penaliti();
  	dobaviti_ikonki_karto4ek();
 	pokazati_shtrafnye();
 	zameniti_ikonku_zamen();
 	dobaviti_ikonku_travmy();
 	pokazati_ofsaidy();
-	pokazati_penaliti();
 	pokazati_smeny_taktik();
 	dobavlennoe_vremea();
  
@@ -124,7 +124,7 @@ function dobaviti_ikonki_karto4ek(){
 }
 
 function pokazati_penaliti(){
-	var penki = ['Назначается пенальти!!!...','Пенальти!...','Арбитр указывает на одиннадцатиметровую отметку!...','Судья назначает пенальти!!'];
+	var penki = ['Назначается пенальти!!!...','Пенальти!...','Арбитр указывает на одиннадцатиметровую отметку!...','Судья назначает пенальти!!','Судья назначает 11-метровый!!!'];
 	 
 	 for (i=0;i<penki.length;i++){
 		 var img_penaliti = $("<p class='penaliti'/>" );
