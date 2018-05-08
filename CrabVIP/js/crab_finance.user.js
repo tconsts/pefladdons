@@ -302,7 +302,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 		cur.bablo 		= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''))
 		cur.bonus 		= (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
 
-		fin.fid = 81
+		fin.fid = 83
 
 		// get info from tables
 		$('td.back4 > table table').each(function(i,val){
