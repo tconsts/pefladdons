@@ -69,8 +69,8 @@ if(typeof(jQuery)!='undefined'){
 $().ready(function() {
 	console.log('run crab_common...');
 
-	if (UrlValue("p")=="squad4") {
-		if(clubs!=undefined) for(i=0;i<3;i++) if(clubs[i]!=undefined) localStorage['sostavurl'+clubs[i].id] = clubs[i].gurl;
+	if (UrlValue("p") && UrlValue("p").indexOf("squad") == 0) {
+		if(clubs!=undefined) for(i=0;i<3;i++) if(clubs[i]!=undefined) localStorage['sostavurl'+clubs[i].id] = jsonsostav+'?'+clubs[i].gurl;
 	}
 
 	if($('td.topmenu:first table td:eq(1) a:contains("¬ход")').length>0) return false
@@ -89,7 +89,7 @@ $().ready(function() {
 
     var teamimg 	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>';
     var intimg  	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/flags/mod/'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>';
-	var crabimg 	= '<img width=16 height=16 src=\''+crabImageUrl+'\'>';
+	var crabimg 	= crabImageUrl == undefined ? '' : '<img width=16 height=16 src=\''+crabImageUrl+'\'>';
 	var sostavimg 	= '<img width=16 height=16 src="system/img/g/sostav.gif">';
 	var settingimg 	= '<img width=16 height=16 src="system/img/g/stats.gif"></img>';
 	var adaptimg 	= '<img width=16 height=16 src="system/img/g/scout.gif"></img>';

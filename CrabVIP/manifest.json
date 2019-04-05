@@ -1,6 +1,6 @@
 {
   "name": "PEFL CrabVIP",
-  "version": "2.0.6",
+  "version": "2.0.9",
   "manifest_version": 2,
   "options_page": "options.html",
 
@@ -22,10 +22,8 @@
     "css": [ "css/css.css" ],
 	"matches": [
 		"http://pefl.ru/*",
-		"http://pefl.net/*",
 		"http://pefl.org/*",
 		"http://www.pefl.ru/*",
-		"http://www.pefl.net/*",
 		"http://www.pefl.org/*"
 	],
 	"exclude_matches": [
@@ -65,10 +63,8 @@
   "permissions":[
 	"unlimitedStorage",
 	"http://pefl.ru/*",
-	"http://pefl.net/*",
 	"http://pefl.org/*",
 	"http://www.pefl.ru/*",
-	"http://www.pefl.net/*",
 	"http://www.pefl.org/*"
   ]
 }

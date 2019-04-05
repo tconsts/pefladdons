@@ -123,9 +123,10 @@ amom
 $().ready(function() {
 
 	selected = getDataSelected().split(',')
-
+	var strg = sostavteam ? localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))];
 	var geturl = (sostavteam ? 'fieldnew3.php' : 'fieldnew3_n.php');
-	var geturl2 = (sostavteam ? 'jsonsostav.php?'+localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))]);
+	if(strg != undefined) {
+	var geturl2 = (strg.indexOf('?')>0 ? '' : 'jsonsostav3.php?') + strg;
 	
 	$.get(geturl2, {}, function(datatext2){
 		jsonSostav = JSON.parse(datatext2);
@@ -192,6 +193,7 @@ $().ready(function() {
 		getPlayers()
 		GetData('positions')
 	})
+	}
 })
 
 function getDataSelected(){
