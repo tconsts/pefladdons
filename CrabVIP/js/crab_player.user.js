@@ -692,6 +692,7 @@ function CheckPlayer(nn){
 		switch(i){
 		case 'sumskills':
 		case 's':
+		case 'ss0':
 		case 't':
 		case 'flag':
 		case 'team':
@@ -745,7 +746,8 @@ function CheckPlayer(nn){
 		case 'nation':
 		case 'internationalgoals':
 		case 'u21goals':
-		case 'firstname':break;
+		case 'firstname':
+			break;
 		case 'secondname': data['pname'] = (players[nn].nation!=undefined ? players[nn].nation : 217)+'|'+players[nn]['firstname']+' '+players[nn][i]+'|p=refl&t='+players[nn]['t']+'&j='+players[nn]['id']+'&z='+players[nn]['hash'];break;
 		case 'internationalapps': data['int'] =players[nn][i]+'.'+players[nn]['internationalgoals'];break;
 		case 'u21apps':data['u21'] =players[nn][i]+'.'+players[nn]['u21goals'];break;
@@ -769,18 +771,20 @@ function CheckPlayer(nn){
 	$('table#stat,span#err,#dcode1').hide();
 	$('#dcode1').html('');
 	$('table#res,table#skills').show();
-	if(sknum==3){
+	
+	if(sknum>2){
 		sknum=0;
 		$('table[id^="res"], td[id^="res"]').remove();
-	}
-	if(sknum==0) $('table#stat').before('<table id=res class=back1 align=center width=70% cellpadding=2 cellspacing=1><tr><td nowrap id=thx align=center class=back2>[<a href="javascript:void(SkReset())"><font color=red>Х</font> сбросить</a>]</td></tr></table>');
+	}	
+	if(sknum==undefined || sknum==0) $('table#stat').before('<table id=res class=back1 align=center width=70% cellpadding=2 cellspacing=1><tr><td nowrap id=thx align=center class=back2>[<a href="javascript:void(SkReset())"><font color=red>Х</font> сбросить</a>]</td></tr></table>');
 	sknum++;
 	$('td#thx').after('<td nowrap width=30%>'+(season!=0 ? '<b>'+season+' сезон</b>' : ' ')+'</td>');
 	var ssn = 0;
 	if(data['pname']==undefined) data['pname']='';
+
 	for(i in data){
 		var nm = (lc[i]==undefined ? i : lc[i].rn);
-		if($('td#'+i).length==0){
+		if (i!='' && $('td#'+i).length==0){
 			$('table#res').prepend('<tr class=back2><td nowrap id='+i+'>'+nm+'</td><td nowrap>'+(cur!=undefined && cur[i]!=undefined ? cur[i] : '')+'</td></tr>');
 		}
 		switch(i){
@@ -806,17 +810,23 @@ function CheckPlayer(nn){
 		case 'stamina':
 			if($('td#'+i).length>0){
 				var x=data[i].split('.');
-				ssn = ssn+(isNaN(parseInt(x[0])) ? 0 : parseInt(x[0]));
-				var ch = parseInt($('td#'+i).next().text())-parseInt(x[0]);
-				if(ch>0) ch = '<font color=green size=1>+'+ch+'</font>';
-				else if(ch<0) ch ='<font color=red size=1>'+ch+'</font>'
-				else ch='';
+				x[0] = parseInt(x[0],10);
+				if(isNaN(x[0])){
+					x[0] = '??';
+					ch='';
+				} else {
+					ssn = ssn+x[0];
+					var ch = parseInt($('td#'+i).next().text(),10)-x[0];
+					if(ch>0) ch = '<font color=green size=1>+'+ch+'</font>';
+					else if(ch<0) ch ='<font color=red size=1>'+ch+'</font>';
+					else ch='';
+				}
 				var m = $('td#'+i).next().clone()
-					.attr('id','res')
+					.attr('id','res_'+i+nn)
 					.each(function(){
-						if($(this).find('span').length>0) $(this).find('span').html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>')
-						else $(this).html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>')
-					})
+						if($(this).find('span').length>0) $(this).find('span').html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>');
+						else $(this).html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>');
+					});
 				$('td#'+i).after(m);
 			}
 			break;
@@ -829,12 +839,13 @@ function CheckPlayer(nn){
 			var x=data[i].split('|');
 			$('td#'+i).after('<td nowrap>'+(x[0]==''?'':'<img height="12" src="system/img/flags/mod/'+x[0]+'.gif"> <a href="plug.php?'+x[2]+'"><b>'+x[1]+'</b></a>')+'</td>');
 			break;
-		default: 
-			$('td#'+i).after('<td nowrap><font color=gray>'+data[i]+'</font></td>');
+		default:
+			if (i=='') console.error('Error: i is empty with data='+data[i]);
+			else $('td#'+i).after('<td nowrap><font color=gray>'+data[i]+'</font></td>');
 		}
-	}
-	$('td[id^="ss"]').attr('colSpan',sknum+2);
-	$('#s').after('<td class=back1 id=res>'+ssn+'</td>');
+	}	
+	$('td[id^="ss"]').attr('colSpan',2+sknum);
+	$('#s').after('<td class=back1 id=res_s'+nn+'>'+ssn+'</td>');
 
 	return false
 }
@@ -1607,7 +1618,7 @@ function doOldRoster () {
 /**/	
 }
 
-function doNewRoster () {
+function doNewRoster() {
 	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') { return false; }
 
 	// берем мерку какой сезон
@@ -1626,8 +1637,6 @@ function doNewRoster () {
 		}
 	}
 
-//	$('td.back4 table table tr[bgcolor=#a3de8f]').removeAttr('bgcolor').addClass('back3')
-
 	today = new Date()
 	todayTmst = today.valueOf()
 
@@ -1642,23 +1651,14 @@ function doNewRoster () {
 	$('body table.border:last').before(preparedhtml)
 
 	var ssp = 0
-/**/
-/**
-	for(i in skillnames){
-		sklfr[skillnames[i].rlong] = skillnames[i]
-		sklfr[skillnames[i].rlong].elong = i
-	}
-	sklfr['Игра на выходах'] = sklfr['Игра головой']
-/**/
 
 	// get player skills
-
-/**/
 	var skillsum = 0
-	$('table#skills td:even').each(function(){
+	$('table#skills td[id]').each(function(){
 		var skilleng   = $(this).attr('id');
 		var skillname  = $(this).html();
-		var skillvalue = parseInt(String($(this).next().html()).replace('<b>',''))
+		if($(this).next().find('span').length>0) var skillvalue = parseInt(String($(this).next().find('span').html()).replace('<b>',''))
+		else var skillvalue = parseInt(String($(this).next().html()).replace('<b>',''))
 		var skillarrow = ''
 		if(skilleng=='s') players[0].sumskills = skillvalue;
 		else{
@@ -1666,9 +1666,7 @@ function doNewRoster () {
 				skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
 			}
 		}
-		players[0][skilleng] = skillvalue + skillarrow;
-
-		//$('td.back4').append(skillname+':'+skilleng+':'+skillvalue+skillarrow+'<br>')
+		if (skilleng != '' && skilleng!='ss0') players[0][skilleng] = (isNaN(skillvalue) ? '??' : skillvalue + skillarrow);
 	})
 	if(players[0].marking==undefined) players[0].marking = '??'
 	if(players[0].corners==undefined) players[0].corners = '??'
