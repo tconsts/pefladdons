@@ -1589,8 +1589,7 @@ function doOldRoster () {
 /**/	
 }
 
-function doNewRoster() {
-
+function doNewRoster (){
 	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') { return false; }
 
 	// берем мерку какой сезон
