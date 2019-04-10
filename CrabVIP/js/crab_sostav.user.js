@@ -477,30 +477,30 @@ function countStrength(plid,pkoff){
 function krPrint(val,sn){
 	switch(skillnames[sn].type){
 		case 'float':
-			return (val).toFixed(1)
+			return (val).toFixed(1);
 		case 'value':
-			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'м'
-			else if(val==0) return '??'
-			else return parseInt(val/1000)+'т'
+			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'м';
+			else if(val==0) return '??';
+			else return parseInt(val/1000)+'т';
 		default:
-			return (skillnames[sn].str ? parseInt(val) : val)
+			return (skillnames[sn].str ? parseInt(val) : val);
 	}
 }
 
 function FillData(nt){
-	$('#table'+nt).remove()
-	var ns = ($('#select'+nt+' option:selected').length>0 ? $('#select'+nt+' option:selected').val() : 0)
-	var np = 0
+	$('#table'+nt).remove();
+	var ns = ($('#select'+nt+' option:selected').length>0 ? $('#select'+nt+' option:selected').val() : 0);
+	var np = 0;
 	for(g in positions)	if(parseInt(positions[g].order) == parseInt(ns)) {
-		np = g
-		break
+		np = g;
+		break;
 	}
 
 	if(np!=0){
 		if(positions[np].pls==undefined) {
 //			refresh = true
 //			return false
-			countPosition(np)
+			countPosition(np);
 		}
 		var selpl = 0
 		if (jsonSostav.sostav1 != undefined) {
@@ -632,21 +632,28 @@ function getPlayers(){
 }
 
 function FillHeaders(){
+	var psn = ['','GK','SW','L DF','C DF','C DF','C DF','R DF','L DM','C DM','C DM','C DM','R DM','L M','C M','C M','C M','R M','L AM','C AM','C AM','C AM','R AM','C FW','C FW','C FW'];
 	for(i=1;i<=maxtables;i++){
-        var sel = false
-		var selnum = selected[i]
+        var sel = false;
+		var selnum = selected[i];
         if (jsonSostav.sostav1 != undefined){
 	        for (j in jsonSostav.sostav1) {
-	        	if (jsonSostav.sostav1[j].pos == i) sel = true
+	        	if (jsonSostav.sostav1[j].pos == i) sel = true;
 	        }
         }
 		//for(j in pid) if(pid[j].p0 == i) sel = true
 
 		$('#select'+i).empty()
+		var selopts = '<option value="0">&nbsp;</option>';
 		for(j in positions) {
-			var psj = positions[j]
-			$('#select'+i).append('<option value='+psj.order+'>'+psj.name+'</option>')
+			var psj = positions[j];
+			var fl = psj.filter;
+			if (i==2) console.log('tablenum:'+i +' check:'+psn[i]+' position:'+j+' psj:'+psj);
+			if (i<=25 && filterPosition(psj.filter,psn[i])) selopts+='<option '+(selected[i]!=undefined && selected[i]==j ? 'selected ':'')+'value='+psj.order+'>'+psj.name+'</option>';
+			if (i>25 && psj.filter=='') selopts+='<option value='+psj.order+'>'+psj.name+'</option>';
 		}
+		$('#select'+i).append(selopts);
+
 		var name = '&nbsp;'
 		$('#span'+i).html(name)
 		if(positions[selnum] !=undefined && positions[selnum].name != undefined) {
@@ -672,28 +679,36 @@ function printToBackUp(){
 }
 
 function fillPosEdit(num){
-	var html = ''
-	html += '<table width=100% class=back1><tr valign=top><td width=150>'
-	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
+	var html = '';
+	html += '<table width=100% class=back1><tr valign=top>'
+	html += '<td>'
+
+	html += '<div style="margin-bottom:5px;">'
+	html += '<div style="padding:5px;text-align:center;" class=back2><label>Коэффициент</label></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Название:</label><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="42" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Фильтр:</label><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="20" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"><label> LC DF/DM"(пусто=все)</label></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Кол-во:</label><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"><label> Сколько игроков отображать(0=все)</label></div>';
+	html += '<div style="margin:2px;"><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="51" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></div>';
+	html += '</div>';
+	html += '<br><div style="margin-bottom:5px;">'
+	html += '<label style="margin:2px 2px;padding:5px;text-align:center;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;" class="back2 button" onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'">Сохранить</label>'
+	html += '<label style="margin:2px 2px;padding:5px;text-align:center;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;" class="back2 button" onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'">Удалить</label>'
+	html += '</div>'
+	html += '<br><div style="margin-bottom:5px;">'
+	html += '<div style="padding:5px;text-align:center;" class=back2><label>Список</label></div>';
+	html += '<div style="margin:2px;"><select style="border:1px solid;min-width:365;max-width=365px;padding-left:5px" id=selpos size=30 class=back2 onChange="javascript:void(PosChange())">'
 	html += '<option value=0'+(num==0 ? ' selected' :'')+'>--- Создать ---</option>'
-	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
-	html += '</select></td>'
-	html += '<td><table width=100%>'
-	html += '<tr><th colspan=2 class=back2>Коэффициент</th></tr>'
-	html += '<tr><th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td></tr>'
-	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"> Сколько max отображать(0=все)</td></tr>'
-	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="10" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"> "LC DF/DM"(пусто=все)</td></tr>'
-	html += '<tr><td colspan=2><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="50" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td></tr>'
-	html += '<tr><th colspan=2>&nbsp;</th></tr>'
-	html += '</table><br><table>'
-	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
-//	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Удалить</th><td></td></tr>'
-	html += '</table></td>'
-	html += '<td><table width=100% align=top>'
-	html += '<tr><td>!</td><td colspan=2>значит по дефоулту поле не отображать</td></tr>'
-	html += '<tr><td>=</td><td colspan=2>эти скилы учавствуют в подсчете силы</td></tr>'
-	for(m in skillnames) if(!skillnames[m].hidden) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
-	html += '</table></td></tr>'
+	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name + (positions[i].filter==''?'':' ('+positions[i].filter+')'))+'</option>'
+	html += '</select>'
+	html += '</div></div>';
+
+	html += '</td>'
+	html += '<td>';
+	html += '<div style="padding:5px;text-align:center;" class=back2><label>Help</label></div>';
+	html += '<div><label style="width:30px;margin:2px;display:inline-block;">!</label><label>значит по дефоулту поле не отображать</label></div>';
+	html += '<div><label style="width:30px;margin:2px;display:inline-block;">=</label><label>эти скилы учавствуют в подсчете силы</label></div>' ;
+	for(m in skillnames) if(!skillnames[m].hidden) html += '<div><label style="width:30px;margin:2px;display:inline-block;">'+skillnames[m].rshort+'</label><label style="width:110px;margin:2px;display:inline-block;">'+m+'</label><label>'+skillnames[m].rlong+'</label></div>';
+	html += '</td></tr>'
 	html += '</table>'
 	$('div#divkoff').html(html)
 
@@ -741,10 +756,11 @@ function PosDel(){
 
 function PosDrop(){
 	delete localStorage.positions
+	delete localStorage.selected
 	maxtables = 25
 	posmaxorder = 0
-	chMenu('tdsost')
-	GetData('positions')
+	chMenu('tdsost');
+	GetData('positions');
 }
 function PosSaveAll(){
 	var pr = {
