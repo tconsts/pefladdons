@@ -621,7 +621,6 @@ function FillData(nt)
 	}
 
 	var ns = ($('#select'+nt+' option:selected').length>0 ? $('#select'+nt+' option:selected').val() : 0);
-	//if (selpl>0 && ns==0) ns = ($('#select'+nt+' option:eq(1)').length>0 ? $('#select'+nt+' option:eq(1)').val() : 0);
 	var np = 0;
 	for(g in positions)	if(parseInt(positions[g].order,10) == parseInt(ns,10)) {
 		np = g;
@@ -640,18 +639,15 @@ function FillData(nt)
     	for(t=0;t<positions[np].pls.length;t++) {
 			var pl = positions[np].pls[t]
 			if (jsonSostav.sostav != undefined){
-				var trbgcolor = (selpl==pl.id  ? ' bgcolor=white' : ((pl.sostav > 0 && pl.sostav < 12 ) ? ' bgcolor=#BABDB6' : ''));
+				var trbgcolor = ((nt<26 && selpl==pl.id) || (nt>25 && pl.sostav ==2) ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''));
 			}
 			var plhtml = '<tr align=right'
-			//if((!pl.posf || numshow>=nummax) && selpl!=pl.id) 	plhtml += ' hidden abbr=wrong';
-			if((!pl.psn[nt] || numshow>=nummax) && selpl!=pl.id) 	plhtml += ' hidden abbr=wrong';
+			if(((!pl.psn[nt] && pl.psn[nt]!=undefined) || numshow>=nummax) && selpl!=pl.id) 	plhtml += ' hidden abbr=wrong';
 			else numshow++
 
 			plhtml += trbgcolor+'>'
-			//var font1 = (!pl.posf ? '<font color=red>' : (pl.flag==6 ? '<font color=888A85>' : ''))
-			//var font2 = (!pl.posf || pl.flag==6 ? '</font>' : '')
-			var font1 = (!pl.psn[nt] ? '<font color=red>' : (pl.flag==6 ? '<font color=888A85>' : ''));
-			var font2 = (!pl.psn[nt] || pl.flag==6 ? '</font>' : '');
+			var font1 = (!pl.psn[nt] && pl.psn[nt]!=undefined ? '<font color=red>' : (pl.flag==6 ? '<font color=888A85>' : ''));
+			var font2 = ((!pl.psn[nt] && pl.psn[nt]!=undefined) || pl.flag==6 ? '</font>' : '');
 
 			if(head) var headhtml = '<tr align=center>'
 			for(pp in pl) {
@@ -690,14 +686,6 @@ function FillData(nt)
 	if(selected[nt]!=positions[np].order) {
 		selected[nt] = positions[np].order
 		saveDataSelected();
-	/*
-		if(np==0 && nt<=25 && selpl>0){
-			
-		}else{
-			selected[nt] = positions[np].order
-			saveDataSelected()
-		}
-	*/
 	}
 
 	MouseOff(nt)
@@ -732,7 +720,6 @@ function FillHeaders(){
 			name = positions[selnum].name
 		}
 		if ((sel || i>25) && selnum!=undefined) {
-			//$('#select'+i+' option:eq('+selnum+')').attr('selected', 'yes').change();
 			if (sel && selnum==0 && $('#select'+i+' option:eq(1)').length>0){
 				$('#select'+i).val($('#select'+i+' option:eq(1)').attr('value')).change();
 			} else {
@@ -753,7 +740,8 @@ function printToBackUp(){
 	var bak ='';
 	for(i in positions){
 		var p=positions[i];
-		if(i>0) bak+= p.name+'|'+p.filter+'|'+p.num+'|'+p.koff+'$';
+		//if(i>0) bak+= transliterate(p.name)+'|'+p.filter+'|'+p.num+'|'+transliterate(p.koff)+'$';
+		if(i>0) bak+= translit(p.name)+'|'+p.filter+'|'+p.num+'|'+translit(p.koff)+'$';
 	}
 	return bak;
 }
@@ -795,7 +783,7 @@ function fillPosEdit(num){
 	html = '<table width=100% class=back1><tr valign=top>'
 	html += '<td width=50%><table width=100%>'
 	html += '<tr><th colspan=2 class=back2>Основные</th></tr>'
-	html += '<tr><th width=15% align=right nowrap>С форума:</th><td><input class=back1 style="border:1px solid;" id=iforum name="iforum" type="text" size="10" value="'+getforumid+'"></td></tr>'
+//	html += '<tr><th width=15% align=right nowrap>С форума:</th><td><input class=back1 style="border:1px solid;" id=iforum name="iforum" type="text" size="10" value="'+getforumid+'"></td></tr>'
 	html += '<tr><th width=15% align=right>Таблиц:</th><td><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (Кол-во доп. таблиц)</td></tr>'
 	html += '<tr><th colspan=2>&nbsp;</th></tr>'
 	html += '</table></td>'
@@ -812,7 +800,7 @@ function fillPosEdit(num){
 	html += '</table></td><tr>'
 //	if(deb){
 		html += '<tr><th colspan=2>&nbsp;</th></tr>'
-		html += '<tr><td colspan=2><b>Бекап</b>(выделить, скопировать на форум):<br><textarea class=back1 style="border:1px solid;" id=bk name="bk" cols="100" rows="20">'+printToBackUp()+'</textarea></td></tr>'
+		html += '<tr><td colspan=2><b>Бекап</b> (выделить и скопировать):<br><textarea class=back1 style="border:1px solid;" id=bk name="bk" cols="100" rows="20">'+printToBackUp()+'</textarea></td></tr>'
 //	}
 	html += '</table>'
 	$('div#divedit').html(html)
@@ -906,8 +894,8 @@ function sendBackUp(url){
 	$.ajax({
 	  type: "POST",
 	  url: url,
-	  data: {rtext:"asaaaa sssss2"},
-	  success: function(){console.log('send success');},
+	  data: {rtext: '[list]'+$('#bk').text()},
+	  success: function(){console.log('send backup success');},
 	  dataType: "text"
 	});
 }
@@ -927,15 +915,18 @@ function getBackUp(){
 			var xdt = $('#debug').find('ul').text();
 			var delurl=$('#debug').find('a').attr('href');
 			var posturl = $('#debug').find('form').attr('action');
-			$('div#divedit').append(xdt+'<br>');
 			$('div#divedit').append(delurl+'<br>');
 			$('div#divedit').append(posturl+'<br>');
+			var pss = xdt.split('$');
+			for(n in pss){
+				if(pss[n]!=undefined && pss[n]!=''){
+					var stt = pss[n].split('|');
+					$('div#divedit').append(translit(stt[0],true)+' '+stt[1]+' '+stt[2]+ ' '+translit(stt[3],true)+'<br>');
+				}
+			}
+
 		}
 	});
-	//$('#debug').load('hist.php?t=n&id=0' + ' td.back2 blockquote pre',function(){
-	//	$('div#divedit').append($('#debug').find('pre').html());
-	//})
-	
 }
 
 function chMenu(mid){
@@ -1080,6 +1071,25 @@ function MouseOff(num){
 	$('#select'+num).hide()
 	$('#span'+num).show()
 
+}
+function translit(text, engToRus, replace){
+ var
+  rus = "щшчцюяёжъыэабвгдезийклмнопрстуфхь".split(""),
+  eng = "shh sh ch cz yu ya yo zh `` y' e` a b v g d e z i j k l m n o p r s t u f x `".split(" ")
+  for(var x = 0; x < rus.length; x++){
+  text = text.split(engToRus ? eng[x] : rus[x]).join(engToRus ? rus[x] : eng[x]);
+   text = text.split(engToRus ? eng[x].toUpperCase() : rus[x].toUpperCase()).join(engToRus ? rus[x].toUpperCase() : eng[x].toUpperCase()); 
+ }
+ if(replace){
+   r = replace.split(",")
+   try{
+     pr =  new RegExp("([^\\"+r[0]+"]+)(?=\\"+r[1]+")","g")
+      text.match(pr).forEach(function(i){
+        text=text.split(r[0]+i+r[1]).join(translit(i, engToRus ? "" : true))
+     })
+   }catch(e){}
+ }
+  return text;
 }
 
 function ShowHelp(){
