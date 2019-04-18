@@ -9,7 +9,7 @@
 
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false);
 var sostavteam = (location.search.substring(1) == 'sostav' ? true : false);
-var psn = ['','GK','SW','L DF','C DF','C DF','C DF','R DF','L DM','C DM','C DM','C DM','R DM','L M','C M','C M','C M','R M','L AM','C AM','C AM','C AM','R AM','C FW','C FW','C FW'];
+var psn = ['','GK','SW','L DF','C DF','C DF','C DF','R DF','L DM','C DM','C DM','C DM','R DM','L MF','C MF','C MF','C MF','R MF','L AM','C AM','C AM','C AM','R AM','C FW','C FW','C FW'];
 positions = [];
 var dataall = [];
 var plkeys = [];
@@ -197,14 +197,14 @@ function getDataSelected(){
 
 	if(datavalue == 'undefined'){
 		datavalue = ''
-			+',1,2'			// линия Gk & SW
-			+',3,7,7,7,4'	// линия DF
-			+',5,8,8,8,6'	// линия DM
-			+',10,9,9,9,11'	// линия MF
-			+',13,12,12,12,14'	// линия AM
-			+',15,15,15'		// линия FW
-			+',16,17,18,19'	// доп таблицы 1
-			+',20,21,22,23'	// доп таблицы 2
+			+',0,0'			// линия Gk & SW
+			+',0,0,0,0,0'	// линия DF
+			+',0,0,0,0,0'	// линия DM
+			+',0,0,0,0,0'	// линия MF
+			+',0,0,0,0,0'	// линия AM
+			+',0,0,0'		// линия FW
+			+',27,28,29,0,0'	// доп таблицы 1
+			+',30,31,0,0,0'	// доп таблицы 2
 	}
 	return datavalue
 }
@@ -248,30 +248,38 @@ function GetData(dataname){
 		needsave = true
 	// TODO: загрузить дефоултные positions(from forum) вместо констант тут.
 		data = [
-			{filter:'',		name:'&nbsp;',	num:0,	koff:'data=9107892,idealsk=15,idealage=40,idealval=50000000,idealnat=500,maxt=8'},
-/**  1 **/	{filter:'GK', 	name:'GK', 		num:5,	koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,фл,Фам,сила,зв'},
-/**  2 **/	{filter:'C SW',	name:'C SW',	num:5,	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,фл,Фам,сила,зв'},
-/**  3 **/	{filter:'L DF',	name:'L DF',	num:5,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,фл,Фам,сила,зв'},
-/**  4 **/	{filter:'R DF',	name:'R DF',	num:5,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,фл,Фам,сила,зв'},
-/**  5 **/	{filter:'L DM',	name:'L DM',	num:5,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,фл,Фам,сила,зв'},
-/**  6 **/	{filter:'R DM',	name:'R DM',	num:5,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,фл,Фам,сила,зв'},
-/**  7 **/	{filter:'C DF',	name:'C DF',	num:5,	koff:'от=от*3,вп=вп*3,мщ=мщ*1.5,ск=ск*1.5,гл=гл*1.5,фл,Фам,сила,зв'},
-/**  8 **/	{filter:'C DM',	name:'C DM',	num:5,	koff:'вп=вп*3,от=от*3,ви=ви*2,рб=рб*2,!тх=тх*1.5,!пс=пс*1.5,фл,Фам,сила,зв'},
-/**  9 **/	{filter:'C M',	name:'C M',		num:5,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*1.5,!от=от,!ду=ду*0.5,фл,Фам,сила,зв'},
-/** 10 **/	{filter:'L M',	name:'L M',		num:5,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,фл,Фам,сила,зв'},
-/** 11 **/	{filter:'R M',	name:'R M',		num:5,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,фл,Фам,сила,зв'},
-/** 12 **/	{filter:'C AM',	name:'C AM',	num:5,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*2,!ду=ду,!др=др,фл,Фам,сила,зв'},
-/** 13 **/	{filter:'L AM',	name:'L AM',	num:5,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,фл,Фам,сила,зв'},
-/** 14 **/	{filter:'R AM',	name:'R AM',	num:5,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,фл,Фам,сила,зв'},
-/** 15 **/	{filter:'C FW',	name:'C FW',	num:5,	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,фл,Фам,сила,зв'},
-/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,са,сила,фл,Фам,от,ск'},
-/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,со,сила,фл,Фам,др,ск'},
-/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'зв=зв*200,уг=уг*10,нв=нв*2,ви,фл,Фам,иу,сила'},
-/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'зв=зв*200,шт=шт*10,ду=ду,нв=нв,ви,фл,Фам,иш,сила'},
-/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'зв=зв*200,взр=взр,уд=уд*0.3,лд=лд*0.3,фл,Фам,пн,сила'},
-/** 21 **/	{filter:'',		name:'!Сыгранность',	num:0,	koff:'зв,сыг=сыг,фл,Фам,Поз,!сила'},
-/** 22 **/	{filter:'',		name:'!Зарплаты',	num:0,	koff:'зрп=зрп,кнт=-кнт*100,фл,Фам,!сила'},
-/** 23 **/	{filter:'',		name:'!Номиналы',	num:0,	koff:'ном=ном,взр,фл,Фам,!сила'}
+			{filter:'',			name:'&nbsp;',		num:0, koff:'idealsk=15,idealage=40,idealval=50000000,maxt=10'},
+/**  1 **/	{filter:'GK', 		name:'Вратарь',		num:5, koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*2,!мщ=мщ,фл,Фам,сила,зв'},
+/**  2 **/	{filter:'GK', 		name:'Либеро',		num:5, koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*2,ск=ск,!мщ=мщ,!ви=ви,!пс=пс,!тх=тх,фл,Фам,сила,зв'},
+/**  3 **/	{filter:'C SW',		name:'Либеро',		num:5, koff:'вп=вп*2,от=от*1.5,гл=гл,мщ=мщ,ск=ск,фл,Фам,сила,зв'},
+/**  4 **/	{filter:'C SW/DF',	name:'Диспетчер',	num:5, koff:'вп=вп*2,от=от*1.5,гл=гл,!мщ=мщ,ск=ск,ви=ви,пс=пс,!нв=нв,!тх=тх,фл,Фам,сила,зв'},
+/**  5 **/	{filter:'LR DF',	name:'Крайний',		num:5, koff:'от=от*3,вп=вп*2,ск=ск*3,нв=нв,фл,Фам,сила,зв'},
+/**  6 **/	{filter:'LR DF',	name:'Атакующий',	num:5, koff:'от=от*3,вп=вп*2,ск=ск*3,нв=нв,др=др,!уд=уд,!тх=тх,фл,Фам,сила,зв'},
+/**  7 **/	{filter:'LR DF/DM/MF',name:'Латераль',	num:5, koff:'ск=ск*3,рб=рб*2,вн=вн*3,от=от*2,др=др,!нв=нв,!тх=тх,фл,Фам,сила,зв'},
+/**  8 **/	{filter:'LCR DF/DM/MF',name:'Персональщик',num:5, koff:'по=по*5,от=от*3,вп=вп*3,ск=ск*3,фл,Фам,сила,зв'},
+/**  9 **/	{filter:'C DF',		name:'Центральный',	num:5,	koff:'от=от*4,гл=гл*3,вп=вп*2,мщ=мщ*2,ск=ск*2,фл,Фам,сила,зв'},
+/** 10 **/	{filter:'C DF',		name:'Ведущий',		num:5,	koff:'от=от*4,гл=гл*3,вп=вп*2,мщ=мщ*2,ск=ск*2,вд=вд,!лд=лд,!взр=взр,фл,Фам,сила,зв'},
+/** 11 **/	{filter:'LR DM/MF',	name:'Оборонительный',num:5,koff:'от=от*3,ск=ск*3,нв=нв,тх=тх,фл,Фам,сила,зв'},
+/** 12 **/	{filter:'LR DM/MF',	name:'Крайний',		num:5,	koff:'ск=ск*1.5,от=от*1.5,др=др,нв=нв,пс=пс,!тх=тх,фл,Фам,сила,зв'},
+/** 13 **/	{filter:'C DM/MF',	name:'Оборонительный',num:5,koff:'рб=рб*2,от=от*3,пс=пс*2,вп=вп*3,гл=гл*2,фл,Фам,сила,зв'},
+/** 14 **/	{filter:'C DM/MF/AM',name:'Диспетчер',	num:5,	koff:'ви=ви*4,пс=пс*4,др=др*2,тх=тх*2,от=от,!ду=ду,фл,Фам,сила,зв'},
+/** 15 **/	{filter:'C DM/MF',	name:'Бокс-ту-Бокс',num:5,	koff:'вн=вн*2,рб=рб*2,от=от*3,пс=пс*2,ск=ск,!ду=ду,фл,Фам,сила,зв'},
+/** 16 **/	{filter:'LR MF/AM',	name:'Атакующий',	num:5,	koff:'ск=ск*2,др=др*2,пс=пс*2,нв=нв*1.5,!тх=тх,фл,Фам,сила,зв'},
+/** 17 **/	{filter:'LR MF/AM',	name:'Инсайд',		num:5,	koff:'др=др*2,пс=пс*2,ви=ви*2,ду=ду*1.5,!уд=уд,!ск=ск,фл,Фам,сила,зв'},
+/** 18 **/	{filter:'C MF',		name:'Центральный',	num:5,	koff:'пс=пс*3,ви=ви*3,тх=тх*2,ду=ду,фл,Фам,сила,зв'},
+/** 19 **/	{filter:'C MF/AM',	name:'Атакующий',	num:5,	koff:'пс=пс*3,ви=ви*3,др=др*2,тх=тх*2,ду=ду,уд=уд,фл,Фам,сила,зв'},
+/** 20 **/	{filter:'LCR MF/AM/FW',name:'Художник',	num:5,	koff:'ск=ск*3,др=др*3,тх=тх*2,ви=ви*3,уд=уд,ду=ду,фл,Фам,сила,зв'},
+/** 21 **/	{filter:'LR AM',	name:'Вингер',		num:5,	koff:'ск=ск*3,др=др*3,уд=уд*2,тх=тх*2,фл,Фам,сила,зв'},
+/** 22 **/	{filter:'C AM/FW',	name:'Оттянутый нап',num:5,	koff:'уд=уд*3,др=др*3,пс=пс*2,тх=тх*2,!ду=ду,!ви=ви,фл,Фам,сила,зв'},
+/** 23 **/	{filter:'C FW',		name:'Нападающий',	num:5,	koff:'уд=уд*3,др=др*3,вп=вп*3,ск=ск*2,гл=гл*2,тх=тх,фл,Фам,сила,зв'},
+/** 24 **/	{filter:'C FW',		name:'Столб',		num:5,	koff:'гл=гл*5,мщ=мщ*3,вп=вп*2,пс=пс,уд=уд*2,фл,Фам,сила,зв'},
+/** 25 **/	{filter:'C FW',		name:'На грани',	num:5,	koff:'вп=вп*5,ск=ск*3,уд=уд*2,тх=тх,фл,Фам,сила,зв'},
+/** 26 **/	{filter:'C FW',		name:'Наконечник',	num:5,	koff:'уд=уд*5,гл=гл*2,ск=ск*2,вп=вп*2,ду=ду,фл,Фам,сила,зв'},
+/** 27 **/	{filter:'',		name:'Стандарты',		num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,са,со,сила,фл,Фам,от,ск,др'},
+/** 28 **/	{filter:'',		name:'Исп. угловых',	num:18,	koff:'зв=зв*200,уг=уг*10,нв=нв*2,ви=ви,фл,Фам,иу,сила'},
+/** 29 **/	{filter:'',		name:'Исп. штрафных',	num:18,koff:'зв=зв*200,шт=шт*10,ду=ду,нв=нв,ви=ви,фл,Фам,иш,ин,сила'},
+/** 30 **/	{filter:'',		name:'Сыгранность',		num:0,	koff:'зв,сыг=сыг,фл,Фам,Поз,!сила,трв,дсв'},
+/** 31 **/	{filter:'',		name:'Номиналы',		num:0,	koff:'ном=ном,взр=взр,фл,фс,Фам,!сила'}
 		]
 	}
 	//translate all to rshort and fix order
@@ -595,7 +603,7 @@ function FillHeaders(){
 			var psj = positions[j];
 			var fl = psj.filter;
 			//if (i==2) console.log('tablenum:'+i +' check:'+psn[i]+' position:'+j+' psj:'+psj);
-			if (i<=25 && filterPosition(psj.filter,psn[i])) selopts+='<option '+(selected[i]!=undefined && selected[i]==j ? 'selected ':'')+'value='+psj.order+'>'+psj.name+'</option>';
+			if (i<=25 && psj.filter!= '' && filterPosition(psj.filter,psn[i])) selopts+='<option '+(selected[i]!=undefined && selected[i]==j ? 'selected ':'')+'value='+psj.order+'>'+psj.name+'</option>';
 			if (i>25 && psj.filter=='') selopts+='<option value='+psj.order+'>'+psj.name+'</option>';
 		}
 		$('#select'+i).append(selopts);
@@ -639,10 +647,10 @@ function fillPosEdit(num){
 
 	html += '<div style="margin-bottom:5px;">'
 	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>Коэффициент</b></label></div>';
-	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Название:</label><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="42" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></div>';
-	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Фильтр:</label><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="20" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"><label> LC DF/DM"(пусто=все)</label></div>';
-	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Кол-во:</label><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"><label> Сколько игроков отображать(0=все)</label></div>';
-	html += '<div style="margin:2px;"><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="51" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Название:</label><input maxlength=40 class=back1 style="border:1px solid;" id=iname name="name" type="text" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Фильтр:</label><input maxlength=20 class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"><label> LC DF/DM"(пусто=все)</label></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Кол-во:</label><input maxlength=4 class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"><label> Сколько игроков отображать(0=все)</label></div>';
+	html += '<div style="margin:2px;"><textarea class=back1 style="width:100%;border:1px solid;" id=ikoff name="koff" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></div>';
 	html += '</div>';
 	html += '<br><div style="margin-bottom:5px;">'
 	html += '<label style="margin:2px 2px;padding:5px;text-align:center;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;" class="back2 button" onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'">Сохранить</label>'
@@ -650,7 +658,7 @@ function fillPosEdit(num){
 	html += '</div>'
 	html += '<br><div style="margin-bottom:5px;">'
 	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>Список</b></label></div>';
-	html += '<div style="margin:2px;"><select style="border:1px solid;min-width:365;max-width=365px;padding-left:5px" id=selpos size=30 class=back2 onChange="javascript:void(PosChange())">'
+	html += '<div style="margin:2px;"><select size=30 style="width:100%;border:1px solid;min-width:365;max-width=365px;padding-left:5px" id=selpos class=back2 onChange="javascript:void(PosChange())">'
 	html += '<option value=0'+(num==0 ? ' selected' :'')+'>--- Создать ---</option>'
 	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name + (positions[i].filter==''?'':' ('+positions[i].filter+')'))+'</option>'
 	html += '</select>'
@@ -687,25 +695,28 @@ function fillPosEdit(num){
 	html = '<table width=100% class=back1>'
 	html += '<tr valign=top>';
 	html +=  '<td width=300><table width=100%>';
-	html += 	'<tr><th colspan=3 class=back2>Основные</th></tr>';
-	html += 	'<tr><th width=60 align=right>Таблиц:</th><td colspan=2><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (Кол-во доп. таблиц)</td></tr>';
+	html += 	'<tr><th colspan=3 style="padding:5px;" class=back2>Основные</th></tr>';
+	html += 	'<tr><th style="width:15%;" align=right>Таблиц:</th><td colspan=2><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (Кол-во доп. таблиц)</td></tr>';
 	html += 	'<tr><th colspan=3>&nbsp;</th></tr>'
-	html += 	'<tr><th colspan=3 class=back2>Идеальный игрок</th></tr>'
+	html += 	'<tr><th colspan=3 style="padding:5px;" class=back2>Идеальный игрок</th></tr>'
 	html += 	'<tr><th align=right>Скиллы:</th><td colspan=2><input class=back1 style="border:1px solid;" id=iskills name="iskills" type="text" size="10" value="'+plskillmax+'"></td></tr>'
 	html += 	'<tr><th align=right>Номинал:</th><td colspan=2><input class=back1 style="border:1px solid;" id=inominal name="inominal" type="text" size="10" value="'+skillnames.value.strmax+'"></td></tr>'
 	html += 	'<tr><th align=right>Возраст:</th><td colspan=2><input class=back1 style="border:1px solid;" id=iage name="iage" type="text" size="10" value="'+skillnames.age.strmax+'"></td></tr>'
 	html += 	'<tr><th colspan=3>&nbsp;</th></tr>'
-	html += 	'<tr><td></td><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
+	html += 	'<tr><td></td><th width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
 	html +=  '</table></td>';
 	html +=  '<td><table width=100%>'
-	html += 	'<tr><th colspan=2 class=back2>BackUp <span style="font-weight: normal;">(сохранение и загрузка своих коэфициентов)</span></th></tr>';
-	html += 	'<tr id=svbktr><th title="Сделать бекап коэффициентов на сервере из поля ввода" height=20 width=100 class=back2 onmousedown="javascript:void(sendBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Backup</th><td>нет сохраненого бекапа, нажмите что бы сделать(данные возьмутся из поля ввода!)</td></tr>';
+	html += 	'<tr><th colspan=2 style="padding:5px;" class=back2>BackUp <span style="font-weight: normal;">(сохранение и загрузка своих коэфициентов)</span></th></tr>';
+	html += 	'<tr id=svbktr><th title="Сделать бекап коэффициентов на сервере из поля ввода" width=100 class=back2 onmousedown="javascript:void(sendBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Backup</th><td>нет сохраненого бекапа, нажмите что бы сделать(данные возьмутся из поля ввода!)</td></tr>';
 //	html += 	'<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(removeBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Удалить</th><td id=tdbk></td></tr>';
-	html += 	'<tr id=rmbktr><th title="Загрузить коэффициенты из бекапа в форму ввода" height=20 width=100 class=back2 onmousedown="javascript:void(getBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Загрузить</th><td>бекап за <b><span id=dtbk></span></b> [<a href="javascript:void(removeBackUp())">удалить</a>]</td></tr>';
+	html += 	'<tr id=rmbktr><th title="Загрузить коэффициенты из бекапа в форму ввода" width=100 class=back2 onmousedown="javascript:void(getBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Загрузить</th><td>бекап за <b><span id=dtbk></span></b> [<a href="javascript:void(removeBackUp())">удалить</a>]</td></tr>';
 	html += 	'<tr><th colspan=2>&nbsp;</th></tr>'
-	html += 	'<tr><th title="Применить коэффициенты введеные в форму ввода" height=20 width=100 class=back2 onmousedown="javascript:void(applyBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Применить</th>'
-	html += 		'<td rowspan=3><textarea class=back1 style="width:100%;border:1px solid;" id=bk name="bk" rows="25"></textarea></td></tr>';
-	html += 	'<tr><th title="Вставить в форму ввода текущие коэффициенты" height=20 width=100 class=back2 onmousedown="javascript:void(printToBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Текущее</th><td></td></tr>'
+	html += 	'<tr><th title="Применить коэффициенты введеные в форму ввода" width=100 class=back2 onmousedown="javascript:void(applyBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Применить</th>'
+	html += 		'<td rowspan=7><textarea class=back1 style="width:100%;border:1px solid;" id=bk name="bk" rows="25"></textarea></td></tr>';
+	html += 	'<tr><td style="height:20px;">&nbsp;</td><td></td></tr>'
+	html += 	'<tr><th title="Вставить в форму ввода текущие коэффициенты" width=100 class=back2 onmousedown="javascript:void(printToBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Текущее</th><td></td></tr>'
+	html += 	'<tr><td style="height:20px;">&nbsp;</td><td></td></tr>'
+	html += 	'<tr><th title="Сбросить коэффициенты на значения по умолчанию" width=100 class=back2 onmousedown="javascript:void(PosDrop())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сбросить</th><td></td></tr>'
 	html += 	'<tr><td>&nbsp;</td><td></td></tr>'
 	html +=  '</table></td><tr>';
 	html += '</table>'
@@ -943,8 +954,7 @@ function krOpen(){
 function PrintTables() {
 	krOpen()
 
-	var html = '<div align=right><a href="javascript:void(close())">закрыть</a>&nbsp;</div>'
-	html += '<div align=right><a href="javascript:void(PosDrop())" >сбросить кофы</a>&nbsp;</div>'
+	var html = '<div align=right style="margin:0px 5px">[<a href="javascript:void(close())">закрыть</a>]</div>'
 	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
 	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
 	html += '<th id=tdsost width=130 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
