@@ -24,30 +24,30 @@ function printStrench(){
 	for(i in positions){
 		for(j in positions[i].pls){
 			if(positions[i].pls[j].id0){
-//				var srt = positions[i].pls[j].srt
-				var srt = (positions[i].pls[j].srt!=undefined ? positions[i].pls[j].srt : positions[i].pls[j]['!srt'])
-				var plx = {}
-				plx.name = positions[i].name
-				plx.srt = srt + (positions[i].pls[j].posf ? 1000 : 0) + (positions[i].pls[j].posfempty ? -2000 : 0)
-				plx.strench = srt
-				if(!isNaN(plx.srt)) poses.push(plx)
+				var srt = (positions[i].pls[j].srt!=undefined ? positions[i].pls[j].srt : positions[i].pls[j]['!srt']);
+				var plx = {};
+				plx.name = positions[i].name;
+				plx.filter = positions[i].filter;
+				plx.srt = srt + (positions[i].pls[j].posf ? 1000 : 0) + (positions[i].pls[j].posfempty ? -2000 : 0);
+				plx.strench = srt;
+				if(!isNaN(plx.srt)) poses.push(plx);
 			}
 		}
 	}
-	poses = poses.sort(sSrt)
-	var hidden = 0
-	var txt = ''
+	poses = poses.sort(sSrt);
+	var hidden = 0;
+	var txt = '';
 	for(i in poses){
-		if(poses[i].srt<1000 && hidden==0) hidden = 1
+		if(poses[i].srt<1000 && hidden==0) hidden = 1;
 		if(hidden == 1) {
-			hidden = 2
-			txt += '<a id="mya" href="javascript:void(OpenAll())">...</a><br><div id="mydiv" style="display: none;">'
+			hidden = 2;
+			txt += '<a id="mya" href="javascript:void(OpenAll())">...</a><br><div id="mydiv" style="display: none;">';
 		}
 		if(poses[i].srt<-500 && hidden==2) {
-			hidden = 3
-			txt += '</div><div><br>'
+			hidden = 3;
+			txt += '</div><div>';
 		}
-		txt += (String(poses[i].name)[0]=='!' ? '' : '<a>'+(poses[i].strench).toFixed(2)+':'+(poses[i].name).replace(/\s/g,'&nbsp;')+'</a><br>')
+		txt += (String(poses[i].name)[0]=='!' ? '' : '<div title="'+poses[i].filter+'">'+(poses[i].strench).toFixed(2)+': '+(poses[i].name).replace(/\s/g,'&nbsp;')+'</div>')
 	}
 	txt += '</div>'
 	$('div#str').html(txt)
