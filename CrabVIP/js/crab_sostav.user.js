@@ -15,12 +15,12 @@ var psn = ['','GK','C SW',
 	'L MF','C MF','C MF','C MF','R MF',
 	'L AM','C AM','C AM','C AM','R AM',
 	'C FW','C FW','C FW'];
-var psnbetter = [{},{},{},
-	{},{},{},{},{},
-	{},{},{},{},{},
-	{},{},{},{},{},
-	{},{},{},{},{},
-	{},{},{}];
+var psnbetter = [[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}]];
 positions = [];
 var dataall = [];
 var plkeys = [];
@@ -667,16 +667,29 @@ function FillHeaders(){
 			var psj = positions[j];
 			if (i<=25 && psj.filter!= '' && filterPosition(psn[i], psj.filter)) 
 			{
-				var skip = 0;
+				//var skip = 0;
+				var rem = 0;
+				var remmax = 2;
 				var nm = '';
-				if (i==4||i==9||i==14||i==19||i==23) skip=1;
-				if (i==6||i==11||i==16||i==21||i==25) skip=2;
+				//if (i==4||i==9||i==14||i==19||i==23) skip=1;
+				//if (i==6||i==11||i==16||i==21||i==25) skip=2;
 				selopts+='<option '+(selected[i]!=undefined && selected[i]==j ? 'selected ':'')+'value='+psj.order+'>';
 				if (psj.pls!=undefined){
 					for(v in psj.pls) {
 						if (psj.pls[v].psn[i] && psj.pls[v].srt!=undefined) {
 							if (nm=='') nm = krPrint(psj.pls[v].srt,'srt');
+							if (i==4||i==9||i==14||i==19||i==23||i==6||i==11||i==16||i==21||i==25) {
+								break;
+							} else if (rem < remmax && (psnbetter[i][rem].mark==undefined || psnbetter[i][rem].mark < psj.pls[v].srt)) {
+										psnbetter[i][rem].mark = psj.pls[v].srt;
+										psnbetter[i][rem].posname = psj.name;
+										psnbetter[i][rem].plname = psj.pls[v].sname;
+										rem++;
+										if (rem >= remmax) break;
+							}
 							
+							
+							/*
 							if (psnbetter[i].mark==undefined || psnbetter[i].mark < psj.pls[v].srt) {
 								if(skip==0){
 									psnbetter[i].mark = psj.pls[v].srt;
@@ -685,7 +698,8 @@ function FillHeaders(){
 									break;
 								}
 								skip--;
-							}							
+							}
+							*/
 						}
 					}
 				}
@@ -721,12 +735,24 @@ function FillHeaders(){
 }
 
 function printBetter() {
-	var bres = '';
-	for(b in psnbetter) if(b > 0) {
-		bres+= b+' ' + psn[b] + ' ';
-		if(psnbetter[b].mark!=undefined) bres+= krPrint(psnbetter[b].mark,'srt')+' '+psnbetter[b].posname+' '+psnbetter[b].plname;
-		bres+= '<br>';
+	var bres = 'Лучшие: <table id=res>';
+	for(b=psnbetter.length-1;b>0;b--) if(b!=25&&b!=23&&b!=21&&b!=19&&b!=16&&b!=14&&b!=11&&b!=9&&b!=6&&b!=4) {
+		if(b==24||b==22||b==17||b==12||b==7||b==2||b==1) bres+='<tr>';
+		//if(b==24||b==2||b==1) bres+='<td colspan=3 bgcolor=white style="font-size:8px;">';
+		if(b==24||b==2||b==1) bres+='<td></td>';
+		bres+='<td bgcolor=#BFDEB3 style="font-size:8px;white-space:nowrap;padding:2px 0px;overflow:hidden;max-width:100px">';
+		for(m in psnbetter[b]) {
+			//bres+= b+' ' + psn[b] + ' ';
+			if (psnbetter[b][m].mark!=undefined){
+				bres+= krPrint(psnbetter[b][m].mark,'srt')+' '+psnbetter[b][m].plname+'('+psnbetter[b][m].posname+')';
+				bres+= '<br>';
+			}			
+		}
+		bres+='<br></td>'
+		if(b==24||b==2||b==1) bres+='<td></td>';
+		if(b==24||b==18||b==13||b==6||b==2||b==1) bres+='</tr>'
 	}
+	bres+='</table>';
 	$('#ltd4').html(bres);
 }
 
@@ -1110,7 +1136,7 @@ function PrintTables() {
 			} else if (i==1 && j==1) {
 				htmltd += '<td valign=top height=90 class=back1 align=center>'+ShowHelp()+'</td>'
 			} else if (i==6 && j!=3) {
-				if (j==1 || j==4) htmltd += '<td valign=top class=back1 colspan=2 rowspan=2 id=ltd'+j+'></td>'
+				if (j==1 || j==4) htmltd += '<td valign=top class=back1 colspan=2 rowspan=3 id=ltd'+j+'></td>'
 				//htmltd += '<td valign=top height=90 class=back1>6</td>'
 			} else if (i==7 && j!=3) {
 				//htmltd += '<td valign=top height=90 class=back1>7</td>'
@@ -1122,7 +1148,7 @@ function PrintTables() {
 		}
 		html += newtr + '</tr>'
 	}
-	html += '</table>'
+	html += '<tr><td></td></tr></table>'
 	html += '<table id=tabledopt width=100% class=back1 style="display:none;"></table>'
 	html += '<div id=divkoff style="display:none;"></div>'
 	html += '<div id=divedit style="display:none;"></div>'
