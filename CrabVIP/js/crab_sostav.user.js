@@ -9,11 +9,22 @@
 
 var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false);
 var sostavteam = (location.search.substring(1) == 'sostav' ? true : false);
-var psn = ['','GK','C SW','L DF','C DF','C DF','C DF','R DF','L DM','C DM','C DM','C DM','R DM','L MF','C MF','C MF','C MF','R MF','L AM','C AM','C AM','C AM','R AM','C FW','C FW','C FW'];
+var psn = ['','GK','C SW',
+	'L DF','C DF','C DF','C DF','R DF',
+	'L DM','C DM','C DM','C DM','R DM',
+	'L MF','C MF','C MF','C MF','R MF',
+	'L AM','C AM','C AM','C AM','R AM',
+	'C FW','C FW','C FW'];
+var psnbetter = [{},{},{},
+	{},{},{},{},{},
+	{},{},{},{},{},
+	{},{},{},{},{},
+	{},{},{},{},{},
+	{},{},{}];
 positions = [];
 var dataall = [];
 var plkeys = [];
-var players = [];
+var players = {};
 var posmaxorder = 0;
 var getforumid = 9107892;
 var plskillmax = 15;
@@ -122,17 +133,18 @@ function getPlayers() {
 			}
 		}
 		for(k in pl2){
-			var pl2id = pl2[k].id;
+			var pl2id = 'p'+pl2[k].id;
 			if(players[pl2id]==undefined) {
-				players[pl2id] = pl2[k];
-				players[pl2id].fname = pl2[k].firstname;
-				players[pl2id].sname = pl2[k].secondname;
-				players[pl2id].flag = 6;
-				players[pl2id].syg = 0;
-				players[pl2id].stdA = [false,false,false,false,false,false];
-				players[pl2id].stdD = [false,false,false,false,false,false];
+				var pl = pl2[k];
+				pl.fname = pl2[k].firstname;
+				pl.sname = pl2[k].secondname;
+				pl.flag = 6;
+				pl.syg = 0;
+				pl.stdA = [false,false,false,false,false,false];
+				pl.stdD = [false,false,false,false,false,false];
 				//players[pl2id].natflag = '<img src="system/img/flags/mod/'+players[pl2id].nation+'.gif" width="15">';
-				players[pl2id].natflag = players[pl2id].nation;
+				pl.natflag = pl.nation;
+				players[pl2id] = pl;
 			}
 		}
 	}
@@ -167,14 +179,14 @@ function getPlayers() {
 		else if(pl.morale < 80) pl.flag = 4;
 		else if(pl.value == 0) pl.flag = 5;
 
-		players[pl.id] = pl;
+		players['p'+pl.id] = pl;
 	}
 	//собираем ходящих стандарты
 	for(l=1;l<=5;l++){
 		for(m=1;m<=11;m++) {
 			if(jsonSostav['sostav'+l] != undefined && jsonSostav['sostav'+l][m] != undefined){
 				var tn = jsonSostav['sostav'+l][m];
-				var plstdid = jsonSostav.sostav[m];
+				var plstdid = 'p'+jsonSostav.sostav[m];
 				if(tn.stda==1) players[plstdid]['stdA'][l] = true;
 				if(tn.stdo==1) players[plstdid]['stdD'][l] = true;				
 			}
@@ -182,14 +194,24 @@ function getPlayers() {
 	}
 
 	//стандартчики
-	for(g=1;g<=10;g++) {
-		if (g<=5) {
-			if (players[jsonSostav.cap[g]] != undefined) players[jsonSostav.cap[g]].cap = g;
-			if (players[jsonSostav.cor[g]] != undefined) players[jsonSostav.cor[g]].cor = g;
-			if (players[jsonSostav.fre[g]] != undefined) players[jsonSostav.fre[g]].fre = g;
-			if (players[jsonSostav.frh[g]] != undefined) players[jsonSostav.frh[g]].frh = g;
+	for (g=1; g<=10; g++) {
+		if (g <= 5) {
+			if (players['p'+jsonSostav.cap[g]] != undefined) players['p'+jsonSostav.cap[g]].cap = g;
+			if (players['p'+jsonSostav.cor[g]] != undefined) players['p'+jsonSostav.cor[g]].cor = g;
+			if (players['p'+jsonSostav.fre[g]] != undefined) players['p'+jsonSostav.fre[g]].fre = g;
+			if (players['p'+jsonSostav.frh[g]] != undefined) players['p'+jsonSostav.frh[g]].frh = g;
 		}
-		if (players[jsonSostav.pen[g]] != undefined) players[jsonSostav.pen[g]].pen = g;
+		if (players['p'+jsonSostav.pen[g]] != undefined) players['p'+jsonSostav.pen[g]].pen = g;
+	}
+	//определяем годность позиции
+	for (j in players) {
+		players[j].psn = [];
+		var plposition = String(players[j].position);		
+		if (~plposition.indexOf('AM') || ~plposition.indexOf('DM')) plposition+='/MF';
+		if ((~plposition.indexOf('L') || ~plposition.indexOf('R')) && ~plposition.indexOf('FW')) plposition+='/AM';
+		for (c in psn) {
+			if (c > 0) players[j].psn[c] = filterPosition(psn[c], plposition);
+		}
 	}
 }
 
@@ -302,12 +324,14 @@ function GetData(dataname){
 		case 'positions':  positions = data;break
 		default: return false
 	}
-	getParams()
-	fillPosEdit(0)
-	PrintAdditionalTables()
-	//for(i=1;i<positions.length;i++) countPosition(i)
-	FillHeaders()
-	if(needsave) SaveData('positions')
+	getParams();
+	fillPosEdit(0);
+	PrintAdditionalTables();
+	for (f in positions){
+		countPosition(f);
+	}
+	FillHeaders();
+	if(needsave) SaveData('positions');
 }
 function getParams(){
 	var params = positions[0].koff.split(',')
@@ -378,9 +402,10 @@ function filterPosition(plpos,fl) {
 }
 
 //обсчитываем конкретную позицию и записываем игроков
-function countPosition(posnum) 
+function countPosition(posnum,ppsn) 
 {
-	var ps = positions[posnum];
+	if (ppsn == undefined) ppsn = 0;
+	var ps = positions[posnum];	
 	var sf = countStrength('ideal',ps.koff).split(':');
 	ps.strmax = sf[0];
 	ps.sormax = sf[1];
@@ -388,9 +413,16 @@ function countPosition(posnum)
 	for(j in players) {
 		//if (posnum==15) console.log('countPosition='+posnum+' pl='+j);
 		var pl = {};
-		if(j==0) pl.id0 = true;
+		//if(j==0) pl.id0 = true;
 		pl.id = players[j].id;
-		if(pl.id==undefined) break;
+		pl.psn = players[j].psn;
+
+		if(posnum==5) console.log(posnum, ppsn, j, players[j].position, pl.psn[ppsn]);
+
+		if (pl.id==undefined) break;
+
+		if ((ppsn<=25 && ppsn>0 && !pl.psn[ppsn])) continue;
+		
 		var pkoff = ps.koff.split(',');
 		for(h in pkoff){
 			var koff = String(pkoff[h].split('=')[0]);
@@ -398,15 +430,15 @@ function countPosition(posnum)
 			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')]);
 		}
 		//if (posnum==15) console.log('countPosition for pl'+j+' pos="'+players[j].position+'" in filter "'+ps.filter+'"');
+		/*
 		var plposition = String(players[j].position);
-		//pl.posf = filterPosition(plposition, ps.filter);
 		pl.psn = [];
 		if (~plposition.indexOf('AM') || ~plposition.indexOf('DM')) plposition+='/MF';
 		if ((~plposition.indexOf('L') || ~plposition.indexOf('R')) && ~plposition.indexOf('FW')) plposition+='/AM';
 		for(c in psn) {
 			if(c>0) pl.psn[c] = filterPosition(psn[c], plposition);
 		}
-		//if(ps.filter=='') pl.posfempty = true;
+		*/
 		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined ? '!srt' : ''));
 		if(s!='' && pl[s]!=undefined) {
 			var sfp = countStrength(j,ps.koff).split(':');
@@ -416,6 +448,7 @@ function countPosition(posnum)
 		pls.push(pl);
 	}
 	positions[posnum].pls = pls.sort(sSrt);
+	//if (positions[posnum].pls[0].srt!=undefined) positions[posnum].maxsrt = positions[posnum].pls[0].srt;
 }
 
 function checkKoff(kf0){
@@ -455,7 +488,13 @@ function tryEval(formula){
 //подсчет игрока по кофу
 function countStrength(plid,pkoff)
 {
-	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
+	var pl;
+	if (plid=='ideal'){
+		var keys = Object.keys(players);
+		for (s=1; s<2; s++) {pl = players[keys[s]];break;}
+	} else {
+		pl = players[plid];
+	}
 	pkoff = pkoff.split(',')
 	var res  = 0
 	var res2 = 0
@@ -517,6 +556,7 @@ function krPrint(val,sn){
 //заполнение карточки позиции данными
 function FillData(nt)
 {
+	//var maxsrt = 0;
 	$('#table'+nt).remove();
 
 	var selpl = 0;//выбраный игрок на позиции в составе
@@ -537,7 +577,7 @@ function FillData(nt)
 		if(positions[np].pls==undefined) {
 //			refresh = true
 //			return false
-			countPosition(np);
+			countPosition(np,nt);
 		}
 		var html = '<table id=table'+nt+' width=100% border=0 rules=none>'
 		var head = true
@@ -550,8 +590,14 @@ function FillData(nt)
 				var trbgcolor = ((nt<26 && selpl==pl.id) || (nt>25 && pl.sostav ==2) ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''));
 			}
 			var plhtml = '<tr align=right'
-			if(((!pl.psn[nt] && pl.psn[nt]!=undefined) || numshow>=nummax) && selpl!=pl.id) 	plhtml += ' hidden abbr=wrong';
-			else numshow++
+			if(((!pl.psn[nt] && pl.psn[nt]!=undefined) || numshow>=nummax) && selpl!=pl.id) plhtml += ' hidden abbr=wrong';
+			else {
+				//if (maxsrt==0 && pl.srt!=undefined) {
+					//maxsrt = pl.srt;
+					//$('#select'+nt+' option[value='+np+']').append(' ('+krPrint(pl.srt,'srt')+')');
+				//}
+				numshow++;
+			}
 
 			plhtml += trbgcolor+'>'
 			var font1 = (!pl.psn[nt] && pl.psn[nt]!=undefined ? '<font color=red>' : (pl.flag==6 ? '<font color=888A85>' : ''));
@@ -574,9 +620,9 @@ function FillData(nt)
 					var nowrap = (skp!=undefined && skp.nowrap!=undefined ? ' nowrap' : '')
 
 					if (pp=='stdat') {
-						pl.stdat = (players[pl.id].stdA[tacNum] ? '*' : '');
+						pl.stdat = (players['p'+pl.id].stdA[tacNum] ? '*' : '');
 					} else if (pp=='stdbk') {
-						pl.stdbk = (players[pl.id].stdD[tacNum] ? '*' : '');
+						pl.stdbk = (players['p'+pl.id].stdD[tacNum] ? '*' : '');
 					}
 					plhtml += '<td'+align+hidden+nowrap+'>'+font1
 					plhtml += krPrint(pl[pp],p)
@@ -614,13 +660,39 @@ function FillHeaders(){
 	        	if (jsonSostav['sostav'+tacNum][j].pos == i) sel = true;
 	        }
         }
-
 		$('#select'+i).empty()
 		var selopts = '<option value="0">&nbsp;&nbsp;&nbsp;</option>';
-		//if(i==15) console.log('FillHeaders for tab=15');
-		for(j in positions) if (j>0) {
-			var psj = positions[j];			
-			if (i<=25 && psj.filter!= '' && filterPosition(psn[i], psj.filter)) selopts+='<option '+(selected[i]!=undefined && selected[i]==j ? 'selected ':'')+'value='+psj.order+'>'+psj.name+'</option>';
+		for(j in positions) if (j>0) 
+		{
+			var psj = positions[j];
+			if (i<=25 && psj.filter!= '' && filterPosition(psn[i], psj.filter)) 
+			{
+				var skip = 0;
+				var nm = '';
+				if (i==4||i==9||i==14||i==19||i==23) skip=1;
+				if (i==6||i==11||i==16||i==21||i==25) skip=2;
+				selopts+='<option '+(selected[i]!=undefined && selected[i]==j ? 'selected ':'')+'value='+psj.order+'>';
+				if (psj.pls!=undefined){
+					for(v in psj.pls) {
+						if (psj.pls[v].psn[i] && psj.pls[v].srt!=undefined) {
+							if (nm=='') nm = krPrint(psj.pls[v].srt,'srt');
+							
+							if (psnbetter[i].mark==undefined || psnbetter[i].mark < psj.pls[v].srt) {
+								if(skip==0){
+									psnbetter[i].mark = psj.pls[v].srt;
+									psnbetter[i].posname = psj.name;
+									psnbetter[i].plname = psj.pls[v].sname;
+									break;
+								}
+								skip--;
+							}							
+						}
+					}
+				}
+				selopts+= ''+nm+' ';
+				selopts+= psj.name;
+				selopts+='</option>';
+			}
 			if (i>25 && psj.filter=='') selopts+='<option value='+psj.order+'>'+psj.name+'</option>';
 		}
 		$('#select'+i).append(selopts);
@@ -645,6 +717,17 @@ function FillHeaders(){
 		maxtables = 25
 		GetData('positions');
 	}
+	printBetter();
+}
+
+function printBetter() {
+	var bres = '';
+	for(b in psnbetter) if(b > 0) {
+		bres+= b+' ' + psn[b] + ' ';
+		if(psnbetter[b].mark!=undefined) bres+= krPrint(psnbetter[b].mark,'srt')+' '+psnbetter[b].posname+' '+psnbetter[b].plname;
+		bres+= '<br>';
+	}
+	$('#ltd4').html(bres);
 }
 
 function fillPosEdit(num){
@@ -1024,10 +1107,13 @@ function PrintTables() {
 				if(sostavteam)	htmltd += (isNaN(parseInt(localStorage.myteamid)) ? 'g/team.gif' : 'club/'+localStorage.myteamid+'.gif')+'>'
 				else 			htmltd += (isNaN(parseInt(localStorage.myintid)) ? 'g/int.gif' : 'flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
 				htmltd += '</td>'				
-			} else if (i==1 && j==1){
+			} else if (i==1 && j==1) {
 				htmltd += '<td valign=top height=90 class=back1 align=center>'+ShowHelp()+'</td>'
-			} else if (i>5 && j!=3){
-				htmltd += '<td valign=top height=90 class=back1></td>'
+			} else if (i==6 && j!=3) {
+				if (j==1 || j==4) htmltd += '<td valign=top class=back1 colspan=2 rowspan=2 id=ltd'+j+'></td>'
+				//htmltd += '<td valign=top height=90 class=back1>6</td>'
+			} else if (i==7 && j!=3) {
+				//htmltd += '<td valign=top height=90 class=back1>7</td>'
 			} else {
 				htmltd += PrintTd(nm)
 				nm--
@@ -1070,14 +1156,18 @@ function PrintTd(num){
 	return newhtml
 }
 
-function showAll(nt){
+function showAll(nt) {
 	if($('table#table'+nt+' tr[abbr*=wrong]:first').is(':visible')
 		||$('table#table'+nt+' td[abbr*=hidden]:first').is(':visible')) {
 			$('table#table'+nt+' tr[abbr*=wrong]').hide()
 			$('table#table'+nt+' td[abbr*=hidden]').hide()
 	} else{
-			$('table#table'+nt+' tr[abbr*=wrong]').show()
-			$('table#table'+nt+' td[abbr*=hidden]').show()
+		if (Object.keys(players).length > positions[nt].pls.length) {
+			countPosition($('#select'+nt).val());
+			FillData(nt);
+		}
+		$('table#table'+nt+' tr[abbr*=wrong]').show()
+		$('table#table'+nt+' td[abbr*=hidden]').show()
 	}
 }
 
