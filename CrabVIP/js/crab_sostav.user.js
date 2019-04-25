@@ -140,6 +140,7 @@ function getPlayers() {
 				pl.sname = pl2[k].secondname;
 				pl.flag = 6;
 				pl.syg = 0;
+				pl.sostav = 0;
 				pl.stdA = [false,false,false,false,false,false];
 				pl.stdD = [false,false,false,false,false,false];
 				//players[pl2id].natflag = '<img src="system/img/flags/mod/'+players[pl2id].nation+'.gif" width="15">';
@@ -164,14 +165,8 @@ function getPlayers() {
 		if(isNaN(pl.value)) pl.value = 0;
 		//pl.natflag = '<img src="system/img/flags/mod/'+pl.nation+'.gif" width="15">';
 		pl.natflag = pl.nation;
+		pl.sostav = 0;
 
-		//оцениваем кто в составе
-		pl.sostav = 0
-		for(k in jsonSostav.sostav) {
-			if(jsonSostav.sostav[k]==pl.id) {
-				pl.sostav = (k<12 ? 2 : 1)
-			}
-		}
 		pl.flag = 0;
 		if(pl.inj > 0) pl.flag = 1;
 		else if(pl.sus > 0) pl.flag = 2;
@@ -181,14 +176,23 @@ function getPlayers() {
 
 		players['p'+pl.id] = pl;
 	}
+
+	//оцениваем кто в составе
+	for(k in jsonSostav.sostav) if(k>0) {
+		var plsid = 'p'+jsonSostav.sostav[k];
+		if (players[plsid]==undefined) createFakePlayer(jsonSostav.sostav[k]);
+		players[plsid]['sostav'] = (k<12 ? 2 : 1);
+	}
+
 	//собираем ходящих стандарты
 	for(l=1;l<=5;l++){
 		for(m=1;m<=11;m++) {
 			if(jsonSostav['sostav'+l] != undefined && jsonSostav['sostav'+l][m] != undefined){
 				var tn = jsonSostav['sostav'+l][m];
 				var plstdid = 'p'+jsonSostav.sostav[m];
-				if(tn.stda==1) players[plstdid]['stdA'][l] = true;
-				if(tn.stdo==1) players[plstdid]['stdD'][l] = true;				
+				if (players[plstdid]==undefined) createFakePlayer(jsonSostav.sostav[m]);
+				if (tn.stda == 1) players[plstdid]['stdA'][l] = true;
+				if (tn.stdo == 1) players[plstdid]['stdD'][l] = true;
 			}
 		}
 	}
@@ -231,6 +235,19 @@ function getDataSelected(){
 			+',30,31,0,0,0'	// доп таблицы 2
 	}
 	return datavalue
+}
+function createFakePlayer(id) {
+	var xpl = {
+		id: id,
+		fname: '',
+		sname: 'Игрок-'+id,
+		flag: 6,
+		syg: 0,
+		stdA: [false,false,false,false,false,false],
+		stdD: [false,false,false,false,false,false],
+		natflag: 0
+	}
+	players['p'+id] = xpl
 }
 
 function saveDataSelected(){
@@ -673,7 +690,6 @@ function FillHeaders(){
 				var nm = '';
 				//if (i==4||i==9||i==14||i==19||i==23) skip=1;
 				//if (i==6||i==11||i==16||i==21||i==25) skip=2;
-				selopts+='<option '+(selected[i]!=undefined && selected[i]==j ? 'selected ':'')+'value='+psj.order+'>';
 				if (psj.pls!=undefined){
 					for(v in psj.pls) {
 						if (psj.pls[v].psn[i] && psj.pls[v].srt!=undefined) {
@@ -703,6 +719,7 @@ function FillHeaders(){
 						}
 					}
 				}
+				selopts+='<option '+(selected[i]!=undefined && selected[i]==j ? 'selected ':'')+'value='+psj.order+'>';
 				selopts+= ''+nm+' ';
 				selopts+= psj.name;
 				selopts+='</option>';
