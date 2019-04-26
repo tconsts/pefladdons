@@ -669,7 +669,7 @@ function FillData(nt)
 }
 
 function FillHeaders(){
-	for(i=1;i<=maxtables;i++){
+	for (i=1;i<=maxtables;i++) {
         var sel = false;
 		var selnum = selected[i];
         if (jsonSostav['sostav'+tacNum] != undefined){
@@ -679,53 +679,64 @@ function FillHeaders(){
         }
 		$('#select'+i).empty()
 		var selopts = '<option value="0">&nbsp;&nbsp;&nbsp;</option>';
-		for(j in positions) if (j>0) 
+		var selarr = [];
+		var selsel = 0;
+		for (j in positions) if (j > 0) 
 		{
 			var psj = positions[j];
 			if (i<=25 && psj.filter!= '' && filterPosition(psn[i], psj.filter)) 
 			{
-				//var skip = 0;
-				var rem = 0;
-				var remmax = 2;
 				var nm = '';
-				//if (i==4||i==9||i==14||i==19||i==23) skip=1;
-				//if (i==6||i==11||i==16||i==21||i==25) skip=2;
-				if (psj.pls!=undefined){
+				if (psj.pls!=undefined) {
 					for(v in psj.pls) {
 						if (psj.pls[v].psn[i] && psj.pls[v].srt!=undefined) {
 							if (nm=='') nm = krPrint(psj.pls[v].srt,'srt');
+
 							if (i==4||i==9||i==14||i==19||i==23||i==6||i==11||i==16||i==21||i==25) {
 								break;
-							} else if (rem < remmax && (psnbetter[i][rem].mark==undefined || psnbetter[i][rem].mark < psj.pls[v].srt)) {
-										psnbetter[i][rem].mark = psj.pls[v].srt;
-										psnbetter[i][rem].posname = psj.name;
-										psnbetter[i][rem].plname = psj.pls[v].sname;
-										rem++;
-										if (rem >= remmax) break;
-							}
-							
-							
-							/*
-							if (psnbetter[i].mark==undefined || psnbetter[i].mark < psj.pls[v].srt) {
-								if(skip==0){
-									psnbetter[i].mark = psj.pls[v].srt;
-									psnbetter[i].posname = psj.name;
-									psnbetter[i].plname = psj.pls[v].sname;
-									break;
+							} else {
+								if (psnbetter[i][0].mark==undefined || psnbetter[i][0].mark < psj.pls[v].srt) {
+									if (psnbetter[i][0].mark!=undefined) {
+										psnbetter[i][1] = jQuery.extend(true, {}, psnbetter[i][0]);;
+									}
+									psnbetter[i][0].mark = psj.pls[v].srt;
+									psnbetter[i][0].posname = psj.name;
+									psnbetter[i][0].plname = psj.pls[v].sname;
+									//if (rem >= remmax) break;
+								} else if (psnbetter[i][1].mark==undefined || psnbetter[i][1].mark < psj.pls[v].srt) {
+									psnbetter[i][1].mark = psj.pls[v].srt;
+									psnbetter[i][1].posname = psj.name;
+									psnbetter[i][1].plname = psj.pls[v].sname;
 								}
-								skip--;
 							}
-							*/
 						}
 					}
 				}
-				selopts+='<option '+(selected[i]!=undefined && selected[i]==j ? 'selected ':'')+'value='+psj.order+'>';
-				selopts+= ''+nm+' ';
-				selopts+= psj.name;
-				selopts+='</option>';
+				selarr.push({
+					'id': j,
+					'value': psj.order,
+					'name': nm+' '+psj.name,
+					'str': nm,
+					'selected': (selected[i]!=undefined && selected[i]==j)
+				});
 			}
-			if (i>25 && psj.filter=='') selopts+='<option value='+psj.order+'>'+psj.name+'</option>';
+			if (i>25 && psj.filter=='') {
+				selarr.push({
+					'id': j,
+					'value': psj.order,
+					'name': psj.name,
+					'str': 0,
+					'selected': (selected[i]!=undefined && selected[i]==j)
+				});
+			}
 		}
+		selarr.sort(function (a, b) {
+			if (a.str < b.str) return 1;
+			if (a.str > b.str) return -1;
+			return 0;
+		});
+		for (a in selarr) selopts+= '<option '+(selarr[a].selected ? 'selected ':'')+'value='+selarr[a].value+'>'+selarr[a].name+'</option>';
+
 		$('#select'+i).append(selopts);
 		if(sel) $('td#td'+i).attr('class','back2');
 		var name = '&nbsp;'
