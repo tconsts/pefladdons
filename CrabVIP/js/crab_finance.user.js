@@ -294,7 +294,8 @@ function GetData(dataname){
 }
 
 function EditFinance(school,divpriz,dteams,dtour){
-	debug('EditFinance('+school+','+divpriz+','+dteams+','+dtour+')')
+		debug('EditFinance('+school+','+divpriz+','+dteams+','+dtour+')');
+		cur.divpriz = divpriz;
 		var finance = []
 		var ffn 	= $('td.back4 > table td:eq(1)').html()
 		zp	 		= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
@@ -342,13 +343,13 @@ function EditFinance(school,divpriz,dteams,dtour){
 //		var divpriz = 0
 		var divprizmark =	(' <i>*1</i>').fontcolor('red').fontsize(1)
 		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в команду, див и "Правила".</i>').fontcolor('red').fontsize(1)
-		if(divpriz!=0){
+		if(cur.divpriz!=0){
 			if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) {
 				divprizmark = 	('<i>*1</i>').fontsize(1)
-				divpriztext = 	('<i>*1 - бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontsize(1)
+				divpriztext = 	('<i>*1 - бонус по итогам чемпионата: '+cur.divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontsize(1)
 			} else {
 				divprizmark = 	('<i>*1</i>').fontcolor('green').fontsize(1)
-				divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
+				divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+cur.divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
 			}
 		}
 
@@ -409,7 +410,7 @@ function countFin(){
 		debug(cur.stadion+':'+curhometour+':'+maxhometour+':'+cm)
 
 		fin.stadion = (cur.fid == 0 ? 0 : (curhometour==0 ? cur.stadion : parseInt((cur.stadion/(curhometour+cm)*(maxhometour+cm)).toFixed(0))))
-		fin.priz = cur.priz + (dtour==0 ? 0 : divpriz)
+		fin.priz = cur.priz + (dtour==0 ? 0 : cur.divpriz)
 		fin.sale = cur.sale
 		fin.allup = fin.sponsors + fin.stadion + fin.priz + fin.sale
 
