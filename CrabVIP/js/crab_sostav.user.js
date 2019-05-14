@@ -123,7 +123,7 @@ function getPlayers() {
 	if(showscout){
 		var text1 = String(localStorage.peflplayer);
 		var pl2 = [];
-		if (text1 != 'undefined'){
+		if (text1 != 'undefined') {
 			var pl = text1.split(',');
 			for (i in pl) {
 				var key = pl[i].split('=');
@@ -132,7 +132,7 @@ function getPlayers() {
 				pl2[pn][key[0].split('_')[0]] = [key[1]];
 			}
 		}
-		for(k in pl2){
+		for (k in pl2) if (pl2[k].id!=undefined) {
 			var pl2id = 'p'+pl2[k].id;
 			if(players[pl2id]==undefined) {
 				var pl = pl2[k];
