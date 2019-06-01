@@ -13,7 +13,9 @@ var db = false
 var divs = []
 var fin = {}
 var cur = {}
-
+var zp = 0;
+var sponsors = 0;
+var last_sp = 0;
 var list = {
 	'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
 	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color,numteams,curtour'}
@@ -294,15 +296,14 @@ function GetData(dataname){
 function EditFinance(school,divpriz,dteams,dtour){
 	debug('EditFinance('+school+','+divpriz+','+dteams+','+dtour+')')
 		var finance = []
+		var ffn 	= $('td.back4 > table td:eq(1)').html()
+		zp	 		= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
+		sponsors 	= parseInt(ffn.split('Всего ')[1].split(',000$')[0].replace(/\,/g,''))*1000
+		last_sp		= parseInt(ffn.split(',000$ в ИД / 4 г.')[0].split('$ в ИД / 3 г.')[1].split('>')[1].replace(/\,/g,''))
+		cur.bablo	= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''))
+		cur.bonus	= (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
 
-		var ffn 		= $('td.back4 > table td:eq(1)').html()
-		var zp 			= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
-		var sponsors 	= parseInt(ffn.split('Всего ')[1].split(',000$')[0].replace(/\,/g,''))*1000
-		var last_sp		= parseInt(ffn.split(',000$ в ИД / 4 г.')[0].split('$ в ИД / 3 г.')[1].split('>')[1].replace(/\,/g,''))
-		cur.bablo 		= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''))
-		cur.bonus 		= (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
-
-		fin.fid = 83
+		fin.fid = localStorage['finFID'] == undefined ? 81 : localStorage['finFID'];
 
 		// get info from tables
 		$('td.back4 > table table').each(function(i,val){
@@ -314,7 +315,6 @@ function EditFinance(school,divpriz,dteams,dtour){
 			})
 		})
 		for(i in finance[1]) debug(i+':'+finance[1])
-//		alert(finance[1]['Покупка игроков'])
 
 		if(isNaN(school)) {
 			school = finance[1]['Школа'] - Math.floor(((finance[0]['Продажа'] + finance[1]['Покупка'])*0.05)/1000)*1000
@@ -334,10 +334,6 @@ function EditFinance(school,divpriz,dteams,dtour){
 		cur.zpperc = 	 (cur.sponsors ==0 ? 0+'%' : (cur.zp/cur.sponsors*100).toFixed(1)+'%')
 		cur.schoolperc = (cur.sponsors ==0 ? 0+'%' : (cur.school/cur.sponsors*100).toFixed(1)+'%')
 
-/**
-		if(finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) cur.fid = fin.fid
-		else cur.fid = (cur.sponsors==0 ? 0 : (cur.sponsors - cur.bonus)/sponsors)
-**/
 		cur.fid = parseInt($('td.topmenu table td:contains(" ФИД")').text().split('(')[1],10);
 
 		if(cur.fid>fin.fid) fin.fid = cur.fid
@@ -356,34 +352,13 @@ function EditFinance(school,divpriz,dteams,dtour){
 			}
 		}
 
-		// Count finish finance
-		fin.sponsors = sponsors * fin.fid + cur.bonus
-
-//		fin.stadion = (cur.fid == 0 ? 0 : cur.stadion*fin.fid/cur.fid)
-		cm = (isNaN(parseInt(localStorage.cupmatches)) ? cm : parseInt(localStorage.cupmatches))
-		curhometour = parseFloat((dtour/2).toFixed(1))
-		maxhometour = (dteams==0 ? 0 : (dteams-1)*(dteams<13 ? 2 : 1))
-		debug(cur.stadion+':'+curhometour+':'+maxhometour+':'+cm)
-		fin.stadion = (cur.fid == 0 ? 0 : (curhometour==0 ? cur.stadion : parseInt((cur.stadion/(curhometour+cm)*(maxhometour+cm)).toFixed(0))))
-
-		fin.priz = cur.priz + (dtour==0 ? 0 : divpriz)
-		fin.sale = cur.sale
-		fin.allup = fin.sponsors + fin.stadion + fin.priz + fin.sale
-
-		fin.zp = cur.zp + (fin.fid-cur.fid)*zp
-		fin.zpperc = (fin.zp/fin.sponsors*100).toFixed(1) + '%'
-		fin.buy = cur.buy
-		fin.school = cur.school + (fin.fid-cur.fid)*school
-		fin.schoolperc = (fin.school/fin.sponsors*100).toFixed(1)+'%'
-		fin.alldown = fin.zp + fin.buy + fin.school
-		fin.plusminus = fin.allup - fin.alldown
-		fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
+		countFin();
 
 		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>')
 		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>')
 
 		var preparedhtml = '<tr><th width=40%></th><th width=30% class=back3 colspan=2>Текущий '+cur.fid+' ФИД</th>'
-		if(fin.fid != cur.fid) preparedhtml += '<th width=30% class=back3 colspan=2>Прогноз на '+fin.fid+' ФИД</th>'
+		if(fin.fid != cur.fid) preparedhtml += '<th width=30% class=back3 colspan=2>Прогноз на <span class="ffid">'+fin.fid+'</span> ФИД (<a href="javascript:void(ChangeFID(\'-\'))">&ndash;</a> <a href="javascript:void(ChangeFID(\'+\'))">+</a>)</th>'
 		else if(finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) preparedhtml += '<th width=30% class=back3 colspan=2>В следующем сезоне</th>' //bgcolor=#A3DE8F
 		preparedhtml += '</tr>'
 		$('table#2, table#3').prepend(preparedhtml)
@@ -392,13 +367,13 @@ function EditFinance(school,divpriz,dteams,dtour){
 		preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
 		preparedhtml += '<td width=15% align=right>' + (format(cur.plusminus)).bold() + '</td><td></td>'
 
-		if(fin.fid != cur.fid) preparedhtml += '<td width=15% align=right id="fplusminus">' + (format(fin.plusminus)).bold() + '</td><td></td>'
+		if(fin.fid != cur.fid) preparedhtml += '<td width=15% align=right id="fplusminus"></td><td></td>'
 		else preparedhtml += '<td width=15%></td><td></td>'
 
 		preparedhtml += '</tr>'
 		preparedhtml += '<tr><td><b>На счету</b></td>'
 		preparedhtml += '<td align=right>' + (format(cur.bablo)).bold() + '</td><td></td>'
-		if(fin.fid != cur.fid) preparedhtml += '<td align=right id="fbablo">'+(format(fin.bablo)).bold() + '</td><td></td>'
+		if(fin.fid != cur.fid) preparedhtml += '<td align=right id="fbablo"></td><td></td>'
 		preparedhtml += '</tr>'
 		preparedhtml += '</table>'
 		$('td.back4 table#3').after(preparedhtml)
@@ -415,10 +390,42 @@ function EditFinance(school,divpriz,dteams,dtour){
 		$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1))
 		$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1))
 
-		$('table#2 tr:eq(3) td:first').append(divprizmark)
+		$('table#2 tr:eq(3) td:first').append(divprizmark);
+		$('table#4').after(divpriztext+'<br>');
 
+        setFin();
+		$('table#4').after('<hr>');
+
+		return false
+}
+function countFin(){
+		// Count finish finance
+		fin.sponsors = sponsors * fin.fid + cur.bonus
+
+//		fin.stadion = (cur.fid == 0 ? 0 : cur.stadion*fin.fid/cur.fid)
+		cm = (isNaN(parseInt(localStorage.cupmatches)) ? cm : parseInt(localStorage.cupmatches))
+		curhometour = parseFloat((dtour/2).toFixed(1))
+		maxhometour = (dteams==0 ? 0 : (dteams-1)*(dteams<13 ? 2 : 1))
+		debug(cur.stadion+':'+curhometour+':'+maxhometour+':'+cm)
+
+		fin.stadion = (cur.fid == 0 ? 0 : (curhometour==0 ? cur.stadion : parseInt((cur.stadion/(curhometour+cm)*(maxhometour+cm)).toFixed(0))))
+		fin.priz = cur.priz + (dtour==0 ? 0 : divpriz)
+		fin.sale = cur.sale
+		fin.allup = fin.sponsors + fin.stadion + fin.priz + fin.sale
+
+		fin.zp = cur.zp + (fin.fid-cur.fid)*zp
+		fin.zpperc = (fin.zp/fin.sponsors*100).toFixed(1) + '%'
+		fin.buy = cur.buy
+		fin.school = cur.school + (fin.fid-cur.fid)*school
+		fin.schoolperc = (fin.school/fin.sponsors*100).toFixed(1)+'%'
+		fin.alldown = fin.zp + fin.buy + fin.school
+		fin.plusminus = fin.allup - fin.alldown
+		fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
+}
+
+function setFin(){
 		if(fin.fid != cur.fid) {
-			$('td[id=fin]:eq(7)').next().append(' ('+fin.schoolperc+')')
+			$('td[id=fin]:eq(7)').next().html(' ('+fin.schoolperc+')')
 //			$('td[id=fin]:eq(2)').next().append(divprizmark)
 
 			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
@@ -431,7 +438,6 @@ function EditFinance(school,divpriz,dteams,dtour){
 			$('td[id=fin]:eq(6)').html(format(fin.buy).bold())
 			$('td[id=fin]:eq(7)').html(format(fin.school).bold())
 			$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
-			$('table#4').after(divpriztext+'<br>')
 		}else if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10){
 			var spraz = parseInt((sponsors - (cur.sponsors)/fin.fid)/1000)
 			if(spraz != 0){
@@ -445,12 +451,25 @@ function EditFinance(school,divpriz,dteams,dtour){
 			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
 			$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())
 			$('td[id=fin]:eq(7)').html(format(school*fin.fid).bold())
-			$('table#4').after(divpriztext+'<br>')
 		}
-		$('table#4').after('<hr>')
-
-		return false
+		$('#fbablo').html((format(fin.bablo)).bold());
+		$('#fplusminus').html((format(fin.plusminus)).bold());
 }
+
+function ChangeFID(type){
+	if (type=='+') {
+		fin.fid++;
+		if (fin.fid > 200 ) fin.fid = 200;
+	} else {
+		fin.fid--;
+		if (fin.fid < cur.fid) fin.fid = cur.fid;
+	}
+	localStorage['finFID'] = fin.fid;
+	$('.ffid').html(fin.fid);
+	countFin();
+	setFin();
+}
+
 function CountStad(type){
 	if(type=='+')	cm = cm+1
 	else 			cm = (cm==0 ? 0: cm-1)
