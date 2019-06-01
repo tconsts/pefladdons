@@ -1134,7 +1134,8 @@ function GetInfoPagePl(){
 	debug('GetInfoPagePl()')
 	$('tr[id^=tblRosterTr]').each(function(i,val){
 		var eurl	= $(val).find('a[trp="1"]').attr('href')
-		var pid 	= UrlValue('j',$(val).find('td:eq(1) a').attr('href'))
+		var playerUrl = $(val).find('td:eq(1) a').attr('href')
+		var pid 	= UrlValue('j',playerUrl)
 		var pn		= parseInt($(val).find('td:first').text())
 		var age		= parseInt($(val).find('td:eq(3)').html())
 		var morale	= parseInt($(val).find('td:eq(4)').html())
@@ -1169,6 +1170,7 @@ function GetInfoPagePl(){
 		players[pid].value 	= 0
 		players[pid].valuech= 0
 		if(eurl!=undefined) players[pid].eurl = eurl
+		if(playerUrl!=undefined) players[pid].playerUrl = playerUrl
 
 		team_cur.tform 		= ((team_cur.tform*team_cur.pnum)+ form)/(team_cur.pnum+1)
 		team_cur.tmorale 	= ((team_cur.tmorale*team_cur.pnum)+ morale)/(team_cur.pnum+1)

@@ -1,6 +1,6 @@
 {
   "name": "PEFL CrabVIP",
-  "version": "2.0.6",
+  "version": "2.1.0",
   "manifest_version": 2,
   "options_page": "options.html",
 
@@ -60,7 +60,9 @@
 	"js/crab_calendar.user.js",
 	"js/crab_index.user.js",
 	"js/crab_forum.user.js",
-	"js/crab_ref.user.js"
+	"js/crab_ref.user.js",
+	"js/crab_snm.user.js",
+	"js/crab_new_sostav.user.js"
   ],
   "permissions":[
 	"unlimitedStorage",
