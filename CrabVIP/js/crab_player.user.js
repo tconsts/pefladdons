@@ -24,30 +24,30 @@ function printStrench(){
 	for(i in positions){
 		for(j in positions[i].pls){
 			if(positions[i].pls[j].id0){
-//				var srt = positions[i].pls[j].srt
-				var srt = (positions[i].pls[j].srt!=undefined ? positions[i].pls[j].srt : positions[i].pls[j]['!srt'])
-				var plx = {}
-				plx.name = positions[i].name
-				plx.srt = srt + (positions[i].pls[j].posf ? 1000 : 0) + (positions[i].pls[j].posfempty ? -2000 : 0)
-				plx.strench = srt
-				if(!isNaN(plx.srt)) poses.push(plx)
+				var srt = (positions[i].pls[j].srt!=undefined ? positions[i].pls[j].srt : positions[i].pls[j]['!srt']);
+				var plx = {};
+				plx.name = positions[i].name;
+				plx.filter = positions[i].filter;
+				plx.srt = srt + (positions[i].pls[j].posf ? 1000 : 0) + (positions[i].pls[j].posfempty ? -2000 : 0);
+				plx.strench = srt;
+				if(!isNaN(plx.srt)) poses.push(plx);
 			}
 		}
 	}
-	poses = poses.sort(sSrt)
-	var hidden = 0
-	var txt = ''
+	poses = poses.sort(sSrt);
+	var hidden = 0;
+	var txt = '';
 	for(i in poses){
-		if(poses[i].srt<1000 && hidden==0) hidden = 1
+		if(poses[i].srt<1000 && hidden==0) hidden = 1;
 		if(hidden == 1) {
-			hidden = 2
-			txt += '<a id="mya" href="javascript:void(OpenAll())">...</a><br><div id="mydiv" style="display: none;">'
+			hidden = 2;
+			txt += '<a id="mya" href="javascript:void(OpenAll())">...</a><br><div id="mydiv" style="display: none;">';
 		}
 		if(poses[i].srt<-500 && hidden==2) {
-			hidden = 3
-			txt += '</div><div><br>'
+			hidden = 3;
+			txt += '</div><div>';
 		}
-		txt += (String(poses[i].name)[0]=='!' ? '' : '<a>'+(poses[i].strench).toFixed(2)+':'+(poses[i].name).replace(/\s/g,'&nbsp;')+'</a><br>')
+		txt += (String(poses[i].name)[0]=='!' ? '' : '<div title="'+poses[i].filter+'">'+(poses[i].strench).toFixed(2)+': '+(poses[i].name).replace(/\s/g,'&nbsp;')+'</div>')
 	}
 	txt += '</div>'
 	$('div#str').html(txt)
@@ -692,6 +692,7 @@ function CheckPlayer(nn){
 		switch(i){
 		case 'sumskills':
 		case 's':
+		case 'ss0':
 		case 't':
 		case 'flag':
 		case 'team':
@@ -745,7 +746,8 @@ function CheckPlayer(nn){
 		case 'nation':
 		case 'internationalgoals':
 		case 'u21goals':
-		case 'firstname':break;
+		case 'firstname':
+			break;
 		case 'secondname': data['pname'] = (players[nn].nation!=undefined ? players[nn].nation : 217)+'|'+players[nn]['firstname']+' '+players[nn][i]+'|p=refl&t='+players[nn]['t']+'&j='+players[nn]['id']+'&z='+players[nn]['hash'];break;
 		case 'internationalapps': data['int'] =players[nn][i]+'.'+players[nn]['internationalgoals'];break;
 		case 'u21apps':data['u21'] =players[nn][i]+'.'+players[nn]['u21goals'];break;
@@ -769,18 +771,20 @@ function CheckPlayer(nn){
 	$('table#stat,span#err,#dcode1').hide();
 	$('#dcode1').html('');
 	$('table#res,table#skills').show();
-	if(sknum==3){
+	
+	if(sknum>2){
 		sknum=0;
 		$('table[id^="res"], td[id^="res"]').remove();
-	}
-	if(sknum==0) $('table#stat').before('<table id=res class=back1 align=center width=70% cellpadding=2 cellspacing=1><tr><td nowrap id=thx align=center class=back2>[<a href="javascript:void(SkReset())"><font color=red>Х</font> сбросить</a>]</td></tr></table>');
+	}	
+	if(sknum==undefined || sknum==0) $('table#stat').before('<table id=res class=back1 align=center width=70% cellpadding=2 cellspacing=1><tr><td nowrap id=thx align=center class=back2>[<a href="javascript:void(SkReset())"><font color=red>Х</font> сбросить</a>]</td></tr></table>');
 	sknum++;
 	$('td#thx').after('<td nowrap width=30%>'+(season!=0 ? '<b>'+season+' сезон</b>' : ' ')+'</td>');
 	var ssn = 0;
 	if(data['pname']==undefined) data['pname']='';
+
 	for(i in data){
 		var nm = (lc[i]==undefined ? i : lc[i].rn);
-		if($('td#'+i).length==0){
+		if (i!='' && $('td#'+i).length==0){
 			$('table#res').prepend('<tr class=back2><td nowrap id='+i+'>'+nm+'</td><td nowrap>'+(cur!=undefined && cur[i]!=undefined ? cur[i] : '')+'</td></tr>');
 		}
 		switch(i){
@@ -806,17 +810,23 @@ function CheckPlayer(nn){
 		case 'stamina':
 			if($('td#'+i).length>0){
 				var x=data[i].split('.');
-				ssn = ssn+(isNaN(parseInt(x[0])) ? 0 : parseInt(x[0]));
-				var ch = parseInt($('td#'+i).next().text())-parseInt(x[0]);
-				if(ch>0) ch = '<font color=green size=1>+'+ch+'</font>';
-				else if(ch<0) ch ='<font color=red size=1>'+ch+'</font>'
-				else ch='';
+				x[0] = parseInt(x[0],10);
+				if(isNaN(x[0])){
+					x[0] = '??';
+					ch='';
+				} else {
+					ssn = ssn+x[0];
+					var ch = parseInt($('td#'+i).next().text(),10)-x[0];
+					if(ch>0) ch = '<font color=green size=1>+'+ch+'</font>';
+					else if(ch<0) ch ='<font color=red size=1>'+ch+'</font>';
+					else ch='';
+				}
 				var m = $('td#'+i).next().clone()
-					.attr('id','res')
+					.attr('id','res_'+i+nn)
 					.each(function(){
-						if($(this).find('span').length>0) $(this).find('span').html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>')
-						else $(this).html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>')
-					})
+						if($(this).find('span').length>0) $(this).find('span').html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>');
+						else $(this).html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>');
+					});
 				$('td#'+i).after(m);
 			}
 			break;
@@ -829,12 +839,13 @@ function CheckPlayer(nn){
 			var x=data[i].split('|');
 			$('td#'+i).after('<td nowrap>'+(x[0]==''?'':'<img height="12" src="system/img/flags/mod/'+x[0]+'.gif"> <a href="plug.php?'+x[2]+'"><b>'+x[1]+'</b></a>')+'</td>');
 			break;
-		default: 
-			$('td#'+i).after('<td nowrap><font color=gray>'+data[i]+'</font></td>');
+		default:
+			if (i=='') console.error('Error: i is empty with data='+data[i]);
+			else $('td#'+i).after('<td nowrap><font color=gray>'+data[i]+'</font></td>');
 		}
-	}
-	$('td[id^="ss"]').attr('colSpan',sknum+2);
-	$('#s').after('<td class=back1 id=res>'+ssn+'</td>');
+	}	
+	$('td[id^="ss"]').attr('colSpan',2+sknum);
+	$('#s').after('<td class=back1 id=res_s'+nn+'>'+ssn+'</td>');
 
 	return false
 }
@@ -1536,30 +1547,11 @@ function doOldRoster () {
 	text3 += '<b>Сила&nbsp;игрока</b><div id=str>'
 	text3 += '<i><font size=1>сходите в Состав+</font></i>'
 	text3 += '</div>'
-//	text3 += '&nbsp;(<a href="javascript:void(ShowAll())">'+('x').fontsize(1)+'</a>)'
 
 	var hidden = 0
 	var pfs3pre = ''
 	var pflinkpre = ''
-/**
-	for (var s in posfilter) {
-		if (!isNaN(posfilter[s][2])) {
-			var linktext = String(posfilter[s][2]+':'+posfilter[s][1].replace(' ','&nbsp;'))
-			if (posfilter[s][0]<1 && hidden == 0) hidden = 1
-			if ( hidden ==1) {
-				hidden = 2
-				text3 += '<br><a id="mya" href="javascript:void(OpenAll())">...</a>'
-				text3 += '<div id="mydiv">'
-			}
-			if (pfs3pre != posfilter[s][3] || pflinkpre != linktext) text3 += '<br><a href="javascript:void(ShowSkills(\''+posfilter[s][3]+'\'))">'+linktext.fontsize(1)+'</a>'
-		}
-		var pfs3pre = posfilter[s][3]
-		var pflinkpre = linktext
-	}
 
-	text3 += '</div>'
-/**/
-/**/
 	// Modify page and fill data
 	$('td.back4 script').remove()
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
@@ -1583,18 +1575,8 @@ function doOldRoster () {
 	// добавим ссылку на заметки
 	if(UrlValue('t')!='yp') $('td.back4'+(UrlValue('t')!='yp2' ? ' center:last' : '')).append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
 
-	// Get info fom Global or Session Storage
-	var text1 = String(localStorage.peflplayer)
-	if (text1 != 'undefined'){
-		var pl = text1.split(',');
-		for (i in pl) {
-			key = pl[i].split('=')
-			var pn = (key[0].split('_')[1] == undefined ? 2 : key[0].split('_')[1])
-			players[pn][key[0].split('_')[0]] = [key[1]]
-		}
-		PrintPlayers()
-	}
-
+	getPlayers();
+	if (players.length>1) PrintPlayers();
 	GetValue()
 	ShowAdaptation(players[0].natfull)
 	RelocateGetNomData()
@@ -1607,7 +1589,7 @@ function doOldRoster () {
 /**/	
 }
 
-function doNewRoster () {
+function doNewRoster (){
 	if(UrlValue('t')=='plast' || UrlValue('t')=='plast2') { return false; }
 
 	// берем мерку какой сезон
@@ -1626,8 +1608,6 @@ function doNewRoster () {
 		}
 	}
 
-//	$('td.back4 table table tr[bgcolor=#a3de8f]').removeAttr('bgcolor').addClass('back3')
-
 	today = new Date()
 	todayTmst = today.valueOf()
 
@@ -1642,23 +1622,14 @@ function doNewRoster () {
 	$('body table.border:last').before(preparedhtml)
 
 	var ssp = 0
-/**/
-/**
-	for(i in skillnames){
-		sklfr[skillnames[i].rlong] = skillnames[i]
-		sklfr[skillnames[i].rlong].elong = i
-	}
-	sklfr['Игра на выходах'] = sklfr['Игра головой']
-/**/
 
 	// get player skills
-
-/**/
 	var skillsum = 0
-	$('table#skills td:even').each(function(){
+	$('table#skills td[id]').each(function(){
 		var skilleng   = $(this).attr('id');
 		var skillname  = $(this).html();
-		var skillvalue = parseInt(String($(this).next().html()).replace('<b>',''))
+		if($(this).next().find('span').length>0) var skillvalue = parseInt(String($(this).next().find('span').html()).replace('<b>',''))
+		else var skillvalue = parseInt(String($(this).next().html()).replace('<b>',''))
 		var skillarrow = ''
 		if(skilleng=='s') players[0].sumskills = skillvalue;
 		else{
@@ -1666,9 +1637,7 @@ function doNewRoster () {
 				skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
 			}
 		}
-		players[0][skilleng] = skillvalue + skillarrow;
-
-		//$('td.back4').append(skillname+':'+skilleng+':'+skillvalue+skillarrow+'<br>')
+		if (skilleng != '' && skilleng!='ss0') players[0][skilleng] = (isNaN(skillvalue) ? '??' : skillvalue + skillarrow);
 	})
 	if(players[0].marking==undefined) players[0].marking = '??'
 	if(players[0].corners==undefined) players[0].corners = '??'
@@ -1815,18 +1784,8 @@ function doNewRoster () {
 	// добавим ссылку на заметки
 	if(UrlValue('t')!='yp') $("#crabright").append("<br><a href=\"javascript:hist('"+players[0].id+"','n')\">Заметки</a>")
 
-	// Get info from Global or Session Storage
-	var text1 = String(localStorage.peflplayer)
-	if (text1 != 'undefined'){
-		var pl = text1.split(',');
-		for (i in pl) {
-			key = pl[i].split('=')
-			var pn = (key[0].split('_')[1] == undefined ? 2 : key[0].split('_')[1])
-			players[pn][key[0].split('_')[0]] = [key[1]]
-		}
-		PrintPlayers()
-	}
-
+	getPlayers();
+	if (players.length>1) PrintPlayers();
 	GetValue();
 	ShowAdaptation(players[0].natfull,players[0].teamnat);
 	RelocateGetNomData();
@@ -1834,8 +1793,21 @@ function doNewRoster () {
 	printStrench();
 	
 }
+function getPlayers() {
+	// Get info fom Global or Session Storage
+	var text1 = String(localStorage.peflplayer);
+	if (text1 != 'undefined'){
+		var pl = text1.split(',');
+		for (i in pl) {			
+			key = pl[i].split('=');
+			var pn = (key[0].split('_')[1] == undefined ? 2 : key[0].split('_')[1]);
+			if(key[0].split('_')[0]!='' && !isNaN(pn)) players[pn][key[0].split('_')[0]] = [key[1]];
+		}		
+	}
+}
 
-$().ready(function() {
+
+$().ready(function() {	
 	if($('table#hd1').length==0) 
 		{ isOldRoster=true; doOldRoster();}
 	else {doNewRoster();}

@@ -7,23 +7,37 @@
 // @encoding	   windows-1251
 // ==/UserScript==
 
-var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
-var sostavteam = (location.search.substring(1) == 'sostav' ? true : false)
-
-positions = []
-var dataall = []
-var plkeys = []
-var players = []
-var pid = []
-var stds = {pfre:[],pcor:[],pcap:[],ppen:[]}
-var posmaxorder = 0
-var getforumid = 9107892
-var plskillmax = 15
-var tabslist = ''
-var maxtables = 25//25+10
-var showscout = true
-var refresh = false
+var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false);
+var sostavteam = (location.search.substring(1) == 'sostav' ? true : false);
+var psn = ['','GK','C SW',
+	'L DF','C DF','C DF','C DF','R DF',
+	'L DM','C DM','C DM','C DM','R DM',
+	'L MF','C MF','C MF','C MF','R MF',
+	'L AM','C AM','C AM','C AM','R AM',
+	'C FW','C FW','C FW'];
+var psnbetter = [[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
+	[{},{}],[{},{}],[{},{}]];
+positions = [];
+var dataall = [];
+var plkeys = [];
+var players = {};
+var posmaxorder = 0;
+var getforumid = 9107892;
+var plskillmax = 15;
+var tabslist = '';
+var maxtables = 25;//25+10
+var showscout = true;//localStorage.peflplayer!=undefined ? true : false;
+var refresh = false;
 var jsonSostav = [];
+var tacNum = 1;
+var postbackupUrl = '';
+var delbackupUrl = '';
+var senddata = '';
+var postBackupLimit = 1950;
 var list = {
 	positions: 'id,filter,name,num,koff,order'
 }
@@ -32,167 +46,178 @@ var fl = ['','#EF2929','#A40000','#FCE94F','#E9B96E','green','black']
 var selected = ''
 
 var skillnames = {
-sor:{rshort:'срт',rlong:'Сортировка',hidden:true},
-sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
-flag:{rshort:'фл',rlong:'Информационный флаг'},
-pfre:{rshort:'иш',rlong:'Исполнители штрафных'},
-pcor:{rshort:'иу',rlong:'Исполнители угловых'},
-ppen:{rshort:'пн',rlong:'Исполнители пенальти'},
-pcap:{rshort:'кп',rlong:'Капитаны'},
-//сс
-school:{rshort:'шкл',rlong:'Школьник?'},
-srt:{rshort:'сила',rlong:'В % от идеала',type:'float'},
-stdat:{rshort:'са',rlong:'Идет на стд. атаки'},
-stdbk:{rshort:'со',rlong:'Идет на стд. обороны'},
-nation:{rshort:'кСт',rlong:'Код страны'},
-natfull:{rshort:'стр',rlong:'Страна',align:'left',nowrap:'1'},
-secondname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
-firstname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
-age:{rshort:'взр',rlong:'Возраст',str:true,strmax:40},
-id:{rshort:'id',rlong:'id игрока'},
-internationalapps:{rshort:'иСб',rlong:'Игр за сборную',str:true,strmax:500},
-internationalgoals:{rshort:'гСб',rlong:'Голов за сборную',str:true,strmax:500},
-contract:{rshort:'кнт',rlong:'Контракт',str:true,strmax:5},
-wage:{rshort:'зрп',rlong:'Зарплата',str:true,strmax:100,strinvert:100100},
-value:{rshort:'ном',rlong:'Номинал',type:'value',str:true,strmax:50000000},
-corners:{rshort:'уг',rlong:'Угловые',str:true},
-crossing:{rshort:'нв',rlong:'Навесы',str:true},
-dribbling:{rshort:'др',rlong:'Дриблинг',str:true},
-finishing:{rshort:'уд',rlong:'Удары',str:true},
-freekicks:{rshort:'шт',rlong:'Штрафные',str:true},
-handling:{rshort:'ру',rlong:'Игра руками',str:true},
-heading:{rshort:'гл',rlong:'Игра головой',str:true},
-leadership:{rshort:'лд',rlong:'Лидерство',str:true},
-longshots:{rshort:'ду',rlong:'Дальние удары',str:true},
-marking:{rshort:'по',rlong:'Перс. опека',str:true},
-pace:{rshort:'ск',rlong:'Скорость',str:true},
-passing:{rshort:'пс',rlong:'Игра в пас',str:true},
-positioning:{rshort:'вп',rlong:'Выбор позиции',str:true},
-reflexes:{rshort:'ре',rlong:'Реакция',str:true},
-stamina:{rshort:'вн',rlong:'Выносливость',str:true},
-strength:{rshort:'мщ',rlong:'Мощь',str:true},
-tackling:{rshort:'от',rlong:'Отбор мяча',str:true},
-vision:{rshort:'ви',rlong:'Видение поля',str:true},
-workrate:{rshort:'рб',rlong:'Работоспособность',str:true},
-technique:{rshort:'тх',rlong:'Техника',str:true},
-morale:{rshort:'мрл',rlong:'Мораль',str:true,strmax:100},
-form:{rshort:'фрм',rlong:'Форма',str:true,strmax:100},
-position:{rshort:'Поз',rlong:'Позиция',align:'left',nowrap:'1'},
-/**
-games
-goals
-passes
-mom
-ratingav
-cgames
-cgoals
-cpasses
-cmom
-cratingav
-egames
-egoals
-epasses
-emom
-eratingav
-
-wgames
-wgoals
-wpasses
-wmom
-wratingav
-
-fgames
-fgoals
-fpasses
-fmom
-fratingav
-vratingav
-training
-/**/
-inj:{rshort:'трв',rlong:'Травма',str:true,strmax:0,strinvert:85},
-sus:{rshort:'дсв',rlong:'Дисквалификация',str:true,strmax:0,strinvert:40},
-syg:{rshort:'сыг',rlong:'Сыгранность',str:true,strmax:20}
-/**
-agames
-agoals
-apasses
-amom
-/**/
+	sor:{rshort:'срт',rlong:'Сортировка',hidden:true},
+	sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
+	flag:{rshort:'фл',rlong:'Информационный флаг'},
+	fre:{rshort:'иш',rlong:'Исполнители штрафных ударов',str:true},
+	frh:{rshort:'ин',rlong:'Исполнители штрафных навесов',str:true,state:3},
+	cor:{rshort:'иу',rlong:'Исполнители угловых',str:true},
+	pen:{rshort:'пн',rlong:'Исполнители пенальти',str:true},
+	cap:{rshort:'кп',rlong:'Капитаны',str:true},
+	school:{rshort:'шкл',rlong:'Школьник?'},
+	srt:{rshort:'сила',rlong:'В % от идеала',type:'float'},
+	stdat:{rshort:'са',rlong:'Идет на стд. атаки'},
+	stdbk:{rshort:'со',rlong:'Идет на стд. обороны'},
+	nation:{rshort:'кСт',rlong:'Код страны'},
+	natflag:{rshort:'фс',rlong:'Флаг страны',type:'flag',state:3},
+	sname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
+	fname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
+	age:{rshort:'взр',rlong:'Возраст',str:true,strmax:40},
+	id:{rshort:'id',rlong:'id игрока'},
+	value:{rshort:'ном',rlong:'Номинал',type:'value',str:true,strmax:50000000},
+	morale:{rshort:'мрл',rlong:'Мораль',str:true,strmax:100},
+	form:{rshort:'фрм',rlong:'Форма',str:true,strmax:100},
+	inj:{rshort:'трв',rlong:'Травма',str:true,strmax:0,strinvert:85},
+	sus:{rshort:'дсв',rlong:'Дисквалификация',str:true,strmax:0,strinvert:40},
+	syg:{rshort:'сыг',rlong:'Сыгранность',str:true,strmax:20},
+	miss:{rshort:'пп',rlong:'Пропустил матчей',str:true,state:3},
+	position:{rshort:'Поз',rlong:'Позиция',align:'left',nowrap:'1'},
+	corners:{rshort:'уг',rlong:'Угловые',str:true},
+	crossing:{rshort:'нв',rlong:'Навесы',str:true},
+	dribbling:{rshort:'др',rlong:'Дриблинг',str:true},
+	finishing:{rshort:'уд',rlong:'Удары',str:true},
+	freekicks:{rshort:'шт',rlong:'Штрафные',str:true},
+	handling:{rshort:'ру',rlong:'Игра руками',str:true},
+	heading:{rshort:'гл',rlong:'Игра головой',str:true},
+	leadership:{rshort:'лд',rlong:'Лидерство',str:true},
+	longshots:{rshort:'ду',rlong:'Дальние удары',str:true},
+	marking:{rshort:'по',rlong:'Перс. опека',str:true},
+	pace:{rshort:'ск',rlong:'Скорость',str:true},
+	passing:{rshort:'пс',rlong:'Игра в пас',str:true},
+	positioning:{rshort:'вп',rlong:'Выбор позиции',str:true},
+	reflexes:{rshort:'ре',rlong:'Реакция',str:true},
+	stamina:{rshort:'вн',rlong:'Выносливость',str:true},
+	strength:{rshort:'мщ',rlong:'Мощь',str:true},
+	tackling:{rshort:'от',rlong:'Отбор мяча',str:true},
+	vision:{rshort:'ви',rlong:'Видение поля',str:true},
+	workrate:{rshort:'рб',rlong:'Работоспособность',str:true},
+	technique:{rshort:'тх',rlong:'Техника',str:true},
+ //depricated
+	natfull:{rshort:'стр',rlong:'Страна',align:'left',nowrap:'1',state:2},
+	internationalapps:{rshort:'иСб',rlong:'Игр за сборную',str:true,strmax:500, state:2},
+	internationalgoals:{rshort:'гСб',rlong:'Голов за сборную',str:true,strmax:500, state:2},
+	contract:{rshort:'кнт',rlong:'Контракт',str:true,strmax:5, state:2},					
+	wage:{rshort:'зрп',rlong:'Зарплата',str:true,strmax:100,strinvert:100100, state:2},
 }
 
 $().ready(function() {
 
-	selected = getDataSelected().split(',')
+	selected = getDataSelected().split(',');
+	console.log(selected);
 
-	var geturl = (sostavteam ? 'fieldnew3.php' : 'fieldnew3_n.php');
-	var geturl2 = (sostavteam ? 'jsonsostav.php?'+localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))]);
-	
-	$.get(geturl2, {}, function(datatext2){
-		jsonSostav = JSON.parse(datatext2);
-	})
-
-	PrintTables(geturl)
-	$.get(geturl, {}, function(datatext){
-		var dataarray = datatext.split('&');
-		var i = 0;
-		var pid_num = 0
-		var check = false
-		while(dataarray[i] != null) {
-			tmparr = dataarray[i].split('=');
-			i++;
-			var tmpkey = tmparr[0];
-			var tmpvalue = tmparr[1];
-			dataall[tmpkey] = tmpvalue;
-
-			// данные о заявке
-			if (tmpkey.indexOf('pid') != -1) {
-				var tmpnum = parseInt(tmpkey.replace('pid',''))
-				if(pid[tmpnum]==undefined) pid[tmpnum] = {}
-				pid[tmpnum].pid = tmpvalue;
-			}
-			// изначальная тактика
-			if (tmpkey.indexOf('p0_') != -1) {
-				var tmpnum = parseInt(tmpkey.replace('p0_',''))
-				pid[tmpnum].p0 = tmpvalue;
-			}
-			// смещения изначальной тактики 
-			if (tmpkey.indexOf('pm0_') != -1) {
-				var tmpnum = parseInt(tmpkey.replace('pm0_',''))
-				pid[tmpnum].pm0 = tmpvalue;
-			}
-			// испольнители штрафных
-			if (tmpkey.indexOf('fre') != -1) {
-				stds.pfre[tmpvalue] = parseInt(tmpkey.replace('fre',''))
-			}
-			// испольнители угловых
-			if (tmpkey.indexOf('cor') != -1) {
-				stds.pcor[tmpvalue] = parseInt(tmpkey.replace('cor',''))
-			}
-			// испольнители penalty
-			if (tmpkey.indexOf('pen') != -1) {
-				stds.ppen[tmpvalue] = parseInt(tmpkey.replace('pen',''))
-			}
-			// капитаны
-			if (tmpkey.indexOf('cap') != -1) {
-				stds.pcap[tmpvalue] = parseInt(tmpkey.replace('cap',''))
-			}
-
-			// собираем z0 (перс задания 1й тактики)
-			if (tmpkey.indexOf('z0') != -1) {
-				var tmpnum = parseInt(tmpkey.replace('z0_',''))
-				pid[tmpnum].z0bk = (tmpvalue>=513 ? true : false)
-				pid[tmpnum].z0at = ((tmpvalue>=213 && tmpvalue<500) || tmpvalue>=700 ? true : false)
-			}
-
-			// ключи скилов игроков
-			if(tmpkey == 'nation0') check = true
-			if(tmpkey == 'nation1') check = false
-			if(check) plkeys.push(tmpkey.replace('0',''))
-		}
-		getPlayers()
-		GetData('positions')
-	})
+	var strg = sostavteam ? localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))];
+	if(strg != undefined) {
+		var geturl2 = (strg.indexOf('?')>0 ? '' : 'jsonsostav3.php?') + strg;
+		PrintTables();
+		$.get(geturl2, {}, function(datatext2) {
+			jsonSostav = JSON.parse(datatext2);
+			getPlayers();
+			GetData('positions');
+		});
+	}
 })
+
+function getPlayers() {
+	if (jsonSostav==undefined || jsonSostav.players == undefined) {console.error('none players');return;}
+	// Подгрузить игроков из списка мониторинга если их тут нету еще с флагом "чужой".
+	if(showscout){
+		var text1 = String(localStorage.peflplayer);
+		var pl2 = [];
+		if (text1 != 'undefined') {
+			var pl = text1.split(',');
+			for (i in pl) {
+				var key = pl[i].split('=');
+				var pn = (key[0].split('_')[1] == undefined ? 2 : key[0].split('_')[1]);
+				if(pl2[pn]==undefined) pl2[pn] = {};
+				pl2[pn][key[0].split('_')[0]] = [key[1]];
+			}
+		}
+		for (k in pl2) if (pl2[k].id!=undefined) {
+			var pl2id = 'p'+pl2[k].id;
+			if(players[pl2id]==undefined) {
+				var pl = pl2[k];
+				pl.fname = pl2[k].firstname;
+				pl.sname = pl2[k].secondname;
+				pl.flag = 6;
+				pl.syg = 0;
+				pl.sostav = 0;
+				pl.stdA = [false,false,false,false,false,false];
+				pl.stdD = [false,false,false,false,false,false];
+				//players[pl2id].natflag = '<img src="system/img/flags/mod/'+players[pl2id].nation+'.gif" width="15">';
+				pl.natflag = pl.nation;
+				players[pl2id] = pl;
+			}
+		}
+	}
+	//обрабатываем игроков
+	for(y in jsonSostav.players) {
+		var pl = jsonSostav.players[y];
+		pl.form = parseInt(pl.form,10);
+		pl.morale = parseInt(pl.morale,10);
+		pl.value = parseInt(pl.value,10)*1000;
+		pl.syg = parseInt(pl.syg,10);
+		pl.propustil = parseInt(pl.propustil,10);
+		pl.nation = parseInt(pl.nation,10);
+		pl.age = parseInt(pl.age,10);
+		pl.clubcontracted = parseInt(pl.clubcontracted,10);
+		pl.stdA = [false,false,false,false,false,false];
+		pl.stdD = [false,false,false,false,false,false];
+		if(isNaN(pl.value)) pl.value = 0;
+		//pl.natflag = '<img src="system/img/flags/mod/'+pl.nation+'.gif" width="15">';
+		pl.natflag = pl.nation;
+		pl.sostav = 0;
+
+		pl.flag = 0;
+		if(pl.inj > 0) pl.flag = 1;
+		else if(pl.sus > 0) pl.flag = 2;
+		else if(pl.form < 90) pl.flag = 3;
+		else if(pl.morale < 80) pl.flag = 4;
+		else if(pl.value == 0) pl.flag = 5;
+
+		players['p'+pl.id] = pl;
+	}
+
+	//оцениваем кто в составе
+	for(k in jsonSostav.sostav) if(k>0) {
+		var plsid = 'p'+jsonSostav.sostav[k];
+		if (players[plsid]==undefined) createFakePlayer(jsonSostav.sostav[k]);
+		players[plsid]['sostav'] = (k<12 ? 2 : 1);
+	}
+
+	//собираем ходящих стандарты
+	for(l=1;l<=5;l++){
+		for(m=1;m<=11;m++) {
+			if(jsonSostav['sostav'+l] != undefined && jsonSostav['sostav'+l][m] != undefined){
+				var tn = jsonSostav['sostav'+l][m];
+				var plstdid = 'p'+jsonSostav.sostav[m];
+				if (players[plstdid]==undefined) createFakePlayer(jsonSostav.sostav[m]);
+				if (tn.stda == 1) players[plstdid]['stdA'][l] = true;
+				if (tn.stdo == 1) players[plstdid]['stdD'][l] = true;
+			}
+		}
+	}
+
+	//стандартчики
+	for (g=1; g<=10; g++) {
+		if (g <= 5) {
+			if (players['p'+jsonSostav.cap[g]] != undefined) players['p'+jsonSostav.cap[g]].cap = g;
+			if (players['p'+jsonSostav.cor[g]] != undefined) players['p'+jsonSostav.cor[g]].cor = g;
+			if (players['p'+jsonSostav.fre[g]] != undefined) players['p'+jsonSostav.fre[g]].fre = g;
+			if (players['p'+jsonSostav.frh[g]] != undefined) players['p'+jsonSostav.frh[g]].frh = g;
+		}
+		if (players['p'+jsonSostav.pen[g]] != undefined) players['p'+jsonSostav.pen[g]].pen = g;
+	}
+	//определяем годность позиции
+	for (j in players) {
+		players[j].psn = [];
+		var plposition = String(players[j].position);		
+		if (~plposition.indexOf('AM') || ~plposition.indexOf('DM')) plposition+='/MF';
+		if ((~plposition.indexOf('L') || ~plposition.indexOf('R')) && ~plposition.indexOf('FW')) plposition+='/AM';
+		for (c in psn) {
+			if (c > 0) players[j].psn[c] = filterPosition(psn[c], plposition);
+		}
+	}
+}
 
 function getDataSelected(){
 	var dataname = (sostavteam ? 'selected' : 'selectedn')
@@ -200,16 +225,29 @@ function getDataSelected(){
 
 	if(datavalue == 'undefined'){
 		datavalue = ''
-			+',1,2'			// линия Gk & SW
-			+',3,7,7,7,4'	// линия DF
-			+',5,8,8,8,6'	// линия DM
-			+',10,9,9,9,11'	// линия MF
-			+',13,12,12,12,14'	// линия AM
-			+',15,15,15'		// линия FW
-			+',16,17,18,19,0'	// доп таблицы 1
-			+',20,21,22,23,0'	// доп таблицы 2
+			+',0,0'			// линия Gk & SW
+			+',0,0,0,0,0'	// линия DF
+			+',0,0,0,0,0'	// линия DM
+			+',0,0,0,0,0'	// линия MF
+			+',0,0,0,0,0'	// линия AM
+			+',0,0,0'		// линия FW
+			+',27,28,29,0,0'	// доп таблицы 1
+			+',30,31,0,0,0'	// доп таблицы 2
 	}
 	return datavalue
+}
+function createFakePlayer(id) {
+	var xpl = {
+		id: id,
+		fname: '',
+		sname: 'Игрок-'+id,
+		flag: 6,
+		syg: 0,
+		stdA: [false,false,false,false,false,false],
+		stdD: [false,false,false,false,false,false],
+		natflag: 0
+	}
+	players['p'+id] = xpl
 }
 
 function saveDataSelected(){
@@ -251,30 +289,38 @@ function GetData(dataname){
 		needsave = true
 	// TODO: загрузить дефоултные positions(from forum) вместо констант тут.
 		data = [
-			{filter:'',		name:'&nbsp;',	num:0,	koff:'data=9107892,idealsk=15,idealage=40,idealval=50000000,idealnat=500,maxt=10'},
-/**  1 **/	{filter:'GK', 	name:'GK', 		num:5,	koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*1.5,!мщ=мщ*0.7,!ск=ск*0.4,фл,Фам,сила,зв'},
-/**  2 **/	{filter:'C SW',	name:'C SW',	num:5,	koff:'вп=вп*2,от=от*1.5,гл=гл,ск=ск,!мщ,фл,Фам,сила,зв'},
-/**  3 **/	{filter:'L DF',	name:'L DF',	num:5,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,фл,Фам,сила,зв'},
-/**  4 **/	{filter:'R DF',	name:'R DF',	num:5,	koff:'вп=вп*2,от=от*1.5,ск=ск*1.5,нв=нв,фл,Фам,сила,зв'},
-/**  5 **/	{filter:'L DM',	name:'L DM',	num:5,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,фл,Фам,сила,зв'},
-/**  6 **/	{filter:'R DM',	name:'R DM',	num:5,	koff:'от=от*1.5,ск=ск*1.5,ви=ви,нв=нв,фл,Фам,сила,зв'},
-/**  7 **/	{filter:'C DF',	name:'C DF',	num:5,	koff:'от=от*3,вп=вп*3,мщ=мщ*1.5,ск=ск*1.5,гл=гл*1.5,фл,Фам,сила,зв'},
-/**  8 **/	{filter:'C DM',	name:'C DM',	num:5,	koff:'вп=вп*3,от=от*3,ви=ви*2,рб=рб*2,!тх=тх*1.5,!пс=пс*1.5,фл,Фам,сила,зв'},
-/**  9 **/	{filter:'C M',	name:'C M',		num:5,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*1.5,!от=от,!ду=ду*0.5,фл,Фам,сила,зв'},
-/** 10 **/	{filter:'L M',	name:'L M',		num:5,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,фл,Фам,сила,зв'},
-/** 11 **/	{filter:'R M',	name:'R M',		num:5,	koff:'ск=ск*2,др=др*2,пс=пс*2,ви=ви*2,!нв=нв*1.5,!от=от*1.5,!тх=тх,фл,Фам,сила,зв'},
-/** 12 **/	{filter:'C AM',	name:'C AM',	num:5,	koff:'вп=вп*2,ви=ви*2,пс=пс*2,тх=тх*2,!ду=ду,!др=др,фл,Фам,сила,зв'},
-/** 13 **/	{filter:'L AM',	name:'L AM',	num:5,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,фл,Фам,сила,зв'},
-/** 14 **/	{filter:'R AM',	name:'R AM',	num:5,	koff:'ск=ск*3,др=др*2.5,нв=нв*2,ви=ви*1.5,!пс=пс*1.5,!тх=тх,фл,Фам,сила,зв'},
-/** 15 **/	{filter:'C FW',	name:'C FW',	num:5,	koff:'уд=уд*3,вп=вп*2,ск=ск*2,др=др*1.5,!гл=гл*1.5,!мщ=мщ*1.5,фл,Фам,сила,зв'},
-/** 16 **/	{filter:'',		name:'Стд. атаки',	num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,са,сила,фл,Фам,от,ск'},
-/** 17 **/	{filter:'',		name:'Стд. обороны',num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,со,сила,фл,Фам,др,ск'},
-/** 18 **/	{filter:'',		name:'Исп. угловых',num:18,	koff:'зв=зв*200,уг=уг*10,нв=нв*2,ви,фл,Фам,иу,сила'},
-/** 19 **/	{filter:'',		name:'Исп. штрафных',num:18,koff:'зв=зв*200,шт=шт*10,ду=ду,нв=нв,ви,фл,Фам,иш,сила'},
-/** 20 **/	{filter:'',		name:'Исп. пенальти',num:18,koff:'зв=зв*200,взр=взр,уд=уд*0.3,лд=лд*0.3,фл,Фам,пн,сила'},
-/** 21 **/	{filter:'',		name:'!Сыгранность',	num:0,	koff:'зв,сыг=сыг,фл,Фам,Поз,!сила'},
-/** 22 **/	{filter:'',		name:'!Зарплаты',	num:0,	koff:'зрп=зрп,кнт=-кнт*100,фл,Фам,!сила'},
-/** 23 **/	{filter:'',		name:'!Номиналы',	num:0,	koff:'ном=ном,взр,фл,Фам,!сила'}
+			{filter:'',			name:'&nbsp;',		num:0, koff:'idealsk=15,idealage=40,idealval=50000000,maxt=10'},
+/**  1 **/	{filter:'GK', 		name:'Вратарь',		num:5, koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*2,!мщ=мщ,фл,Фам,сила,зв'},
+/**  2 **/	{filter:'GK', 		name:'Либеро',		num:5, koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*2,ск=ск,!мщ=мщ,!ви=ви,!пс=пс,!тх=тх,фл,Фам,сила,зв'},
+/**  3 **/	{filter:'C SW',		name:'Либеро',		num:5, koff:'вп=вп*2,от=от*1.5,гл=гл,мщ=мщ,ск=ск,фл,Фам,сила,зв'},
+/**  4 **/	{filter:'C SW/DF',	name:'Диспетчер',	num:5, koff:'вп=вп*2,от=от*1.5,гл=гл,!мщ=мщ,ск=ск,ви=ви,пс=пс,!нв=нв,!тх=тх,фл,Фам,сила,зв'},
+/**  5 **/	{filter:'LR DF',	name:'Крайний',		num:5, koff:'от=от*3,вп=вп*2,ск=ск*3,нв=нв,фл,Фам,сила,зв'},
+/**  6 **/	{filter:'LR DF',	name:'Атакующий',	num:5, koff:'от=от*3,вп=вп*2,ск=ск*3,нв=нв,др=др,!уд=уд,!тх=тх,фл,Фам,сила,зв'},
+/**  7 **/	{filter:'LR DF/DM/MF',name:'Латераль',	num:5, koff:'ск=ск*3,рб=рб*2,вн=вн*3,от=от*2,др=др,!нв=нв,!тх=тх,фл,Фам,сила,зв'},
+/**  8 **/	{filter:'LCR DF/DM,C MF',name:'Персональщик',num:5, koff:'по=по*5,от=от*3,вп=вп*3,ск=ск*3,фл,Фам,сила,зв'},
+/**  9 **/	{filter:'C DF',		name:'Центральный',	num:5,	koff:'от=от*4,гл=гл*3,вп=вп*2,мщ=мщ*2,ск=ск*2,фл,Фам,сила,зв'},
+/** 10 **/	{filter:'C DF',		name:'Ведущий',		num:5,	koff:'от=от*4,гл=гл*3,вп=вп*2,мщ=мщ*2,ск=ск*2,вд=вд,!лд=лд,!взр=взр,фл,Фам,сила,зв'},
+/** 11 **/	{filter:'LR DM/MF',	name:'Оборонительный',num:5,koff:'от=от*3,ск=ск*3,нв=нв,тх=тх,фл,Фам,сила,зв'},
+/** 12 **/	{filter:'LR DM/MF',	name:'Крайний',		num:5,	koff:'ск=ск*1.5,от=от*1.5,др=др,нв=нв,пс=пс,!тх=тх,фл,Фам,сила,зв'},
+/** 13 **/	{filter:'C DM/MF',	name:'Оборонительный',num:5,koff:'рб=рб*2,от=от*3,пс=пс*2,вп=вп*3,гл=гл*2,фл,Фам,сила,зв'},
+/** 14 **/	{filter:'C DM/MF/AM',name:'Диспетчер',	num:5,	koff:'ви=ви*4,пс=пс*4,др=др*2,тх=тх*2,от=от,!ду=ду,фл,Фам,сила,зв'},
+/** 15 **/	{filter:'C DM/MF',	name:'Бокс-ту-Бокс',num:5,	koff:'вн=вн*2,рб=рб*2,от=от*3,пс=пс*2,ск=ск,!ду=ду,фл,Фам,сила,зв'},
+/** 16 **/	{filter:'LR MF/AM',	name:'Атакующий',	num:5,	koff:'ск=ск*2,др=др*2,пс=пс*2,нв=нв*1.5,!тх=тх,фл,Фам,сила,зв'},
+/** 17 **/	{filter:'LR MF/AM',	name:'Инсайд',		num:5,	koff:'др=др*2,пс=пс*2,ви=ви*2,ду=ду*1.5,!уд=уд,!ск=ск,фл,Фам,сила,зв'},
+/** 18 **/	{filter:'C MF',		name:'Центральный',	num:5,	koff:'пс=пс*3,ви=ви*3,тх=тх*2,ду=ду,фл,Фам,сила,зв'},
+/** 19 **/	{filter:'C MF/AM',	name:'Атакующий',	num:5,	koff:'пс=пс*3,ви=ви*3,др=др*2,тх=тх*2,ду=ду,уд=уд,фл,Фам,сила,зв'},
+/** 20 **/	{filter:'LCR AM/FW,C MF',name:'Художник',	num:5,	koff:'ск=ск*3,др=др*3,тх=тх*2,ви=ви*3,уд=уд,ду=ду,фл,Фам,сила,зв'},
+/** 21 **/	{filter:'LR AM',	name:'Вингер',		num:5,	koff:'ск=ск*3,др=др*3,уд=уд*2,тх=тх*2,фл,Фам,сила,зв'},
+/** 22 **/	{filter:'C AM/FW',	name:'Оттянутый нап',num:5,	koff:'уд=уд*3,др=др*3,пс=пс*2,тх=тх*2,!ду=ду,!ви=ви,фл,Фам,сила,зв'},
+/** 23 **/	{filter:'C FW',		name:'Нападающий',	num:5,	koff:'уд=уд*3,др=др*3,вп=вп*3,ск=ск*2,гл=гл*2,тх=тх,фл,Фам,сила,зв'},
+/** 24 **/	{filter:'C FW',		name:'Столб',		num:5,	koff:'гл=гл*5,мщ=мщ*3,вп=вп*2,пс=пс,уд=уд*2,фл,Фам,сила,зв'},
+/** 25 **/	{filter:'C FW',		name:'На грани',	num:5,	koff:'вп=вп*5,ск=ск*3,уд=уд*2,тх=тх,фл,Фам,сила,зв'},
+/** 26 **/	{filter:'C FW',		name:'Наконечник',	num:5,	koff:'уд=уд*5,гл=гл*2,ск=ск*2,вп=вп*2,ду=ду,фл,Фам,сила,зв'},
+/** 27 **/	{filter:'',		name:'Стандарты',		num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,са,со,иш,ин,иу,фл,Фам,сила,от,ск,др'},
+/** 28 **/	{filter:'',		name:'Исп. угловых',	num:18,	koff:'зв=зв*200,уг=уг*10,нв=нв*2,ви=ви,фл,Фам,иу,сила,гл,вп,мщ'},
+/** 29 **/	{filter:'',		name:'Исп. штрафных',	num:18,koff:'зв=зв*200,шт=шт*10,ду=ду,нв=нв,ви=ви,фл,Фам,иш,ин,сила,гл,вп,мщ'},
+/** 30 **/	{filter:'',		name:'!Сыгранность',	num:0,	koff:'зв,сыг=сыг,фл,Фам,Поз,!сила,трв,дсв'},
+/** 31 **/	{filter:'',		name:'!Номиналы',		num:0,	koff:'ном=ном,взр=взр,фл,фс,Имя,Фам,!сила'}
 		]
 	}
 	//translate all to rshort and fix order
@@ -295,24 +341,26 @@ function GetData(dataname){
 		case 'positions':  positions = data;break
 		default: return false
 	}
-	getParams()
-	fillPosEdit(0)
-	PrintAdditionalTables()
-	//for(i=1;i<positions.length;i++) countPosition(i)
-	FillHeaders()
-	if(needsave) SaveData('positions')
+	getParams();
+	fillPosEdit(0);
+	PrintAdditionalTables();
+	for (f in positions){
+		countPosition(f);
+	}
+	FillHeaders();
+	if(needsave) SaveData('positions');
 }
 function getParams(){
 	var params = positions[0].koff.split(',')
 	for(k in params){
 		var pname = params[k].split('=')[0]
-		var pvalue = parseInt(params[k].split('=')[1])
+		var pvalue = parseInt(params[k].split('=')[1],10)
 		switch (pname){
 			case 'data': break;
 			case 'idealsk': plskillmax=pvalue; break;
 			case 'idealage':skillnames.age.strmax = pvalue;break;
 			case 'idealval':skillnames.value.strmax = pvalue;break;
-			case 'maxt':	maxtables += pvalue
+			case 'maxt':	maxtables += pvalue;
 							for(l=1;l<=maxtables;l++){
 								if(selected[l]==undefined) selected[l] = 0
 							}
@@ -348,50 +396,78 @@ function SaveData(dataname){
 	localStorage[dataname] = text
 }
 
-function filterPosition(plpos,flpos){
-		var pos = flpos.split(' ')
-		var	pos0 = false
-		var pos1 = false
+//проверяем что plpos входит в fl
+function filterPosition(plpos,fl) {
+	if (fl=='') return true;
+	var flpos = fl.split(',');
+	for(v in flpos) {		
+		var pos = flpos[v].split(' ');
+		var	pos0 = false;
+		var pos1 = false;
 		if(pos[1]==undefined) {
 			pos1 = true
-			if(plpos.indexOf(pos[0]) != -1) pos0 = true
-		}else{
-			for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true
+			if(plpos.indexOf(pos[0]) != -1) pos0 = true;
+		} else {
+			for(k=0;k<3;k++) if(plpos.indexOf(pos[0][k]) != -1) pos0 = true;
 			pos1arr = pos[1].split('/')
-			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true
+			for(k in pos1arr) if((plpos.indexOf(pos1arr[k]) != -1)) pos1 = true;
 		}
-		return (pos0 && pos1 ? true : false)
+		//if (flpos.length>1) console.log('filterPosition "' +plpos+ '" in "'+fl+'"('+flpos[v]+') = '+pos0 +':'+ pos1);
+		if (pos0 && pos1) return true;
+	}
+	return false;
 }
 
-function countPosition(posnum){
-	var ps = positions[posnum]
-	var sf = countStrength('ideal',ps.koff).split(':')
-	ps.strmax = sf[0]
-	ps.sormax = sf[1]
-	var pls = []
-	for(j in players){
-		var pl = {}
-		if(j==0) pl.id0 = true
-		pl.id = players[j].id
-		if(pl.id==undefined) break
-		var pkoff = ps.koff.split(',')
+//обсчитываем конкретную позицию и записываем игроков
+function countPosition(posnum,ppsn) 
+{
+	if (ppsn == undefined) ppsn = 0;
+	var ps = positions[posnum];	
+	var sf = countStrength('ideal',ps.koff).split(':');
+	ps.strmax = sf[0];
+	ps.sormax = sf[1];
+	var pls = [];
+	for(j in players) {
+		//if (posnum==15) console.log('countPosition='+posnum+' pl='+j);
+		var pl = {};
+		//if(j==0) pl.id0 = true;
+		pl.id = players[j].id;
+		pl.psn = players[j].psn;
+
+		if(posnum==5) console.log(posnum, ppsn, j, players[j].position, pl.psn[ppsn]);
+
+		if (pl.id==undefined) break;
+
+		if ((ppsn<=25 && ppsn>0 && !pl.psn[ppsn])) continue;
+		
+		var pkoff = ps.koff.split(',');
 		for(h in pkoff){
-			var koff = String(pkoff[h].split('=')[0])
-			if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l)
-			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')])
+			var koff = String(pkoff[h].split('=')[0]);
+			if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l);
+			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')]);
 		}
-		pl.posf = filterPosition(String(players[j].position), ps.filter)
-		if(ps.filter=='') pl.posfempty = true
-		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined ? '!srt' : ''))
+		//if (posnum==15) console.log('countPosition for pl'+j+' pos="'+players[j].position+'" in filter "'+ps.filter+'"');
+		/*
+		var plposition = String(players[j].position);
+		pl.psn = [];
+		if (~plposition.indexOf('AM') || ~plposition.indexOf('DM')) plposition+='/MF';
+		if ((~plposition.indexOf('L') || ~plposition.indexOf('R')) && ~plposition.indexOf('FW')) plposition+='/AM';
+		for(c in psn) {
+			if(c>0) pl.psn[c] = filterPosition(psn[c], plposition);
+		}
+		*/
+		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined ? '!srt' : ''));
 		if(s!='' && pl[s]!=undefined) {
-			var sfp = countStrength(j,ps.koff).split(':')
-			pl[s] = (ps.strmax==0 ? 0 : (sfp[0]/ps.strmax)*100)
-			pl.sor = (ps.sormax==0 ? 0 : (sfp[1]/ps.sormax)*100)
+			var sfp = countStrength(j,ps.koff).split(':');
+			pl[s] = (ps.strmax==0 ? 0 : (sfp[0]/ps.strmax)*100);
+			pl.sor = (ps.sormax==0 ? 0 : (sfp[1]/ps.sormax)*100);
 		}
-		pls.push(pl)
+		pls.push(pl);
 	}
-	positions[posnum].pls = pls.sort(sSrt)
+	positions[posnum].pls = pls.sort(sSrt);
+	//if (positions[posnum].pls[0].srt!=undefined) positions[posnum].maxsrt = positions[posnum].pls[0].srt;
 }
+
 function checkKoff(kf0){
 	var res = kf0.replace(/!/g,'')
 	if(skillnames[res]==undefined){
@@ -426,9 +502,16 @@ function tryEval(formula){
 		return 'x'
 	}
 }
-
-function countStrength(plid,pkoff){
-	var pl = (plid=='ideal' ? players[players.length-1] : players[plid])
+//подсчет игрока по кофу
+function countStrength(plid,pkoff)
+{
+	var pl;
+	if (plid=='ideal'){
+		var keys = Object.keys(players);
+		for (s=1; s<2; s++) {pl = players[keys[s]];break;}
+	} else {
+		pl = players[plid];
+	}
 	pkoff = pkoff.split(',')
 	var res  = 0
 	var res2 = 0
@@ -475,57 +558,74 @@ function countStrength(plid,pkoff){
 function krPrint(val,sn){
 	switch(skillnames[sn].type){
 		case 'float':
-			return (val).toFixed(1)
+			return (val).toFixed(1);
 		case 'value':
-			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'м'
-			else if(val==0) return '??'
-			else return parseInt(val/1000)+'т'
+			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'м';
+			else if(val==0) return '??';
+			else return parseInt(val/1000)+'т';
+		case 'flag':
+			return '<img src="system/img/flags/mod/'+val+'.gif" width="15">';
 		default:
-			return (skillnames[sn].str ? parseInt(val) : val)
+			return (skillnames[sn].str ? (isNaN(parseInt(val)) || val==0 ? ' ' : parseInt(val)) : val);
 	}
 }
 
-function FillData(nt){
-	$('#table'+nt).remove()
-	var ns = ($('#select'+nt+' option:selected').length>0 ? $('#select'+nt+' option:selected').val() : 0)
-	var np = 0
-	for(g in positions)	if(parseInt(positions[g].order) == parseInt(ns)) {
-		np = g
-		break
+//заполнение карточки позиции данными
+function FillData(nt)
+{
+	//var maxsrt = 0;
+	$('#table'+nt).remove();
+
+	var selpl = 0;//выбраный игрок на позиции в составе
+	if (jsonSostav['sostav'+tacNum] != undefined) {
+		for(h in jsonSostav['sostav'+tacNum]) if(jsonSostav['sostav'+tacNum][h].pos == nt) {
+			selpl = jsonSostav.sostav[h];
+			break;
+		}
 	}
 
-	if(np!=0){
+	var ns = ($('#select'+nt+' option:selected').length>0 ? $('#select'+nt+' option:selected').val() : 0);
+	var np = 0;
+	for(g in positions)	if(parseInt(positions[g].order,10) == parseInt(ns,10)) {
+		np = g;
+		break;
+	}
+	if(np!=0) {
 		if(positions[np].pls==undefined) {
 //			refresh = true
 //			return false
-			countPosition(np)
-		}
-		var selpl = 0
-		if (jsonSostav.sostav1 != undefined) {
-			for(h in jsonSostav.sostav1) if(jsonSostav.sostav1[h].pos == nt) selpl = jsonSostav.sostav[h]
+			countPosition(np,nt);
 		}
 		var html = '<table id=table'+nt+' width=100% border=0 rules=none>'
 		var head = true
 		var nummax = (positions[np].num==0 ? positions[np].pls.length : positions[np].num)
 		var numshow = 0
-    	for(t=0;t<positions[np].pls.length;t++){
+    	for(t=0;t<positions[np].pls.length;t++) 
+		{
 			var pl = positions[np].pls[t]
 			if (jsonSostav.sostav != undefined){
-				var trbgcolor = (selpl==pl.id  ? ' bgcolor=white' : ((jsonSostav.sostav.indexOf(parseInt(pl.id))>0 && jsonSostav.sostav.indexOf(parseInt(pl.id)) < 12 ) ? ' bgcolor=#BABDB6' : ''))
+				var trbgcolor = ((nt<26 && selpl==pl.id) || (nt>25 && pl.sostav ==2) ? ' bgcolor=white' : (pl.sostav > 0 ? ' bgcolor=#BABDB6' : ''));
 			}
 			var plhtml = '<tr align=right'
-			if((!pl.posf || numshow>=nummax) && selpl!=pl.id) 	plhtml += ' hidden abbr=wrong'
-			else numshow++
+			if(((!pl.psn[nt] && pl.psn[nt]!=undefined) || numshow>=nummax) && selpl!=pl.id) plhtml += ' hidden abbr=wrong';
+			else {
+				//if (maxsrt==0 && pl.srt!=undefined) {
+					//maxsrt = pl.srt;
+					//$('#select'+nt+' option[value='+np+']').append(' ('+krPrint(pl.srt,'srt')+')');
+				//}
+				numshow++;
+			}
 
 			plhtml += trbgcolor+'>'
-			var font1 = (!pl.posf ? '<font color=red>' : (pl.flag==6 ? '<font color=888A85>' : ''))
-			var font2 = (!pl.posf || pl.flag==6 ? '</font>' : '')
+			var font1 = (!pl.psn[nt] && pl.psn[nt]!=undefined ? '<font color=red>' : (pl.flag==6 ? '<font color=888A85>' : ''));
+			var font2 = ((!pl.psn[nt] && pl.psn[nt]!=undefined) || pl.flag==6 ? '</font>' : '');
+
 			if(head) var headhtml = '<tr align=center>'
 			for(pp in pl) {
 				if(pp=='flag'){
 					plhtml += '<td'+(pl[pp]>0 ? ' bgcolor='+fl[pl[pp]] : trbgcolor)+'></td>'
 					if(head) headhtml += '<td width=1%></td>'
-				}else if(pp!='posf' && pp!='posfempty' && pp!='sostav' && pp!='id' && pp!='sor'){
+				}else if(pp!='posf' && pp!='posfempty' && pp!='sostav' && pp!='id' && pp!='sor' && pp!='psn' && pp!='stdA' && pp!='stdD') {
 					var hidden = ''
 					var p = pp
 					if(pp.indexOf('!')!=-1){
@@ -536,6 +636,11 @@ function FillData(nt){
 					var align = (skp!=undefined && skp.align!=undefined ? ' align='+skp.align : '')
 					var nowrap = (skp!=undefined && skp.nowrap!=undefined ? ' nowrap' : '')
 
+					if (pp=='stdat') {
+						pl.stdat = (players['p'+pl.id].stdA[tacNum] ? '*' : '');
+					} else if (pp=='stdbk') {
+						pl.stdbk = (players['p'+pl.id].stdD[tacNum] ? '*' : '');
+					}
 					plhtml += '<td'+align+hidden+nowrap+'>'+font1
 					plhtml += krPrint(pl[pp],p)
 					plhtml += font2+'</td>'
@@ -555,168 +660,206 @@ function FillData(nt){
 		$('#htable'+nt).after(html)
 	}
 	if(selected[nt]!=positions[np].order) {
-		if(np==0 && nt<=25){
-
-		}else{
-			selected[nt] = positions[np].order
-			saveDataSelected()
-		}
+		selected[nt] = positions[np].order
+		saveDataSelected();
 	}
+
 	MouseOff(nt)
 /**/
 }
 
-function getPlayers(){
-	var numPlayers = parseInt(dataall['n'])
-	for(i=0;i<numPlayers;i++){
-		var pl = {}
-		for(j in plkeys) {
-			var name = plkeys[j]
-			var val = dataall[name+i]
-			switch (name){
-				case 'contract':
-					val = (parseInt(val)==0 ? 21-parseInt(dataall['age'+i]): parseInt(val)); break;
-				case 'wage':
-					val = (parseInt(val)==0 ? 100 : parseInt((val).replace(/\,/g,''))); break;
-				case 'value':
-					if(parseInt(val)==0) pl.school = true // значит это школьник!
-					val = parseInt((val).replace(/\,/g,''));break;
-//				default:
-			}
-			pl[name] = val
-		}
-		pl.sostav = 0
-		for(k in pid) {
-			if(pid[k].pid==pl.id){
-				pl.sostav = (k<12 ? 2 : 1)
-				pl.stdat = (pid[k].z0at ? '*' : '')
-				pl.stdbk = (pid[k].z0bk ? '*' : '')
-			}
-
-		}
-		for(k in stds) pl[k] = (stds[k][pl.id]!=undefined ? stds[k][pl.id] : '')
-
-		pl.flag = 0
-		if(dataall['inj'+i]>0) pl.flag = 1
-		else if(dataall['sus'+i]>0) pl.flag = 2
-		else if(dataall['form'+i]<90) pl.flag = 3
-		else if(dataall['morale'+i]<80) pl.flag = 4
-		else if(dataall['value'+i]==0) pl.flag = 5
-
-		players[pl.id] = pl
-	}
-	// Подгрузить игроков из списка мониторинга если их тут нету еще с флагом "чужой".
-	if(showscout){
-		var text1 = String(localStorage.peflplayer)
-		var pl2 = []
-		if (text1 != 'undefined'){
-			var pl = text1.split(',');
-			for (i in pl) {
-				var key = pl[i].split('=')
-				var pn = (key[0].split('_')[1] == undefined ? 2 : key[0].split('_')[1])
-				if(pl2[pn]==undefined) pl2[pn] = {}
-				pl2[pn][key[0].split('_')[0]] = [key[1]]
-			}
-		}
-		for(k in pl2){
-			var pl2id = pl2[k].id
-			if(players[pl2id]==undefined){
-				players[pl2id] = pl2[k]
-				players[pl2id].flag = 6
-				players[pl2id].syg = 0
-			}
-		}
-	}
-}
-
 function FillHeaders(){
-	for(i=1;i<=maxtables;i++){
-        var sel = false
-		var selnum = selected[i]
-        if (jsonSostav.sostav1 != undefined){
-	        for (j in jsonSostav.sostav1) {
-	        	if (jsonSostav.sostav1[j].pos == i) sel = true
+	for (i=1;i<=maxtables;i++) {
+        var sel = false;
+		var selnum = selected[i];
+        if (jsonSostav['sostav'+tacNum] != undefined){
+	        for (j in jsonSostav['sostav'+tacNum]) {
+	        	if (jsonSostav['sostav'+tacNum][j].pos == i) sel = true;
 	        }
         }
-		//for(j in pid) if(pid[j].p0 == i) sel = true
-
 		$('#select'+i).empty()
-		for(j in positions) {
-			var psj = positions[j]
-			$('#select'+i).append('<option value='+psj.order+'>'+psj.name+'</option>')
+		var selopts = '<option value="0">&nbsp;&nbsp;&nbsp;</option>';
+		var selarr = [];
+		var selsel = 0;
+		for (j in positions) if (j > 0) 
+		{
+			var psj = positions[j];
+			if (i<=25 && psj.filter!= '' && filterPosition(psn[i], psj.filter)) 
+			{
+				var nm = '';
+				if (psj.pls!=undefined) {
+					for(v in psj.pls) {
+						if (psj.pls[v].psn[i] && psj.pls[v].srt!=undefined) {
+							if (nm=='') nm = krPrint(psj.pls[v].srt,'srt');
+
+							if (i==4||i==9||i==14||i==19||i==23||i==6||i==11||i==16||i==21||i==25) {
+								break;
+							} else {
+								if (psnbetter[i][0].mark==undefined || psnbetter[i][0].mark < psj.pls[v].srt) {
+									if (psnbetter[i][0].mark!=undefined) {
+										psnbetter[i][1] = jQuery.extend(true, {}, psnbetter[i][0]);;
+									}
+									psnbetter[i][0].mark = psj.pls[v].srt;
+									psnbetter[i][0].posname = psj.name;
+									psnbetter[i][0].plname = psj.pls[v].sname;
+									//if (rem >= remmax) break;
+								} else if (psnbetter[i][1].mark==undefined || psnbetter[i][1].mark < psj.pls[v].srt) {
+									psnbetter[i][1].mark = psj.pls[v].srt;
+									psnbetter[i][1].posname = psj.name;
+									psnbetter[i][1].plname = psj.pls[v].sname;
+								}
+							}
+						}
+					}
+				}
+				selarr.push({
+					'id': j,
+					'value': psj.order,
+					'name': nm+' '+psj.name,
+					'str': nm,
+					'selected': (selected[i]!=undefined && selected[i]==j)
+				});
+			}
+			if (i>25 && psj.filter=='') {
+				selarr.push({
+					'id': j,
+					'value': psj.order,
+					'name': psj.name,
+					'str': 0,
+					'selected': (selected[i]!=undefined && selected[i]==j)
+				});
+			}
 		}
+		selarr.sort(function (a, b) {
+			if (a.str < b.str) return 1;
+			if (a.str > b.str) return -1;
+			return 0;
+		});
+		for (a in selarr) selopts+= '<option '+(selarr[a].selected ? 'selected ':'')+'value='+selarr[a].value+'>'+selarr[a].name+'</option>';
+
+		$('#select'+i).append(selopts);
+		if(sel) $('td#td'+i).attr('class','back2');
 		var name = '&nbsp;'
 		$('#span'+i).html(name)
-		if(positions[selnum] !=undefined && positions[selnum].name != undefined) {
+		if(positions[selnum] != undefined && positions[selnum].name != undefined) {
 			name = positions[selnum].name
 		}
-		if ((sel || i>25) && selnum!=undefined) $('#select'+i+' option:eq('+selnum+')').attr('selected', 'yes')
-		if(sel) $('td#td'+i).attr('class','back2')
-		FillData(i)
+		if ((sel || i>25) && selnum!=undefined) {
+			if (sel && selnum==0 && $('#select'+i+' option:eq(1)').length>0){
+				$('#select'+i).val($('#select'+i+' option:eq(1)').attr('value')).change();
+			} else {
+				$('#select'+i).val(selnum).change();
+			}
+		} else {
+			FillData(i);
+		}
 		if(refresh) break
 	}
 	if(refresh) {
 		maxtables = 25
-		GetData('positions')
+		GetData('positions');
 	}
+	printBetter();
 }
 
-function printToBackUp(){
-	var text = JSON.stringify(positions)
-		.replace(/\{/g,'\n{')
-		.replace(']','[/code][/spoiler]')
-		.replace('[','[spoiler][code]')
-	return text
+function printBetter() {
+	var bres = '';
+	var trres = '';
+	for(b=1;b<psnbetter.length;b++) if(b!=25&&b!=23&&b!=21&&b!=19&&b!=16&&b!=14&&b!=11&&b!=9&&b!=6&&b!=4) {
+		trres+='<td bgcolor=#BFDEB3 style="white-space:nowrap;padding:2px 0px;overflow:hidden;max-width:120px">';
+		for(m in psnbetter[b]) {
+			if (psnbetter[b][m].mark!=undefined) {
+				trres+= '<span style="font-size:8px;" title="'+psnbetter[b][m].plname+'('+psnbetter[b][m].posname+')">'+krPrint(psnbetter[b][m].mark,'srt')+' '+psnbetter[b][m].plname+'('+psnbetter[b][m].posname+')</span>';
+				trres+= '<br>';
+			}			
+		}
+		trres+='<br></td>';
+		if(b==24||b==2||b==1) trres ='<td></td>'+trres+'<td></td>';
+		if(b==24||b==22||b==17||b==12||b==7||b==2||b==1) {bres = '<tr>'+trres+'</tr>'+bres;trres='';}
+	}
+	$('#ltd4').html('Лучшие: <table id=res>'+bres+'</table>');
 }
 
 function fillPosEdit(num){
-	var html = ''
-	html += '<table width=100% class=back1><tr valign=top><td width=150>'
-	html += '<select id=selpos size=30 class=back2 style="border:1px solid;min-width:100;max-width=150;padding-left:5px" onChange="javascript:void(PosChange())">'
+	var html = '';
+	html += '<table width=100% class=back1><tr valign=top>'
+	html += '<td width=400>'
+
+	html += '<div style="margin-bottom:5px;">'
+	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>Коэффициент</b></label></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Название:</label><input maxlength=40 class=back1 style="border:1px solid;" id=iname name="name" type="text" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Фильтр:</label><input maxlength=20 class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"><label> LC DF/DM"(пусто=все)</label></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Кол-во:</label><input maxlength=4 class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"><label> Сколько игроков отображать(0=все)</label></div>';
+	html += '<div style="margin:2px;"><textarea class=back1 style="width:100%;border:1px solid;" id=ikoff name="koff" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></div>';
+	html += '</div>';
+	html += '<br><div style="margin-bottom:5px;">'
+	html += '<label style="margin:2px 2px;padding:5px;text-align:center;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;" class="back2 button" onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'">Сохранить</label>'
+	html += '<label style="margin:2px 2px;padding:5px;text-align:center;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;" class="back2 button" onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'">Удалить</label>'
+	html += '</div>'
+	html += '<br><div style="margin-bottom:5px;">'
+	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>Список</b></label></div>';
+	html += '<div style="display:inline-block; vertical-align:top; overflow:hidden; border:solid grey 1px;width:400px;"><select size=40 style="width:425px;padding:10px; margin:-5px -20px -5px -5px;" id=selpos class=back2 onChange="javascript:void(PosChange())">'
+
 	html += '<option value=0'+(num==0 ? ' selected' :'')+'>--- Создать ---</option>'
-	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name)+'</option>'
-	html += '</select></td>'
-	html += '<td><table width=100%>'
-	html += '<tr><th colspan=2 class=back2>Коэффициент</th></tr>'
-	html += '<tr><th width=10% align=right>Название:</th><td><input class=back1 style="border:1px solid;" id=iname name="name" type="text" size="40" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></td></tr>'
-	html += '<tr><th align=right>Кол-во:</th><td><input class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"> Сколько max отображать(0=все)</td></tr>'
-	html += '<tr><th align=right>Фильтр:</th><td><input class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" size="10" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"> "LC DF/DM"(пусто=все)</td></tr>'
-	html += '<tr><td colspan=2><textarea class=back1 style="border:1px solid;" id=ikoff name="koff" cols="50" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></td></tr>'
-	html += '<tr><th colspan=2>&nbsp;</th></tr>'
-	html += '</table><br><table>'
-	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
-//	html += '<tr><th height=20 class=back2 onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Удалить</th><td></td></tr>'
-	html += '</table></td>'
-	html += '<td><table width=100% align=top>'
-	html += '<tr><td>!</td><td colspan=2>значит по дефоулту поле не отображать</td></tr>'
-	html += '<tr><td>=</td><td colspan=2>эти скилы учавствуют в подсчете силы</td></tr>'
-	for(m in skillnames) if(!skillnames[m].hidden) html += '<tr><td>'+skillnames[m].rshort+'</td><td>'+m+'</td><td>'+skillnames[m].rlong+'</td></tr>'
-	html += '</table></td></tr>'
+	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name + (positions[i].filter==''?'':' ('+positions[i].filter+')'))+'</option>'
+	html += '</select>'
+	html += '</div></div>';
+
+	html += '</td>'
+	html += '<td>';
+	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>Help</b></label></div>';
+	html += '<div><label style="width:30px;margin:2px;display:inline-block;">!</label><label>значит по дефоулту поле не отображать</label></div>';
+	html += '<div><label style="width:30px;margin:2px;display:inline-block;">=</label><label>эти скилы учавствуют в подсчете силы</label></div>' ;
+	for(m in skillnames){
+		var style = '';
+		var pic = '';
+		if (skillnames[m].state!=undefined && skillnames[m].state==2) {
+			style = ' style="color:gray;text-decoration:line-through;"';
+			pic = '<img height=10 src="system/img/g/last.gif">&nbsp;';
+		}
+		if (skillnames[m].state!=undefined && skillnames[m].state==3) {
+			style = ' style="color:green"';
+			pic = '<img height=10 src="system/img/g/next.gif">&nbsp;';
+		}
+		if (!skillnames[m].hidden) {
+			html += '<div'+style+'>';
+			html += '<label style="text-decoration:inherit;width:30px;margin:2px;display:inline-block;">'+skillnames[m].rshort+'</label>';
+			html += '<label style="text-decoration:inherit;width:110px;margin:2px;display:inline-block;">'+m+'</label>'; 
+			html += '<label>'+pic+skillnames[m].rlong+'</label>';
+			html += '</div>';
+		}
+	}
+	html += '</td></tr>'
 	html += '</table>'
 	$('div#divkoff').html(html)
 
-	html = '<table width=100% class=back1><tr valign=top>'
-	html += '<td width=50%><table width=100%>'
-	html += '<tr><th colspan=2 class=back2>Основные</th></tr>'
-	html += '<tr><th width=15% align=right nowrap>С форума:</th><td><input class=back1 style="border:1px solid;" id=iforum name="iforum" type="text" size="10" value="'+getforumid+'"></td></tr>'
-	html += '<tr><th width=15% align=right>Таблиц:</th><td><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (Кол-во доп. таблиц)</td></tr>'
-	html += '<tr><th colspan=2>&nbsp;</th></tr>'
-	html += '</table></td>'
-	html += '<td width=50%><table width=100%>'
-	html += '<tr><th colspan=2 class=back2>Идеальный игрок</th></tr>'
-	html += '<tr><th width=15% align=right>Скиллы:</th><td><input class=back1 style="border:1px solid;" id=iskills name="iskills" type="text" size="10" value="'+plskillmax+'"></td></tr>'
-	html += '<tr><th width=15% align=right>Номинал:</th><td><input class=back1 style="border:1px solid;" id=inominal name="inominal" type="text" size="10" value="'+skillnames.value.strmax+'"></td></tr>'
-	html += '<tr><th width=15% align=right>Возраст:</th><td><input class=back1 style="border:1px solid;" id=iage name="iage" type="text" size="10" value="'+skillnames.age.strmax+'"></td></tr>'
-	html += '<tr><th width=15% align=right>Сборная:</th><td><input class=back1 style="border:1px solid;" id=inational name="inational" type="text" size="10" value="'+skillnames.internationalapps.strmax+'"> (Игр и голов)</td></tr>'
-	html += '<tr><th colspan=2>&nbsp;</th></tr>'
-	html += '</table></td><tr>'
-	html += '<tr><td clospan=2><table>'
-	html += '<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
-	html += '</table></td><tr>'
-//	if(deb){
-		html += '<tr><th colspan=2>&nbsp;</th></tr>'
-		html += '<tr><td colspan=2><b>Бекап</b>(выделить, скопировать на форум):<br><textarea class=back1 style="border:1px solid;" id=bk name="bk" cols="100" rows="20">'+printToBackUp()+'</textarea></td></tr>'
-//	}
+	html = '<table width=100% class=back1>'
+	html += '<tr valign=top>';
+	html +=  '<td width=300><table width=100%>';
+	html += 	'<tr><th colspan=3 style="padding:5px;" class=back2>Основные</th></tr>';
+	html += 	'<tr><th style="width:15%;" align=right>Таблиц:</th><td colspan=2><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (Кол-во доп. таблиц)</td></tr>';
+	html += 	'<tr><th colspan=3>&nbsp;</th></tr>'
+	html += 	'<tr><th colspan=3 style="padding:5px;" class=back2>Идеальный игрок</th></tr>'
+	html += 	'<tr><th align=right>Скиллы:</th><td colspan=2><input class=back1 style="border:1px solid;" id=iskills name="iskills" type="text" size="10" value="'+plskillmax+'"></td></tr>'
+	html += 	'<tr><th align=right>Номинал:</th><td colspan=2><input class=back1 style="border:1px solid;" id=inominal name="inominal" type="text" size="10" value="'+skillnames.value.strmax+'"></td></tr>'
+	html += 	'<tr><th align=right>Возраст:</th><td colspan=2><input class=back1 style="border:1px solid;" id=iage name="iage" type="text" size="10" value="'+skillnames.age.strmax+'"></td></tr>'
+	html += 	'<tr><th colspan=3>&nbsp;</th></tr>'
+	html += 	'<tr><td></td><th width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
+	html +=  '</table></td>';
+	html +=  '<td><table width=100%>'
+	html += 	'<tr><th colspan=2 style="padding:5px;" class=back2>BackUp <span style="font-weight: normal;">(сохранение и загрузка своих коэфициентов)</span></th></tr>';
+	html += 	'<tr id=svbktr><th title="Сделать бекап коэффициентов на сервере из поля ввода" width=100 class=back2 onmousedown="javascript:void(sendBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Backup</th><td>нет сохраненого бекапа, нажмите что бы сделать(данные возьмутся из поля ввода!)</td></tr>';
+//	html += 	'<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(removeBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Удалить</th><td id=tdbk></td></tr>';
+	html += 	'<tr id=rmbktr><th title="Загрузить коэффициенты из бекапа в форму ввода" width=100 class=back2 onmousedown="javascript:void(getBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Загрузить</th><td>бекап за <b><span id=dtbk></span></b> [<a href="javascript:void(removeBackUp())">удалить</a>]</td></tr>';
+	html += 	'<tr><th colspan=2>&nbsp;</th></tr>'
+	html += 	'<tr><th title="Применить коэффициенты введеные в форму ввода" width=100 class=back2 onmousedown="javascript:void(applyBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Применить</th>'
+	html += 		'<td rowspan=7><textarea class=back1 style="width:100%;border:1px solid;" id=bk name="bk" rows="25"></textarea></td></tr>';
+	html += 	'<tr><td style="height:20px;">&nbsp;</td><td></td></tr>'
+	html += 	'<tr><th title="Вставить в форму ввода текущие коэффициенты" width=100 class=back2 onmousedown="javascript:void(printToBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Текущее</th><td></td></tr>'
+	html += 	'<tr><td style="height:20px;">&nbsp;</td><td></td></tr>'
+	html += 	'<tr><th title="Сбросить коэффициенты на значения по умолчанию" width=100 class=back2 onmousedown="javascript:void(PosDrop())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сбросить</th><td></td></tr>'
+	html += 	'<tr><td>&nbsp;</td><td></td></tr>'
+	html +=  '</table></td><tr>';
 	html += '</table>'
 	$('div#divedit').html(html)
 
@@ -739,48 +882,46 @@ function PosDel(){
 
 function PosDrop(){
 	delete localStorage.positions
+	delete localStorage.selected
 	maxtables = 25
 	posmaxorder = 0
-	chMenu('tdsost')
-	GetData('positions')
+	chMenu('tdsost');
+	GetData('positions');
 }
 function PosSaveAll(){
 	var pr = {
-		iforum: ($('#iforum').val() == '' ? getforumid : $('#iforum').val()),
 		itables: ($('#itables').val() == '' ? 0 : $('#itables').val()),
 		iskills: ($('#iskills').val() == '' ? 15 : $('#iskills').val()),
 		inominal: ($('#inominal').val() == '' ? 50000000 : $('#inominal').val()),
 		iage: ($('#iage').val() == '' ? 40 : $('#iage').val()),
-		inational: ($('#inational').val() == '' ? 500 : $('#inational').val()),
 	}
 	if(pr.itables>30) pr.itables = 30
 
-	if(pr.iforum!=parseInt(pr.iforum) ||
-		pr.itables!=parseInt(pr.itables) ||
-		pr.iskills!=parseInt(pr.iskills) ||
-		pr.inominal!=parseInt(pr.inominal) ||
-		pr.iage!=parseInt(pr.iage) ||
-		pr.inational!=parseInt(pr.inational)){
-			alert('Неправильно введены параметры!')
-			return false
+	if(pr.itables!=parseInt(pr.itables)
+		|| pr.iskills!=parseInt(pr.iskills)
+		|| pr.inominal!=parseInt(pr.inominal)
+		|| pr.iage!=parseInt(pr.iage)
+	){
+			alert('Неправильно введены параметры!');
+			return false;
 	}
-	positions[0].koff = 'data='+pr.iforum+',idealsk='+pr.iskills+',idealage='+pr.iage+',idealval='+pr.inominal+',idealnat='+pr.inational+',maxt='+pr.itables
-	SaveData('positions')
-	maxtables = 25
-	posmaxorder = 0
-	chMenu('tdsost')
-	GetData('positions')
+	positions[0].koff = 'idealsk='+pr.iskills+',idealage='+pr.iage+',idealval='+pr.inominal+',maxt='+pr.itables;
+	SaveData('positions');
+	maxtables = 25;
+	posmaxorder = 0;
+	chMenu('tdsost');
+	GetData('positions');
 }
 
 function PosSave(){
-	var num1 = $('#selpos option:selected').val()
-	var num = num1
-	var order = 0
+	var num1 = $('#selpos option:selected').val();
+	var num = num1;
+	var order = 0;
 	if(num1==0) {
-		num = positions.length
-		order = posmaxorder = parseInt(posmaxorder)+1
+		num = positions.length;
+		order = posmaxorder = parseInt(posmaxorder)+1;
 	}else{
-		order = positions[num].order
+		order = positions[num].order;
 	}
 	var ps = {
 		name: 	$('#iname').val(),
@@ -792,26 +933,171 @@ function PosSave(){
 	// провалидировать поля и обновить
 	if(ps.num!=parseInt(ps.num) ||
 		ps.name == '' ||
-		ps.koff == ''){
-			alert('Неправильно введены параметры!')
-			return false
+		ps.koff == ''
+	){
+		alert('Неправильно введены параметры!');
+		return false;
 	}
-	positions[num] = ps
-	fillPosEdit(num)
-	countPosition(num)
-	chMenu('tdsost')
-	SaveData('positions')
-	FillHeaders()
+	positions[num] = ps;
+	fillPosEdit(num);
+	countPosition(num);
+	chMenu('tdsost');
+	SaveData('positions');
+	FillHeaders();
 }
 
-function chMenu(mid){
+function postBackUpData() {
+	if (senddata!='' && senddata.length<postBackupLimit*3) {
+		var dda;
+		if(senddata.length>postBackupLimit) {
+			dda = senddata.substr(0,postBackupLimit);
+			senddata = senddata.substr(postBackupLimit);
+		} else{
+			dda=senddata;
+			senddata = '';
+		}
+		//console.log('отправляем: '+dda+', осталось: '+senddata);
+		$.ajax({
+			type: "POST",
+			url: postBackupUrl,
+			data: {rtext: '[list]'+dda},
+			dataType: "text",			
+			success: function(){
+				console.log('save backup success');
+				setTimeout(postBackUpData, 1000);
+			},
+			error: function(response, status, xhr){
+				console.error(status+': ' +xhr.status + ' ' + xhr.statusText);
+			}			
+		});
+	} else {
+		console.log('send data empty or over limit - finish posting');
+		loadBackUpPage();
+	}
+};
 
+function printToBackUp(){
+	var bak ='';
+	for(i in positions){
+		var p=positions[i];
+		if(i>0) bak+= p.name+'|'+p.filter+'|'+p.num+'|'+p.koff+'$';
+	}
+	$('#bk').val(bak);
+}
+
+function sendBackUp(){
+	senddata = translit($('#bk').val().replace(/([A-Za-z]+[A-Za-z0-9\s\/\=\*\,]*[A-Za-z]+|[A-Za-z]+)/g,'[$1]'));
+
+	if (senddata=='') return false;
+	if (postBackupUrl!='') {
+		postBackUpData();
+	} else {
+		alert('Неизвестно куда делать бекап, урл пуст');
+		return false;
+	}
+}
+
+function removeBackUp(){
+	if (delBackupUrl!='') {
+		var delarr = delBackupUrl.split('|');
+		if (delarr.length==0 || delarr.length>3) {
+			delBackupUrl ='';
+			return false;
+		}
+		delBackupUrl = delarr.slice(1).join('|');
+		//console.log('удаляем '+delarr[0] + ', осталось '+delBackupUrl);
+
+		$.ajax({
+			type: "GET",
+			url: delarr[0],
+			success: function(){
+				console.log('remove backup success');
+				//removeBackUp();
+				setTimeout(removeBackUp,1000);
+			}		  
+		});
+	} else {
+		console.log('урлы удаления закончились');
+		loadBackUpPage();
+	}	
+}
+
+function getBackUp() {
+	$('#bk').val( translit($('#debug').find('ul').text(),true,'[,]'));
+}
+
+function applyBackUp(){
+	var pss = $('#bk').val().split('$');
+	var nnum = 0;
+	positions.splice(1);
+	for(n in pss){
+		nnum = parseInt(n,10)+1;
+		if(pss[n]!=undefined && pss[n]!=''){
+			var stt = pss[n].split('|');
+			console.log(nnum+': name:'+stt[0]+' filter:'+stt[1]+' max:'+stt[2]+ ' koff:'+stt[3]);
+			positions[nnum] = {
+				filter: stt[1],
+				name: stt[0],
+				num: stt[2],
+				koff: stt[3],
+				order: nnum
+			}		
+			fillPosEdit(nnum);
+			countPosition(nnum);
+		}
+	}
+	positions.splice(nnum);
+	posmaxorder = nnum;
+	chMenu('tdsost');
+	SaveData('positions');
+	FillHeaders();
+}
+
+function loadBackUpPage()
+{
+	if ($('#debug').length == 0){
+		$('div#divedit').append('<div id=debug style="display:none;">x</div>');
+	} 
+	$('#debug').load('hist.php?t=n&id=0' + ' center:first',function(response, status, xhr) {
+		if (status == "error") {
+			var msg = "Sorry but there was an error: ";
+			$('div#divedit').append('<font color=red>'+msg + xhr.status + " " + xhr.statusText+'</font>');
+		} else {
+			postBackupUrl = $('#debug').find('form').attr('action');
+			console.log('postBackupUrl='+postBackupUrl);
+
+			if ($('#debug').find('ul').length>0) {
+				var delarr = [];
+				$('#debug').find('a').each(function(){
+					delarr.push($(this).attr('href'));
+				});
+				delBackupUrl = delarr.join('|');
+
+				console.log('delBackupUrl='+delBackupUrl);
+				var tm = $('#debug').find('a').parent().find('b').remove().end().text().split(' ');
+				$('#dtbk').html(tm[1]+' '+tm[2]);
+				$('#svbktr').hide();
+				$('#rmbktr').show();
+			}else{
+				delBackupUrl = '';
+				$('#dtbk').html('none');
+				$('#svbktr').show();
+				$('#rmbktr').hide();
+			}
+		}
+		$('div#divedit').show();
+	});
+}
+
+function chMenu(mid)
+{
 	switch (mid){
 		case 'tdedit':
 			$('th#tdsost,th#tddopt,th#tdkoff').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
 			$('th#tdedit').addClass('back1').css('border-bottom','0px').attr('onMouseOut','this.className=\'back1\'')
 			$('table#tablesost, table#tabledopt, div#divkoff').hide()
-			$('div#divedit').show()
+			printToBackUp();
+			loadBackUpPage();
 			break;
 		case 'tdkoff':
 			$('th#tdsost,th#tddopt,th#tdedit').addClass('back2').css('border-bottom','1px solid').attr('onMouseOut','this.className=\'back2\'')
@@ -846,11 +1132,10 @@ function krOpen(){
 	else $('a#sostav_n').attr('href','javascript:void(krOpen())')
 }
 
-function PrintTables(geturl) {
+function PrintTables() {
 	krOpen()
 
-	var html = '<div align=right><a href="javascript:void(close())">закрыть</a>&nbsp;</div>'
-	html += '<div align=right><a href="javascript:void(PosDrop())" >сбросить кофы</a>&nbsp;</div>'
+	var html = '<div align=right style="margin:0px 5px">[<a href="javascript:void(close())">закрыть</a>]</div>'
 	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
 	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
 	html += '<th id=tdsost width=130 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
@@ -872,10 +1157,13 @@ function PrintTables(geturl) {
 				if(sostavteam)	htmltd += (isNaN(parseInt(localStorage.myteamid)) ? 'g/team.gif' : 'club/'+localStorage.myteamid+'.gif')+'>'
 				else 			htmltd += (isNaN(parseInt(localStorage.myintid)) ? 'g/int.gif' : 'flags/full'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>'
 				htmltd += '</td>'				
-			} else if (i==1 && j==1){
+			} else if (i==1 && j==1) {
 				htmltd += '<td valign=top height=90 class=back1 align=center>'+ShowHelp()+'</td>'
-			} else if (i>5 && j!=3){
-				htmltd += '<td valign=top height=90 class=back1></td>'
+			} else if (i==6 && j!=3) {
+				if (j==1 || j==4) htmltd += '<td valign=top class=back1 colspan=2 rowspan=3 id=ltd'+j+'></td>'
+				//htmltd += '<td valign=top height=90 class=back1>6</td>'
+			} else if (i==7 && j!=3) {
+				//htmltd += '<td valign=top height=90 class=back1>7</td>'
 			} else {
 				htmltd += PrintTd(nm)
 				nm--
@@ -884,7 +1172,7 @@ function PrintTables(geturl) {
 		}
 		html += newtr + '</tr>'
 	}
-	html += '</table>'
+	html += '<tr><td></td></tr></table>'
 	html += '<table id=tabledopt width=100% class=back1 style="display:none;"></table>'
 	html += '<div id=divkoff style="display:none;"></div>'
 	html += '<div id=divedit style="display:none;"></div>'
@@ -892,15 +1180,15 @@ function PrintTables(geturl) {
 	$('td.back4').after('<td class=back4 id=sostavplus>'+html+'</td>')
 }
 function PrintAdditionalTables(){
-	var html = '<tr><td>'
-	html += '<table witdh=100% bgcolor=black><tr class=back2 align=center>'
+	var html = '<tr><td>';
+	html += '<table witdh=100% bgcolor=black><tr class=back2 align=center>';
 	for(i=26;i<=maxtables;i++){
-		html += PrintTd(i)
-		if(i%5==0 && i!=25 && i!=(maxtables)) html += '</tr></table><br><table witdh=100% bgcolor=black><tr class=back2 align=center>'
+		html += PrintTd(i);
+		if(i%5==0 && i!=25 && i!=(maxtables)) html += '</tr></table><br><table witdh=100% bgcolor=black><tr class=back2 align=center>';
 	}
-	html += '</tr></table>'
-	html += '</td></tr>'
-	$('table#tabledopt').html(html)
+	html += '</tr></table>';
+	html += '</td></tr>';
+	$('table#tabledopt').html(html);
 }
 
 function PrintTd(num){
@@ -918,14 +1206,18 @@ function PrintTd(num){
 	return newhtml
 }
 
-function showAll(nt){
+function showAll(nt) {
 	if($('table#table'+nt+' tr[abbr*=wrong]:first').is(':visible')
 		||$('table#table'+nt+' td[abbr*=hidden]:first').is(':visible')) {
 			$('table#table'+nt+' tr[abbr*=wrong]').hide()
 			$('table#table'+nt+' td[abbr*=hidden]').hide()
 	} else{
-			$('table#table'+nt+' tr[abbr*=wrong]').show()
-			$('table#table'+nt+' td[abbr*=hidden]').show()
+		if (Object.keys(players).length > positions[nt].pls.length) {
+			countPosition($('#select'+nt).val());
+			FillData(nt);
+		}
+		$('table#table'+nt+' tr[abbr*=wrong]').show()
+		$('table#table'+nt+' td[abbr*=hidden]').show()
 	}
 }
 
@@ -946,21 +1238,40 @@ function MouseOff(num){
 	$('#span'+num).show()
 
 }
+function translit(text, engToRus, replace){
+ var
+  rus = "щшчцюяёжъыэабвгдезийклмнопрстуфхь".split(""),
+  eng = "shh sh ch cz yu ya yo zh `` y' e` a b v g d e z i j k l m n o p r s t u f x `".split(" ")
+  for(var x = 0; x < rus.length; x++){
+  text = text.split(engToRus ? eng[x] : rus[x]).join(engToRus ? rus[x] : eng[x]);
+   text = text.split(engToRus ? eng[x].toUpperCase() : rus[x].toUpperCase()).join(engToRus ? rus[x].toUpperCase() : eng[x].toUpperCase()); 
+ }
+ if(replace){
+   r = replace.split(",")
+   try{
+     pr =  new RegExp("([^\\"+r[0]+"]+)(?=\\"+r[1]+")","g")
+      text.match(pr).forEach(function(i){
+        text=text.split(r[0]+i+r[1]).join(translit(i, engToRus ? "" : true))
+     })
+   }catch(e){}
+ }
+  return text;
+}
 
 function ShowHelp(){
 	var html = ''
-	html += '<table class=back2>'
-	html += '<tr><th colspan=4>'+'HELP'.fontsize(1)+'</th></tr>'
-	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'основа'.fontsize(1)+'</td>'
-	html += '<td bgcolor=#BABDB6 colspan=2>'+'в заявке'.fontsize(1)+'</td></tr>'
-	html += '<tr><td colspan=4><font color=red size=1>не своя позиция</font></td></tr>'
-	html += '<tr><td bgcolor='+fl[1]+'></td><td>'+'трв'.fontsize(1)+'</td>'
-	html += '<td bgcolor='+fl[2]+'></td><td>'+'дск'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor='+fl[3]+'></td><td>'+'фрм<90'.fontsize(1)+'</td>'
-	html += '<td bgcolor='+fl[4]+'></td><td>'+'мрл<80'.fontsize(1)+'</td></tr>'
-	html += '<tr><td bgcolor='+fl[5]+'></td><td>'+'шкл'.fontsize(1)+'</td>'
-	html += '<td bgcolor='+fl[6]+'></td><td><font color=888A85>'+'чужой'.fontsize(1)+'</font></td>'
-	html += '</tr>'
-	html += '</table>'
-	return html
+	html += '<table class=back2>';
+	html += '<tr><th colspan=4>'+'HELP'.fontsize(1)+'</th></tr>';
+	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'основа'.fontsize(1)+'</td>';
+	html += '<td bgcolor=#BABDB6 colspan=2>'+'в заявке'.fontsize(1)+'</td></tr>';
+	html += '<tr><td colspan=4><font color=red size=1>не своя позиция</font></td></tr>';
+	html += '<tr><td bgcolor='+fl[1]+'></td><td>'+'трв'.fontsize(1)+'</td>';
+	html += '<td bgcolor='+fl[2]+'></td><td>'+'дск'.fontsize(1)+'</td></tr>';
+	html += '<tr><td bgcolor='+fl[3]+'></td><td>'+'фрм<90'.fontsize(1)+'</td>';
+	html += '<td bgcolor='+fl[4]+'></td><td>'+'мрл<80'.fontsize(1)+'</td></tr>';
+	html += '<tr><td bgcolor='+fl[5]+'></td><td>'+'шкл'.fontsize(1)+'</td>';
+	html += '<td bgcolor='+fl[6]+'></td><td>'+(showscout ? '<font color=888A85>'+'чужой'.fontsize(1)+'</font>' : '&nbsp;')+'</td>';
+	html += '</tr>';
+	html += '</table>';
+	return html;
 }

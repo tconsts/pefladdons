@@ -75,15 +75,14 @@ $().ready(function() {
 
 	html += '<br><br>&nbsp;* - <i>¬ы можете поддержать проект (или например запросить сделать определенную фичу в первую очередь, или в персональное пользование), перечислив какую-либо сумму одним из следующих способов (оплата возможна через любой платЄжный терминал)</i>'
 	html += '<table align=center class=back2 width=50%><tr class=back1 height=50 valign=top><td><b>WebMoney</b><br>'
-	html += 'R930480028049 (рубли)<br>'
-	html += 'Z811907519489 (доллары)</td>'
+	html += 'R930480028049 (рубли)</td>'
 
-	html += '<td><b>RBK Money</b><br>'
-	html += 'RU339032359</td></tr>'
+	html += '<td><b>WebMoney</b><br>'
+	html += 'Z811907519489 (доллары)</td></tr>'
 
 	html += '<tr class=back1 height=50 valign=top><td><b>яндекс-деньги</b><br>'
-	html += '—чет: 41001993673065</td>'
-
+	html += '—чет: <a href="https://money.yandex.ru/to/41001993673065">41001993673065</a><br>';
+	html += 'ставьте пароль, кидайте его в личку</td>'
 
 	html += '<td><b>PayPal</b><br>'
 	html += 'tconsts@gmail.com</td></tr></table>'
