@@ -8,7 +8,7 @@
 // @author         const
 // ==/UserScript==
 
-var scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1:0').split(':'),
+var scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1:0').split(':'),
 scriptnames = [
 	'settings', 
 	'sostav', 
@@ -114,7 +114,7 @@ switch (location.pathname.substring(1)) {
 			case 'squad4':
 				AddScriptJS(9);
 				break;
-			case 'squad5':
+			case 'squad6':
 				AddScriptJS(6);
 				break;
 
@@ -124,7 +124,7 @@ switch (location.pathname.substring(1)) {
 
 function AddScriptJS(flag) {
 	if(flag!=undefined && scflag[flag] == undefined) scflag[flag]=0;
-	if (flag == undefined || scflag[flag] == 0) {
+	if (flag == undefined || scflag[flag] == 0 || flag == 6) {
 		var newScriptMenu = document.createElement('script');
 		newScriptMenu.type = 'text/javascript';
 		newScriptMenu.src = chrome.extension.getURL('js/crab_' + (flag == undefined ? 'common' : scriptnames[flag]) + '.user.js');
