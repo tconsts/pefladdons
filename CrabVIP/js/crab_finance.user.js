@@ -29,6 +29,7 @@ var school = 0
 var cm = 0
 var curhometour = 0
 var maxhometour = 0
+var divpriz = 0;
 
 function GetFinish(type, res){
 	debug('GetFinish:type='+type + ':res=' + res)
@@ -41,7 +42,9 @@ function GetFinish(type, res){
 		var d = 1000-tplace-dnum2*100-1
 		if(m.school!=undefined && m.ed==undefined){
 			debug(tplace+':'+dnum2+':'+dprize+':'+dteams+':'+dtour)
-			EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000, dteams,dtour)
+			if(dprize[d]!=undefined) divpriz=parseInt(dprize[d])*1000;
+			//EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000, dteams,dtour)
+			EditFinance(school,dteams,dtour)
 			m.ed = true;
 		}
 	}	
@@ -293,8 +296,8 @@ function GetData(dataname){
 	}
 }
 
-function EditFinance(school,divpriz,dteams,dtour){
-	debug('EditFinance('+school+','+divpriz+','+dteams+','+dtour+')')
+function EditFinance(school,dteams,dtour){
+	debug('EditFinance('+school+','+dteams+','+dtour+')')
 		var finance = []
 		var ffn 	= $('td.back4 > table td:eq(1)').html()
 		zp	 		= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
@@ -303,7 +306,9 @@ function EditFinance(school,divpriz,dteams,dtour){
 		cur.bablo	= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''))
 		cur.bonus	= (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
 
-		fin.fid = localStorage['finFID'] == undefined ? 81 : localStorage['finFID'];
+		var tmenu = $('td.topmenu table td:contains(" ФИД")').text();
+		cur.fid = isNaN(parseInt(tmenu.split('(')[1],10)) ? 0 : parseInt(tmenu.split('(')[1],10);
+		fin.fid = localStorage['finFID'] != undefined ? localStorage['finFID'] : (!isNaN(parseInt(tmenu.split('/')[1],10)) ? parseInt(tmenu.split('/')[1],10) : 81);
 
 		// get info from tables
 		$('td.back4 > table table').each(function(i,val){
@@ -334,12 +339,10 @@ function EditFinance(school,divpriz,dteams,dtour){
 		cur.zpperc = 	 (cur.sponsors ==0 ? 0+'%' : (cur.zp/cur.sponsors*100).toFixed(1)+'%')
 		cur.schoolperc = (cur.sponsors ==0 ? 0+'%' : (cur.school/cur.sponsors*100).toFixed(1)+'%')
 
-		cur.fid = parseInt($('td.topmenu table td:contains(" ФИД")').text().split('(')[1],10);
 
 		if(cur.fid>fin.fid) fin.fid = cur.fid
 
 		// set div prizes
-//		var divpriz = 0
 		var divprizmark =	(' <i>*1</i>').fontcolor('red').fontsize(1)
 		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в команду, див и "Правила".</i>').fontcolor('red').fontsize(1)
 		if(divpriz!=0){
