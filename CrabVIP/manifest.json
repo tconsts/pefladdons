@@ -59,7 +59,6 @@
 	"js/crab_index.user.js",
 	"js/crab_forum.user.js",
 	"js/crab_ref.user.js",
-	"js/crab_snm.user.js",
 	"js/crab_new_sostav.user.js"
   ],
   "permissions":[
