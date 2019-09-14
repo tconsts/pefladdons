@@ -23,7 +23,6 @@ if( typeof Array.prototype.push==='undefined' ) {
 
 var matches = [];
 $().ready(function() {
-	// if(parseInt(localStorage.myteamid)==parseInt(UrlValue('j'))) showMatches();
 	console.log("run summary");
 	const homeID = UrlValue('n');
 	const awayID = UrlValue('j');
@@ -49,22 +48,30 @@ $().ready(function() {
 	const SCORED = 4;
 	const MISSED = 5;
 	const CUP_TYPE = 6;
+	const DARK = true;
+	const TOURN = {
+		max : 0
+	};
 
-	function countGameInfo(gameRaw, tArr) {
+	// function countGameInfo(gameRaw, tArr) {
+	// 	for(let i = 0; i < tArr.length ; i++) {
+	// 		tArr[i] += gameRaw[i];
+	// 	};
+	// }
 
-		for(let i = 0; i < tArr.length ; i++) {
-			tArr[i] += gameRaw[i];
-		};
-		// console.log(gameRaw, tArr);
-		// return tArr;
+	// let champ = [].concat(zeroRow);
+	// let cup = [].concat(zeroRow);
+	// let supercup = [].concat(zeroRow);
+	// let sum = [].concat(zeroRow);
+	// let frendly = [].concat(zeroRow);
+	
+	const summaryTotal = [];
+
+	function newSummaryLine(tournName) {
+		const line = [].concat(zeroRow);
+		line[CUP_TYPE] = tournName;
+		return line;
 	}
-
-	let champ = [].concat(zeroRow);
-	let cup = [].concat(zeroRow);
-	let supercup = [].concat(zeroRow);
-	let sum = [].concat(zeroRow);
-	let frendly = [].concat(zeroRow);
-// debugger;
 
 	$('#x0 tr').each(function(i) {
 		
@@ -73,44 +80,92 @@ $().ready(function() {
 		if (!scorestring) return;
 
 		const cupType = $(this).find("td:nth-child(5)").text().trim();
+		if (TOURN[cupType] === undefined) {
+			TOURN[cupType] = TOURN.max;
+			summaryTotal.push(newSummaryLine(cupType));
+			TOURN.max++;
+		} 
+		
+		summaryTotal[TOURN[cupType]][MATCHES]++;
+
 		const teams = $(this).find("td:first-child").text().trim().split(' - ');
 		const ahome = teams[0] === home;
 		const score = scorestring[0].split(':');
 
 		const scored  = parseInt(ahome ? score[0] : score[1]);
 		const missed  = parseInt(ahome ? score[1] : score[0]);
-		let win, lost, draw;
+		
+		summaryTotal[TOURN[cupType]][SCORED] += scored;
+		summaryTotal[TOURN[cupType]][MISSED] += missed;
 
 		if (scored > missed) {
-			win= 1; lost = 0; draw = 0;
+			summaryTotal[TOURN[cupType]][WIN]++;
 		} else if (scored < missed) {
-			win = 0; lost = 1; draw = 0;
+			summaryTotal[TOURN[cupType]][LOST]++;
 		} else {
-			win = 0; lost = 0; draw = 1;
+			summaryTotal[TOURN[cupType]][DRAW]++;
 		};
-
-		const rlt = [win + draw + lost, win, draw, lost, scored, missed, cupType];
-		if ( cupType == 'Чемпионат' ) { 
-			countGameInfo(rlt, champ);
-		} else if (cupType === "Кубок") {
-			countGameInfo(rlt, cup);
-		} else if (cupType === "Товарищеский") {
-			countGameInfo(rlt, frendly);
-		} else if (cupType === "Суперкубок") {
-			countGameInfo(rlt, supercup);
-		}
-	// if (i<20) console.log(i, teams, score, scorestring, rlt);
 		 
 	});
-	
-	const summary = {champ: champ,
-		cup: cup,
-		supercup:supercup,
-		sum:sum,
-		frendly:frendly,
+	console.log(summaryTotal);
+	console.log(TOURN);
+
+	const emptyRow = $('<tr>');
+	for (let i = 0; i < 7; i++) {
+		const emptyCell = $('<td></td>');
+		emptyCell.append($('<hr>'));
+		emptyRow.append(emptyCell);
+	}
+	function dressUpRow (arr, title, darkback) {
+		const row = $("<tr>");
+		if (darkback) row.attr("class", 'back2');
+		const label = $("<td>"+ title + "</td>");
+		label.attr("width", "20%");
+		label.attr("style","font-weight:bold");
+		row.append(label);		
+		for (let i = 0; i < arr.length -1; i++) {
+			row.append("<td>"+ arr[i]+ "</td>");
+		}
+		return row;
 	}
 
-	
-	console.log(summary);
+	const sumTable = $("<table>");
+	sumTable.attr("id", "summary");
+	sumTable.attr("font-size", "x-large");
+	sumTable.attr("cellpadding", "5px");
+	sumTable.attr("cellspacing", "2px");
+	let frendlies;
+	if (TOURN["Товарищеский"]) {
+		console.log("eject frendlies", TOURN["Товарищеский"]);
+		frendlies = summaryTotal.splice(TOURN["Товарищеский"],1);	
+	}
+	const totalIndex = summaryTotal.push(newSummaryLine("ВСЕГО")) - 1;
 
+	for (let r = 0; r < summaryTotal.length - 1; r++) {
+		for (let c = 0; c < summaryTotal[r].length - 1; c++) {
+			summaryTotal[totalIndex][c] += summaryTotal[r][c];
+		}
+	}
+
+	const titles = $("<tr>");
+	titles.attr("style","font-weight:bold; font-size:normal");
+	titles.attr("font-size","normal");
+	titles.append($("<td> </td><td>Игр</td><td>Выг</td><td>Нич</td><td>Пор</td><td>ГлЗ</td><td>ГлП</td>"));
+	sumTable.append(titles);
+
+	for (r = 0; r < summaryTotal.length; r++) {
+		sumTable.append(dressUpRow(summaryTotal[r], summaryTotal[r][CUP_TYPE], r % 2 === 0 ? DARK : false) );
+	}
+	sumTable.append(emptyRow);
+
+	if (TOURN["Товарищеский"])	{
+		sumTable.append(dressUpRow(frendlies[0], "Товарищеский", false) );
+	}
+
+	const astericksTipString = '* - игры официальных товарищеских турниров учитываются как игры Кубков, по техничеcким причинам';
+	const astericksTip = $('<tr style="font-size:xx-small"><td>'+ astericksTipString +'</td></tr>');
+
+	$("td.back4 > table > tbody").append($("<tr>").append("<hr>"));
+	$("td.back4 > table > tbody").append($("<tr>").append(sumTable));
+	$("td.back4 > table > tbody").append(astericksTip);
 })
