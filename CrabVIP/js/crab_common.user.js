@@ -67,7 +67,8 @@ function SetCFF(){
 
 if(typeof(jQuery)!='undefined'){ 
 $().ready(function() {
-	console.log('run crab_common...');
+	console.log('run the crab_common...');
+	
 
 	if (UrlValue("p") && UrlValue("p").indexOf("squad") == 0) {
 		if(clubs!=undefined) for(i=0;i<3;i++) if(clubs[i]!=undefined) localStorage['sostavurl'+clubs[i].id] = jsonsostav+'?'+clubs[i].gurl;

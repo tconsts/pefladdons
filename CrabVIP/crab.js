@@ -34,7 +34,7 @@ scriptnames = [
 	'ref', 
 	'adaptation',
 	'', // TV: removed
-	'', // reit int: removed
+	'summary', // reit int: removed
 	'school'
 ],
 url2 = location.search.substring(1),
@@ -87,6 +87,7 @@ switch (location.pathname.substring(1)) {
 				if (t == 'if' || t == 'code') { AddScriptJS(14); }
 				if (t == 'cup' || t == 'ec' || t == 't' || t == 'f') { AddScriptJS(18); }
 				if (t == 'ref') { AddScriptJS(21); }
+				if (t == 'khist') { AddScriptJS(24); }
 				if (t == 'school') { AddScriptJS(25); }
 				break;
 
@@ -124,7 +125,7 @@ switch (location.pathname.substring(1)) {
 
 function AddScriptJS(flag) {
 	if(flag!=undefined && scflag[flag] == undefined) scflag[flag]=0;
-	if (flag == undefined || scflag[flag] == 0 || flag == 6) {
+	if (flag == undefined || scflag[flag] == 0 || flag == 6 || flag == 24) {
 		var newScriptMenu = document.createElement('script');
 		newScriptMenu.type = 'text/javascript';
 		newScriptMenu.src = chrome.extension.getURL('js/crab_' + (flag == undefined ? 'common' : scriptnames[flag]) + '.user.js');
