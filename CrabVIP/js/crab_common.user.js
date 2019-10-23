@@ -69,10 +69,13 @@ if(typeof(jQuery)!='undefined'){
 $().ready(function() {
 	console.log('run the crab_common...');
 	const submenues = $('.submenu2');
+	
+
 	if (submenues.length > 0) {
-		console.log("submenu2 ", submenues.length );
+		console.log("submenu2 ", submenues.length);
 		const HMREF = 'http://kes-pefl.appspot.com/heatmaps.html?';
 		submenues.each(function(i, val){
+			if ($(val).find('li').length > 2 ) return; // если Паша добавит в проект.
 			const tvRef = $(val).find('a:nth-child(1)').attr('href')
 			.replace('&gm=k','')
 			.replace('http://pefl.ru/tv/#/', HMREF)
