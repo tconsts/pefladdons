@@ -8,7 +8,7 @@
 // @author         const
 // ==/UserScript==
 
-var scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1:0').split(':'),
+var scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1:0').split(':'),
 scriptnames = [
 	'settings', 
 	'sostav', 
@@ -16,10 +16,10 @@ scriptnames = [
 	'contracts', 
 	'team', 
 	'div', 
-	'', //  6 ReitChamps (removed)
+	'new_sostav', //  6 SostavNaMatch
 	'schedule', 
 	'finance', 
-	'', //  9 SostavNaMatch (removed)
+	'snm', //  9 SostavNaMatch (removed)
 	'', // 10 ReitSchool (removed)
 	'', // 11 NN (removed)
 	'hist', 
@@ -34,7 +34,7 @@ scriptnames = [
 	'ref', 
 	'adaptation',
 	'', // TV: removed
-	'', // reit int: removed
+	'summary', // reit int: removed
 	'school'
 ],
 url2 = location.search.substring(1),
@@ -87,12 +87,13 @@ switch (location.pathname.substring(1)) {
 				if (t == 'if' || t == 'code') { AddScriptJS(14); }
 				if (t == 'cup' || t == 'ec' || t == 't' || t == 'f') { AddScriptJS(18); }
 				if (t == 'ref') { AddScriptJS(21); }
+				if (t == 'khist') { AddScriptJS(24); }
 				if (t == 'school') { AddScriptJS(25); }
 				break;
 
 			case 'fin':
 				if (t == 'ctr') { AddScriptJS(3); }
-				if (!t) { AddScriptJS(8); }
+				if (!t || t == 'prizef') { AddScriptJS(8); }
 				break;
 				
 			case 'rules':
@@ -111,13 +112,20 @@ switch (location.pathname.substring(1)) {
 			case 'calendar':
 				AddScriptJS(19);
 				break;
+			case 'squad4':
+				AddScriptJS(9);
+				break;
+			case 'squad6':
+				AddScriptJS(6);
+				break;
+
 		}
 		break;
 }
 
 function AddScriptJS(flag) {
 	if(flag!=undefined && scflag[flag] == undefined) scflag[flag]=0;
-	if (flag == undefined || scflag[flag] == 0) {
+	if (flag == undefined || scflag[flag] == 0 || flag == 6 || flag == 24) {
 		var newScriptMenu = document.createElement('script');
 		newScriptMenu.type = 'text/javascript';
 		newScriptMenu.src = chrome.extension.getURL('js/crab_' + (flag == undefined ? 'common' : scriptnames[flag]) + '.user.js');

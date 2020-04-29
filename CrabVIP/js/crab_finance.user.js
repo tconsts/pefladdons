@@ -29,6 +29,7 @@ var school = 0
 var cm = 0
 var curhometour = 0
 var maxhometour = 0
+var divpriz = 0;
 
 function GetFinish(type, res){
 	debug('GetFinish:type='+type + ':res=' + res)
@@ -41,7 +42,9 @@ function GetFinish(type, res){
 		var d = 1000-tplace-dnum2*100-1
 		if(m.school!=undefined && m.ed==undefined){
 			debug(tplace+':'+dnum2+':'+dprize+':'+dteams+':'+dtour)
-			EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000, dteams,dtour)
+			if(dprize[d]!=undefined) divpriz=parseInt(dprize[d])*1000;
+			//EditFinance(school,(dprize[d]==undefined ? 0 : parseInt(dprize[d]))*1000, dteams,dtour)
+			EditFinance(school,dteams,dtour)
 			m.ed = true;
 		}
 	}	
@@ -82,18 +85,11 @@ function GetDivInfo(did,nname,dnum){
 			divs[did].drotcom = drotcom
 		}
 	})
-	$('td.back4 table:eq(2) tr:gt(0)').each(function(i,val){
-		if(nname == $(val).find('td:first b').text()){
-			$('td.back4 table:eq(2) tr:eq('+(i+1)+')').attr('bgcolor', 'yellow')
-			$('td.back4 table:eq(2) tr:eq('+(i+dnum+1)+')').attr('bgcolor', 'white')
-
-			var dprize = []
-			$('td.back4 table:eq(2) tr:eq('+(i+dnum+1)+') td').each(function(){
-				dprize.push(parseInt($(this).text()))
-			})
-			divs[did].dprize = dprize.join(',')
-		}
+	var dprize = []
+	$('td.back4 table:eq(1) tr:gt(0)').each(function(i,val){
+		dprize.push(parseInt(val.cells[3].innerText.replace(',','')))
 	})
+	divs[did].dprize = dprize.join(',')
 }
 
 function DBConnect(){
@@ -293,9 +289,8 @@ function GetData(dataname){
 	}
 }
 
-function EditFinance(school,divpriz,dteams,dtour){
-		debug('EditFinance('+school+','+divpriz+','+dteams+','+dtour+')');
-		cur.divpriz = divpriz;
+function EditFinance(school,dteams,dtour){
+	debug('EditFinance('+school+','+dteams+','+dtour+')')
 		var finance = []
 		var ffn 	= $('td.back4 > table td:eq(1)').html()
 		zp	 		= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,''))*1000
@@ -304,7 +299,9 @@ function EditFinance(school,divpriz,dteams,dtour){
 		cur.bablo	= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''))
 		cur.bonus	= (ffn.indexOf('Бонус:') != -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0)
 
-		fin.fid = localStorage['finFID'] == undefined ? 81 : localStorage['finFID'];
+		var tmenu = $('td.topmenu table td:contains(" ФИД")').text();
+		cur.fid = isNaN(parseInt(tmenu.split('(')[1],10)) ? 0 : parseInt(tmenu.split('(')[1],10);
+		fin.fid = localStorage['finFID'] != undefined ? localStorage['finFID'] : (!isNaN(parseInt(tmenu.split('/')[1],10)) ? parseInt(tmenu.split('/')[1],10) : 81);
 
 		// get info from tables
 		$('td.back4 > table table').each(function(i,val){
@@ -335,21 +332,19 @@ function EditFinance(school,divpriz,dteams,dtour){
 		cur.zpperc = 	 (cur.sponsors ==0 ? 0+'%' : (cur.zp/cur.sponsors*100).toFixed(1)+'%')
 		cur.schoolperc = (cur.sponsors ==0 ? 0+'%' : (cur.school/cur.sponsors*100).toFixed(1)+'%')
 
-		cur.fid = parseInt($('td.topmenu table td:contains(" ФИД")').text().split('(')[1],10);
 
 		if(cur.fid>fin.fid) fin.fid = cur.fid
 
 		// set div prizes
-//		var divpriz = 0
 		var divprizmark =	(' <i>*1</i>').fontcolor('red').fontsize(1)
-		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в команду, див и "Правила".</i>').fontcolor('red').fontsize(1)
-		if(cur.divpriz!=0){
+		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в "Дополнительный призовой фонд".</i>').fontcolor('red').fontsize(1)
+		if(divpriz!=0){
 			if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) {
 				divprizmark = 	('<i>*1</i>').fontsize(1)
-				divpriztext = 	('<i>*1 - бонус по итогам чемпионата: '+cur.divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontsize(1)
+				divpriztext = 	('<i>*1 - бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontsize(1)
 			} else {
 				divprizmark = 	('<i>*1</i>').fontcolor('green').fontsize(1)
-				divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+cur.divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
+				divpriztext = 	('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
 			}
 		}
 
@@ -402,6 +397,7 @@ function EditFinance(school,divpriz,dteams,dtour){
 function countFin(){
 		// Count finish finance
 		fin.sponsors = sponsors * fin.fid + cur.bonus
+		fin.dopFond = sponsors  * fin.fid * 0.09
 
 //		fin.stadion = (cur.fid == 0 ? 0 : cur.stadion*fin.fid/cur.fid)
 		cm = (isNaN(parseInt(localStorage.cupmatches)) ? cm : parseInt(localStorage.cupmatches))
@@ -410,7 +406,7 @@ function countFin(){
 		debug(cur.stadion+':'+curhometour+':'+maxhometour+':'+cm)
 
 		fin.stadion = (cur.fid == 0 ? 0 : (curhometour==0 ? cur.stadion : parseInt((cur.stadion/(curhometour+cm)*(maxhometour+cm)).toFixed(0))))
-		fin.priz = cur.priz + (dtour==0 ? 0 : cur.divpriz)
+		fin.priz = cur.priz + (dtour==0 ? 0 : divpriz)
 		fin.sale = cur.sale
 		fin.allup = fin.sponsors + fin.stadion + fin.priz + fin.sale
 
@@ -419,7 +415,7 @@ function countFin(){
 		fin.buy = cur.buy
 		fin.school = cur.school + (fin.fid-cur.fid)*school
 		fin.schoolperc = (fin.school/fin.sponsors*100).toFixed(1)+'%'
-		fin.alldown = fin.zp + fin.buy + fin.school
+		fin.alldown = fin.zp + fin.buy + fin.school + fin.dopFond
 		fin.plusminus = fin.allup - fin.alldown
 		fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
 }
@@ -438,7 +434,8 @@ function setFin(){
 			$('td[id=fin]:eq(5)').html(format(fin.zp).bold())
 			$('td[id=fin]:eq(6)').html(format(fin.buy).bold())
 			$('td[id=fin]:eq(7)').html(format(fin.school).bold())
-			$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
+			$('td[id=fin]:eq(8)').html(format(fin.dopFond).bold())
+			$('td[id=fin]:eq(9)').html(format(fin.alldown).bold())
 		}else if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10){
 			var spraz = parseInt((sponsors - (cur.sponsors)/fin.fid)/1000)
 			if(spraz != 0){
@@ -507,7 +504,8 @@ function debug(text) {
 $().ready(function() {
    	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	var urltype = UrlValue('p')
-	if(urltype== 'rules'){
+	var urlTValue = UrlValue('t')
+	if(urltype== 'fin' && urlTValue == 'prizef'){
 		GetData('divs')
 	}else if(urltype == 'fin' && $('div.debug').length==0){
 		GetData2()
