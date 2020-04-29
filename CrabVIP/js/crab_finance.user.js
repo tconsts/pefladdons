@@ -85,18 +85,11 @@ function GetDivInfo(did,nname,dnum){
 			divs[did].drotcom = drotcom
 		}
 	})
-	$('td.back4 table:eq(2) tr:gt(0)').each(function(i,val){
-		if(nname == $(val).find('td:first b').text()){
-			$('td.back4 table:eq(2) tr:eq('+(i+1)+')').attr('bgcolor', 'yellow')
-			$('td.back4 table:eq(2) tr:eq('+(i+dnum+1)+')').attr('bgcolor', 'white')
-
-			var dprize = []
-			$('td.back4 table:eq(2) tr:eq('+(i+dnum+1)+') td').each(function(){
-				dprize.push(parseInt($(this).text()))
-			})
-			divs[did].dprize = dprize.join(',')
-		}
+	var dprize = []
+	$('td.back4 table:eq(1) tr:gt(0)').each(function(i,val){
+		dprize.push(parseInt(val.cells[3].innerText.replace(',','')))
 	})
+	divs[did].dprize = dprize.join(',')
 }
 
 function DBConnect(){
@@ -344,7 +337,7 @@ function EditFinance(school,dteams,dtour){
 
 		// set div prizes
 		var divprizmark =	(' <i>*1</i>').fontcolor('red').fontsize(1)
-		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в команду, див и "Правила".</i>').fontcolor('red').fontsize(1)
+		var divpriztext =	('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в "Дополнительный призовой фонд".</i>').fontcolor('red').fontsize(1)
 		if(divpriz!=0){
 			if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10) {
 				divprizmark = 	('<i>*1</i>').fontsize(1)
@@ -404,6 +397,7 @@ function EditFinance(school,dteams,dtour){
 function countFin(){
 		// Count finish finance
 		fin.sponsors = sponsors * fin.fid + cur.bonus
+		fin.dopFond = sponsors  * fin.fid * 0.09
 
 //		fin.stadion = (cur.fid == 0 ? 0 : cur.stadion*fin.fid/cur.fid)
 		cm = (isNaN(parseInt(localStorage.cupmatches)) ? cm : parseInt(localStorage.cupmatches))
@@ -421,7 +415,7 @@ function countFin(){
 		fin.buy = cur.buy
 		fin.school = cur.school + (fin.fid-cur.fid)*school
 		fin.schoolperc = (fin.school/fin.sponsors*100).toFixed(1)+'%'
-		fin.alldown = fin.zp + fin.buy + fin.school
+		fin.alldown = fin.zp + fin.buy + fin.school + fin.dopFond
 		fin.plusminus = fin.allup - fin.alldown
 		fin.bablo = (fin.allup - cur.allup) - (fin.alldown - cur.alldown) + cur.bablo
 }
@@ -440,7 +434,8 @@ function setFin(){
 			$('td[id=fin]:eq(5)').html(format(fin.zp).bold())
 			$('td[id=fin]:eq(6)').html(format(fin.buy).bold())
 			$('td[id=fin]:eq(7)').html(format(fin.school).bold())
-			$('td[id=fin]:eq(8)').html(format(fin.alldown).bold())
+			$('td[id=fin]:eq(8)').html(format(fin.dopFond).bold())
+			$('td[id=fin]:eq(9)').html(format(fin.alldown).bold())
 		}else if (finance[1]['Зарплаты'] == 0 && cur.zp > zp*10){
 			var spraz = parseInt((sponsors - (cur.sponsors)/fin.fid)/1000)
 			if(spraz != 0){
@@ -509,7 +504,8 @@ function debug(text) {
 $().ready(function() {
    	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	var urltype = UrlValue('p')
-	if(urltype== 'rules'){
+	var urlTValue = UrlValue('t')
+	if(urltype== 'fin' && urlTValue == 'prizef'){
 		GetData('divs')
 	}else if(urltype == 'fin' && $('div.debug').length==0){
 		GetData2()

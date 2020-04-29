@@ -93,7 +93,7 @@ switch (location.pathname.substring(1)) {
 
 			case 'fin':
 				if (t == 'ctr') { AddScriptJS(3); }
-				if (!t) { AddScriptJS(8); }
+				if (!t || t == 'prizef') { AddScriptJS(8); }
 				break;
 				
 			case 'rules':
