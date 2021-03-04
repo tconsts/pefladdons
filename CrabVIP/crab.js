@@ -115,7 +115,7 @@ switch (location.pathname.substring(1)) {
 			case 'squad4':
 				AddScriptJS(9);
 				break;
-			case 'squad6':
+			case 'squad7':
 				AddScriptJS(6);
 				break;
 
