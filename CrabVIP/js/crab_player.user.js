@@ -220,8 +220,10 @@ function countPosition(posnum){
 	ps.strmax = countStrength('ideal',ps.koff)
 	var pls = []
 	for(j in players){
-		var pl = {}
-		if(j === 0) pl.id0 = true
+		var pl = {};
+		if(parseInt(j) === 0) {
+			pl.id0 = true
+		}
 		pl.id = players[j].id
 		if(pl.id === undefined) break
 		var pkoff = ps.koff.split(',')
