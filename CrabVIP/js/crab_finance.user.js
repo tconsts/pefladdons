@@ -216,7 +216,7 @@ function SaveData(dataname){
 				function(tx, result){},
 				function(tx, error) {debug(error.message)}
 			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+list[dataname]+")", [],
+			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" (" + list[dataname] + ")", [],
 				function(tx, result){debug(dataname+':create ok')},
 				function(tx, error) {debug(error.message)}
 			);
@@ -230,9 +230,9 @@ function SaveData(dataname){
 					x2.push('?')
 					x3.push(dti[head[j]])
 				}
-				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
+				tx.executeSql("INSERT INTO " + dataname + " (" + x1 + ") values(" + x2 + ")", x3,
 					function(tx, result){},
-					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message)
+					function(tx, error) {debug(dataname+':insert('+ i +') error:' + error.message)
 				});
 			}
 		});
@@ -291,8 +291,8 @@ function GetData(dataname){
 	}
 }
 
-function EditFinance(school,dteams,dtour){
-	debug('EditFinance('+school+','+dteams+','+dtour+')')
+function EditFinance(school, dteams, dtour) {
+	debug('EditFinance('+school+','+dteams+','+dtour+')');
 		var finance = [];
 		var ffn 	= $('td.back4 > table td:eq(1)').html();
 		zp	 		= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,'')) * 1000;
@@ -345,62 +345,62 @@ function EditFinance(school,dteams,dtour){
 		var divpriztext = ('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в "Дополнительный призовой фонд".</i>').fontcolor('red').fontsize(1)
 		if(divpriz !== 0){
 			if (finance[1]['Зарплаты'] === 0 && cur.zp > zp * 10) {
-				divprizmark = ('<i>*1</i>').fontsize(1)
-				divpriztext = ('<i>*1 - бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontsize(1)
+				divprizmark = ('<i>*1</i>').fontsize(1);
+				divpriztext = ('<i>*1 - бонус по итогам чемпионата: ' + divpriz/1000 + ',000$ за ' + (1000-tplace-dnum2*100) + ' место.</i>').fontsize(1);
 			} else {
-				divprizmark = ('<i>*1</i>').fontcolor('green').fontsize(1)
-				divpriztext = ('<i>*1 - учтен бонус по итогам чемпионата: '+divpriz/1000+',000$ за '+(1000-tplace-dnum2*100)+' место.</i>').fontcolor('green').fontsize(1)
+				divprizmark = ('<i>*1</i>').fontcolor('green').fontsize(1);
+				divpriztext = ('<i>*1 - учтен бонус по итогам чемпионата: ' + divpriz/1000 + ',000$ за ' + (1000-tplace-dnum2*100) + ' место.</i>').fontcolor('green').fontsize(1);
 			}
 		}
 
 		countFin();
 
-		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>')
-		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>')
+		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>');
+		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>');
 
-		var preparedhtml = '<tr><th width=40%></th><th width=30% class=back3 colspan=2>Текущий '+cur.fid+' ФИД</th>'
+		var preparedhtml = '<tr><th width=40%></th><th width=30% class=back3 colspan=2>Текущий ' + cur.fid + ' ФИД</th>';
 		if(fin.fid !== cur.fid) {
 			preparedhtml += '<th width=30% class=back3 colspan=2>Прогноз на <span class="ffid">' + fin.fid + '</span> ФИД (<a href="javascript:void(ChangeFID(\'-\'))">&ndash;</a> <a href="javascript:void(ChangeFID(\'+\'))">+</a>)</th>'
 		} else if(finance[1]['Зарплаты'] === 0 && cur.zp > zp * 10) {
-			preparedhtml += '<th width=30% class=back3 colspan=2>В следующем сезоне</th>'
+			preparedhtml += '<th width=30% class=back3 colspan=2>В следующем сезоне</th>';
 		} //bgcolor=#A3DE8F
-		preparedhtml += '</tr>'
-		$('table#2, table#3').prepend(preparedhtml)
+		preparedhtml += '</tr>';
+		$('table#2, table#3').prepend(preparedhtml);
 
-		preparedhtml  = '<hr><table width=100% id="4">'
-		preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>'
-		preparedhtml += '<td width=15% align=right>' + (format(cur.plusminus)).bold() + '</td><td></td>'
+		preparedhtml  = '<hr><table width=100% id="4">';
+		preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>';
+		preparedhtml += '<td width=15% align=right>' + (format(cur.plusminus)).bold() + '</td><td></td>';
 
 		if(fin.fid !== cur.fid) {
-			preparedhtml += '<td width=15% align=right id="fplusminus"></td><td></td>'
+			preparedhtml += '<td width=15% align=right id="fplusminus"></td><td></td>';
 		} else {
-			preparedhtml += '<td width=15%></td><td></td>'
+			preparedhtml += '<td width=15%></td><td></td>';
 		}
 
-		preparedhtml += '</tr>'
-		preparedhtml += '<tr><td><b>На счету</b></td>'
-		preparedhtml += '<td align=right>' + (format(cur.bablo)).bold() + '</td><td></td>'
+		preparedhtml += '</tr>';
+		preparedhtml += '<tr><td><b>На счету</b></td>';
+		preparedhtml += '<td align=right>' + (format(cur.bablo)).bold() + '</td><td></td>';
 		if(fin.fid !== cur.fid) {
-			preparedhtml += '<td align=right id="fbablo"></td><td></td>'
+			preparedhtml += '<td align=right id="fbablo"></td><td></td>';
 		}
-		preparedhtml += '</tr>'
-		preparedhtml += '</table>'
-		$('td.back4 table#3').after(preparedhtml)
+		preparedhtml += '</tr>';
+		preparedhtml += '</table>';
+		$('td.back4 table#3').after(preparedhtml);
 
-		$('td[id=cur]:eq(7)').next().append(' ('+cur.schoolperc+')')
+		$('td[id=cur]:eq(7)').next().append(' (' + cur.schoolperc + ')');
 
-		$('table#2 tr:eq(2) td:first').append((' <i>*3</i>').fontsize(1))
-		var ttt = '<i>*3 - считаем что уже сыгранно домашних игр:'
-		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;чемпионат: '+curhometour+' (максимум '+maxhometour+')'
-		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;остальное: <font size=1 id="cm">'+cm+'</font> (<a href="javascript:void(CountStad(\'-\'))">&ndash;</a> <a href="javascript:void(CountStad(\'+\'))">+</a>)'
-		ttt += '</i><br>'
-		$('table#4').after(ttt.fontsize(1))
+		$('table#2 tr:eq(2) td:first').append((' <i>*3</i>').fontsize(1));
+		var ttt = '<i>*3 - считаем что уже сыгранно домашних игр:';
+		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;чемпионат: ' + curhometour + ' (максимум ' + maxhometour + ')';
+		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;остальное: <font size=1 id="cm">'+cm+'</font> (<a href="javascript:void(CountStad(\'-\'))">&ndash;</a> <a href="javascript:void(CountStad(\'+\'))">+</a>)';
+		ttt += '</i><br>';
+		$('table#4').after(ttt.fontsize(1));
 
-		$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1))
-		$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1))
-
+		$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1));
+		$('table#3 tr:eq(5) td:first').append('<b><sup><a href = "#" onClick = "alert(\'5% от сделки при продаже игрока, что не сыграл в команде 30 офц игр после покупки\')"> ?</a></sup></b>');
+		$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1));
 		$('table#2 tr:eq(3) td:first').append(divprizmark);
-		$('table#4').after(divpriztext+'<br>');
+		$('table#4').after(divpriztext + '<br>');
 
         setFin();
 		$('table#4').after('<hr>');
