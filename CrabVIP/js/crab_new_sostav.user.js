@@ -9,18 +9,18 @@
 $().ready(function() {
     saveLoadForm = '<table>'
     + '<tr>'
-    + '    <td>Сохранить как:</td>'
+    + '    <td>Г‘Г®ГµГ°Г Г­ГЁГІГј ГЄГ ГЄ:</td>'
     + '    <td><input id="inputFileNameToSaveAs"></input></td>'
-    + '    <td><button onclick="saveTextAsFile()">Скачать состав</button></td>'
+    + '    <td><button onclick="saveTextAsFile()">Г‘ГЄГ Г·Г ГІГј Г±Г®Г±ГІГ Гў</button></td>'
     + '</tr>'
     + '<tr>'
-    + '    <td>Выбрать файл:</td>'
+    + '    <td>Г‚Г»ГЎГ°Г ГІГј ГґГ Г©Г«:</td>'
     + '    <td><input type="file" id="fileToLoad"></td>'
-    + '    <td><button onclick="loadFileAsText()">Загрузить состав из файла</button><td>'
+    + '    <td><button onclick="loadFileAsText()">Г‡Г ГЈГ°ГіГ§ГЁГІГј Г±Г®Г±ГІГ Гў ГЁГ§ ГґГ Г©Г«Г </button><td>'
     + '</tr>'
     + ' </table>';
 
-    $('<button class="back2 butt" id="save2" onclick="saveKrab()">Сохранить Краб</button>').insertAfter($('#save'));
+    $('<button class="back2 butt" id="save2" onclick="saveKrab()">Г‘Г®ГµГ°Г Г­ГЁГІГј ГЉГ°Г ГЎ</button>').insertAfter($('#save'));
 
 	$('#tabs-4').append(saveLoadForm);
 
@@ -35,15 +35,15 @@ function saveKrab(){
 		save = true;
 		savePrepare();
 		$.ajax({
-			url: 'jsonsostav3.php?' + clubs[curc].uurl,
+			url: 'jsonsostav4.php?' + clubs[curc].uurl,
 			type: 'POST',
 			dataType : 'json',
 			data: 'jsonData=' + JSON.stringify(sData),
-			beforeSend: function (xhr){ $('#sres').html('Сохраняем...');	},
+			beforeSend: function (xhr){ $('#sres').html('Г‘Г®ГµГ°Г Г­ГїГҐГ¬...');	},
 			complete: function (xhr,status){	save = false; },
-			error: function (xhr,status,error){ $('#sres').html('<font color=red>ОШИБКА!</font> данные не были сохранены!'); },
+			error: function (xhr,status,error){ $('#sres').html('<font color=red>ГЋГГ€ГЃГЉГЂ!</font> Г¤Г Г­Г­Г»ГҐ Г­ГҐ ГЎГ»Г«ГЁ Г±Г®ГµГ°Г Г­ГҐГ­Г»!'); },
 			success: function (res){
-                $('#sres').html((res[0] == 0 || res[0] == 10 ? '<font color=green>СОХРАНЕНО</font>: ' : '<font color=red>ОШИБКА СОХРАНЕНИЯ СОСТАВА</font>:<br>') + res[1]);
+                $('#sres').html((res[0] == 0 || res[0] == 10 ? '<font color=green>Г‘ГЋГ•ГђГЂГЌГ…ГЌГЋ</font>: ' : '<font color=red>ГЋГГ€ГЃГЉГЂ Г‘ГЋГ•ГђГЂГЌГ…ГЌГ€Гџ Г‘ГЋГ‘Г’ГЂГ‚ГЂ</font>:<br>') + res[1]);
                 if (res[0] == 0 || res[0] == 10) {
                     saveTextAsFile($('td.topmenu:first td:last').html().substr(7,3)+'-'
                     +$('.cback33:nth-child(2) .dopinfo a').html()+'-'
