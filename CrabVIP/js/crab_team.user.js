@@ -1166,7 +1166,7 @@ function GetInfoPagePl(){
 		players[pid].passes	= parseInt($(val).find('td:eq(8)').html())
 		players[pid].ims	= parseInt($(val).find('td:eq(9)').html())
 		players[pid].rate	= parseFloat($(val).find('td:eq(10)').html())
-		players[pid].position= $(val).find('td:eq(11)').html()
+		players[pid].position= $(val).find('td:eq(12)').html()
 		players[pid].value 	= 0
 		players[pid].valuech= 0
 		if(eurl!=undefined) players[pid].eurl = eurl
