@@ -897,6 +897,23 @@ function OpenAll() {
     else $("#mydiv").hide()
 }
 
+function RememberPl(x) {
+    // Save player in local storage
+    let mark = 1;
+    let text = '';
+    for (let k in players) {
+        if (players[k].id !== undefined && ((k > 0 && mark <= 25) || (parseInt(k) === 0 && x === 0))) {
+            for (let i in players[k]) {
+                text += i + '_' + mark + '=' + players[k][i] + ',';
+            }
+            mark++
+        }
+    }
+    localStorage.peflplayer = text;
+    if (x === 0) PrintPlayers(0)
+    else PrintPlayers()
+}
+
 function RemovePlx(rem) {
     if (rem !== 0) players.splice(rem, 1);
     RememberPl(1); // !=1: save w\o player0
@@ -922,21 +939,6 @@ function PrintPlayers(cur) {
     }
     htmltext += '</table>'
     $('div#compare').append(htmltext)
-}
-
-function RememberPl(x) {
-    // Save data
-    let mark = 1;
-    let text = '';
-    for (let k in players) {
-        if (players[k].id !== undefined && ((k > 0 && mark <= 25) || (k === 0 && x === 0))) {
-            for (let i in players[k]) text += i + '_' + mark + '=' + players[k][i] + ','
-            mark++
-        }
-    }
-    localStorage.peflplayer = text
-    if (x === 0) PrintPlayers(0)
-    else PrintPlayers()
 }
 
 function CheckPlayerOld(nn) {
@@ -1096,8 +1098,8 @@ function CheckPlayerOld(nn) {
 function CheckPlayer(nn) {
     // Get data and compare players
 
-    var season = 0;
-    var data = {};
+    let season = 0;
+    let data = {};
     for (i in players[nn]) {
         switch (i) {
             case 'sumskills':
@@ -1159,7 +1161,9 @@ function CheckPlayer(nn) {
             case 'firstname':
                 break;
             case 'secondname':
-                data['pname'] = (players[nn].nation !== undefined ? players[nn].nation : 217) + '|' + players[nn]['firstname'] + ' ' + players[nn][i] + '|p=refl&t=' + players[nn]['t'] + '&j=' + players[nn]['id'] + '&z=' + players[nn]['hash'];
+                data['pname'] = (players[nn].nation !== undefined
+                    ? players[nn].nation
+                    : 217) + '|' + players[nn]['firstname'] + ' ' + players[nn][i] + '|p=refl&t=' + players[nn]['t'] + '&j=' + players[nn]['id'] + '&z=' + players[nn]['hash'];
                 break;
             case 'internationalapps':
                 data['int'] = players[nn][i] + '.' + players[nn]['internationalgoals'];
@@ -1182,7 +1186,7 @@ function CheckPlayer(nn) {
         'u21': 'матчей ' + players[0]['u21apps'] + ', голов ' + players[0]['u21goals'],
         'position': players[0]['position'],
         'wage': players[0]['wage'],
-        'curseason': 13
+        'curseason': 19
     }
 
     $('table#stat,span#err,#dcode1').hide();
@@ -1202,8 +1206,10 @@ function CheckPlayer(nn) {
     if (data['pname'] === undefined) data['pname'] = '';
 
     for (i in data) {
-        var nm = (lc[i] === undefined ? i : lc[i].rn);
-        if (i !== '' && $('td#' + i).length === 0) {
+        let nm = (lc[i] === undefined ? i : lc[i].rn);
+        const statTd = $('td#' + i);
+
+        if (i !== '' && statTd.length === 0) {
             $('table#res').prepend('<tr class=back2><td nowrap id=' + i + '>' + nm + '</td><td nowrap>' + (cur[i] !== undefined ? cur[i] : '') + '</td></tr>');
         }
         switch (i) {
@@ -1227,7 +1233,7 @@ function CheckPlayer(nn) {
             case 'pace':
             case 'strength':
             case 'stamina':
-                if ($('td#' + i).length > 0) {
+                if (statTd.length > 0) {
                     var x = data[i].split('.');
                     x[0] = parseInt(x[0], 10);
                     if (isNaN(x[0])) {
@@ -1235,32 +1241,52 @@ function CheckPlayer(nn) {
                         ch = '';
                     } else {
                         ssn = ssn + x[0];
-                        var ch = parseInt($('td#' + i).next().text(), 10) - x[0];
+                        var ch = parseInt(statTd.next().text(), 10) - x[0];
                         if (ch > 0) ch = '<font color=green size=1>+' + ch + '</font>';
                         else if (ch < 0) ch = '<font color=red size=1>' + ch + '</font>';
                         else ch = '';
                     }
-                    var m = $('td#' + i).next().clone()
+                    var m = statTd.next().clone()
                         .attr('id', 'res_' + i + nn)
                         .each(function () {
-                            if ($(this).find('span').length > 0) $(this).find('span').html('<font color=gray>' + x[0] + '</font>' + (x[1] !== undefined ? ' <img height=10 src=system/img/g/' + x[1] + '.gif>' : '') + '<sup>' + ch + '</sup>');
-                            else $(this).html('<font color=gray>' + x[0] + '</font>' + (x[1] != undefined ? ' <img height=10 src=system/img/g/' + x[1] + '.gif>' : '') + '<sup>' + ch + '</sup>');
+                            if ($(this).find('span').length > 0) {
+                                $(this).find('span:first').html(
+                                        '<font color=gray>'
+                                        + x[0]
+                                        + '</font>'
+                                        + (x[1] !== undefined ? ' <img height=10 src=system/img/g/' + x[1] + '.gif>' : '')
+                                        + '<sup>'
+                                        + ch
+                                        + '</sup>'
+                                );
+                                $(this).find('span.arrow').html('');
+                            } else {
+                                $(this).html(
+                                    '<font color=gray>'
+                                    + x[0]
+                                    + '</font>'
+                                    + (x[1] != undefined ? ' <img height=10 src=system/img/g/' + x[1] + '.gif>' : '')
+                                    + '<sup>'
+                                    + ch
+                                    + '</sup>'
+                                );
+                            }
                         });
-                    $('td#' + i).after(m);
+                    statTd.after(m);
                 }
                 break;
             case 'int':
             case 'u21':
                 var x = data[i].split('.');
-                $('td#' + i).after('<td nowrap><font color=gray>' + (x[0] > 0 ? 'матчей ' + x[0] + ', голов ' + x[1] : '') + '</font></td>');
+                statTd.after('<td nowrap><font color=gray>' + (x[0] > 0 ? 'матчей ' + x[0] + ', голов ' + x[1] : '') + '</font></td>');
                 break;
             case 'pname':
                 var x = data[i].split('|');
-                $('td#' + i).after('<td nowrap>' + (x[0] === '' ? '' : '<img height="12" src="system/img/flags/mod/' + x[0] + '.gif"> <a href="plug.php?' + x[2] + '"><b>' + x[1] + '</b></a>') + '</td>');
+                statTd.after('<td nowrap>' + (x[0] === '' ? '' : '<img height="12" src="system/img/flags/mod/' + x[0] + '.gif"> <a href="plug.php?' + x[2] + '"><b>' + x[1] + '</b></a>') + '</td>');
                 break;
             default:
                 if (i === '') console.error('Error: i is empty with data=' + data[i]);
-                else $('td#' + i).after('<td nowrap><font color=gray>' + data[i] + '</font></td>');
+                else statTd.after('<td nowrap><font color=gray>' + data[i] + '</font></td>');
         }
     }
     $('td[id^="ss"]').attr('colSpan', 2 + sknum);
