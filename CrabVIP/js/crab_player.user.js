@@ -2055,9 +2055,8 @@ function doNewRoster() {
                 });
                 // Склеиваем обратно
                 let correctPositionsJoined =  correctPositionsArray.join('/');
-                let correctSidesJoined = side.length === 1 ? side :side.join('');
 
-                const correctSidesAndPos = correctSidesJoined + ' ' + correctPositionsJoined;
+                const correctSidesAndPos = side + ' ' + correctPositionsJoined;
 
                 players[0].position = correctSidesAndPos;
                 break;
