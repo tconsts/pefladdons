@@ -138,7 +138,7 @@ $().ready(function() {
 	}
 }, false);
 
-function GetFinish(type, res){
+function GetFinish(type, res) {
 	debug('GetFinish:type='+type+':res='+res)
 	m[type] = res;
 
@@ -176,11 +176,11 @@ function GetFinish(type, res){
 		RelocateGetNomData() // вернет getnomdata=true
 	}
 	if(m.rightvip==undefined && m.getnomdata && m.pg_playersVip){
-		m.rightvip = true
-		CheckTrash()
-		ModifyTeams()	//and save if need
-		PrintRightInfoVip()
-		ModifyPlayers('vip')// and Save if need
+		m.rightvip = true;
+		CheckTrash();
+		ModifyTeams();	//and save if need
+		PrintRightInfoVip();
+		ModifyPlayers('vip'); // and Save if need
 	}
 }
 
@@ -1290,10 +1290,10 @@ function ModifyPlayers(vip){
 }
 
 function GetInfoPagePlVip(){
-	debug('GetInfoPagePlVip()')
-	for(k in players){
+	debug('GetInfoPagePlVip()');
+	for (let k in players) {
 		var eurl = players[k].eurl
-		if(eurl!=undefined){
+		if (eurl !== undefined) {
 //			var id = players[k].id
 //			debug('GetInfoPagePlVip:k='+k)
 			$('td.back4').append('<table id=pl'+k+' hidden><tr><td id=pl'+k+'></td></tr></table>')
@@ -1344,30 +1344,30 @@ function GetPl(pid){
 	$('table#pl'+pid).remove()
 }
 
-function ShowVip(){
-	debug('ShowVip()')
-	$('a#showvip').removeAttr('href')
-	GetInfoPagePlVip()
+function ShowVip() {
+	debug('ShowVip()');
+	$('a#showvip').removeAttr('href');
+	GetInfoPagePlVip();
 }
 
-function PrintRightInfo(){
+function PrintRightInfo() {
 	debug('PrintRightInfo()')
 	$('th#osform').html(parseFloat(team_cur.tform).toFixed(2) + '&nbsp;')
 	$('th#osmorale').html(parseFloat(team_cur.tmorale).toFixed(2) + '&nbsp;')
 	$('th#osage').html(parseFloat(team_cur.age).toFixed(2) + '&nbsp;')
 }
 
-function PrintRightInfoVip(){
+function PrintRightInfoVip() {
 	debug('PrintRightInfoVip()')
-	var notvip ='<font color=BABDB6>для VIP</font>'
-	$('th#osform').html(team_cur.tform + '&nbsp;')
-	$('th#osmorale').html(team_cur.tmorale + '&nbsp;')
-	$('th#osage').html(team_cur.age + '&nbsp;')
-	$('th#osskills').html((team_cur.tss!=0 ? team_cur.tss + '&nbsp;' : notvip))
-	$('th#ossvalue').html((team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : notvip))
-	$('th#osnom').html((team_cur.tvalue!=0 ? ShowValueFormat(team_cur.tvalue)+'т' : notvip))
-	$('th#nomch').html((sumvaluechange!= 0 ? '&nbsp;'+ShowChange(sumvaluechange) : notvip))
-	$('th#oszp').html((team_cur.twage!=0 ? ShowValueFormat(team_cur.twage)+'&nbsp;' : notvip))
+	const notvip ='<font color=BABDB6>для VIP</font>';
+	$('th#osform').html(team_cur.tform + '&nbsp;');
+	$('th#osmorale').html(team_cur.tmorale + '&nbsp;');
+	$('th#osage').html(team_cur.age + '&nbsp;');
+	$('th#osskills').html((team_cur.tss!=0 ? team_cur.tss + '&nbsp;' : notvip));
+	$('th#ossvalue').html((team_cur.tsvalue!=0 ? ShowValueFormat(team_cur.tsvalue)+'т' : notvip));
+	$('th#osnom').html((team_cur.tvalue!=0 ? ShowValueFormat(team_cur.tvalue)+'т' : notvip));
+	$('th#nomch').html((sumvaluechange!= 0 ? '&nbsp;'+ShowChange(sumvaluechange) : notvip));
+	$('th#oszp').html((team_cur.twage!=0 ? ShowValueFormat(team_cur.twage)+'&nbsp;' : notvip));
 
 //	if(team_cur.tss!=0)	
 		$('a#teamskills').attr('href','javascript:void(ShowSkills(1))')
@@ -1438,21 +1438,21 @@ function ShowSkillsY() {
 	})
 }
 
-function ShowPlayersValue(){
+function ShowPlayersValue() {
 	debug('ShowPlayersValue()')
-	if(team_cur.tvalue == 0) return false
-	if(nom) {
+	if (team_cur.tvalue === 0) return false
+	if (nom) {
 		nom = false
 		var nomtext = ''
 		var pls = players.sort(sValue)
 		var sumval = 0
 		var numpl = 0
-		for(i in pls) {
+		for(let i in pls) {
 			numpl++
 			sumval += pls[i].value
 			var bgcolor = ''
 			var style = '';
-			if(i==15) style = ' style="border-bottom:1px black solid;"'
+			if(i === 15) style = ' style="border-bottom:1px black solid;"'
 			if(i<18) bgcolor = ' class=back4'//3
 			if(i<5)  bgcolor = ' class=back3'//1
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
@@ -1470,10 +1470,11 @@ function ShowPlayersValue(){
 		$('tr#nom').remove()
 	}
 }
-function ShowPlayersSValue(){
+
+function ShowPlayersSValue() {
 	debug('ShowPlayersSValue()')
-	if(team_cur.tsvalue == 0) return false
-	if(svalue) {
+	if (team_cur.tsvalue === 0) return false
+	if (svalue) {
 		svalue = false
 		var nomtext = ''
 		var pls = players.sort(sSValue)
