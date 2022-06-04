@@ -39,36 +39,37 @@ var list2 = {
 		'tvalue':{'num':12,'name':'Ном', 'type':'int','com':'<sup><font color=red>vip</font></sup>'},
 		'twage':{'num':13, 'name':'ЗП',	'nsel':true, 'type':'int','com':'<sup><font color=red>vip</font></sup>'},
 		'tss':	{'num':14, 'name':'СС','type':'float','com':'<sup><font color=red>vip</font></sup>'},
-		'age':	{'num':15, 'name':'Возр','nsel':true,'type':'float'},
-		'pnum':	{'num':16, 'name':'кол','nsel':true,'type':'int','com':'(игр-ов)'},
-		'tfin':	{'num':17, 'name':'Фин','nsel':true,'al':'left'},
-		'screit':{'num':18,'name':'ШкРейт','nsel':true,'al':'left'},
-		'scbud':{'num':19, 'name':'ШкБюд','nsel':true,'type':'int'},
-		'ttown':{'num':20, 'name':'Город','nsel':true,'al':'left'},
-		'sname':{'num':21, 'name':'Стадион','nsel':true,'al':'left'},
-		'ssize':{'num':22, 'name':'СтРазм','nsel':true,'type':'int'},
-		'mid':  {'num':23, 'nshow':true,'type':'int'},
-		'tform':  {'num':24,'name':'Форма','nsel':true,'type':'float'},
-		'tmorale':{'num':25,'name':'Мораль','nsel':true,'type':'float'},
-		'tsvalue':{'num':26,'name':'Ном+','nsel':true,'type':'int','com':'<sup><font color=red>vip</font></sup>'},
-		'cast1':{'num':27,'name':'Каст1','nsel':true,'al':'left'},
-		'cast2':{'num':28,'name':'Каст2','nsel':true,'al':'right'},
-		'dname':{'num':29,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
-		'tprize':{'num':30,'name':'Приз','nsave':true,'nsel':true},
-		'dnum': {'num':31,'nsave':true,'nshow':true},
-		'timg':	{'num':32,'name':'Лого','nsave':true,'nsel':true},
-		'nomzp':{'num':33,'name':'Н/ЗП','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
-		'zpnom':{'num':34,'name':'ЗП/Н','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
-		'games':{'num':35,'name':'И&nbsp;','nsave':true,'nsel':true,'com':'(игр)'},
-		'wins':	{'num':36,'name':'В&nbsp;','nsave':true,'nsel':true,'com':'(поб)'},
-		'draws':{'num':37,'name':'Н&nbsp;','nsave':true,'nsel':true,'com':'(нич)'},
-		'loses':{'num':38,'name':'П&nbsp;','nsave':true,'nsel':true,'com':'(пор)'},
-		'gup':	{'num':39,'name':'ГЗ','nsave':true,'nsel':true,'com':'(забито)'},
-		'gdown':{'num':40,'name':'ГП','nsave':true,'nsel':true,'com':'(проп)'},
-		'gpm':	{'num':41,'name':'+-','nsave':true,'nsel':true,'com':'(разн)'},
-		'score':{'num':42,'name':'О&nbsp;','nsave':true,'nsel':true,'com':'(очки)'},
-		'hide':	{'num':43,'name':'Скр','nsave':true,'nsel':true,'al':'center','com':'(скрыть)'},
-		'del':	{'num':44,'name':'Удл','nsave':true,'nsel':true,'al':'center','com':'(удал)'}
+		'avTopSumSkills': {'num': 15,'name':'СС16','type':'float','com': '<sup><font color=red>vip</font></sup>'},
+		'age':	{'num':16, 'name':'Возр','nsel':true,'type':'float'},
+		'pnum':	{'num':17, 'name':'кол','nsel':true,'type':'int','com':'(игр-ов)'},
+		'tfin':	{'num':18, 'name':'Фин','nsel':true,'al':'left'},
+		'screit':{'num':19,'name':'ШкРейт','nsel':true,'al':'left'},
+		'scbud':{'num':20, 'name':'ШкБюд','nsel':true,'type':'int'},
+		'ttown':{'num':21, 'name':'Город','nsel':true,'al':'left'},
+		'sname':{'num':22, 'name':'Стадион','nsel':true,'al':'left'},
+		'ssize':{'num':23, 'name':'СтРазм','nsel':true,'type':'int'},
+		'mid':  {'num':24, 'nshow':true,'type':'int'},
+		'tform':  {'num':25,'name':'Форма','nsel':true,'type':'float'},
+		'tmorale':{'num':26,'name':'Мораль','nsel':true,'type':'float'},
+		'tsvalue':{'num':27,'name':'Ном+','nsel':true,'type':'int','com':'<sup><font color=red>vip</font></sup>'},
+		'cast1':{'num':28,'name':'Каст1','nsel':true,'al':'left'},
+		'cast2':{'num':29,'name':'Каст2','nsel':true,'al':'right'},
+		'dname':{'num':30,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
+		'tprize':{'num':31,'name':'Приз','nsave':true,'nsel':true},
+		'dnum': {'num':32,'nsave':true,'nshow':true},
+		'timg':	{'num':33,'name':'Лого','nsave':true,'nsel':true},
+		'nomzp':{'num':34,'name':'Н/ЗП','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
+		'zpnom':{'num':35,'name':'ЗП/Н','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
+		'games':{'num':36,'name':'И&nbsp;','nsave':true,'nsel':true,'com':'(игр)'},
+		'wins':	{'num':37,'name':'В&nbsp;','nsave':true,'nsel':true,'com':'(поб)'},
+		'draws':{'num':38,'name':'Н&nbsp;','nsave':true,'nsel':true,'com':'(нич)'},
+		'loses':{'num':39,'name':'П&nbsp;','nsave':true,'nsel':true,'com':'(пор)'},
+		'gup':	{'num':40,'name':'ГЗ','nsave':true,'nsel':true,'com':'(забито)'},
+		'gdown':{'num':41,'name':'ГП','nsave':true,'nsel':true,'com':'(проп)'},
+		'gpm':	{'num':42,'name':'+-','nsave':true,'nsel':true,'com':'(разн)'},
+		'score':{'num':43,'name':'О&nbsp;','nsave':true,'nsel':true,'com':'(очки)'},
+		'hide':	{'num':44,'name':'Скр','nsave':true,'nsel':true,'al':'center','com':'(скрыть)'},
+		'del':	{'num':45,'name':'Удл','nsave':true,'nsel':true,'al':'center','com':'(удал)'}
 		},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
@@ -440,16 +441,15 @@ function ShowValueFormat(value){
 	else				return (value) + '$'
 }
 
-function SetHead(dataname, name){ // teams, nname
-	var imgok = '<img height=10 src="system/img/g/tick.gif">'
+function SetHead(dataname, name) { // teams, nname
+	let imgOk = '<img height=10 src="system/img/g/tick.gif">'
 
-	if(!list2[dataname][name].nsel || list2[dataname][name].nsel==undefined) {
-		list2[dataname][name].nsel = true
+	if (!list2[dataname][name].nsel || list2[dataname][name].nsel==undefined) {
+		list2[dataname][name].nsel = true;
 		$('td#'+name).html('')
-	}
-	else {
-		list2[dataname][name].nsel = false
-		$('td#'+name).html(imgok)
+	} else {
+		list2[dataname][name].nsel = false;
+		$('td#'+name).html(imgOk)
 	}
 	save2 = true
 }
@@ -509,16 +509,29 @@ function SaveData(dataname){
 	var idname = 'id'
 //	var head = list[dataname].split(',')
 	var head = []
-	for (i in list2[dataname]) {
-		if(!list2[dataname][i].nsave) head[list2[dataname][i].num-1] = i;
+	for (let i in list2[dataname]) {
+		if (!list2[dataname][i].nsave) {
+			head[list2[dataname][i].num-1] = i;
+		}
 	}
-	switch (dataname){
-		case 'players':	data = players;				break
-		case 'teams': 	data = teams;idname='tid';	break
-		case 'divs': 	data = divs; idname='did';	break
-		default: 		debug('dataname wrong'); return false
+	switch (dataname) {
+		case 'players':
+			data = players;
+			break;
+		case 'teams':
+			data = teams;
+			idname='tid';
+			break;
+		case 'divs':
+			data = divs;
+			idname='did';
+			break;
+
+		default:
+			debug('dataname wrong');
+			return false;
 	}
-	if(ff) {
+	if (ff) {
 		var text = ''
 		for (var i in data) {
 			text += (text!='' ? '#' : '')
@@ -532,18 +545,21 @@ function SaveData(dataname){
 			}
 		}
 		localStorage[dataname] = text
-	}else{
+	} else {
 		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
+			tx.executeSql("DROP TABLE IF EXISTS " + dataname,[],
 				function(tx, result){debug(dataname+':drop ok')},
 				function(tx, error) {debug(error.message)}
 			);                                           
 			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head+")", [],
 				function(tx, result){debug(dataname+':create ok')},
-				function(tx, error) {debug('db table create error: '+error.message);debug(JSON.stringify(head))}
+				function(tx, error) {
+					debug('db table create error: ' + error.message);
+					debug(JSON.stringify(head))
+				}
 			);
-			for(var i in data) {
-			  if(data[i].div==undefined){
+			for(let i in data) {
+			  if(data[i].div==undefined) {
 				var dti = data[i]
 				var x1 = []
 				var x2 = []
@@ -710,6 +726,7 @@ function ModifyTeams(){
 						tms[p] = (tmd[p]/tms.div).toFixed(2)
 						break;
 					case 'tss':
+					case 'avTopSumSkills':
 					case 'age':
 					case 'zpnom':
 					case 'nomzp':

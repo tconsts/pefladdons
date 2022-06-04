@@ -17,7 +17,7 @@ var zp = 0;
 var sponsors = 0;
 var last_sp = 0;
 var list = {
-	'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
+	'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,avTopSumSkills,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid',
 	'divs':	'did,my,dnum,nname,dname,drotate,drotcom,dprize,color,numteams,curtour'
 }
 var m = []

@@ -114,7 +114,7 @@ function GetTeams(nid,nname){
 		debug('GetTeams:nid='+nid+':nname='+nname)
 		if(ff){
 			debug('GetTeams as FF')
-			var list = {'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid'}
+			var list = {'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,avTopSumSkills,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid'}
 			var head = list['teams'].split(',')
 			var text1 = String(localStorage['teams'])
 			if (text1 != 'undefined'){
