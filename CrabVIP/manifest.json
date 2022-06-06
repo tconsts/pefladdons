@@ -2,7 +2,6 @@
   "name": "PEFL CrabVIP",
   "version": "2.0",
   "manifest_version": 2,
-  "options_page": "options.html",
 
   "browser_action": {
      "default_icon": {
