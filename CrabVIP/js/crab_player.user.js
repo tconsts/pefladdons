@@ -1982,7 +1982,7 @@ function doNewRoster() {
 
     //get player header info
 
-    var name = $('table#hd1 td:first font').html();
+    var name = $('table#hd1 td:first font').html().split('. ',2)[1];
     if (name.indexOf(' ') != -1) {
         players[0].firstname = name.split(' ', 1)[0]
         players[0].secondname = name.replace(players[0].firstname + ' ', '')
