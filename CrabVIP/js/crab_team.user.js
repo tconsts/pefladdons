@@ -1201,9 +1201,9 @@ function GetData(dataName) {
 				data[curt[head[0]]] = {}
 				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 			}
-			GetFinish('get_' + dataname, true)
+			GetFinish('get_' + dataName, true)
 		} else {
-			GetFinish('get_' + dataname, false)
+			GetFinish('get_' + dataName, false)
 		}			
 	} else {
 		// Если web db не законнекчена, пытаемся это сделать
