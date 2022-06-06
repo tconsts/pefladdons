@@ -1186,7 +1186,8 @@ function CheckPlayer(nn) {
         'u21': 'матчей ' + players[0]['u21apps'] + ', голов ' + players[0]['u21goals'],
         'position': players[0]['position'],
         'wage': players[0]['wage'],
-        'curseason': 19
+		'foot': players[0]['foot'],
+        'curseason': localStorage.season
     }
 
     $('table#stat,span#err,#dcode1').hide();
@@ -1206,11 +1207,13 @@ function CheckPlayer(nn) {
     if (data['pname'] === undefined) data['pname'] = '';
 
     for (i in data) {
+		console.log('go data[i]',i,data[i])
         let nm = (lc[i] === undefined ? i : lc[i].rn);
-        const statTd = $('td#' + i);
+        let statTd = $('td#' + i);
 
         if (i !== '' && statTd.length === 0) {
             $('table#res').prepend('<tr class=back2><td nowrap id=' + i + '>' + nm + '</td><td nowrap>' + (cur[i] !== undefined ? cur[i] : '') + '</td></tr>');
+			statTd = $('td#' + i);
         }
         switch (i) {
             case 'dribbling':
@@ -1282,6 +1285,7 @@ function CheckPlayer(nn) {
                 break;
             case 'pname':
                 var x = data[i].split('|');
+				console.log('x',statTd.length,x)
                 statTd.after('<td nowrap>' + (x[0] === '' ? '' : '<img height="12" src="system/img/flags/mod/' + x[0] + '.gif"> <a href="plug.php?' + x[2] + '"><b>' + x[1] + '</b></a>') + '</td>');
                 break;
             default:
@@ -1963,10 +1967,9 @@ function doNewRoster() {
     $('table#skills td[id]').each(function () {
         var skilleng = $(this).attr('id');
         var skillname = $(this).html();
-        if ($(this).next().find('span').length > 0) var skillvalue = parseInt(String($(this).next().find('span').html()).replace('<b>', ''))
-        else var skillvalue = parseInt(String($(this).next().html()).replace('<b>', ''))
+		var skillvalue = parseInt(String($(this).next().find('span.skills').html()).replace('<b>', ''))
         var skillarrow = ''
-        if (skilleng == 's') players[0].sumskills = skillvalue;
+        if (skilleng == 's') players[0].sumskills = parseInt(String($(this).next().find('span').html()).replace('<b>', ''));
         else {
             if ($(this).next().find('img').attr('src') != undefined) {
                 skillarrow = '.' + $(this).next().find('img').attr('src').split('/')[3].split('.')[0] 		// "system/img/g/a0n.gif"
@@ -1982,7 +1985,10 @@ function doNewRoster() {
 
     //get player header info
 
-    var name = $('table#hd1 td:first font').html().split('. ',2)[1];
+    var name = $('table#hd1 td:first font').html();
+	if (name.indexOf('.') != -1) { //remove number
+		name = name.split('. ',2)[1]
+	}
     if (name.indexOf(' ') != -1) {
         players[0].firstname = name.split(' ', 1)[0]
         players[0].secondname = name.replace(players[0].firstname + ' ', '')
@@ -2179,7 +2185,7 @@ function getPlayers() {
             let key = pl[i].split('=');
             let pn = (key[0].split('_')[1] === undefined ? 2 : key[0].split('_')[1]);
             if (key[0].split('_')[0] !== '' && !isNaN(pn)) {
-                players[pn][key[0].split('_')[0]] = [key[1]];
+                players[pn][key[0].split('_')[0]] = key[1];
             }
         }
     }
