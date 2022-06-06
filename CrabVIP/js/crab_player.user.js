@@ -18,8 +18,8 @@ var list = {
 }
 var isOldRoster = false;
 
-var players = []
-for (i = 0; i < 26; i++) players[i] = []
+var players = [];
+players[0] = [];
 
 //var skl = []
 //var sklse = []
@@ -898,42 +898,41 @@ function OpenAll() {
 }
 
 function RememberPl(x) {
+	getPlayers()
     // Save player in local storage
     let mark = 1;
     let text = '';
     for (let k in players) {
-        if (players[k].id !== undefined && ((k > 0 && mark <= 25) || (parseInt(k) === 0 && x === 0))) {
-            for (let i in players[k]) {
-                text += i + '_' + mark + '=' + players[k][i] + ',';
-            }
-            mark++
+        if (players[k].id === undefined || (parseInt(players[k].id) === parseInt(x) && k > 0 ) || k > 25) continue;
+		if (parseInt(k) === 0 && parseInt(x) > 0) continue;
+		if (parseInt(k) > 0 && parseInt(x) === 0 && parseInt(players[k].id) == parseInt(players[0].id)) continue;
+        for (let i in players[k]) {
+            text += i + '_' + mark + '=' + players[k][i] + ',';
         }
+        mark++
     }
     localStorage.peflplayer = text;
-    if (x === 0) PrintPlayers(0)
-    else PrintPlayers()
-}
-
-function RemovePlx(rem) {
-    if (rem !== 0) players.splice(rem, 1);
-    RememberPl(1); // !=1: save w\o player0
-    PrintPlayers();
+	PrintPlayers()
 }
 
 function PrintPlayers(cur) {
+	getPlayers();
     $('div#compare').empty()
     let htmltext = '<table border=0 width=100% rules=none>';
     for (i = 0; i < players.length; i++) {
         if ((i > 0 || cur === 0) && players[i].secondname !== undefined) {
             var secname = String(players[i].secondname).split(' ')
             var fname = String(players[i].firstname)
-            var plhref = (players[i].t === undefined || players[i].t === 'yp' ? '' : ' href="plug.php?p=refl&t=' + players[i].t + '&j=' + players[i].id + '&z=' + players[i].hash + '"')
+			var plhref = (players[i].t === undefined 
+				? '' 
+				: ' href="plug.php?p=refl&t=' + players[i].t + (players[i].k !== undefined? '&k='+players[i].k : '') + '&j=' + players[i].id + '&z=' + players[i].hash + '"')
             htmltext += '<tr><td nowrap><font size=1>'
             htmltext += '<a id="compare' + i + '" href="javascript:void(CheckPlayer' + (isOldRoster ? 'Old' : '') + '(' + i + '))"><</a>|'
-            htmltext += '<a href="javascript:void(RemovePlx(' + i + '))">x</a>|'
+            htmltext += '<a href="javascript:void(RememberPl(' + players[i].id + '))">x</a>|'
             htmltext += '<a' + (players[i].t === 'yp' ? '' : ' href="javascript:hist(\'' + players[i].id + '\',\'n\')"') + '>и</a>|'
-            htmltext += players[i].id + '|'
-            htmltext += '<a' + plhref + '>' + secname[secname.length - 1] + (players[i].t === undefined || players[i].t === 'yp' ? '(' + players[i].position + ')' : '') + '</a>'
+            htmltext += 'cc'+players[i].sumskills + '|'
+            //htmltext += players[i].id + '|'
+            htmltext += '<a' + plhref + ' title="id'+players[i].id+'">' + (players[i].t !== 'yp' ? secname[secname.length - 1] : 'шкл') + '</a>' + (players[i].t === undefined || players[i].t === 'yp' ? '<sup>' + players[i].position + '</sup>' : '') 
             htmltext += '</font></td></tr>'
         }
     }
@@ -1106,6 +1105,7 @@ function CheckPlayer(nn) {
             case 's':
             case 'ss0':
             case 't':
+            case 'k':
             case 'flag':
             case 'team':
             case 'teamid':
@@ -1243,7 +1243,6 @@ function CheckPlayer(nn) {
                         x[0] = '??';
                         ch = '';
                     } else {
-                        ssn = ssn + x[0];
                         var ch = parseInt(statTd.next().text(), 10) - x[0];
                         if (ch > 0) ch = '<font color=green size=1>+' + ch + '</font>';
                         else if (ch < 0) ch = '<font color=red size=1>' + ch + '</font>';
@@ -1294,7 +1293,7 @@ function CheckPlayer(nn) {
         }
     }
     $('td[id^="ss"]').attr('colSpan', 2 + sknum);
-    $('#s').after('<td class=back1 id=res_s' + nn + '>' + ssn + '</td>');
+    $('#s').after('<td class=back1 id=res_s' + nn + '>' + players[nn].sumskills + '</td>');
 
     return false
 }
@@ -1963,7 +1962,6 @@ function doNewRoster() {
     var ssp = 0
 
     // get player skills
-    var skillsum = 0
     $('table#skills td[id]').each(function () {
         var skilleng = $(this).attr('id');
         var skillname = $(this).html();
@@ -2020,6 +2018,7 @@ function doNewRoster() {
 
     players[0].team = ''
     players[0].t = UrlValue('t')
+    if(UrlValue('k')) players[0].k = UrlValue('k')
 
     if (players[0].t === 'p2') {
         players[0].team = 'свободный'
@@ -2177,13 +2176,15 @@ function doNewRoster() {
 }
 
 function getPlayers() {
-    // Get info fom Global or Session Storage
+    // Get info from Global or Session Storage
+    players.splice(1,25);
     let text1 = String(localStorage.peflplayer);
-    if (text1 !== 'undefined') {
+    if (text1 !== 'undefined' && text1 !== '') {
         let pl = text1.split(',');
         for (let i in pl) {
             let key = pl[i].split('=');
             let pn = (key[0].split('_')[1] === undefined ? 2 : key[0].split('_')[1]);
+			if(players[pn] === undefined) players[pn] = [];
             if (key[0].split('_')[0] !== '' && !isNaN(pn)) {
                 players[pn][key[0].split('_')[0]] = key[1];
             }
