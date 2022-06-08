@@ -21,11 +21,7 @@ var isOldRoster = false;
 var players = [];
 players[0] = [];
 
-//var skl = []
-//var sklse = []
-//var sklsr = []
 var sklfr = []
-//var poss = []
 var compare = false
 var mh = false
 
@@ -42,15 +38,15 @@ var ups = {
 }
 var plskillmax = 15
 var skillnames = {
-    sostav: {rshort: 'зв', rlong: 'Игрок в заявке?'},
+    sostav: {rshort: 'зв', rlong: 'Игрок в заявке?', strmax: 0},
     flag: {rshort: 'фл', rlong: 'Информационный флаг'},
     pfre: {rshort: 'иш', rlong: 'Исполнители штрафных'},
     pcor: {rshort: 'иу', rlong: 'Исполнители угловых'},
     ppen: {rshort: 'пн', rlong: 'Исполнители пенальти'},
     pcap: {rshort: 'кп', rlong: 'Капитаны'},
     //сс
-    school: {rshort: 'шкл', rlong: 'Школьник?'},
-    srt: {rshort: 'сила', rlong: 'В % от идеала (профы ' + plskillmax + ')', type: 'float'},
+    school: {rshort: 'шкл', rlong: 'Школьник?', strmax: 0, strinvert: 1},
+    srt: {rshort: 'сила', rlong: 'В % от идеала (профы ' + plskillmax + '?)', type: 'float'},
     stdat: {rshort: 'са', rlong: 'Идет на стд. атаки'},
     stdbk: {rshort: 'со', rlong: 'Идет на стд. обороны'},
     nation: {rshort: 'кСт', rlong: 'Код страны'},
@@ -119,9 +115,9 @@ var skillnames = {
      vratingav
      training
      /**/
-    inj: {rshort: 'трв', rlong: 'Травма'},
-    sus: {rshort: 'дсв', rlong: 'Дисквалификация'},
-    syg: {rshort: 'сыг', rlong: 'Сыгранность'},
+    inj: {rshort: 'трв', rlong: 'Травма', strmax: 0, strinvert: 20},
+    sus: {rshort: 'дсв', rlong: 'Дисквалификация', strmax: 0, strinvert: 20},
+    syg: {rshort: 'сыг', rlong: 'Сыгранность', strmax: 20},
     /**
      agames
      agoals
@@ -198,6 +194,12 @@ function GetData(dataname) {
         switch (dataname) {
             case 'positions':
                 positions = data;
+                let isk = data[0].koff !== undefined ? parseFloat(data[0].koff.match(/idealsk\=([0-9]+)/)[1]) : plskillmax;
+                plskillmax =  !isNaN(isk) ? isk : plskillmax;
+                let iage = data[0].koff !== undefined ? parseFloat(data[0].koff.match(/idealage\=([0-9]+)/)[1]) : "";
+                skillnames['age'].strmax =  !isNaN(iage) ? iage : 40;
+                let ival = data[0].koff !== undefined ? parseFloat(data[0].koff.match(/idealval\=([0-9]+)/)[1]) : "";
+                skillnames['value'].strmax =  !isNaN(ival) ? ival : 50000000;
                 break
             default:
                 return false
@@ -225,95 +227,87 @@ function filterPosition(plpos, flpos) {
 
 function countPosition(posnum) {
     var ps = positions[posnum]
-    ps.strmax = countStrength('ideal', ps.koff)
+    ps.strmax = countStrength(ps.koff)
     var pls = []
-    for (j in players) {
-        var pl = {};
-        if (parseInt(j) === 0) {
-            pl.id0 = true
-        }
-        pl.id = players[j].id
-        if (pl.id === undefined) break
-        var pkoff = ps.koff.split(',')
-        for (h in pkoff) {
-            var koff = String(pkoff[h].split('=')[0])
-            if (skillnames[koff] === undefined) for (l in skillnames) if (skillnames[l].rshort === koff.replace(/\!/g, '')) koff = koff.replace(skillnames[l].rshort, l)
-            pl[koff] = (players[j][koff.replace(/\!/g, '')] === undefined ? 0 : players[j][koff.replace(/\!/g, '')])
-        }
-        pl.posf = filterPosition(players[j].position, ps.filter)
-        if (ps.filter === '') pl.posfempty = true
-        var s = (pl.srt != undefined ? 'srt' : (pl['!srt'] != undefined ? '!srt' : ''))
-        if (s != '' && pl[s] != undefined) pl[s] = (ps.strmax === 0 ? 0 : (countStrength(j, ps.koff) / ps.strmax) * 100)
-
-        pls.push(pl)
+    
+    //TODO надо зарефакторить
+    var j=0;
+    var pl = {};
+    if (parseInt(j) === 0) {
+        pl.id0 = true
     }
+    pl.id = players[j].id
+    var pkoff = ps.koff.split(',')
+    for (h in pkoff) {
+        var koff = String(pkoff[h].split('=')[0])
+        if (skillnames[koff] === undefined) for (l in skillnames) if (skillnames[l].rshort === koff.replace(/\!/g, '')) koff = koff.replace(skillnames[l].rshort, l)
+        pl[koff] = (players[j][koff.replace(/\!/g, '')] === undefined ? 0 : players[j][koff.replace(/\!/g, '')])
+    }
+    pl.posf = filterPosition(players[j].position, ps.filter)
+    if (ps.filter === '') pl.posfempty = true
+    var s = (pl.srt != undefined ? 'srt' : (pl['!srt'] != undefined ? '!srt' : ''))
+    if (s != '' && pl[s] != undefined) pl[s] = (ps.strmax === 0 ? 0 : (countStrength(ps.koff,j) / ps.strmax) * 100)
+
+    pls.push(pl)
+
     positions[posnum].pls = pls.sort(sSrt)
 }
 
-function checkKoff(kf0) {
-    var res = kf0.replace(/!/g, '')
-    if (skillnames[res] === undefined) {
-        var custom = true
-        for (h in skillnames) {
-            if (skillnames[h].rshort === res) {
-                custom = false
-                res = h
+function clcFr(s0,clcNum) {
+	let m,
+    regexpRemBracket = new RegExp('\\(([\-]?[0-9]+[\\.]?[0-9]*)\\)','g'),
+    s = s0.replace(regexpRemBracket,"$1");
+
+    $.each(["*","/","+","-"], function (index, value) {
+        rexp = new RegExp('([\\-]?[0-9]+[\\.]?[0-9]*)([\\' + value + '])([\\-]?[0-9]+[\\.]?[0-9]*)');
+        m = s.match(rexp);
+        if (m !== null) {
+            switch (value) {
+                case "*": s = s.replace(m[0],(parseFloat(m[1])*parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
+                case "/": s = s.replace(m[0],(parseFloat(m[1])/parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
+                case "+": s = s.replace(m[0],(parseFloat(m[1])+parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
+                case "-": s = s.replace(m[0],(parseFloat(m[1])-parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
             }
+            return false;
         }
-        if (custom) {
-            skillnames[res] = {}
-            skillnames[res].rshort = res
-            skillnames[res].rlong = 'Custom параметр'
-            skillnames[res].type = 'custom'
-        }
-    }
-    return res
+    })		
+    if (s === s0) return s;
+    if (clcNum >= 50) return 0;
+    clcNum++;
+    return clcFr(s,clcNum);
 }
 
-function changeValue(formula, name, value) {
-    if (formula.indexOf(name) !== -1 && name !== '') {
-        var reg = new RegExp(name, "g")
-        formula = formula.replace(reg, value)
-    }
-    return formula
-}
+function countStrength(pkoff,plid) {
+    let pl = (plid === undefined ? players[0] : players[plid]),
+    res = 0,
+    skval = 0,
+    regxpFrm = new RegExp('\\=([0-9а-я\\(\\)\\+\\*\\-\\/\\.\\!]+)','g'),
+    frm = '(' + pkoff.match(regxpFrm).join(')+(').replace(/\=/g,'').replace(/\s/g,'') + ')',
+    keys = [...new Set(frm.match(/[а-я]+/g))];
 
-function countStrength(plid, pkoff) {
-    var pl = (plid === 'ideal' ? players[0] : players[plid])
-    pkoff = pkoff.split(',')
-    var res = 0
-    for (n in pkoff) {
-        var count = 0
-        var koff = pkoff[n].split('=')
-        var koffname = checkKoff(koff[0])
-        if (koff[1] !== undefined) {
-            count = koff[1].replace(/\s/g, '')
-            for (p in pl) {
-                var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
-                var skill = (plid === 'ideal' ? (skillnames[p] != undefined && skillnames[p].strmax != undefined ? skillnames[p].strmax : plskillmax) : plp)
-                skill = '(' + (skill - (skillnames[p] != undefined && skillnames[p].strinvert != undefined ? skillnames[p].strinvert : 0)) + ')'
-                count = changeValue(count, p, skill)
-                count = (skillnames[p] != undefined ? changeValue(count, skillnames[p].rshort, skill) : count)
-            }
-            for (p in skillnames) {
-                count = changeValue(count, p, 0)
-                count = changeValue(count, skillnames[p].rshort, 0)
-            }
-            var countval = 0
-            if (count != undefined) {
-                try {
-                    countval = eval(count)
-                } catch (e) {
-                    return 0
+    for (let p in skillnames) {
+        let skname = (skillnames[p].rshort !== undefined) ? skillnames[p].rshort : p;        
+        if (keys.length > 0) {
+            $.each(keys, function (index, value) {
+                let reg = new RegExp(value, "g");
+                if (skname === value) {                    
+                    skval = plid === undefined
+                        ? skillnames[p].strmax != undefined ? skillnames[p].strmax : plskillmax
+                        : pl[p] !== undefined ? parseFloat(pl[p]) : 0;
+                    skval = skval - (skillnames[p].strinvert != undefined ? skillnames[p].strinvert : 0);
+                    frm = frm.replace(reg, "(" + (isNaN(skval) ? 0 : skval) + ")");
+                    keys.splice(index,1);
                 }
-            }
-            if (plid != 'ideal' && skillnames[koffname].type === 'custom') {
-                players[plid][koffname] = countval
-            }
-            res += countval
+            });
         }
     }
-    return res
+    $.each(keys, function (index, value) {
+        console.warn("Not found params - set as 0",value);
+        let reg = new RegExp(value, "g");
+        frm = frm.replace(reg, "(0)");
+    })
+    res = clcFr(frm,0);
+    return res;
 }
 
 function RelocateGetNomData(arch) {
