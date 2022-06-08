@@ -524,8 +524,7 @@ function debug(text) {
 	}
 }
 
-$().ready(function() {
-   	ff 	= (navigator.userAgent.indexOf('Firefox') !== -1)
+$().ready(function() {   	
 	var urltype = UrlValue('p')
 	var urlTValue = UrlValue('t')
 	if(urltype== 'fin' && urlTValue == 'prizef'){

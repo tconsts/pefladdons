@@ -75,9 +75,6 @@ function FixColors(){
 $().ready(function() {
 
 //	if(deb) FixColors()
-
-	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
-
 	var text = ''
 	var today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
@@ -519,10 +516,4 @@ function ShowEnd(){
 	})
 	$('td#end').append('<sup>'+sumraz.toFixed(2)+'</sup>')
 	$('a#end ').remove()
-}
-
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	return false
 }

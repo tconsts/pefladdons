@@ -9,7 +9,6 @@
 deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
-var	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var type 	= 'num'
 var players = []
 var players2= []

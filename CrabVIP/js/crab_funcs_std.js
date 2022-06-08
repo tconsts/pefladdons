@@ -1,4 +1,5 @@
-var crabImageUrl;
+let crabImageUrl,
+ff = (navigator.userAgent.indexOf('Firefox') !== -1);
 
 document.addEventListener('getCrabImageUrlEvent', function (e)
 {

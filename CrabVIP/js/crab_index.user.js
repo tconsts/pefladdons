@@ -9,8 +9,6 @@
 
 $().ready(function(){
 
-	console.log('index go...');
-
 	if($('table:eq(0)').attr('width')>=1000) {
 		$('td.back4 table:eq(0) tr:eq(0) > td:eq(1)').attr('width','250')
 	}

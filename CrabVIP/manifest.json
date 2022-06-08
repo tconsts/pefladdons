@@ -38,6 +38,7 @@
 	"img/*",
 	"js/crab_funcs_db.js",
 	"js/crab_funcs_std.js",
+	"js/crab_funcs_pls.js",
 	"js/crab_common.user.js",
 	"js/crab_settings.user.js",
 	"js/crab_sostav.user.js",

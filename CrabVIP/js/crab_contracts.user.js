@@ -10,7 +10,6 @@
 deb = (localStorage.debug == '1' ? true : false)
 var debnum = 1
 var db = false
-var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var teams = []
 
 $().ready(function() {

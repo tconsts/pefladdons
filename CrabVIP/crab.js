@@ -8,7 +8,8 @@
 // @author         const
 // ==/UserScript==
 
-var scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1:0').split(':'),
+let newScriptMenu, 
+scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1:0').split(':'),
 scriptnames = [
 	'settings', 
 	'sostav', 
@@ -40,13 +41,7 @@ scriptnames = [
 url2 = location.search.substring(1),
 t = UrlValue('t');
 
-console.log('crab.UrlValue: p(%s), t(%s)',UrlValue('p'),UrlValue('t'));
-
-var newScriptMenu = document.createElement('script');
-newScriptMenu.type = 'text/javascript';
-newScriptMenu.src = chrome.extension.getURL('js/crab_funcs_std.js');
-document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
-
+InsertScript('funcs_std');
 newScriptMenu.onload = function(){
 	var url=chrome.runtime.getURL("img/crab1.png");
 	var evt=document.createEvent("CustomEvent");
@@ -54,11 +49,7 @@ newScriptMenu.onload = function(){
 	document.dispatchEvent(evt);
 };
 
-var newScriptMenu = document.createElement('script');
-newScriptMenu.type = 'text/javascript';
-newScriptMenu.src = chrome.extension.getURL('js/crab_funcs_db.js');
-document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
-
+InsertScript('funcs_db');
 AddScriptJS();
 
 switch (location.pathname.substring(1)) {
@@ -70,7 +61,7 @@ switch (location.pathname.substring(1)) {
 	case '':
 		if (url2 == '') {AddScriptJS(15); }
 		if (url2 == 'settings') {AddScriptJS(0); }
-		if (url2 == 'sostav' || url2 == 'sostav_n') { AddScriptJS(1); }
+		if (url2 == 'sostav' || url2 == 'sostav_n') { AddScriptJS(1,'funcs_pls');}
 		if (url2 == 'adaptation') { AddScriptJS(22); }
 		break;
 		
@@ -79,7 +70,7 @@ switch (location.pathname.substring(1)) {
 	case 'plug.php':
 		switch (UrlValue('p')) {
 			case 'refl':
-				if (t == 'p' || t == 'p2' || t == 'pp' || t == 'yp2' || t == 'yp') { AddScriptJS(2); }
+				if (t == 'p' || t == 'p2' || t == 'pp' || t == 'yp2' || t == 'yp') { AddScriptJS(2,'funcs_pls'); }
 				if (t == 'k') { AddScriptJS(4); }
 				if (t == 's') { AddScriptJS(5); }
 				if (t == 'last') { AddScriptJS(7); }
@@ -123,14 +114,20 @@ switch (location.pathname.substring(1)) {
 		break;
 }
 
-function AddScriptJS(flag) {
+function AddScriptJS(flag,name) {
 	if(flag!=undefined && scflag[flag] == undefined) scflag[flag]=0;
 	if (flag == undefined || scflag[flag] == 0 || flag == 6 || flag == 24) {
-		var newScriptMenu = document.createElement('script');
-		newScriptMenu.type = 'text/javascript';
-		newScriptMenu.src = chrome.extension.getURL('js/crab_' + (flag == undefined ? 'common' : scriptnames[flag]) + '.user.js');
-		document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
-	}
+		if (name != undefined) InsertScript(name);
+		InsertScript((flag == undefined ? 'common' : scriptnames[flag]) + '.user');		
+	}	
+}
+
+function InsertScript(name) {
+	console.log('InsertScript',name);
+	newScriptMenu = document.createElement('script');
+	newScriptMenu.type = 'text/javascript';
+	newScriptMenu.src = chrome.extension.getURL('js/crab_'+name+'.js');
+	document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
 }
 
 function UrlValue (key, url) {

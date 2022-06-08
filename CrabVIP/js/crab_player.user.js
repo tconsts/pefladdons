@@ -6,16 +6,13 @@
 // @include        http://*pefl.*/plug.php?p=refl&t=yp*
 // @require			crab_funcs_db.js
 // @require			crab_funcs_std.js
+// @require			crab_funcs_pls.js
 // @encoding	   windows-1251
 // ==/UserScript==
 /**/
 
-var ff = (navigator.userAgent.indexOf('Firefox') !== -1)
 var db = false
-var positions = []
-var list = {
-    positions: 'id,filter,name,num,koff'
-}
+
 var isOldRoster = false;
 
 var players = [];
@@ -35,95 +32,6 @@ var ups = {
     "next": "-3",
     "last": "3",
     "undefined": "0"
-}
-var plskillmax = 15
-var skillnames = {
-    sostav: {rshort: 'зв', rlong: 'Игрок в заявке?', strmax: 0},
-    flag: {rshort: 'фл', rlong: 'Информационный флаг'},
-    pfre: {rshort: 'иш', rlong: 'Исполнители штрафных'},
-    pcor: {rshort: 'иу', rlong: 'Исполнители угловых'},
-    ppen: {rshort: 'пн', rlong: 'Исполнители пенальти'},
-    pcap: {rshort: 'кп', rlong: 'Капитаны'},
-    //сс
-    school: {rshort: 'шкл', rlong: 'Школьник?', strmax: 0, strinvert: 1},
-    srt: {rshort: 'сила', rlong: 'В % от идеала (профы ' + plskillmax + '?)', type: 'float'},
-    stdat: {rshort: 'са', rlong: 'Идет на стд. атаки'},
-    stdbk: {rshort: 'со', rlong: 'Идет на стд. обороны'},
-    nation: {rshort: 'кСт', rlong: 'Код страны'},
-    teamnat: {rshort: 'кCт', rlong: 'Код страны'},
-    natfull: {rshort: 'стр', rlong: 'Страна', align: 'left', nowrap: '1'},
-    secondname: {rshort: 'Фам', rlong: 'Фамилия', align: 'left', nowrap: '1'},
-    firstname: {rshort: 'Имя', rlong: 'Имя', align: 'left', nowrap: '1'},
-    age: {rshort: 'взр', rlong: 'Возраст', str: true, strmax: 40},
-    id: {rshort: 'id', rlong: 'id игрока'},
-    internationalapps: {rshort: 'иСб', rlong: 'Игр за сборную', str: true, strmax: 500},
-    internationalgoals: {rshort: 'гСб', rlong: 'Голов за сборную', str: true, strmax: 500},
-    contract: {rshort: 'кнт', rlong: 'Контракт', strmax: 5},
-    wage: {rshort: 'зрп', rlong: 'Зарплата', strmax: 100, strinvert: 1000100},
-    value: {rshort: 'ном', rlong: 'Номинал', type: 'value', strmax: 50000000},
-    corners: {rshort: 'уг', rlong: 'Угловые', str: true},
-    crossing: {rshort: 'нв', rlong: 'Навесы', str: true},
-    dribbling: {rshort: 'др', rlong: 'Дриблинг', str: true},
-    finishing: {rshort: 'уд', rlong: 'Удары', str: true},
-    freekicks: {rshort: 'шт', rlong: 'Штрафные', str: true},
-    handling: {rshort: 'ру', rlong: 'Игра руками', str: true},
-    heading: {rshort: 'гл', rlong: 'Игра головой', str: true},
-    leadership: {rshort: 'лд', rlong: 'Лидерство', str: true},
-    longshots: {rshort: 'ду', rlong: 'Дальние удары', str: true},
-    marking: {rshort: 'по', rlong: 'Перс. опека', str: true},
-    pace: {rshort: 'ск', rlong: 'Скорость', str: true},
-    passing: {rshort: 'пс', rlong: 'Игра в пас', str: true},
-    positioning: {rshort: 'вп', rlong: 'Выбор позиции', str: true},
-    reflexes: {rshort: 'ре', rlong: 'Реакция', str: true},
-    stamina: {rshort: 'вн', rlong: 'Выносливость', str: true},
-    strength: {rshort: 'мщ', rlong: 'Мощь', str: true},
-    tackling: {rshort: 'от', rlong: 'Отбор мяча', str: true},
-    vision: {rshort: 'ви', rlong: 'Видение поля', str: true},
-    workrate: {rshort: 'рб', rlong: 'Работоспособность', str: true},
-    technique: {rshort: 'тх', rlong: 'Техника', str: true},
-    morale: {rshort: 'мрл', rlong: 'Мораль', str: true, strmax: 100},
-    form: {rshort: 'фрм', rlong: 'Форма', str: true, strmax: 100},
-    position: {rshort: 'Поз', rlong: 'Позиция', align: 'left', nowrap: '1'},
-    /**
-     games
-     goals
-     passes
-     mom
-     ratingav
-     cgames
-     cgoals
-     cpasses
-     cmom
-     cratingav
-     egames
-     egoals
-     epasses
-     emom
-     eratingav
-
-     wgames
-     wgoals
-     wpasses
-     wmom
-     wratingav
-
-     fgames
-     fgoals
-     fpasses
-     fmom
-     fratingav
-     vratingav
-     training
-     /**/
-    inj: {rshort: 'трв', rlong: 'Травма', strmax: 0, strinvert: 20},
-    sus: {rshort: 'дсв', rlong: 'Дисквалификация', strmax: 0, strinvert: 20},
-    syg: {rshort: 'сыг', rlong: 'Сыгранность', strmax: 20},
-    /**
-     agames
-     agoals
-     apasses
-     amom
-     /**/
 }
 
 function printStrench() {
@@ -251,30 +159,6 @@ function countPosition(posnum) {
     pls.push(pl)
 
     positions[posnum].pls = pls.sort(sSrt)
-}
-
-function clcFr(s0,clcNum) {
-	let m,
-    regexpRemBracket = new RegExp('\\(([\-]?[0-9]+[\\.]?[0-9]*)\\)','g'),
-    s = s0.replace(regexpRemBracket,"$1");
-
-    $.each(["*","/","+","-"], function (index, value) {
-        rexp = new RegExp('([\\-]?[0-9]+[\\.]?[0-9]*)([\\' + value + '])([\\-]?[0-9]+[\\.]?[0-9]*)');
-        m = s.match(rexp);
-        if (m !== null) {
-            switch (value) {
-                case "*": s = s.replace(m[0],(parseFloat(m[1])*parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
-                case "/": s = s.replace(m[0],(parseFloat(m[1])/parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
-                case "+": s = s.replace(m[0],(parseFloat(m[1])+parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
-                case "-": s = s.replace(m[0],(parseFloat(m[1])-parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
-            }
-            return false;
-        }
-    })		
-    if (s === s0) return s;
-    if (clcNum >= 50) return 0;
-    clcNum++;
-    return clcFr(s,clcNum);
 }
 
 function countStrength(pkoff,plid) {
@@ -735,7 +619,7 @@ function ShowAdaptation(plnat, tnat) {
             var adperc1 = '%';
             var adperc2 = '%';
             var txt = '<table width=100%><tr align=left><td>Адаптация</td><th>' + plnat + '</th></tr>';
-            txt += '<tr align=left><th>' + localStorage.mycountry.split('.')[1] + '</th><td>' + (ad === 100 ? '99,9' : (ad * 6 + 20) / 10 + '%-' + (ad * 6 + 400) / 10) + '% (' + ad + ')</td></tr>'
+            txt += '<tr align=left><th nowrap>' + localStorage.mycountry.split('.')[1] + '</th><td nowrap>' + (ad === 100 ? '99,9' : (ad * 6 + 20) / 10 + '%-' + (ad * 6 + 400) / 10) + '% (' + ad + ')</td></tr>'
             if (tnat != undefined && tnat != parseInt(localStorage.mycountry)) {
                 var tad = s_adaptationMap[peflnation[plnat]][peflcountry[tnat]]
                 for (i in peflnation) if (parseInt(peflnation[i]) === parseInt(tnat)) var natname = i;
@@ -1931,13 +1815,14 @@ function doNewRoster() {
     }
 
     var bbig = false
-    if ($('table:eq(0)').attr('width') >= 1000) {
+    var sz = $('body').attr('data-size');
+    if (sz >= 1000) {
         bbig = true
-        if ($('table.border:eq(4)').length == 0) {
-            $('table.border:eq(2)').attr('width', $('table:eq(0)').attr('width') - 200);
-        } else {
-            $('table.border:eq(3)').attr('width', $('table:eq(0)').attr('width') - 200);
-        }
+        $('body table.border:has(td.back4)').attr('width', sz - 200);
+    } else {
+        $('body table:eq(0) tr > td:eq(2) table tr:eq(1) td:eq(0)')
+            .attr('id','crabglobalright')
+            .css("padding-top","22px")
     }
 
     today = new Date()
@@ -1946,12 +1831,13 @@ function doNewRoster() {
     // Draw left and right panels
     var preparedhtml = ''
     preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr>'
-    preparedhtml += '<td id="crabgloballeft" width=' + (bbig ? 0 : 200) + ' valign=top></td>'
+    //if(!bbig) preparedhtml += '<td id="crabgloballeft" width=200 valign=top></td>'
     preparedhtml += '<td id="crabglobalcenter" valign=top></td>'
-    preparedhtml += '<td id="crabglobalright" width=200 valign=top>'
-    preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
-    preparedhtml += '</td></tr></table>'
+    if(bbig) preparedhtml += '<td id="crabglobalright" width=200 valign=top></td>'
+    preparedhtml += '</tr></table>'
     $('body table.border:last').before(preparedhtml)
+
+    $('#crabglobalright').prepend('<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright" nowrap></td></tr></table>')
 
     var ssp = 0
 

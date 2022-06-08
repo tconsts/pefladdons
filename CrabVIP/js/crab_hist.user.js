@@ -6,14 +6,6 @@
 // @encoding	   windows-1251
 // ==/UserScript==
 
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) {
-		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	}
-	return false
-}
-
 function replaceOneChar(s,c,n){
 var re = new RegExp('^(.{'+ --n +'}).(.*)$','');
 return s.replace(re,'$1'+c+'$2');

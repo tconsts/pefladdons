@@ -10,35 +10,25 @@
 // @encoding	   windows-1251
 // ==/UserScript==
 
-
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) if(pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	return false
-}
-
 function getIDnum(){
-	var gday = String(localStorage.gday)
-	var datestr = (gday=='undefined' ? 0 : parseInt(gday.split('.')[0]))
-	var idcur 	= (gday=='undefined' ? 0 : parseInt(gday.split('.')[1]))
-	var datecur =  new Date()
-	var datecur3 = new Date(datecur.valueOf() + (datecur.getTimezoneOffset() + 4*60)*60*1000)	//-420(7h) hours, Moscow +4
-	var m = datecur3.getMonth()+1
-	var d = datecur3.getDate()
-	var datecur4 = new Date((m<10?0:'')+m+'/'+(d<10?0:'')+d+'/'+datecur3.getFullYear())
-	var datecur5 = datecur4.valueOf()
-	var getID = (datecur5>datestr ? true : false)
-	if(getID){
-		var realday = parseInt($('td.topmenu table td:contains(" ИД")').text().split('(')[1],10);
+	let gday = String(localStorage.gday),
+	datestr = (gday=='undefined' ? 0 : parseInt(gday.split('.')[0])),	
+	datecur =  new Date(),
+	datecur3 = new Date(datecur.valueOf() + (datecur.getTimezoneOffset() + 4*60)*60*1000),	//-420(7h) hours, Moscow +4
+	m = datecur3.getMonth()+1,
+	d = datecur3.getDate(),
+	datecur4 = new Date((m<10?0:'')+m+'/'+(d<10?0:'')+d+'/'+datecur3.getFullYear()),
+	datecur5 = datecur4.valueOf(),
+	getID = (datecur5>datestr ? true : false);	
+	if (getID) {
+		realday = parseInt($('td.topmenu table td:contains(" ИД")').text().split('(')[1],10);
 		if(isNaN(realday)) return false;
 		localStorage.gday = datecur5+'.'+realday
-	}else{
-		//if(!isNaN(idcur)) $('td.topmenu:first table td:last').append('&nbsp;('+(idcur+1)+'й ИД)')
 	}
 }
 
 function SetNation(){
-	var id = parseInt(UrlValue('j',$('td.back4 a:contains(Команда)').attr('href')))
+	let id = parseInt(UrlValue('j',$('td.back4 a:contains(Команда)').attr('href')))
 	if(isNaN(id)) delete localStorage.myintid
 	else localStorage.myintid = (id>1000 ? id-1000 : id)
 }
@@ -67,39 +57,9 @@ function SetCFF(){
 
 if(typeof(jQuery)!='undefined'){ 
 $().ready(function() {
-	console.log('run the crab_common...');
-	const submenues = $('.submenu2');
-	
+	let t = UrlValue('t'), p = UrlValue('p');
 
-	if (submenues.length > 0) {
-		console.log("submenu2 ", submenues.length);
-		const HMREF = 'http://kes-pefl.appspot.com/heatmaps.html?';
-		submenues.each(function(i, val){
-			if ($(val).find('li').length > 2 ) return; // если Паша добавит в проект.
-			const tvRef = $(val).find('a:nth-child(1)').attr('href')
-			.replace('&gm=k','')
-			.replace('http://pefl.ru/tv/#/', HMREF)
-			.replace('tv/#/',HMREF);
-
-			const heatmapsRef = $('<li>');
-			// const heatmapsRef = $("<li>", {
-			// 	append: $('<a>', {
-			// 				text : "теплокарты",
-			// 				target:"_blank",
-			// 				href: tvRef
-			// 			})
-			// })
-			// ;
-			const hmAnchor = $('<a>');
-			hmAnchor.attr("href", tvRef);
-			hmAnchor.attr("text", "теплокарты");
-			hmAnchor.attr("target", "_blank");
-			heatmapsRef.append(hmAnchor);
-			$(val).append(heatmapsRef);
-		})
-	}
-
-	if (UrlValue("p") && UrlValue("p").indexOf("squad") == 0) {
+	if (p && p.indexOf("squad") == 0) {
 		if(clubs!=undefined) for(i=0;i<3;i++) if(clubs[i]!=undefined) localStorage['sostavurl'+clubs[i].id] = jsonsostav+'?'+clubs[i].gurl;
 	}
 
@@ -108,24 +68,22 @@ $().ready(function() {
 	getIDnum()
 	//FixSize()
 
-	if (UrlValue("p")=="nation" && !UrlValue("t")) SetNation()
+	if (p == "nation" && !t) SetNation()
 
-	var scflag = '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
+	let scflag = '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1'.split(':')
 	if(localStorage.scripts!=undefined && localStorage.scripts!=null) scflag = localStorage.scripts.split(':')
 	if(scflag[1]==2){
 		scflag[1] = 0
 		localStorage.scripts = scflag.join(':')
 	}
 
-    var teamimg 	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>';
-    var intimg  	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/flags/mod/'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>';
-	var crabimg 	= crabImageUrl == undefined ? '' : '<img width=16 height=16 src=\''+crabImageUrl+'\'>';
-	var sostavimg 	= '<img width=16 height=16 src="system/img/g/sostav.gif">';
-	var settingimg 	= '<img width=16 height=16 src="system/img/g/stats.gif"></img>';
-	var adaptimg 	= '<img width=16 height=16 src="system/img/g/scout.gif"></img>';
-	var crab = new String()
-	crab += '<hr><div align=center><b>CrabVIP</b></div>';
-	crab += settingimg+	' <a href=\'/?settings\'>Настройки</a><br>';
+    let teamimg = '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myteamid)) ? '/system/img/g/team.gif' : '/system/img/club/'+localStorage.myteamid+'.gif')+'>',
+    intimg  	= '<img width=16 height=16 src='+(isNaN(parseInt(localStorage.myintid)) ? '/system/img/g/int.gif' : 'system/img/flags/mod/'+(parseInt(localStorage.myintid)>1000 ? parseInt(localStorage.myintid)-1000 : localStorage.myintid)+'.gif')+'>',
+	crabimg 	= crabImageUrl == undefined ? '' : '<img width=16 height=16 src=\''+crabImageUrl+'\'>',
+	settingimg 	= '<img width=16 height=16 src="system/img/g/stats.gif"></img>',
+	adaptimg 	= '<img width=16 height=16 src="system/img/g/scout.gif"></img>',
+	crab = '<hr><div align=center><b>CrabVIP</b></div>'
+		+ settingimg + ' <a href=\'/?settings\'>Настройки</a><br>';
 	if(parseInt(scflag[1])!=1)	crab += teamimg +	' <a id=sostav href=\'/?sostav\'>Состав+(ком)</a><br>';
 	if(parseInt(scflag[1])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg	+	' <a id=sostav_n href=\'/?sostav_n\'>Состав+(int)</a><br>';
 	if(parseInt(scflag[22])!=1)	crab += adaptimg+	' <a href=\'/?adaptation\'>Адаптация</a><br>';
@@ -133,28 +91,22 @@ $().ready(function() {
 	crab += ' <img src="system/img/g/stats.gif" width="16" height="16">' +	' <a href="/ban.txt">ban.txt</a>';
 	$('td.back3 table td:first a:contains(Ссылки):first').after(crab);
 
-/**
-	if(UrlValue("t")=="school"){
-		SetNumShcoolers();
-		SetCFF();
-	}
-**/
 	if(
-	 (UrlValue('p')=='tr' && 
-		(	UrlValue('t')=='transfers' 
-		||	UrlValue('t')=='transfers0'
-		||	UrlValue('t')=='transfersr' 
-		||	UrlValue('t')=='transfersn' 
-		||	UrlValue('t')=='transfers3' 
-		||	UrlValue('t')=='transfers4'
-		||	UrlValue('t')=='tlist'
-		||	UrlValue('t')=='alist'
-		||	UrlValue('t')=='nlist'
-		||	UrlValue('t')=='free'
-		||	UrlValue('t')=='staff'
+	 (p == 'tr' && 
+		(	t == 'transfers' 
+		||	t == 'transfers0'
+		||	t == 'transfersr' 
+		||	t == 'transfersn' 
+		||	t == 'transfers3' 
+		||	t == 'transfers4'
+		||	t == 'tlist'
+		||	t == 'alist'
+		||	t == 'nlist'
+		||	t == 'free'
+		||	t == 'staff'
 		)
-	 )||(UrlValue('p')=='search' && UrlValue('t')=='res')
-	  ||(UrlValue('p')=='refl' && UrlValue('t')=='khist')
+	 )||(p == 'search' && t == 'res')
+	  ||(p == 'refl' && t == 'khist')
 	) SetCFF();
 })
 };

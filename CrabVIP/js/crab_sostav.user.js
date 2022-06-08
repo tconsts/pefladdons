@@ -4,10 +4,12 @@
 // @description    Display sostav
 // @include        http://*pefl.*/*?sostav
 // @include        http://*pefl.*/*?sostav_n
+// @require			crab_funcs_db.js
+// @require			crab_funcs_std.js
+// @require			crab_funcs_pls.js
 // @encoding	   windows-1251
 // ==/UserScript==
 
-var ff 	= (navigator.userAgent.indexOf('Firefox') !== -1);
 var sostavteam = (location.search.substring(1) === 'sostav');
 var psn = ['','GK','C SW',
 	'L DF','C DF','C DF','C DF','R DF',
@@ -21,13 +23,12 @@ var psnbetter = [[{},{}],[{},{}],[{},{}],
 	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
 	[{},{}],[{},{}],[{},{}],[{},{}],[{},{}],
 	[{},{}],[{},{}],[{},{}]];
-positions = [];
+
 var dataall = [];
 var plkeys = [];
 var players = {};
 var posmaxorder = 0;
 var getforumid = 9107892;
-var plskillmax = 15;
 var tabslist = '';
 var maxtables = 25;//25+10
 var showscout = true;//localStorage.peflplayer!=undefined ? true : false;
@@ -38,15 +39,11 @@ var postbackupUrl = '';
 var delbackupUrl = '';
 var senddata = '';
 var postBackupLimit = 1950;
-var list = {
-	positions: 'id,filter,name,num,koff,order'
-}
 
 var fl = ['','#EF2929','#A40000','#FCE94F','#E9B96E','green','black']
 var selected = ''
 
-var skillnames = {
-	sor:{rshort:'срт',rlong:'Сортировка',hidden:true},
+var skillnames = {	
 	sostav:{rshort:'зв',rlong:'Игрок в заявке?'},
 	flag:{rshort:'фл',rlong:'Информационный флаг'},
 	fre:{rshort:'иш',rlong:'Исполнители штрафных ударов',str:true},
@@ -54,6 +51,7 @@ var skillnames = {
 	cor:{rshort:'иу',rlong:'Исполнители угловых',str:true},
 	pen:{rshort:'пн',rlong:'Исполнители пенальти',str:true},
 	cap:{rshort:'кп',rlong:'Капитаны',str:true},
+
 	school:{rshort:'шкл',rlong:'Школьник?'},
 	srt:{rshort:'сила',rlong:'В % от идеала',type:'float'},
 	stdat:{rshort:'са',rlong:'Идет на стд. атаки'},

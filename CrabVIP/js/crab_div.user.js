@@ -114,7 +114,6 @@ $().ready(function() {
 		$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200)
 	}
 
-   	ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 	today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 	rseason = UrlValue('f',$('td.back4 a[href^="plug.php?p=refl&t=s&v=y&h=0&j="]:last').attr('href'))

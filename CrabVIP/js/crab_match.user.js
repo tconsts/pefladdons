@@ -12,7 +12,6 @@
 deb = (localStorage.debug == '1' ? true : false)
 var debnum = 0
 
-var ff 	= (navigator.userAgent.indexOf('Firefox') != -1 ? true : false)
 var mid = parseInt(UrlValue('j'))
 var myteamid = localStorage.myteamid
 var ustanovka = false
