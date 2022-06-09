@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name           pefldoverie
+// @name           new_sostav
 // @namespace      pefl
-// @description    doverie
-// @include        http://*pefl.*/plug.php?p=refl&t=dov&k=*
+// @description    sostav na match
+// @include        http://*pefl.*/plug.php?p=squad*&t=*
 // @encoding	   windows-1251
 // ==/UserScript==
 

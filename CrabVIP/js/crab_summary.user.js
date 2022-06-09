@@ -1,16 +1,11 @@
 // ==UserScript==
-// @name           peflschedule
+// @name           teamshistory
 // @namespace      pefl
-// @description    modification schedule page
+// @description    modification teams history page
 // @include        http://*pefl.*/plug.php?p=refl&t=khist&n=*
+// @require			crab_funcs_std.js
 // @encoding	   windows-1251
 // ==/UserScript==
-
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) { if (pf[n].split('=')[0] == key) return pf[n].split('=')[1]; }
-	return false
-}
 
 if( typeof Array.prototype.push==='undefined' ) {
 	Array.prototype.push = function() {
@@ -24,6 +19,13 @@ if( typeof Array.prototype.push==='undefined' ) {
 var matches = [];
 $().ready(function() {
 	console.log("run summary");
+
+	$('td.back4 table table').each(function(i,val){
+		$(val).find('tr:eq(0)').addClass('back2').attr('height','20');
+		$(val).find('td:has(hr)').text('-');
+		$(val).find('a img').attr('height',15);
+	});
+
 	const homeID = UrlValue('n');
 	const awayID = UrlValue('j');
 
@@ -110,12 +112,6 @@ $().ready(function() {
 	console.log(summaryTotal);
 	console.log(TOURN);
 
-	const emptyRow = $('<tr>');
-	for (let i = 0; i < 7; i++) {
-		const emptyCell = $('<td></td>');
-		emptyCell.append($('<hr>'));
-		emptyRow.append(emptyCell);
-	}
 	function dressUpRow (arr, title, darkback) {
 		const row = $("<tr>");
 		if (darkback) row.attr("class", 'back2');
@@ -134,6 +130,8 @@ $().ready(function() {
 	sumTable.attr("font-size", "x-large");
 	sumTable.attr("cellpadding", "5px");
 	sumTable.attr("cellspacing", "2px");
+	sumTable.css("min-width", "400px");
+
 	let frendlies;
 	if (TOURN["Товарищеский"]) {
 		console.log("eject frendlies", TOURN["Товарищеский"]);
@@ -156,16 +154,11 @@ $().ready(function() {
 	for (r = 0; r < summaryTotal.length; r++) {
 		sumTable.append(dressUpRow(summaryTotal[r], summaryTotal[r][CUP_TYPE], r % 2 === 0 ? DARK : false) );
 	}
-	sumTable.append(emptyRow);
 
 	if (TOURN["Товарищеский"])	{
 		sumTable.append(dressUpRow(frendlies[0], "Товарищеский", false) );
 	}
 
-	const astericksTipString = '* - игры официальных товарищеских турниров учитываются как игры Кубков, по техничеcким причинам';
-	const astericksTip = $('<tr style="font-size:xx-small"><td>'+ astericksTipString +'</td></tr>');
-
-	$("td.back4 > table > tbody").append($("<tr>").append("<hr>"));
-	$("td.back4 > table > tbody").append($("<tr>").append(sumTable));
-	$("td.back4 > table > tbody").append(astericksTip);
+	$("td.back4 > table").after(sumTable);
+	$('#summary').after('<p>* - игры официальных товарищеских турниров учитываются как игры Кубков, по техничеcким причинам</p>');
 })
