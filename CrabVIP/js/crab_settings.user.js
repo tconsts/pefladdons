@@ -7,7 +7,7 @@
 // ==/UserScript==
 
 var flag = '<img height=13 src="/system/img/g/tick.gif"></img>'
-var scflags = '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1:0'.split(':')
+var scflags = '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:0:0'.split(':')
 var scnames = [
 	{'name':'Настройки',			'desc':''},
 	{'name':'Состав +',				'desc':''},
@@ -18,7 +18,7 @@ var scnames = [
 	{'name':'Рейтинг чемпионатов',	'desc':'удален так как реализован на проекте','del':true},
 	{'name':'Расписание',			'desc':''},
 	{'name':'Финансы',				'desc':''},
-	{'name':'Состав на матч',		'desc':'сохранение состава локально'},
+	{'name':'Состав на матч',		'desc':'сохранение состава локально (c)BallaK'},
 	{'name':'Рейтинг школ',			'desc':'временно отключен так как практически реализован на проекте','del':true},
 	{'name':'Ненужные',				'desc':'удален так как реализован на проекте','del':true},
 	{'name':'История',				'desc':''},
@@ -33,7 +33,7 @@ var scnames = [
 	{'name':'Рефери',				'desc':'позволяет сортировку страницы списка рефери'},
 	{'name':'Адаптация',			'desc':'Карта адаптации в цифрах'},
 	{'name':'ТВ без флеша',			'desc':'удален так как поменялось ТВ на проекте','del':true},
-	{'name':'Рейтинг сборных',		'desc':'Код для форума, удален так как реализован на проекте','del':true},
+	{'name':'История встреч',		'desc':'подводит итоги встреч между командами'},
 	{'name':'Школа',				'desc':''}
 ]
 
@@ -71,7 +71,6 @@ $().ready(function() {
 	html += '</table>'
 	html += '<br>'
 	html += 'Картинка вместо лого: <input name="logo" id="logo" type="text" size="40" value="'+(String(localStorage.logopic)!='undefined'?localStorage.logopic:'')+'"> <a href="javascript:void(setLogo())">установить</a>'
-//	html += '<br><br>&nbsp;* - <i>при появлении нового скрипта, чтобы он заработал, требуется переустановить(поставить поверх) основной скрипт: <a href="http://pefladdons.googlecode.com/svn/trunk/pefl.user.js">pefl.user.js</a>.</i>'
 
 	html += '<br><br>&nbsp;* - <i>Вы можете поддержать проект (или например запросить сделать определенную фичу в первую очередь, или в персональное пользование), перечислив какую-либо сумму одним из следующих способов (оплата возможна через любой платёжный терминал)</i>'
 	html += '<table align=center class=back2 width=50%><tr class=back1 height=50 valign=top><td><b>WebMoney</b><br>'
@@ -154,4 +153,3 @@ function SwitchScFlag(scid, ver){
 	}
 	localStorage.scripts = scflags.join(':')
 }
-

@@ -9,7 +9,7 @@
 // ==/UserScript==
 
 let newScriptMenu, 
-scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:0:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:1:0').split(':'),
+scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:0:0').split(':'),
 scriptnames = [
 	'settings', 
 	'sostav', 
@@ -17,10 +17,10 @@ scriptnames = [
 	'contracts', 
 	'team', 
 	'div', 
-	'new_sostav', //  6 SostavNaMatch
+	'', //  6 removed
 	'schedule', 
 	'finance', 
-	'snm', //  9 SostavNaMatch (removed)
+	'new_sostav', //  9 SostavNaMatch
 	'', // 10 ReitSchool (removed)
 	'', // 11 NN (removed)
 	'hist', 
@@ -35,7 +35,7 @@ scriptnames = [
 	'ref', 
 	'adaptation',
 	'', // TV: removed
-	'summary', // reit int: removed
+	'summary', // 24 history teams
 	'school'
 ],
 url2 = location.search.substring(1),
@@ -103,30 +103,26 @@ switch (location.pathname.substring(1)) {
 			case 'calendar':
 				AddScriptJS(19);
 				break;
-			case 'squad4':
+			case 'squad7':
 				AddScriptJS(9);
 				break;
-			case 'squad7':
-				AddScriptJS(6);
-				break;
-
 		}
 		break;
 }
 
 function AddScriptJS(flag,name) {
-	if(flag!=undefined && scflag[flag] == undefined) scflag[flag]=0;
-	if (flag == undefined || scflag[flag] == 0 || flag == 6 || flag == 24) {
+	if (flag!=undefined && scflag[flag] == undefined) scflag[flag]=0;
+	if (flag == undefined || scflag[flag] == 0) {
 		if (name != undefined) InsertScript(name);
 		InsertScript((flag == undefined ? 'common' : scriptnames[flag]) + '.user');		
 	}	
 }
 
 function InsertScript(name) {
-	console.log('InsertScript',name);
+	console.log('crab InsertScript',name);
 	newScriptMenu = document.createElement('script');
 	newScriptMenu.type = 'text/javascript';
-	newScriptMenu.src = chrome.extension.getURL('js/crab_'+name+'.js');
+	newScriptMenu.src = chrome.runtime.getURL('js/crab_'+name+'.js');
 	document.getElementsByTagName("head")[0].appendChild(newScriptMenu);
 }
 
