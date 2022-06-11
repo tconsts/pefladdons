@@ -3,11 +3,9 @@
 // @namespace      pefl
 // @description    team page modification
 // @include        http://*pefl.*/plug.php?p=refl&t=k&j=*
+// @require			crab_funcs_db.js
 // @encoding	   windows-1251
 // ==/UserScript==
-
-deb = (localStorage.debug == '1' ? true : false)
-var debnum = 0
 
 var type 	= 'num'
 var players = []
@@ -27,7 +25,7 @@ var team_cur = {}
 var m = []
 var sumvaluechange = 0
 var save = false
-var db = false
+
 // Rows from web db
 const list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
@@ -68,7 +66,8 @@ var rtasks = {
 	'Попасть в пятерку':7,
 	'Попасть в десятку':8,
 	'15 место':9,
-	'Не вылететь':10}
+	'Не вылететь':10
+}
 
 const rschools = {
 	'очень слабая': 1,
@@ -227,7 +226,7 @@ function modifyPage() {
 	var bbig = false
 	if($('table:eq(0)').attr('width')>=1000) {
 		bbig = true
-		console.log($('table.border:eq(3)').length);
+		debug($('table.border:eq(3)').length);
 		if($('table.border:eq(4)').length==0) {
 			$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200);
 		} else {
@@ -884,26 +883,6 @@ function SuDelMatch(mid, type, plid){
 	saveJSONlocalStorage('matches2',matches2)
 	ShowSU(true)
 	ShowPlM(plid)
-}
-
-function TrimString(sInString){
-	sInString = sInString.replace(/\&nbsp\;/g,' ');
-	return sInString.replace(/(^\s+)|(\s+$)/g, '');
-}
-
-/**
- * Подключение к web db
- *
- * @returns {boolean}
- */
-function DBConnect() {
-	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
-	if (!db) {
-		debug('DBConnect --> fail');
-		return false;
-	} else {
-		debug('DBConnect --> success');
-	}
 }
 
 function CheckTrash() {
@@ -2076,26 +2055,8 @@ function ShowChange(value,hide){
 	else 		  		return ''
 }
 
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	return false
-}
-
 function check(d) {
 	return (d < 10 ? "0" + d : d)
-}
-
-/**
- * Output data in console with steps
- *
- * @param text
- */
-function debug(text) {
-	if (deb) {
-		debnum++;
-		console.log(debnum + ' ' + text);
-	}
 }
 
 /**

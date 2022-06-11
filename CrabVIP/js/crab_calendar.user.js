@@ -6,21 +6,18 @@
 // @encoding	   windows-1251
 // ==/UserScript==
 
-deb = (localStorage.debug == '1' ? true : false)
-var debnum = 1
-
-var matches = []
-var list = {
+let matches = [],
+list = {
 	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
-}
-
-var gdaylist = []
+},
+gdaylist = [];
 
 $().ready(function() {
-	markToday()
-	getJSONlocalStorage('matches2',matches)
-	getPageMatches()
-	checkMatches()
+	debug();
+	markToday();
+	getJSONlocalStorage('matches2',matches);
+	getPageMatches();
+	checkMatches();		
 });
 
 function toTimestamp(td){
@@ -158,52 +155,38 @@ function getTypeMatch(mtype){
 		default: return mtype
 	}
 }
-function markToday(){
-	debug('markToday()')
-	var time=new Date();
-	var currentDay = time.getDate();
-	var substring = '<B>' + currentDay + ' ';
+function markToday() {
+	debug('markToday');
+	let time = new Date(),
+	currentDay = time.getDate(),
+	substring = '<B>' + currentDay + ' ';
 	$('td.back3').each(function(){
 		if ($(this).html().toUpperCase().indexOf(substring) == 0) {
 			$(this).css("border", "3px solid yellow");
 		}	
 	});
 }
-function debug(text) {
-	if(deb) {
-		if(debnum==1) $('body').append('<div id=debug>DEBUG INFROMATION<hr></div>')
-		$('div#debug').append(checkNum(debnum)+'&nbsp;\''+text+'\'<br>');
-		debnum++;
-	}
-}
 
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) {
-		if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	}
-	return false
-}
-function getJSONlocalStorage(dataname,data){
-	debug('getJSONlocalStorage:'+dataname)
-	if(String(localStorage[dataname])!='undefined'){
+function getJSONlocalStorage(dataname,data) {
+	debug('getJSONlocalStorage:'+dataname);
+	if (String(localStorage[dataname])!='undefined') {
 		var data2 = JSON.parse(localStorage[dataname]);
 		switch(dataname){
 			default:
 				for(k in data2) {
-					if(data2[k]!=null && data2[k]!=undefined && data2[k].id!=undefined) data[data2[k].id]= data2[k]
-					else data[k]= data2[k]
+					if(data2[k]!=null && data2[k]!=undefined && data2[k].id!=undefined) data[data2[k].id]= data2[k];
+					else data[k]= data2[k];
 				}
 		}
 	} else return false
 }
-function saveJSONlocalStorage(dataname,data){
-	debug('saveJSONlocalStorage:'+dataname)
-	switch(dataname){
+function saveJSONlocalStorage(dataname,data) {
+	debug('saveJSONlocalStorage:'+dataname);
+	switch(dataname) {
 		default:
 			var data2 = []
-			debug('default преобразования')
-			for(i in data) data2.push(data[i])
+			debug('default преобразования');
+			for(i in data) data2.push(data[i]);
 	}
-	localStorage[dataname] = JSON.stringify(data2)
+	localStorage[dataname] = JSON.stringify(data2);
 }

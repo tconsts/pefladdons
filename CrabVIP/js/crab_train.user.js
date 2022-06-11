@@ -4,18 +4,15 @@
 // @description    modification training page
 // @include        http://*pefl.*/plug.php?p=training*
 // @include        http://*pefl.*/plug.php?p=trainplan*
+// @require			crab_funcs_db.js
 // @encoding	   windows-1251
 // ==/UserScript==
-
-deb = (localStorage.debug == '1' ? true : false)
-var debnum = 0
 
 var data_assoc = [];
 var players = [];
 var groups = [[]];
 var trnman = []
 var trn = [0]
-var db = false
 var num_players = 0
 
 var itrains = []
@@ -73,16 +70,12 @@ function FixColors(){
 }
 
 $().ready(function() {
-
-//	if(deb) FixColors()
+	debug();
 	var text = ''
 	var today = new Date()
 	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 
 	trn[0] = [today]
-
-	var srch="Вы вошли как "
-	var curManagerNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 
 	$.get('training.php', {}, function(data){
 		debug('Get data from training.php')
@@ -121,22 +114,6 @@ $().ready(function() {
 			}
 		}
 
-/**		// данные о тренерах
-	    trnman[0] = {}
-		trnman[0].name	= data_assoc["s0"]
-		trnman[0].group	= data_assoc["sg0"]
-		trnman[0].type	= 0
-		trnman[0].value	= 0
-		for(i=1;i<=5;i++){
-			trnman[i] = {}
-			if(data_assoc["s"+i]!=undefined){
-				trnman[i].name	= data_assoc["s"+i]
-				trnman[i].group	= data_assoc["sg"+i]
-				trnman[i].type	= data_assoc["btype"+i]
-				trnman[i].value	= data_assoc["bvalue"+i]
-			}
-		}
-/**/
 		// теперь собираем данные об игроках
 		for(i=0;i<num_players;i++) {
 			var tmpplayer = [];
@@ -387,12 +364,6 @@ function showData(){
 	}
 }
 
-function DBConnect(){
-	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
-	if(!db) {debug('Open DB PEFL fail.');return false;} 
-	else 	{debug('Open DB PEFL ok.')}
-}
-
 function getData(){
 	if(ff){
 		var trnnum = 1
@@ -492,14 +463,6 @@ function saveData(){
 				}
 			}
 		});
-	}
-}
-
-function debug(text){
-	debnum++
-	if(deb) {
-		if(debnum == 1)  $('td.back4').append('<hr>DEBUG:<br>')
-		$('td.back4').append(debnum+': \''+text+'\'<br>')
 	}
 }
 

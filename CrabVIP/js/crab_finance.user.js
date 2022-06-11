@@ -4,12 +4,11 @@
 // @description		finance page modification
 // @include			http://*pefl.*/plug.php?p=fin&z=*
 // @include			http://*pefl.*/plug.php?p=rules&z=*
+// @require			crab_funcs_db.js
+// @require			crab_funcs_std.js
 // @encoding	   windows-1251
 // ==/UserScript==
 
-deb = (localStorage.debug === '1')
-var debnum = 0
-var db = false
 var divs = []
 var fin = {}
 var cur = {}
@@ -93,12 +92,6 @@ function GetDivInfo(did, nname, dnum) {
 		dprize.push(parseInt(val.cells[3].innerText.replace(',','')))
 	})
 	divs[did].dprize = dprize.join(',')
-}
-
-function DBConnect(){
-	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
-	if(!db) {debug('Open DB PEFL fail.');return false;} 
-	else 	{debug('Open DB PEFL ok.')}
 }
 
 function GetData2(){
@@ -510,17 +503,6 @@ function format(num) {
 		return (num / 1000).toFixed(0) + (num === 0 ? '' : ',000') + '$';
 	} else {
 		return (num / 1000000).toFixed(3).replace(/\./g,',') + (num === 0 ? '' : ',000') + '$'
-	}
-}
-
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	return false
-}
-function debug(text) {
-	if (deb) {
-		console.log(text);
 	}
 }
 

@@ -11,8 +11,6 @@
 // ==/UserScript==
 /**/
 
-var db = false
-
 var isOldRoster = false;
 
 var players = [];

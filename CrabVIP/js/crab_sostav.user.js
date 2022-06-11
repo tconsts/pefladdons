@@ -4,7 +4,6 @@
 // @description    Display sostav
 // @include        http://*pefl.*/*?sostav
 // @include        http://*pefl.*/*?sostav_n
-// @require			crab_funcs_db.js
 // @require			crab_funcs_std.js
 // @require			crab_funcs_pls.js
 // @encoding	   windows-1251

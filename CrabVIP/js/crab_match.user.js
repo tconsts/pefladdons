@@ -4,18 +4,15 @@
 // @description    match page modification
 // @include        http://*pefl.*/*&t=if&*
 // @include        http://*pefl.*/*&t=code&*
+// @require			crab_funcs_std.js
 // @encoding	   windows-1251
 // ==/UserScript==
 
 // 10й сезон, матч с которго считаетс€ сыгранность и —в”с: http://www.pefl.ru/plug.php?p=refl&t=if&j=602078&z=a72e875256e6b57eb52e95dbd2d1b152
 
-deb = (localStorage.debug == '1' ? true : false)
-var debnum = 0
-
 var mid = parseInt(UrlValue('j'))
 var myteamid = localStorage.myteamid
 var ustanovka = false
-var db = false
 var list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name',
 	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
@@ -424,11 +421,6 @@ function saveJSONlocalStorage(dataname,data){
 
 }
 
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	return false
-}
 function ShowSShort(){
 	if(sshort) {
 		$('div#sshort').hide()
@@ -440,13 +432,6 @@ function ShowSShort(){
 		sshort = true
 	}
 }
-
-function TrimString(sInString){
-	sInString = sInString.replace(/\&nbsp\;/g,' ');
-	return sInString.replace(/(^\s+)|(\s+$)/g, '');
-}
-
-function debug(text) {if(deb) {debnum++;$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');}}
 
 function getPlayersInfo(){
 	debug('getPlayersInfo()')

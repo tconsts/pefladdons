@@ -9,28 +9,44 @@
 
 if( typeof Array.prototype.push==='undefined' ) {
 	Array.prototype.push = function() {
-	 for( var i = 0, b = this.length, a = arguments, l = a.length; i<l; i++ ) {
+	 for( let i = 0, b = this.length, a = arguments, l = a.length; i<l; i++ ) {
 	  this[b+i] = a[i];
 	 }
 	 return this.length;
 	};
    }
 
-var matches = [];
-$().ready(function() {
-	console.log("run summary");
+function newSummaryLine(tournName,CUP_TYPE) {
+	const line = [].concat([0, 0, 0, 0, 0, 0]);	
+	line[CUP_TYPE] = tournName;
+	return line;
+}
 
-	$('td.back4 table table').each(function(i,val){
-		$(val).find('tr:eq(0)').addClass('back2').attr('height','20');
-		$(val).find('td:has(hr)').text('-');
-		$(val).find('a img').attr('height',15);
-	});
+function dressUpRow (arr, title, darkback) {
+	const row = $("<tr>");
+	if (darkback) row.attr("class", 'back2');
+	const label = $("<td>"+ title + "</td>");
+	label.attr("width", "20%");
+	label.attr("style","font-weight:bold");
+	row.append(label);		
+	for (let i = 0; i < arr.length -1; i++) {
+		row.append("<td>"+ arr[i]+ "</td>");
+	}
+	return row;
+}
+
+$().ready(function() {
+	debug();
+
+	const tb = $('td.back4 table table');
+	tb.find('td:has(hr)').text('-');
+	tb.find('a img').attr('height',15);
 
 	const homeID = UrlValue('n');
 	const awayID = UrlValue('j');
 
-	const team1 = $('#x0 tr:nth-child(2) > td:nth-child(1) > a:nth-child(1)');
-	const team2 = $('#x0 tr:nth-child(2) > td:nth-child(1) > a:nth-child(2)');
+	const team1 = tb.find('tr:nth-child(2) > td:nth-child(1) > a:nth-child(1)');
+	const team2 = tb.find('tr:nth-child(2) > td:nth-child(1) > a:nth-child(2)');
 
 	let home = '';
 	let away = '';
@@ -40,9 +56,8 @@ $().ready(function() {
 	} else {
 		home = team2.text(); away = team1.text();
 	}
-	console.log(homeID, home, awayID, away);
-	const sumrow = {win: 0, draw:0, lost:0, scored:0, missed:0};
-	const zeroRow = [0, 0, 0, 0, 0, 0];
+	debug(homeID, home, awayID, away);
+	const sumrow = {win: 0, draw:0, lost:0, scored:0, missed:0};	
 	const MATCHES = 0;
 	const WIN = 1;
 	const DRAW = 2;
@@ -55,28 +70,9 @@ $().ready(function() {
 		max : 0
 	};
 
-	// function countGameInfo(gameRaw, tArr) {
-	// 	for(let i = 0; i < tArr.length ; i++) {
-	// 		tArr[i] += gameRaw[i];
-	// 	};
-	// }
-
-	// let champ = [].concat(zeroRow);
-	// let cup = [].concat(zeroRow);
-	// let supercup = [].concat(zeroRow);
-	// let sum = [].concat(zeroRow);
-	// let frendly = [].concat(zeroRow);
-	
 	const summaryTotal = [];
 
-	function newSummaryLine(tournName) {
-		const line = [].concat(zeroRow);
-		line[CUP_TYPE] = tournName;
-		return line;
-	}
-
-	$('#x0 tr').each(function(i) {
-		
+	tb.find('tr').each(function(i) {		
 		if (i===0) return;
 		const scorestring = $(this).find("td:nth-child(2)").text().match(/[0-9]+:[0-9]+/g);
 		if (!scorestring) return;
@@ -84,7 +80,7 @@ $().ready(function() {
 		const cupType = $(this).find("td:nth-child(5)").text().trim();
 		if (TOURN[cupType] === undefined) {
 			TOURN[cupType] = TOURN.max;
-			summaryTotal.push(newSummaryLine(cupType));
+			summaryTotal.push(newSummaryLine(cupType,CUP_TYPE));
 			TOURN.max++;
 		} 
 		
@@ -106,24 +102,10 @@ $().ready(function() {
 			summaryTotal[TOURN[cupType]][LOST]++;
 		} else {
 			summaryTotal[TOURN[cupType]][DRAW]++;
-		};
-		 
+		};		
 	});
-	console.log(summaryTotal);
-	console.log(TOURN);
-
-	function dressUpRow (arr, title, darkback) {
-		const row = $("<tr>");
-		if (darkback) row.attr("class", 'back2');
-		const label = $("<td>"+ title + "</td>");
-		label.attr("width", "20%");
-		label.attr("style","font-weight:bold");
-		row.append(label);		
-		for (let i = 0; i < arr.length -1; i++) {
-			row.append("<td>"+ arr[i]+ "</td>");
-		}
-		return row;
-	}
+	debug(summaryTotal);
+	debug(TOURN);
 
 	const sumTable = $("<table>");
 	sumTable.attr("id", "summary");
@@ -134,10 +116,10 @@ $().ready(function() {
 
 	let frendlies;
 	if (TOURN["Товарищеский"]) {
-		console.log("eject frendlies", TOURN["Товарищеский"]);
+		debug("eject frendlies", TOURN["Товарищеский"]);
 		frendlies = summaryTotal.splice(TOURN["Товарищеский"],1);	
 	}
-	const totalIndex = summaryTotal.push(newSummaryLine("ВСЕГО")) - 1;
+	const totalIndex = summaryTotal.push(newSummaryLine("ВСЕГО",CUP_TYPE)) - 1;
 
 	for (let r = 0; r < summaryTotal.length - 1; r++) {
 		for (let c = 0; c < summaryTotal[r].length - 1; c++) {

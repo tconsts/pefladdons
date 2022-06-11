@@ -4,12 +4,10 @@
 // @description    contracts modification
 // @include        http://*pefl.*/plug.php?p=fin&t=ctr&*
 // @include        http://*pefl.*/plug.php?p=tr&*
+// @require			crab_funcs_db.js
 // @encoding	   windows-1251
 // ==/UserScript==
 
-deb = (localStorage.debug == '1' ? true : false)
-var debnum = 1
-var db = false
 var teams = []
 
 $().ready(function() {
@@ -178,23 +176,4 @@ $.getScript("js/adaptation.en.js", function() {
 		})
 	})
 });
-}
-
-function DBConnect(){
-	db = openDatabase("PEFL", "1.0", "PEFL database", 1024*1024*5);
-	if(!db) {debug('Open DB PEFL fail.');return false;} 
-	else 	{debug('Open DB PEFL ok.')}
-}
-
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) if (pf[n].split('=')[0] == key) return pf[n].split('=')[1];
-	return false
-}
-function debug(text) {
-	if(deb) {
-		if(debnum==1) $('body').append('<div id=debug></div>')
-		$('div#debug').append(debnum+'&nbsp;\''+text+'\'<br>');
-		debnum++;
-	}
 }

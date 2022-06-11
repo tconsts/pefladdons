@@ -6,11 +6,6 @@
 // @encoding	   windows-1251
 // ==/UserScript==
 
-function UrlValue(key,url){
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&')
-	for (n in pf) { if (pf[n].split('=')[0] == key) return pf[n].split('=')[1]; }
-	return false
-}
 function returnDate(tmsp){
 	if(tmsp!=undefined){
 		var dt = new Date(tmsp*100000)
@@ -91,7 +86,7 @@ function showMatches(){
 	}
 }
 
-var matches = [];
+let matches = [];
 $().ready(function() {
-	if(parseInt(localStorage.myteamid)==parseInt(UrlValue('j'))) showMatches();
+	if (parseInt(localStorage.myteamid) == parseInt(UrlValue('j'))) showMatches();
 })

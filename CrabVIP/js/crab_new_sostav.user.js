@@ -27,7 +27,7 @@ $().ready(function() {
 }, false);
 
 function saveKrab(){
-    console.log('postjson(): start');
+    debug('postjson(): start');
 	if(!save){
 		if(!checkErrors()){
 			return false;
@@ -93,5 +93,3 @@ function loadFileAsText()
     };
     fileReader.readAsText(fileToLoad, "UTF-8");
 }
-
-//})();

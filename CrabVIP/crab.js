@@ -8,8 +8,7 @@
 // @author         const
 // ==/UserScript==
 
-let newScriptMenu, 
-scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:0:0').split(':'),
+const scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:0:0').split(':'),
 scriptnames = [
 	'settings', 
 	'sostav', 
@@ -41,16 +40,17 @@ scriptnames = [
 url2 = location.search.substring(1),
 t = UrlValue('t');
 
+let newScriptMenu;
+
 InsertScript('funcs_std');
-newScriptMenu.onload = function(){
-	var url=chrome.runtime.getURL("img/crab1.png");
-	var evt=document.createEvent("CustomEvent");
-	evt.initCustomEvent("getCrabImageUrlEvent", true, true, url);
+newScriptMenu.onload = function() {	
+	evt = new CustomEvent("getCrabImageUrlEvent", { 
+		detail: chrome.runtime.getURL("img/icon36.png") 
+	});
 	document.dispatchEvent(evt);
 };
-
 InsertScript('funcs_db');
-AddScriptJS();
+InsertScript('common.user');
 
 switch (location.pathname.substring(1)) {
 	case 'forums.php':
@@ -110,11 +110,11 @@ switch (location.pathname.substring(1)) {
 		break;
 }
 
-function AddScriptJS(flag,name) {
-	if (flag!=undefined && scflag[flag] == undefined) scflag[flag]=0;
-	if (flag == undefined || scflag[flag] == 0) {
+function AddScriptJS(flag,name,name2) {	
+	if (scflag[flag] == 0 || scflag[flag] == undefined) {		
 		if (name != undefined) InsertScript(name);
-		InsertScript((flag == undefined ? 'common' : scriptnames[flag]) + '.user');		
+		if (name2 != undefined) InsertScript(name2);
+		InsertScript(scriptnames[flag] + '.user');
 	}	
 }
 
@@ -127,7 +127,7 @@ function InsertScript(name) {
 }
 
 function UrlValue (key, url) {
-	var pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&');
+	const pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&');
 	for (n in pf) { if(pf[n].split('=')[0] == key) { return pf[n].split('=')[1]; }}
 	return false;
 }

@@ -7,6 +7,7 @@
 // @exclude        http://*pefl.*/auth.php
 // @exclude        http://*pefl.*/hist.php*
 // @exclude        http://*pefl.*/loadplayer.php*
+// @require			crab_funcs_std.js
 // @encoding	   windows-1251
 // ==/UserScript==
 
@@ -45,7 +46,7 @@ function setLogo(){
 }
 
 function SetCFF(){
-	console.log('crab_common: insert Code for Forum');
+	debug('insert Code for Forum');
 	var tables = [];
 	$('td.back4 table table').each(function(i,val){
 		if($(val).attr('id')==undefined || $(val).attr('id')=='') $(val).attr('id','x'+i);
@@ -106,8 +107,12 @@ $().ready(function() {
 		||	t == 'free'
 		||	t == 'staff'
 		)
-	 )||(p == 'search' && t == 'res')
-	  ||(p == 'refl' && t == 'khist')
+	 )||(p == 'refl' &&
+	  	(	t == 'khist'
+		||	t == 'ref'
+		||	t == 'school'
+		)
+	  )||(p == 'search' && t == 'res')
 	) SetCFF();
 })
 };
