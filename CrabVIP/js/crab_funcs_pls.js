@@ -22,9 +22,7 @@ skillnames = {
 	natflag:{rshort:'фс',rlong:'Флаг страны',type:'flag',state:3},
     teamnat: {rshort: 'кCт', rlong: 'Код страны'},
     natfull: {rshort: 'стр', rlong: 'Страна', align: 'left', nowrap: '1'},
-    secondname: {rshort: 'Фам', rlong: 'Фамилия', align: 'left', nowrap: '1'},	//TODO fix
-    firstname: {rshort: 'Имя', rlong: 'Имя', align: 'left', nowrap: '1'},		//TODO fix
-	sname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
+    sname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
 	fname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
     age: {rshort: 'взр', rlong: 'Возраст', str: true, strmax: 40},
     id: {rshort: 'id', rlong: 'id игрока'},

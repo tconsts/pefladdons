@@ -45,7 +45,7 @@ var selected = ''
 $().ready(function() {
 
 	selected = getDataSelected().split(',');
-	console.log(selected);
+	debug('selected',selected);
 
 	let strg = sostavteam ? localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))];
 	if (strg !== undefined) {
@@ -367,13 +367,10 @@ function countPosition(posnum,ppsn)
 	ps.sormax = sf[1];
 	var pls = [];
 	for(j in players) {
-		//if (posnum==15) console.log('countPosition='+posnum+' pl='+j);
 		var pl = {};
 		//if(j==0) pl.id0 = true;
 		pl.id = players[j].id;
 		pl.psn = players[j].psn;
-
-		if(posnum==5) console.log(posnum, ppsn, j, players[j].position, pl.psn[ppsn]);
 
 		if (pl.id==undefined) break;
 

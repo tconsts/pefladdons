@@ -12,7 +12,11 @@ function debug(text, ...args) {
 		const scriptName = document.currentScript != null && document.currentScript != undefined 
 			? document.currentScript.src.split('crab_')[1].split('.')[0]
 			: "???"
-		console.log("["+scriptName+ "] "+ (text == undefined ? '' : text), ...args);
+		if (typeof text === 'string' || text instanceof String || text === undefined) {
+			console.log("["+scriptName+ "] "+ (text ?? ''), ...args);
+		} else {
+			console.log("["+scriptName+ "] ",text, ...args);
+		}		
 	}
 }
 
