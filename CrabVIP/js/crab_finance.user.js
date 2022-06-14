@@ -302,7 +302,6 @@ function EditFinance(school, dteams, dtour) {
 		$('td.back4 > table table').each(function(i,val) {
 			var curtable = finance[i] = {};
 			$(val).attr('id', i);
-			//curtable.name = $(val).prev().text();
 			$(val).find('td:even').each(function() {
 				curtable[$(this).text().split(' ')[0]] = parseInt($(this).next().text().replace(/\,/g,'').replace('$',''));
 			})
@@ -311,7 +310,7 @@ function EditFinance(school, dteams, dtour) {
 			debug(i + ':' + finance[1]);
 		}
 
-		if(isNaN(school)) {
+		if(isNaN(school) || school == 0) {
 			school = finance[1]['Школа'] - Math.floor(((finance[0]['Продажа'] + finance[1]['Покупка'])*0.05 - finance[1]['Бонусы'])/1000)*1000;
 		}
 		//fill finances
