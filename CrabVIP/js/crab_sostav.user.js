@@ -431,13 +431,7 @@ function changeValue(formula,name,value){
 	}
 	return formula
 }
-function tryEval(formula){
-	try{
-		return eval(formula)
-	}catch(e){
-		return 'x'
-	}
-}
+
 //подсчет игрока по кофу
 function countStrength(plid,pkoff)
 {
@@ -475,8 +469,8 @@ function countStrength(plid,pkoff)
 				count2 = changeValue(count2,p,0)
 				count2 = changeValue(count2,skillnames[p].rshort,0)
 			}
-			var countval  = tryEval(count)
-			var countval2 = tryEval(count2)
+			var countval  = parseFloat(clcFr(count,0));
+			var countval2 = parseFloat(clcFr(count2,0));
 			if(countval=='x') {
 				if(plid=='ideal') alert('!!Ошибка подсчета в "'+pkoff[n]+'":('+koff[1]+')')
 				return '0:0'
