@@ -105,16 +105,11 @@ var def = '1-1=FCE94F,2-2=white,3-3=E9B96E'
 $().ready(function() {
 
 	fixclass = 'back2' // заменятся все bgcolor=#a3de8f на этот класс
-    FixColors()
+    
+	FixColors();	
+	drawEars();
+	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 	
-	var bbig = false
-	if($('table:eq(0)').attr('width')>=1000) {
-		bbig = true
-		$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200)
-	}
-
-	today = new Date()
-	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
 	rseason = UrlValue('f',$('td.back4 a[href^="plug.php?p=refl&t=s&v=y&h=0&j="]:last').attr('href'))
 	dseason = UrlValue('f')
 
@@ -123,16 +118,6 @@ $().ready(function() {
 
 	// Select as bold self team in my table with id=0
 	if( UrlValue('k') && UrlValue('k')!=0) SelectTeam(UrlValue('k'))
-
-	// Draw CrabVIP panel
-	var preparedhtml = ''
-	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr><td width='+(bbig ? 0 : 200)+' id="crabgloballeft" valign=top></td><td id="crabglobalcenter" valign=top></td><td id="crabglobalright" width=200 valign=top>'
-	preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
-	preparedhtml += '</td></tr></table>'
-	$('body table.border:last').before(preparedhtml)
-	$('td.back4 script').remove()
-	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
-	$('#crabrighttable').addClass('border') 
 
 	GetInfoPageDiv()
 	var text = '<table width=100%>'
@@ -144,11 +129,6 @@ $().ready(function() {
 	text += '<table width=100%>'
 	text += '<tr id="showteams"><td colspan=4><a id="teams_cur" href="javascript:void(Print(\'teams\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
 	text += '</table><br>'
-/**	if(deb){
-		text += '<table width=100% class="debug">'
-		text += '<tr id="showdivs"><td><a id="divs" href="javascript:void(Print(\'divs\'))">debug:Дивизионы</a></td></tr>'
-		text += '</table>'
-	}/**/
 	$("#crabright").html(text)
 
 	GetData('teams')
@@ -1080,6 +1060,3 @@ function TableCodeForForum(){
 	$('td#crabglobalright').empty()
 	return true
 }
-
-
-function check(d) {return (d<10 ? "0"+d : d)}

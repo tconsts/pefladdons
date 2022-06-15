@@ -131,11 +131,6 @@ $().ready(function() {
 	var srch='Вы вошли как '
 	MyNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
 
-	today = new Date()
-	todayTmst = today.valueOf()
-
-	today = check(today.getDate()) + '.'+check(today.getMonth()+1)
-
 	if(UrlValue('l')=='y'){
 		//Page for show skills
 		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
@@ -223,29 +218,8 @@ function GetFinish(type, res) {
 
 function modifyPage() {
 	// исправляем размер
-	var bbig = false
-	if($('table:eq(0)').attr('width')>=1000) {
-		bbig = true
-		debug($('table.border:eq(3)').length);
-		if($('table.border:eq(4)').length==0) {
-			$('table.border:eq(2)').attr('width',$('table:eq(0)').attr('width')-200);
-		} else {
-			$('table.border:eq(3)').attr('width', $('table:eq(0)').attr('width')-200);
-		}
-	}
-
-	// Draw right panel and fill data
-	var preparedhtml = ''
-	preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr>'
-	preparedhtml += '<td id="crabgloballeft" width='+(bbig ? 0 : 200)+' valign=top></td>'
-	preparedhtml += '<td id="crabglobalcenter" valign=top></td>'
-	preparedhtml += '<td id="crabglobalright" width=200 valign=top>'
-	preparedhtml += '<table id="crabrighttable" class=back1 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
-	preparedhtml += '</td></tr></table>'
-	$('body table.border:last').before(preparedhtml)
-	$('td.back4 script').remove()
+	drawEars();
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
-	$('#crabrighttable').addClass('border') 
 
 	preparedhtml  =	'<table width=100% id="rg"><tr><th colspan=3>Финансовое положение</th></tr>'
 	preparedhtml += '<tr><td id="finance1"></td><td id="finance2" colspan=2></td></tr>'
@@ -2053,10 +2027,6 @@ function ShowChange(value,hide){
 	if(value > 0) 		return '<sup><font color="green">+' + (hide ? ''  : value) + '</font></sup>'
 	else if(value < 0)	return '<sup><font color="red">' 	+ (hide ? '-' : value) + '</font></sup>'
 	else 		  		return ''
-}
-
-function check(d) {
-	return (d < 10 ? "0" + d : d)
 }
 
 /**

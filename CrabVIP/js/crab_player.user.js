@@ -1529,30 +1529,12 @@ function ShowLastStats() {
 }
 
 function doOldRoster() {
-    debug('размер0:' + $('table:eq(0)').attr('width'))
-    var bbig = false
-    if ($('table:eq(0)').attr('width') >= 1000) {
-        bbig = true
-        $('table.border:eq(2)').attr('width', $('table:eq(0)').attr('width') - 200)
-    }
+    
+    if (UrlValue('t') === 'plast' || UrlValue('t') === 'plast2') return false
+
+    drawEars();
 
     $('td.back4 table table tr[bgcolor=#a3de8f]').removeAttr('bgcolor').addClass('back3')
-
-    if (UrlValue('t') === 'plast' || UrlValue('t') === 'plast2') return false
-    today = new Date()
-    todayTmst = today.valueOf()
-
-    // Draw left and right panels
-    var preparedhtml = ''
-    preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr>'
-    preparedhtml += '<td id="crabgloballeft" width=' + (bbig ? 0 : 200) + ' valign=top></td>'
-    preparedhtml += '<td id="crabglobalcenter" valign=top></td>'
-    preparedhtml += '<td id="crabglobalright" width=200 valign=top>'
-    preparedhtml += '<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright"></td></tr></table>'
-    preparedhtml += '</td></tr></table>'
-    $('body table.border:last').before(preparedhtml)
-
-    var ssp = 0
 
     for (i in skillnames) {
         sklfr[skillnames[i].rlong] = skillnames[i]
@@ -1811,33 +1793,10 @@ function doNewRoster() {
         var ses = parseInt($('a[href*=SavePl]').prev().prev().prev().text(), 10);
         if (!isNaN(ses)) localStorage.season = ses;
     }
+   
 
-    var bbig = false
-    var sz = $('body').attr('data-size');
-    if (sz >= 1000) {
-        bbig = true
-        $('body table.border:has(td.back4)').attr('width', sz - 200);
-    } else {
-        $('body table:eq(0) tr > td:eq(2) table tr:eq(1) td:eq(0)')
-            .attr('id','crabglobalright')
-            .css("padding-top","22px")
-    }
-
-    today = new Date()
-    todayTmst = today.valueOf()
-
-    // Draw left and right panels
-    var preparedhtml = ''
-    preparedhtml += '<table align=center cellspacing="0" cellpadding="0" id="crabglobal"><tr>'
-    //if(!bbig) preparedhtml += '<td id="crabgloballeft" width=200 valign=top></td>'
-    preparedhtml += '<td id="crabglobalcenter" valign=top></td>'
-    if(bbig) preparedhtml += '<td id="crabglobalright" width=200 valign=top></td>'
-    preparedhtml += '</tr></table>'
-    $('body table.border:last').before(preparedhtml)
-
-    $('#crabglobalright').prepend('<table id="crabrighttable" class=back3 width=100%><tr><td height=100% valign=top id="crabright" nowrap></td></tr></table>')
-
-    var ssp = 0
+    //пририсовываем справа панель
+    drawEars();   
 
     // get player skills
     $('table#skills td[id]').each(function () {

@@ -3,9 +3,16 @@
 const ff = (navigator.userAgent.indexOf('Firefox') !== -1),
 curManagerNick = ($('td.back3 tr:eq(1) td:eq(0)').text().match(/\s([a-zA-Z0-9\.\_]+)\,/)??["",false])[1];
 
-let crabImageUrl, deb = (!!localStorage.debug);
+let crabImageUrl, 
+deb = (!!localStorage.debug),
+today = new Date(),
+todayTmst = today.valueOf();
+
+today = check(today.getDate()) + '.'+check(today.getMonth()+1);
 
 document.addEventListener('getCrabImageUrlEvent', (e) => { crabImageUrl = e.detail; });
+
+function check(d) {	return (d < 10 ? "0" + d : d); }
 
 function debug(text, ...args) {
 	if (deb) {
@@ -43,4 +50,24 @@ function UrlValue(key, url) {
 
 function TrimString(sInString){
 	return sInString.replace(/\&nbsp\;/g,' ').replace(/(^\s+)|(\s+$)/g, '');
+}
+
+function drawEars()
+{	
+	let sz = parseInt($('body').attr('data-size'));
+	debug('size',sz);
+
+    if (sz >= 1000) $('body table.border:has(td.back4)').attr('width', sz - 200);
+	else $('body table:eq(0) tr > td:eq(2) table tr:eq(1) td:eq(0)').attr('id','crabglobalright').css("padding-top","22px");    
+		
+	// Draw left and right panels
+    let preparedhtml = '<table align=center cellspacing="0" cellpadding="0" id="crabglobal">'
+		+ '<tr><td id="crabglobalcenter" valign=top></td>'
+    	+ (sz >= 1000 ? '<td id="crabglobalright" width=200 valign=top></td>' : '')
+    	+ '</tr></table>';
+	
+	$('body table.border:last').before(preparedhtml);
+	$('#crabglobalright').prepend('<table id="crabrighttable" class=back3 width=200><tr><td height=100% valign=top id="crabright" nowrap></td></tr></table>');
+
+	$('td.back4 script').remove();
 }
