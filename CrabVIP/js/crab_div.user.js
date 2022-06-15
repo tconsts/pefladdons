@@ -898,8 +898,8 @@ function SelectTeam(teamid){
 		}
 
 	})
-	var td_data = $("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().html()
-	$("tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().html('<b>' + td_data + '</b>')
+	var td_data = $("td.back4 table table tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().html()
+	$("td.back4 table table tr td a[href*='plug.php?p=refl&t=k&j="+teamid+"&']").parent().html('<b>' + td_data + '</b>')
 }
 
 function TableCodeForForum(){

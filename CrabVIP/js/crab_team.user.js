@@ -81,7 +81,6 @@ const rschools = {
 
 var sumP = 0
 var sumH = false
-var MyNick = ''
 
 var countSostav = 0;
 
@@ -128,9 +127,6 @@ $().ready(function() {
 	// Добавляем в команды команду, на странице которой мы сейчас находимся
 	teams[cid] = {'tid': cid};
 
-	var srch='Вы вошли как '
-	MyNick = $('td.back3 td:contains('+srch+')').html().split(',',1)[0].replace(srch,'')
-
 	if(UrlValue('l')=='y'){
 		//Page for show skills
 		$('table#tblRostSkillsFilter td:first').prepend('<a href="javascript:void(ShowSkillsY())">Стрелки</a> | ')
@@ -142,8 +138,6 @@ $().ready(function() {
 			}
 		})
 		EditSkillsPage()
-//	}else if(UrlValue('n')!=false){
-		//Ростер с фильтром(не вся стата показывается)
 	}else{
 		modifyPage()
 		countSquadMax  = $('tr[id^=tblRosterTr]').length;
@@ -154,7 +148,6 @@ $().ready(function() {
 		if(cid==parseInt(localStorage.myteamid)) {
 			delete localStorage.matches
 			delete localStorage.matchespl
-//			delete localStorage.players
 			getJSONlocalStorage('matches2',matches2)
 			getJSONlocalStorage('matchespl2',matchespl2)
 			getJSONlocalStorage('players2',players3)
@@ -943,7 +936,7 @@ function GetInfoPageTm() {
 	team_cur.pnum	= 0
 	team_cur.scbud	= parseInt($('table.layer1 td.l2:eq(1)').text().split('(',2)[1].split(')')[0])
 	team_cur.screit	= (rschools[screit_name]!=undefined ? rschools[screit_name] : screit_name)
-	team_cur.my		= (team_cur.mname == MyNick ? true : false)
+	team_cur.my		= (team_cur.mname == curManagerNick ? true : false)
 	team_cur.tform	= 0
 	team_cur.tmorale= 0
 
