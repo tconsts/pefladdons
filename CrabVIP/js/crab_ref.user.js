@@ -58,7 +58,7 @@ $().ready(function() {
 
 function PrintTable(sorting) {
 	srtn = !srtn;
-	refs = refs.sort(nSort(sorting,srtn));
+	refs = refs.sort(Std.nSort(sorting,srtn));
 	tb.find('tr:gt(0)').remove();
 	for (i in refs) {
 		rf = refs[i];

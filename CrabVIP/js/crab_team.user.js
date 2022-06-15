@@ -384,7 +384,7 @@ function GetNomData(id){
 	var t = 0
 	for(i=1;i<sdata.length;i++){
 		for(n in sdata[i]){
-			if(isNaN(parseInt(sdata[i][n][0])) && TrimString(sdata[i][n][0])!=''){
+			if(isNaN(parseInt(sdata[i][n][0])) && Std.trim(sdata[i][n][0])!=''){
 				t++
 				plnom[t] = {psum:0,tkp:sdata[i][saleValue][saleAge]}
 
@@ -392,7 +392,7 @@ function GetNomData(id){
 				if(pos1=='') plnom[t].pos1 = true
 				else for(h in pos1) if(pl.position.indexOf(pos1[h])!=-1) plnom[t].pos1 = true
 
-				var pos2 = (sdata[i][n][0].split(' ')[1]==undefined ? TrimString(sdata[i][n][0].split(' ')[0]) : sdata[i][n][0].split(' ')[1]).split('/')
+				var pos2 = (sdata[i][n][0].split(' ')[1]==undefined ? Std.trim(sdata[i][n][0].split(' ')[0]) : sdata[i][n][0].split(' ')[1]).split('/')
 				for(h in pos2) if(pl.position.indexOf(pos2[h])!=-1) plnom[t].pos2 = true
 
 				if(plnom[t].pos1 && plnom[t].pos2){
@@ -1214,7 +1214,7 @@ function GetInfoPagePl() {
 		players[pid].tid 	= cid
 		players[pid].num 	= i
 		players[pid].hash	= UrlValue('z',$(val).find('td:eq(1) a:first').attr('href'))
-		players[pid].name	= TrimString($(val).find('td:eq(1) a').html()
+		players[pid].name	= Std.trim($(val).find('td:eq(1) a').html()
 								.split('<img')[0]
 								.replace('(*)','')
 								.replace('<i>','')

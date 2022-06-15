@@ -11,7 +11,8 @@
 // ==/UserScript==
 /**/
 
-var isOldRoster = false;
+let isOldRoster = false,
+url = new Url();
 
 var players = [];
 players[0] = [];
@@ -269,7 +270,7 @@ function GetNomData(id) {
     var t = 0
     for (i = 1; i < sdata.length; i++) {
         for (n in sdata[i]) {
-            if (isNaN(parseInt(sdata[i][n][0])) && TrimString(sdata[i][n][0]) != '') {
+            if (isNaN(parseInt(sdata[i][n][0])) && Std.trim(sdata[i][n][0]) != '') {
                 t++
                 plnom[t] = {psum: 0, tkp: sdata[i][saleValue][saleAge]}
 
@@ -277,7 +278,7 @@ function GetNomData(id) {
                 if (pos1 === '') plnom[t].pos1 = true
                 else for (h in pos1) if (pl.position.indexOf(pos1[h]) != -1) plnom[t].pos1 = true
 
-                var pos2 = (sdata[i][n][0].split(' ')[1] === undefined ? TrimString(sdata[i][n][0].split(' ')[0]) : sdata[i][n][0].split(' ')[1]).split('/')
+                var pos2 = (sdata[i][n][0].split(' ')[1] === undefined ? Std.trim(sdata[i][n][0].split(' ')[0]) : sdata[i][n][0].split(' ')[1]).split('/')
                 for (h in pos2) if (pl.position.indexOf(pos2[h]) != -1) plnom[t].pos2 = true
 
                 if (plnom[t].pos1 && plnom[t].pos2) {
@@ -630,7 +631,7 @@ function ShowAdaptation(plnat, tnat) {
 }
 
 function SetValue(vl, vlch) {
-    if (UrlValue('t') === 'p') {
+    if (url.t === 'p') {
         if (ff) {
             var text1 = String(localStorage['players']).split('#');
             for (i in text1) {
@@ -1177,7 +1178,7 @@ function CheckPlayer(nn) {
 function CodeForForum() {
     var x = '<div align="right">(<a href="' + window.location.href + '">x</a>)&nbsp;</div>'
     var pl = players[0]
-    var ptype = UrlValue('t')
+    var ptype = url.t;
     var skillsshow = ($('a#th0').html() !== '+')
     var seasonstatshow = ($('a#th1').html() !== '+')
     var fullstatshow = ($('a#th2').html() !== '+')
@@ -1530,7 +1531,7 @@ function ShowLastStats() {
 
 function doOldRoster() {
     
-    if (UrlValue('t') === 'plast' || UrlValue('t') === 'plast2') return false
+    if (url.t === 'plast' || url.t === 'plast2') return false
 
     drawEars();
 
@@ -1579,21 +1580,21 @@ function doOldRoster() {
     players[0].team = ''
     players[0].sale = 0
 
-    players[0].t = UrlValue('t')
-
-    if (players[0].t == 'p' || players[0].t == 'pp') {
+    players[0].t = url.t
+    let urlTeam = new Url($('td.back4 a:first').attr('href'));
+    if (url.t== 'p' || url.t == 'pp') {
         players[0].team = $('td.back4 a:first').text()
-        players[0].teamid = UrlValue('j', $('td.back4 a:first').attr('href'))
-        players[0].teamhash = UrlValue('z', $('td.back4 a:first').attr('href'))
-    } else if (players[0].t == 'p2') {
+        players[0].teamid = urlTeam.j;
+        players[0].teamhash = urlTeam.z;
+    } else if (url.t == 'p2') {
         players[0].team = 'свободный'
     }
     // школяр!
-    if (players[0].t == 'yp' || players[0].t == 'yp2') {
+    if (url.t == 'yp' || url.t == 'yp2') {
         players[0].flag = 5
     }
-    players[0].id = UrlValue('j')
-    players[0].hash = UrlValue('z')
+    players[0].id = url.j;
+    players[0].hash = url.z;
     if ($('a:[href^="plug.php?p=tr&t=ncyf&n=yf"]').length > 0) {
         //значит молодежь
         players[0].flag = 7
@@ -1627,7 +1628,7 @@ function doOldRoster() {
         players[0].wage = +ms[j].split(' ', 4)[3].replace(/,/g, '').replace('$', '')
         j++
     } else {
-        if (UrlValue('t') == 'yp' || UrlValue('t') == 'yp2') {
+        if (url.t == 'yp' || url.t == 'yp2') {
             players[0].contract = 21 - players[0].age
             players[0].wage = 100
         } else {
@@ -1767,7 +1768,7 @@ function doOldRoster() {
     }
 
     // добавим ссылку на заметки
-    if (UrlValue('t') != 'yp') $('td.back4' + (UrlValue('t') != 'yp2' ? ' center:last' : '')).append("<br><a href=\"javascript:hist('" + players[0].id + "','n')\">Заметки</a>")
+    if (url.t != 'yp') $('td.back4' + (url.t != 'yp2' ? ' center:last' : '')).append("<br><a href=\"javascript:hist('" + players[0].id + "','n')\">Заметки</a>")
 
     getPlayers();
     if (players.length > 1) PrintPlayers();
@@ -1784,7 +1785,7 @@ function doOldRoster() {
 }
 
 function doNewRoster() {
-    if (UrlValue('t') == 'plast' || UrlValue('t') == 'plast2') {
+    if (url.t == 'plast' || url.t == 'plast2') {
         return false;
     }
 
@@ -1854,26 +1855,27 @@ function doNewRoster() {
     players[0].morale = ($('table#hd1').next().find('tr:first th:first').text() === '' ? 0 : parseInt($('table#hd1').next().find('tr:first th:first').text()));
 
     players[0].team = ''
-    players[0].t = UrlValue('t')
-    if(UrlValue('k')) players[0].k = UrlValue('k')
+    players[0].t = url.t
+    if (url.k !== undefined) players[0].k = url.k
 
-    if (players[0].t === 'p2') {
+    if (url.t === 'p2') {
         players[0].team = 'свободный'
     } else {
+        let urlTeam = new Url($('table#hd1').next().find('tr:first a:first').attr('href'));
         if ($('table#hd1').next().find('tr:first font').length > 0) {
             players[0].team = $('table#hd1').next().find('tr:first font:first').text()
-            players[0].teamid = UrlValue('j', $('table#hd1').next().find('tr:first a:first').attr('href'))
-            players[0].teamhash = UrlValue('z', $('table#hd1').next().find('tr:first a:first').attr('href'))
+            players[0].teamid = urlTeam.j
+            players[0].teamhash = urlTeam.z
             players[0].teamnat = parseInt($('table#hd1').next().find('tr:first img:first').attr('src').split('mod/')[1])
         }
     }
 
     // школяр!
-    if (players[0].t === 'yp' || players[0].t === 'yp2') {
+    if (url.t === 'yp' || url.t === 'yp2') {
         players[0].flag = 5;
     }
-    players[0].id = UrlValue('j');
-    players[0].hash = UrlValue('z');
+    players[0].id = url.j;
+    players[0].hash = url.z;
     if ($('a:[href^="plug.php?p=tr&t=ncyf&n=yf"]').length > 0) {
         //значит молодежь
         players[0].flag = 7;
@@ -2000,7 +2002,7 @@ function doNewRoster() {
 //	$('td.back4 table table:eq(1)').attr('id','stat')
 
     // добавим ссылку на заметки
-    if (UrlValue('t') !== 'yp') $("#crabright").append("<br><a href=\"javascript:hist('" + players[0].id + "','n')\">Заметки</a>")
+    if (url.t !== 'yp') $("#crabright").append("<br><a href=\"javascript:hist('" + players[0].id + "','n')\">Заметки</a>")
 
     getPlayers();
     if (players.length > 1) PrintPlayers();
@@ -2030,6 +2032,8 @@ function getPlayers() {
 }
 
 $().ready(function () {
+    let url = new Url();
+    Std.debug('url t=%s p=%s',url.t, Url.value('p'));
     if ($('table#hd1').length === 0) {
         isOldRoster = true;
         doOldRoster();

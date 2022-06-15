@@ -343,7 +343,7 @@ function getMatchInfo(){
 				pl[n] = otiarr[n].split('"')[0]
 				pl[n] = parseInt(parseInt(pl[n])==0 ? String(pl[n])[1] : pl[n])
 				pnum[n] = (pl[n]>18 ? pl[n]-18 : pl[n])
-				pname[n] = TrimString($('td.back4 table:eq(6) tr:eq('+(pnum[n]-1)+') a:eq('+(pl[n]>18 ? 1 : 0)+')').text())
+				pname[n] = Std.trim($('td.back4 table:eq(6) tr:eq('+(pnum[n]-1)+') a:eq('+(pl[n]>18 ? 1 : 0)+')').text())
 			}
 			if(pnum[1]>pnum[2]){
 				plon = pname[1]
@@ -442,7 +442,7 @@ function getPlayersInfo(){
 	var unia = 2
 	$('td.back4 table:eq(6) td[id^=p]').each(function(i,val){
 		var player	= {id:mid}
-		var nameid	= TrimString($(val).find('a[href^=javascript]').text())
+		var nameid	= Std.trim($(val).find('a[href^=javascript]').text())
 		if(positions[nameid]!=undefined && positions[nameid].ps!=undefined) player.ps = positions[nameid].ps
 
         var pnum = parseInt($(val).prev().html()) +(i%2==1 ? 18 : 0)
