@@ -29,7 +29,7 @@ function getIDnum(){
 }
 
 function SetNation(){
-	let id = parseInt(UrlValue('j',$('td.back4 a:contains(Команда)').attr('href')))
+	let id = parseInt(Url.value('j',$('td.back4 a:contains(Команда)')[0]))
 	if(isNaN(id)) delete localStorage.myintid
 	else localStorage.myintid = (id>1000 ? id-1000 : id)
 }

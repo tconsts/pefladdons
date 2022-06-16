@@ -1,6 +1,6 @@
 {
   "name": "PEFL CrabVIP",
-  "version": "2.0",
+  "version": "2.0.19",
   "manifest_version": 3,
 
   "action": {
@@ -65,9 +65,7 @@
 	"matches": ["<all_urls>"],
  	"extension_ids": []
   }],
-  "permissions":[
-	"unlimitedStorage"
-  ],
+  "permissions":[],
   "host_permissions":[	
 	"http://pefl.ru/*",
 	"http://pefl.org/*",

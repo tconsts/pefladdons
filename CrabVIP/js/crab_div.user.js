@@ -89,7 +89,7 @@ function FixColors(){
 	$('td.back4 table table tr:odd').addClass(fixclass)		          
 }
 
-var tasks	= ['','Чемпионство','Выйти в высший Д.','Медали','Зона Судамерикана','Зона УЕФА','Попасть в 3А','Попасть в пятерку','Попасть в десятку','15 место','Не вылететь']
+var tasks	= ['','Чемпионство','Выйти в высший Д.','Медали','Зона Судамерикана','Зона ЛК','Попасть в 3А','Попасть в пятерку','Попасть в десятку','15 место','Не вылететь']
 var schools	= ['','очень слабая','слабая','средняя','хорошая','отличная','мирового уровня','одна из лучших в мире']
 
 var showfl = false
@@ -110,14 +110,14 @@ $().ready(function() {
 	drawEars();
 	$('body table.border:has(td.back4)').appendTo( $('td#crabglobalcenter') );
 	
-	rseason = UrlValue('f',$('td.back4 a[href^="plug.php?p=refl&t=s&v=y&h=0&j="]:last').attr('href'))
-	dseason = UrlValue('f')
+	rseason = Url.value('f',$('td.back4 a[href^="plug.php?p=refl&t=s&v=y&h=0&j="]:last')[0]);
+	dseason = Url.value('f');
 
 	// add column with goals +/- (will be include to code for forum)
 	PlusMinus();
 
 	// Select as bold self team in my table with id=0
-	if( UrlValue('k') && UrlValue('k')!=0) SelectTeam(UrlValue('k'))
+	if( Url.value('k') && Url.value('k')!=0) SelectTeam(Url.value('k'));
 
 	GetInfoPageDiv()
 	var text = '<table width=100%>'
@@ -625,7 +625,7 @@ function ModifyTeams(){
 	})
 //	for (i in zag) debug(i+':'+zag[i])
 	$('td.back4 table:first table:first tr:gt(0)').each(function(i, val){
-		var id = parseInt(UrlValue('n',$(val).find('a:has(u)').attr('href')))
+		var id = parseInt(Url.value('n',$(val).find('a:has(u)')[0]))
 		if(typeof(teams[id])=='undefined') {
 			teams[id] = {}
 			teams[id].tid = id
@@ -639,7 +639,7 @@ function ModifyTeams(){
 		teams[id].gdown	= $(val).find('td:eq('+zag['ГП']+')').html()
 		teams[id].gpm	= $(val).find('td:eq('+zag['+-']+')').html()
 		teams[id].score	= $(val).find('td:eq('+zag['О']+')').html()
-		teams[id].thash = UrlValue('z',$(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]').attr('href'))
+		teams[id].thash = Url.value('z',$(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]')[0])
 		teams[id].tplace= 1000-div_cur.dnum*100-i-1
 		teams[id].did   = div_cur.did
 		teams[id].nname = div_cur.nname
@@ -742,7 +742,7 @@ function GetInfoPageDiv(){
 	$('a[href*="p=refl&t=s&k=0&"]').each(function(i, val){
 		if($(val).text() == div_cur.dname) {
 			div_cur.dnum = i+1
-			div_cur.did = parseInt(UrlValue('j',$(val).attr('href')))
+			div_cur.did = parseInt(Url.value('j',$(val)[0]))
 		}
 	})
 	div_cur.dprize  = ''

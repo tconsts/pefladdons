@@ -87,8 +87,8 @@ function checkMatches(){
 function getPageMatches(){
 	debug('getPageMatches()')
 	var m2 = []
-	var year  = parseInt(UrlValue('y',$('td.back4 a:first').attr('href')))
-	var month = parseInt(UrlValue('m',$('td.back4 a:first').attr('href'))) + 1
+	var year  = parseInt(Url.value('y',$('td.back4 a:first')[0]))
+	var month = parseInt(Url.value('m',$('td.back4 a:first')[0])) + 1
 	if(month>12) {
 		month = 1
 		year += 1
@@ -109,7 +109,7 @@ function getPageMatches(){
 				// есть матч!!!
 				//club
 				var place = ($(this).find('b a').length>0 ? 'a' : 'h')
-				gdli[place+'id'] = parseInt(UrlValue('j',$(this).find('a:first').attr('href')))
+				gdli[place+'id'] = parseInt(Url.value('j',$(this).find('a:first')[0]))
 				gdli[place+'nm'] = $(this).find('a:first').text()
 
 				//weather

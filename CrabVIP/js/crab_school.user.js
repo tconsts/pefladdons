@@ -22,8 +22,8 @@ $().ready(function() {
 		let pl = {};
 		pl.name = $(this).find('td:eq(0)').text();
 		pl.url = $(this).find('td:eq(0) a').attr('href');
-		pl.id = UrlValue('j',pl.url);
-		pl.type = UrlValue('t',pl.url);
+		pl.id = Url.value('j',$(this).find('td:eq(0) a')[0]);
+		pl.type = Url.value('t',$(this).find('td:eq(0) a')[0]);
 		pl.nat = parseInt($(this).find('td:eq(1) img').attr('src').split('flags/mod/')[1], 10);
 		pl.age = parseInt($(this).find('td:eq(2)').text(), 10);
 		pl.position = $(this).find('td:eq(3)').text();

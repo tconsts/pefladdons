@@ -63,7 +63,6 @@
 	"js/crab_new_sostav.user.js"
   ],
   "permissions":[
-	"unlimitedStorage",
 	"http://pefl.ru/*",
 	"http://pefl.org/*",
 	"http://www.pefl.ru/*",

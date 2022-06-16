@@ -162,9 +162,9 @@ $.getScript("js/adaptation.en.js", function() {
 	debug('MarkMyCountry:t1='+t1+':t2='+t2)
 	$('td.back4 table table tr:gt(0)').each(function(k,kval){
 		$(kval).find('td:eq('+t1+'), td:eq('+t2+')').each(function(t,tval){
-			if(nname==teams[parseInt(UrlValue('j',$(tval).find('a').attr('href')))]) {
+			if(nname==teams[parseInt(Url.value('j',$(tval).find('a')[0]))]) {
 
-				debug('MarkMyCountry:'+k+':teamid='+parseInt(UrlValue('j',$(tval).find('a').attr('href')))+':nname='+teams[parseInt(UrlValue('j',$(tval).find('a').attr('href')))])
+				debug('MarkMyCountry:'+k+':teamid='+parseInt(Url.value('j',$(tval).find('a')[0]))+':nname='+teams[parseInt(Url.value('j',$(tval).find('a')[0]))])
 				$(tval).find('a').attr('style','border-bottom:1px solid blue').end()
 					.attr('bgcolor','D3D7CF')
 					.parent().removeAttr('class').attr('bgcolor','white')

@@ -51,7 +51,7 @@ $().ready(function() {
 	let home = '';
 	let away = '';
 
-	if (UrlValue('j', team1.attr("href")) == homeID ) {
+	if (Url.value('j', team1) == homeID ) {
 		home = team1.text(); away = team2.text();
 	} else {
 		home = team2.text(); away = team1.text();

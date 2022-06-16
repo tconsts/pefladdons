@@ -39,10 +39,11 @@ class Std {
 }
 class Url {
 	/**
-	 * @param {string=} url 
+	 * @param {string=} loc - location 
 	 */
-	constructor(url) {
-		const pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&');
+	constructor(loc) {
+		if (loc == undefined) loc = location;
+		const pf = loc?.search?.substring(1)?.split('&');
 		for (let n in pf) {	
 			this[pf[n].split('=')[0]] = pf[n].split('=')[1];
 		}

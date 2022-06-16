@@ -23,7 +23,7 @@ function showMatches(){
 	var myteamid = parseInt(localStorage.myteamid)
 	var myteamname = ''
 	$('td.back4 table:first table:eq(1) tr:eq(1) td:eq(0) a').each(function(){
-		if(parseInt(UrlValue('j',$(this).attr('href'))) == myteamid) myteamname = $(this).text()
+		if(parseInt(Url.value('j',$(this))) == myteamid) myteamname = $(this).text()
 	})
 
 	$('td.back4 table:first table:eq(1) tr[bgcolor]').addClass('back3').removeAttr('bgcolor')
@@ -36,7 +36,7 @@ function showMatches(){
 			$(this).prepend('<td></td><td nowrap></td>')
 			$(this).find('td:eq(5)').after('<td nowrap></td>')
 			//get match id
-			var matchid = parseInt(UrlValue('j',$(this).find('td:eq(3) a').attr('href')))
+			var matchid = parseInt(Url.value('j',$(this).find('td:eq(3) a')[0]))
 			for(k in matches){
 				if(matches[k]!=null&& matches[k]!=undefined && matches[k].id==matchid){
 					var mch = matches[k]
@@ -88,5 +88,5 @@ function showMatches(){
 
 let matches = [];
 $().ready(function() {
-	if (parseInt(localStorage.myteamid) == parseInt(UrlValue('j'))) showMatches();
+	if (parseInt(localStorage.myteamid) == parseInt(Url.value('j'))) showMatches();
 })

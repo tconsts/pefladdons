@@ -1581,7 +1581,7 @@ function doOldRoster() {
     players[0].sale = 0
 
     players[0].t = url.t
-    let urlTeam = new Url($('td.back4 a:first').attr('href'));
+    let urlTeam = new Url($('td.back4 a:first')[0]);
     if (url.t== 'p' || url.t == 'pp') {
         players[0].team = $('td.back4 a:first').text()
         players[0].teamid = urlTeam.j;
@@ -1861,7 +1861,7 @@ function doNewRoster() {
     if (url.t === 'p2') {
         players[0].team = 'свободный'
     } else {
-        let urlTeam = new Url($('table#hd1').next().find('tr:first a:first').attr('href'));
+        let urlTeam = new Url($('table#hd1').next().find('tr:first a:first')[0]);
         if ($('table#hd1').next().find('tr:first font').length > 0) {
             players[0].team = $('table#hd1').next().find('tr:first font:first').text()
             players[0].teamid = urlTeam.j
@@ -2032,7 +2032,6 @@ function getPlayers() {
 }
 
 $().ready(function () {
-    let url = new Url();
     Std.debug('url t=%s p=%s',url.t, Url.value('p'));
     if ($('table#hd1').length === 0) {
         isOldRoster = true;
