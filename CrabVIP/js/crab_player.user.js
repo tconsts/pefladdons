@@ -134,7 +134,7 @@ function filterPosition(plpos, flpos) {
 
 function countPosition(posnum) {
     var ps = positions[posnum]
-    ps.strmax = countStrength(ps.koff)
+    ps.strmax = countStrength(ps.koff)[0];
     var pls = []
     
     //TODO надо зарефакторить
@@ -153,44 +153,11 @@ function countPosition(posnum) {
     pl.posf = filterPosition(players[j].position, ps.filter)
     if (ps.filter === '') pl.posfempty = true
     var s = (pl.srt != undefined ? 'srt' : (pl['!srt'] != undefined ? '!srt' : ''))
-    if (s != '' && pl[s] != undefined) pl[s] = (ps.strmax === 0 ? 0 : (countStrength(ps.koff,j) / ps.strmax) * 100)
+    if (s != '' && pl[s] != undefined) pl[s] = (ps.strmax === 0 ? 0 : (countStrength(ps.koff,players[j])[0] / ps.strmax) * 100)
 
     pls.push(pl)
 
     positions[posnum].pls = pls.sort(sSrt)
-}
-
-function countStrength(pkoff,plid) {
-    let pl = (plid === undefined ? players[0] : players[plid]),
-    res = 0,
-    skval = 0,
-    regxpFrm = new RegExp('\\=([0-9а-я\\(\\)\\+\\*\\-\\/\\.\\!]+)','g'),
-    frm = '(' + pkoff.match(regxpFrm).join(')+(').replace(/\=/g,'').replace(/\s/g,'') + ')',
-    keys = [...new Set(frm.match(/[а-я]+/g))];
-
-    for (let p in skillnames) {
-        let skname = (skillnames[p].rshort !== undefined) ? skillnames[p].rshort : p;        
-        if (keys.length > 0) {
-            $.each(keys, function (index, value) {
-                let reg = new RegExp(value, "g");
-                if (skname === value) {                    
-                    skval = plid === undefined
-                        ? skillnames[p].strmax != undefined ? skillnames[p].strmax : plskillmax
-                        : pl[p] !== undefined ? parseFloat(pl[p]) : 0;
-                    skval = skval - (skillnames[p].strinvert != undefined ? skillnames[p].strinvert : 0);
-                    frm = frm.replace(reg, "(" + (isNaN(skval) ? 0 : skval) + ")");
-                    keys.splice(index,1);
-                }
-            });
-        }
-    }
-    $.each(keys, function (index, value) {
-        console.warn("Not found params - set as 0",value);
-        let reg = new RegExp(value, "g");
-        frm = frm.replace(reg, "(0)");
-    })
-    res = clcFr(frm,0);
-    return res;
 }
 
 function RelocateGetNomData(arch) {

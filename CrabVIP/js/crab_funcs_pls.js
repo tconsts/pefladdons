@@ -66,26 +66,99 @@ list = {
 	positions: 'id,filter,name,num,koff,order'
 }
 
+function checkKoff(kf0){
+	let res = kf0.replace(/!/g,'')
+	if(skillnames[res]==undefined){
+        debug("checkKoff(kf0=%s)",kf0,)
+		let custom = true
+		for(h in skillnames){
+			if(skillnames[h].rshort==res) {
+				custom = false
+				res = h
+			}
+		}
+		if(custom){
+			skillnames[res] = {}
+			skillnames[res].rshort = res
+			skillnames[res].rlong = 'Custom ןאנאלוענ'
+			skillnames[res].type = 'custom'
+		}
+	}
+	return res
+}
+
 function clcFr(s0,clcNum) {
-	let m,
-    regexpRemBracket = new RegExp('\\(([\-]?[0-9]+[\\.]?[0-9]*)\\)','g'),
+    if (clcNum >= 50) {
+        console.warn('Count limit(50) is exceeded, current formula: %s, return 0',s0);
+        return 0;
+    }
+
+	let regexpRemBracket = new RegExp('\\(([\-]?[0-9]+[\\.]?[0-9]*)\\)','g'),
     s = s0.replace(regexpRemBracket,"$1");
 
     $.each(["*","/","+","-"], function (index, value) {
         rexp = new RegExp('([\\-]?[0-9]+[\\.]?[0-9]*)([\\' + value + '])([\\-]?[0-9]+[\\.]?[0-9]*)');
-        m = s.match(rexp);
+        let m_res, m = s.match(rexp);
         if (m !== null) {
             switch (value) {
-                case "*": s = s.replace(m[0],(parseFloat(m[1])*parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
-                case "/": s = s.replace(m[0],(parseFloat(m[1])/parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
-                case "+": s = s.replace(m[0],(parseFloat(m[1])+parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
-                case "-": s = s.replace(m[0],(parseFloat(m[1])-parseFloat(m[3]))).replace(regexpRemBracket,"$1");break;
+                case "*": m_res = parseFloat(m[1])*parseFloat(m[3]); break;
+                case "/": m_res = parseFloat(m[1])/parseFloat(m[3]); break;
+                case "+": m_res = parseFloat(m[1])+parseFloat(m[3]); break;
+                case "-": m_res = parseFloat(m[1])-parseFloat(m[3]); break;
             }
+            s = s.replace(m[0],m_res).replace(regexpRemBracket,"$1");
             return false;
         }
     })		
     if (s === s0) return s;
-    if (clcNum >= 50) return 0;
-    clcNum++;
-    return clcFr(s,clcNum);
+    return clcFr(s,clcNum++);
+}
+
+function countStrength(pkoff,pl) {
+    const regxpFrm = new RegExp('\\=([0-9א-ÿÀ-‗a-zA-Z\\(\\)\\+\\*\\-\\/\\.\\!]+)','g');
+    let res = [],    
+    formula_sort = '(' + pkoff.match(regxpFrm).join(')+(').replace(/\=/g,'').replace(/\s/g,'') + ')',
+    formula_strn = formula_sort,
+    formula_keys = [...new Set(formula_sort.match(/[א-ÿÀ-‗a-zA-Z]+/g))]
+    //names = pkoff.match(/([a-zA-Zא-ÿÀ-‗]+)=/g);
+    //names = $.map(names, function(i) { return i.replace('=','');});
+
+    $.each(formula_keys, function (index, value) {
+        const reg = new RegExp(value, "g");
+        let found = false,
+        skval_sort = 0,
+        skval_strn = 0;        
+        for (let p in skillnames) { 
+            let skill = skillnames[p];
+            if ((skill.rshort ?? p) === value) {
+                let skval = (
+                    pl === undefined
+                        ? skill.strmax ?? plskillmax
+                        : parseFloat(pl[p] ?? 0)
+                );
+                skval = skval - (skill.strinvert ?? 0);                
+                skval_sort = isNaN(skval) ? 0 : skval;
+                skval_strn = !skill.str || isNaN(skval) ? 0 : skval;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            debug("Key %s not found in skillnames",value);
+            checkKoff(value);
+            if (pl!=undefined && pl[value] !== undefined) {
+                let skval =  parseFloat(pl[value] ?? 0);
+                skval = skval - (skill.strinvert ?? 0);                
+                skval_sort = isNaN(skval) ? 0 : skval;
+                skval_strn = !skill.str || isNaN(skval) ? 0 : skval;
+            } else {
+                console.warn("Key %s not found in skillnames, replaced by 0",value);                
+            }
+        }
+        formula_sort = formula_sort.replace(reg, "(" + skval_sort  + ")");
+        formula_strn = formula_strn.replace(reg, "(" + skval_strn + ")");
+    });
+    res.push(clcFr(formula_strn,0));
+    if (formula_strn != formula_sort) res.push(clcFr(formula_sort,0));
+    return res;
 }

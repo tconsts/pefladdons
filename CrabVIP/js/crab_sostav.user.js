@@ -238,7 +238,7 @@ function GetData(dataname){
 			/**  7 **/	{filter:'LR DF/DM/MF',name:'Латераль',	num:5, koff:'ск=ск*3,рб=рб*2,вн=вн*3,от=от*2,др=др,!нв=нв,!тх=тх,фл,Фам,сила,зв'},
 			/**  8 **/	{filter:'LCR DF/DM,C MF',name:'Персональщик',num:5, koff:'по=по*5,от=от*3,вп=вп*3,ск=ск*3,фл,Фам,сила,зв'},
 			/**  9 **/	{filter:'C DF',		name:'Центральный',	num:5,	koff:'от=от*4,гл=гл*3,вп=вп*2,мщ=мщ*2,ск=ск*2,фл,Фам,сила,зв'},
-			/** 10 **/	{filter:'C DF',		name:'Ведущий',		num:5,	koff:'от=от*4,гл=гл*3,вп=вп*2,мщ=мщ*2,ск=ск*2,вд=вд,!лд=лд,!взр=взр,фл,Фам,сила,зв'},
+			/** 10 **/	{filter:'C DF',		name:'Ведущий',		num:5,	koff:'от=от*4,гл=гл*3,вп=вп*2,мщ=мщ*2,ск=ск*2,ви=ви,!лд=лд,!взр=взр,фл,Фам,сила,зв'},
 			/** 11 **/	{filter:'LR DM/MF',	name:'Оборонительный',num:5,koff:'от=от*3,ск=ск*3,нв=нв,тх=тх,фл,Фам,сила,зв'},
 			/** 12 **/	{filter:'LR DM/MF',	name:'Крайний',		num:5,	koff:'ск=ск*1.5,от=от*1.5,др=др,нв=нв,пс=пс,!тх=тх,фл,Фам,сила,зв'},
 			/** 13 **/	{filter:'C DM/MF',	name:'Оборонительный',num:5,koff:'рб=рб*2,от=от*3,пс=пс*2,вп=вп*3,гл=гл*2,фл,Фам,сила,зв'},
@@ -359,12 +359,12 @@ function filterPosition(plpos,fl) {
 
 //обсчитываем конкретную позицию и записываем игроков
 function countPosition(posnum,ppsn)
-{
+{	
 	if (ppsn == undefined) ppsn = 0;
 	var ps = positions[posnum];
-	var sf = countStrength('ideal',ps.koff).split(':');
+	var sf = countStrength(ps.koff);
 	ps.strmax = sf[0];
-	ps.sormax = sf[1];
+	ps.sormax = sf[1] ?? sf[0];
 	var pls = [];
 	for(j in players) {
 		var pl = {};
@@ -382,19 +382,10 @@ function countPosition(posnum,ppsn)
 			if(skillnames[koff]==undefined) for(l in skillnames) if(skillnames[l].rshort==koff.replace(/\!/g,'')) koff=koff.replace(skillnames[l].rshort,l);
 			pl[koff] = (players[j][koff.replace(/\!/g,'')]==undefined ? 0 : players[j][koff.replace(/\!/g,'')]);
 		}
-		//if (posnum==15) console.log('countPosition for pl'+j+' pos="'+players[j].position+'" in filter "'+ps.filter+'"');
-		/*
-		var plposition = String(players[j].position);
-		pl.psn = [];
-		if (~plposition.indexOf('AM') || ~plposition.indexOf('DM')) plposition+='/MF';
-		if ((~plposition.indexOf('L') || ~plposition.indexOf('R')) && ~plposition.indexOf('FW')) plposition+='/AM';
-		for(c in psn) {
-			if(c>0) pl.psn[c] = filterPosition(psn[c], plposition);
-		}
-		*/
 		var s = (pl.srt!=undefined ? 'srt' : (pl['!srt']!=undefined ? '!srt' : ''));
 		if(s!='' && pl[s]!=undefined) {
-			var sfp = countStrength(j,ps.koff).split(':');
+			var sfp = countStrength(ps.koff,players[j]);
+			if (sfp[1]==undefined) sfp[1] = sfp[0];
 			pl[s] = (ps.strmax==0 ? 0 : (sfp[0]/ps.strmax)*100);
 			pl.sor = (ps.sormax==0 ? 0 : (sfp[1]/ps.sormax)*100);
 		}
@@ -404,25 +395,7 @@ function countPosition(posnum,ppsn)
 	//if (positions[posnum].pls[0].srt!=undefined) positions[posnum].maxsrt = positions[posnum].pls[0].srt;
 }
 
-function checkKoff(kf0){
-	var res = kf0.replace(/!/g,'')
-	if(skillnames[res]==undefined){
-		var custom = true
-		for(h in skillnames){
-			if(skillnames[h].rshort==res) {
-				custom = false
-				res = h
-			}
-		}
-		if(custom){
-			skillnames[res] = {}
-			skillnames[res].rshort = res
-			skillnames[res].rlong = 'Custom параметр'
-			skillnames[res].type = 'custom'
-		}
-	}
-	return res
-}
+
 
 function changeValue(formula,name,value){
 	if(formula.indexOf(name)!=-1 && name!=''){
@@ -433,15 +406,17 @@ function changeValue(formula,name,value){
 }
 
 //подсчет игрока по кофу
-function countStrength(plid,pkoff)
+/* 
+function countStrength(pkoff,pl)
 {
-	var pl;
-	if (plid=='ideal'){
+	if (pl == undefined) {
 		var keys = Object.keys(players);
 		for (s=1; s<2; s++) {pl = players[keys[s]];break;}
+		plid = 'ideal';
 	} else {
-		pl = players[plid];
+		plid = 'p'+pl.id;
 	}
+
 	pkoff = pkoff.split(',')
 	var res  = 0
 	var res2 = 0
@@ -451,17 +426,19 @@ function countStrength(plid,pkoff)
 		var koff = pkoff[n].split('=')
 		var koffname = checkKoff(koff[0])
 		if(koff[1]!=undefined){
-			count  = koff[1].replace(/\s/g,'')
-			count2 = koff[1].replace(/\s/g,'')
+			count  = koff[1].replace(/\s/g,'')			
 			for(p in pl){
 				var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
 				var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
 				skill = '('+(skill-(skillnames[p]!=undefined && skillnames[p].strinvert!=undefined ? skillnames[p].strinvert : 0))+')'
 				count = changeValue(count,p,skill)
 				count = (skillnames[p]!=undefined ? changeValue(count,skillnames[p].rshort,skill) : count)
-				if(skillnames[p]!=undefined && !skillnames[p].str) skill = 0
+				count2 = count;
+				if (skillnames[p]!=undefined && !skillnames[p].str) skill = 0
 				count2 = changeValue(count2,p,skill)
 				count2 = (skillnames[p]!=undefined ? changeValue(count2,skillnames[p].rshort,skill) : count2)
+
+				if (count != count2) debug('count!=count2',count, count2, p, skillnames[p]);
 			}
 			for(p in skillnames){
 				count = changeValue(count,p,0)
@@ -470,23 +447,30 @@ function countStrength(plid,pkoff)
 				count2 = changeValue(count2,skillnames[p].rshort,0)
 			}
 			var countval  = parseFloat(clcFr(count,0));
-			var countval2 = parseFloat(clcFr(count2,0));
+			var countval2 = count!=count2 ? parseFloat(clcFr(count2,0)) : countval;
 			if(countval=='x') {
 				if(plid=='ideal') alert('!!Ошибка подсчета в "'+pkoff[n]+'":('+koff[1]+')')
 				return '0:0'
 			}
 			if(plid!='ideal' && skillnames[koffname].type=='custom') {
-				players[plid][koffname] = countval
+				//players[plid][koffname] = countval
+				pl[koffname] = countval
 			}
 			res  += countval
 			res2 += countval2
 		}
 	}
-	return res2+':'+res
+	return [res2,res];
 }
+/* */
 
-function krPrint(val,sn){
-	switch(skillnames[sn].type){
+function krPrint(val,sn) {
+	if ( skillnames[sn] == undefined) {
+		debug("krPrint(val=%s,sn=%s)",val, sn,skillnames);
+		checkKoff(sn)
+	}
+	//switch (skillnames[sn]?.type ?? 'custom') {
+	switch (skillnames[sn].type) {
 		case 'float':
 			return (val).toFixed(1);
 		case 'value':
@@ -496,7 +480,7 @@ function krPrint(val,sn){
 		case 'flag':
 			return '<img src="system/img/flags/mod/'+val+'.gif" width="15">';
 		default:
-			return (skillnames[sn].str ? (isNaN(parseInt(val)) || val==0 ? ' ' : parseInt(val)) : val);
+			return (skillnames[sn]?.str ? (isNaN(parseInt(val)) || val==0 ? ' ' : parseInt(val)) : val);
 	}
 }
 
@@ -575,8 +559,8 @@ function FillData(nt)
 					plhtml += krPrint(pl[pp],p)
 					plhtml += font2+'</td>'
 					if(head) {
-						headhtml += '<td'+hidden+(skp.rlong!=undefined ? ' title="'+skp.rlong+'"' : '')+'>'
-						headhtml += (skp.rshort!=undefined ? skp.rshort : p)
+						headhtml += '<td'+hidden+(skp?.rlong!=undefined ? ' title="'+skp.rlong+'"' : '')+'>'
+						headhtml += (skp?.rshort!=undefined ? skp.rshort : p)
 						headhtml += '</td>'
 					}
 				}
