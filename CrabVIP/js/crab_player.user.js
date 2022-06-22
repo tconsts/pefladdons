@@ -274,9 +274,9 @@ function GetNomData(id) {
     if (plnom[1].psum != 0 && ((plnom[0].psum / plnom[1].psum) < kpkof)) {
         tkp = Math.max(plnom[0].tkp, plnom[1].tkp) / 100
     }
-    svalue = parseInt(pl.value * tkp * fp.res / 1000)
-    svalue = (svalue === 0 ? 1 : svalue)
-    $('div#SValue').html('~<font size=2>' + ShowValueFormat(svalue) + '</font>')
+    svalue = parseInt(pl.value * tkp * fp.res);
+    svalue = (svalue === 0 ? 1000 : svalue);
+    $('div#SValue').html('~<font size=2>' + Player.currencyToString(svalue) + '</font>');
 }
 
 function sNomPsum(i, ii) { // Сортировка
@@ -285,10 +285,6 @@ function sNomPsum(i, ii) { // Сортировка
     else return 0
 }
 
-function ShowValueFormat(value) {
-    if (value > 1000) return (value / 1000).toFixed(3).replace(/\./g, ',') + ',000$'
-    else return (value) + ',000$'
-}
 
 function ShowAdaptation(plnat, tnat) {
     if (String(localStorage.mycountry) != 'undefined' && plnat != undefined && plnat != ' ') {
@@ -830,28 +826,15 @@ function CheckPlayerOld(nn) {
     }
     header += '</td></tr>'
     //контракты
-    header += '<tr align=center><td>'
-    if (players[0].wage !== 0) {
-        header += players[0].contract + ' г. по '
-        header += (players[0].wage > 999 ? String((players[0].wage / 1000).toFixed(3)).replace(/\./g, ',') : players[0].wage)
-        header += '$ в ИД'
-    }
-    header += ' </td>'
-    header += '<td>'
-    if (players[nn].wage !== 0) {
-        header += players[nn].contract + ' г. по '
-        header += (players[nn].wage > 999 ? String((players[nn].wage / 1000).toFixed(3)).replace(/\./g, ',') : players[nn].wage)
-        header += '$ в ИД'
-    }
-    header += ' </td></tr>'
+    header += '<tr align=center>'
+        + '<td>' + players[0].wage !== 0 ? players[0].contract + ' г. по ' + Player.currencyToString(players[0].wage,true) + ' в ИД' : ' ' + '</td>'
+        + '<td>' + players[nn].wage !== 0 ? players[nn].contract + ' г. по ' + Player.currencyToString(players[nn].wage,true) + ' в ИД' : ' ' + '</td></tr>';
+
     // Номиналы
     if (players[0].value !== 0 || players[nn].value !== 0) {
-        header += '<tr align=center><td>'
-        if (players[0].value !== 0) header += 'Номинал: ' + String(players[0].value < 1000000 ? (players[0].value / 1000).toFixed(3) : (players[0].value / 1000000).toFixed(3) + ',000').replace(/\./g, ',') + '$'
-        header += ' </td>'
-        header += '<td>'
-        if (players[nn].value !== 0) header += 'Номинал: ' + String(players[nn].value < 1000000 ? (players[nn].value / 1000).toFixed(3) : (players[nn].value / 1000000).toFixed(3) + ',000').replace(/\./g, ',') + '$'
-        header += ' </td></tr>'
+        header += '<tr align=center>'
+            + '<td>' + players[0].value !== 0 ? 'Номинал: ' +  Player.currencyToString(players[0].value) : ' ' + '</td>'
+            + '<td>' + players[nn].value !== 0 ? 'Номинал: ' +  Player.currencyToString(players[nn].value) : ' ' + '</td></tr>';
     }
     // позиция
     header += '<tr align=center><td>'
@@ -1016,7 +999,10 @@ function CheckPlayer(nn) {
                 data['u21'] = players[nn][i] + '.' + players[nn]['u21goals'];
                 break;
             case 'value':
-                data[i] = (players[nn][i] === 0 ? '' : ShowValueFormat(players[nn][i] / 1000));
+                data[i] = (players[nn][i] === 0 ? '' : Player.currencyToString(players[nn][i]));
+                break;
+            case 'wage':
+                data[i] = Player.currencyToString(players[nn][i],true);
                 break;
             default:
                 data[i] = String(players[nn][i]);
@@ -1025,11 +1011,11 @@ function CheckPlayer(nn) {
     var cur = {
         'pname': '<img height="12" src="system/img/flags/mod/' + players[0].nation + '.gif"> ' + '<b>' + players[0]['firstname'] + ' ' + players[0]['secondname'] + '</b>',
         'age': players[0]['age'],
-        'value': (players[0]['value'] === 0 ? '' : ShowValueFormat(players[0]['value'] / 1000)),
+        'value': (players[0].value === 0 ? '' : Player.currencyToString(players[0].value)),
         'int': 'матчей ' + players[0]['internationalapps'] + ', голов ' + players[0]['internationalgoals'],
         'u21': 'матчей ' + players[0]['u21apps'] + ', голов ' + players[0]['u21goals'],
         'position': players[0]['position'],
-        'wage': players[0]['wage'],
+        'wage': Player.currencyToString(players[0].wage,true),
 		'foot': players[0]['foot'],
         'curseason': localStorage.season
     }
@@ -1312,27 +1298,6 @@ function CodeForForum() {
     x += '[center]--------------- [url=forums.php?m=posts&q=173605]Крабовый VIP[/url] ---------------[/center]\n';
     x += '[/spoiler]'
     x += '</textarea><hr>'
-    /**
-     x += '<b>Текстовый вариант:</b><br><br>'
-     x += pl.firstname + ' ' +pl.secondname+' (' + pl.team +')<br>'
-     x += pl.age +' лет, '+ pl.natfull+'<br>'
-     x += 'Контракт: '+pl.contract +' г., '+ pl.wage+' в игровой день<br>'
-     x += 'Номинал: '+pl.value +'<br>'
-     x += pl.position + ' (' + pl.newpos+ ')'+'<br>'
-     x += '<br>'
-     x += 'Умения ('+pl.sumskills+')<br>'
-     x += lp('Лидерство')        +parseInt(pl.leadership)+' '+lp('Дриблинг')        +parseInt(pl.dribbling)+'<br>'
-     x += lp('Удары')            +parseInt(pl.finishing)+' '    +lp('Игра в пас')    +parseInt(pl.passing)+'<br>'
-     x += lp('Видение поля')        +parseInt(pl.vision)+' '    +lp('Игра головой')    +parseInt(pl.heading)+'<br>'
-     x += lp('Навесы','.')        +parseInt(pl.crossing)+' '    +lp('Дальние удары')+parseInt(pl.longshots)+'<br>'
-     x += lp('Перс. опека')        +parseInt(pl.marking)+' '    +lp('Скорость')        +parseInt(pl.pace)+'<br>'
-     x += lp('Штрафные')            +parseInt(pl.freekicks)+' '    +lp('Выбор позиции')+parseInt(pl.positioning)+'<br>'
-     x += lp('Угловые')            +parseInt(pl.corners)+' '    +lp('Техника')        +parseInt(pl.technique)+'<br>'
-     x += lp('Мощь')                +parseInt(pl.strenght)+' '    +lp('Отбор мяча')    +parseInt(pl.tackling)+'<br>'
-     x += lp('Работоспособность')+parseInt(pl.workrate)+' '    +lp('Выносливость')    +parseInt(pl.stamina)+'<br>'
-     x += '<br>'
-     x += 'Форма: '+pl.form+'% | Мораль: '+pl.morale+'%<br>'
-     /**/
     $('td.back4').html(x)
     $('td#crabglobalright').empty()
 

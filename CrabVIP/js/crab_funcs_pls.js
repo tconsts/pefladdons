@@ -3,6 +3,44 @@
  * player, sostav and more..
  */
 
+class Player {
+    value = 1000;
+    wage = 0;
+    
+    /** 
+     * @param {boolean} full
+     * @returns {string}
+     */
+    valueToString(full) { return Player.currencyToString(this.value, full ?? false); }
+    /** 
+     * @param {boolean} full
+     * @returns {string}
+     */
+     wageToString(full) { return Player.currencyToString(this.wage, full ?? true); }
+    /**
+     * @param {number} value
+     * @param {boolean} full
+     * @returns {string}
+     */
+    static currencyToString(value, full) {
+        full = full ?? false;
+        value = parseInt(value) || 0;
+        let nums = 0, postfix = '$';
+        if (!full) {
+            if (value >= 1000) {
+                postfix = 'т$';
+                value = value/1000; // тыс€чи
+            }
+            if (value >= 1000) {
+                postfix = 'м$';
+                nums = 1;
+                value = value/1000; // миллионы
+            }
+        }
+        return value.toLocaleString("en-US",{maximumFractionDigits: nums}) + postfix;
+    }
+}
+
 let positions = [],
 plskillmax = 15,
 skillnames = {
