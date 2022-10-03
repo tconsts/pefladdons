@@ -395,8 +395,6 @@ function countPosition(posnum,ppsn)
 	//if (positions[posnum].pls[0].srt!=undefined) positions[posnum].maxsrt = positions[posnum].pls[0].srt;
 }
 
-
-
 function changeValue(formula,name,value){
 	if(formula.indexOf(name)!=-1 && name!=''){
 		var reg  = new RegExp(name, "g")
@@ -404,65 +402,6 @@ function changeValue(formula,name,value){
 	}
 	return formula
 }
-
-//подсчет игрока по кофу
-/* 
-function countStrength(pkoff,pl)
-{
-	if (pl == undefined) {
-		var keys = Object.keys(players);
-		for (s=1; s<2; s++) {pl = players[keys[s]];break;}
-		plid = 'ideal';
-	} else {
-		plid = 'p'+pl.id;
-	}
-
-	pkoff = pkoff.split(',')
-	var res  = 0
-	var res2 = 0
-	for(n in pkoff){
-		var count = 0		// filter
-		var count2 = 0		// strench
-		var koff = pkoff[n].split('=')
-		var koffname = checkKoff(koff[0])
-		if(koff[1]!=undefined){
-			count  = koff[1].replace(/\s/g,'')			
-			for(p in pl){
-				var plp = (isNaN(parseInt(pl[p])) ? 0 : parseInt(pl[p]))
-				var skill = (plid=='ideal' ? (skillnames[p]!=undefined && skillnames[p].strmax!=undefined ? skillnames[p].strmax : plskillmax) : plp)
-				skill = '('+(skill-(skillnames[p]!=undefined && skillnames[p].strinvert!=undefined ? skillnames[p].strinvert : 0))+')'
-				count = changeValue(count,p,skill)
-				count = (skillnames[p]!=undefined ? changeValue(count,skillnames[p].rshort,skill) : count)
-				count2 = count;
-				if (skillnames[p]!=undefined && !skillnames[p].str) skill = 0
-				count2 = changeValue(count2,p,skill)
-				count2 = (skillnames[p]!=undefined ? changeValue(count2,skillnames[p].rshort,skill) : count2)
-
-				if (count != count2) debug('count!=count2',count, count2, p, skillnames[p]);
-			}
-			for(p in skillnames){
-				count = changeValue(count,p,0)
-				count = changeValue(count,skillnames[p].rshort,0)
-				count2 = changeValue(count2,p,0)
-				count2 = changeValue(count2,skillnames[p].rshort,0)
-			}
-			var countval  = parseFloat(clcFr(count,0));
-			var countval2 = count!=count2 ? parseFloat(clcFr(count2,0)) : countval;
-			if(countval=='x') {
-				if(plid=='ideal') alert('!!Ошибка подсчета в "'+pkoff[n]+'":('+koff[1]+')')
-				return '0:0'
-			}
-			if(plid!='ideal' && skillnames[koffname].type=='custom') {
-				//players[plid][koffname] = countval
-				pl[koffname] = countval
-			}
-			res  += countval
-			res2 += countval2
-		}
-	}
-	return [res2,res];
-}
-/* */
 
 function krPrint(val,sn) {
 	if ( skillnames[sn] == undefined) {
@@ -722,6 +661,9 @@ function fillPosEdit(num){
 	html += '</td>'
 	html += '<td>';
 	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>Help</b></label></div>';
+	html += '<div><label style="width:30px;margin:2px;display:inline-block;"></label><label style="color:green"><img height=10 src="system/img/g/next.gif"> ' +
+		'можно применять конструкцию (гл>6?гл*5:гл*2)' +
+		'</label></div>';
 	html += '<div><label style="width:30px;margin:2px;display:inline-block;">!</label><label>значит по дефоулту поле не отображать</label></div>';
 	html += '<div><label style="width:30px;margin:2px;display:inline-block;">=</label><label>эти скилы учавствуют в подсчете силы</label></div>' ;
 	for(m in skillnames){

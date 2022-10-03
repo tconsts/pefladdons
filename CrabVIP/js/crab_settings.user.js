@@ -73,18 +73,18 @@ $().ready(function() {
 	html += 'Картинка вместо лого: <input name="logo" id="logo" type="text" size="40" value="'+(String(localStorage.logopic)!='undefined'?localStorage.logopic:'')+'"> <a href="javascript:void(setLogo())">установить</a>'
 
 	html += '<br><br>&nbsp;* - <i>Вы можете поддержать проект (или например запросить сделать определенную фичу в первую очередь, или в персональное пользование), перечислив какую-либо сумму одним из следующих способов (оплата возможна через любой платёжный терминал)</i>'
-	html += '<table align=center class=back2 width=50%><tr class=back1 height=50 valign=top><td><b>WebMoney</b><br>'
-	html += 'R930480028049 (рубли)</td>'
+	html += '<table align=center class=back2 width=50%><tr class=back1 height=50 valign=top><td><b>WebMoney (Руб)</b><br>'
+	html += '--</td>'
 
-	html += '<td><b>WebMoney</b><br>'
-	html += 'Z811907519489 (доллары)</td></tr>'
+	html += '<td><b>WebMoney ($)</b><br>'
+	html += '--</td></tr>'
 
-	html += '<tr class=back1 height=50 valign=top><td><b>Яндекс-деньги</b><br>'
-	html += 'Счет: <a href="https://money.yandex.ru/to/41001993673065">41001993673065</a><br>';
+	html += '<tr class=back1 height=50 valign=top><td><b>Ю-money</b><br>'
+	html += 'Счет: <a href="https://yoomoney.ru/to/41001993673065">41001993673065</a><br>';
 	html += 'ставьте пароль, кидайте его в личку</td>'
 
 	html += '<td><b>PayPal</b><br>'
-	html += 'tconsts@gmail.com</td></tr></table>'
+	html += '--</td></tr></table>'
 
 	$('td.back4').append(html)
 });
