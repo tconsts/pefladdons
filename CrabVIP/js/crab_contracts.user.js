@@ -107,42 +107,45 @@ function showSponsers(){
 	if(sponsers!=0) $('td.back4 table table:last').after(sptext)
 }
 
-function GetTeams(nid,nname){
+async function GetTeams(nid, nname) {
 		debug('GetTeams:nid='+nid+':nname='+nname)
-		if(ff){
+		if (ff) {
 			debug('GetTeams as FF')
-			var list = {'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,avTopSumSkills,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid'}
-			var head = list['teams'].split(',')
-			var text1 = String(localStorage['teams'])
+			let list = {'teams':'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,avTopSumSkills,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid'}
+			let head = list['teams'].split(',')
+			let text1 = String(localStorage['teams'])
 			if (text1 != 'undefined'){
 				var text = text1.split('#')
-				for (i in text) {
+				for (let i in text) {
 					var x = text[i].split('|')
 					var curt = {}
 					var num = 0
-					for(j in head){
+					for (let j in head) {
 						curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 						num++
 					}
-					teams[parseInt(curt['tid'])] = curt['nname']
+
+					teams[parseInt(curt['tid'])] = curt['nname'];
 				}
 				MarkMyCountry(nid,nname)
 			}
-		}else{
-			if(!db) DBConnect()
-			db.transaction(function(tx) {
-				tx.executeSql("SELECT tid,nname,tname FROM teams",[],
-					function(tx, result){
-						for(var i = 0; i < result.rows.length; i++) {
-							var row = result.rows.item(i)
-							//debug('GetTeams:tid='+row['tid']+':nname='+row['nname']+':tname='+row['tname'])
-							teams[parseInt(row['tid'])] = row['nname']
-						}
-						MarkMyCountry(nid,nname)
-					},
-					function(tx, error) {debug(error.message)}
-				);                                           
-			})		
+		} else {
+			// Если indexedDb not init, пытаемся это сделать
+			if (!db) {
+				await DBConnect();
+			}
+
+			// Получаем все данные из необходимой таблицы
+			const requestResult = await getAll('teams');
+			// Если есть данные какие либо данные в хранилище
+			if (requestResult !== undefined && requestResult.length > 0) {
+				for (let i = 0; i < requestResult.length; i++) {
+					let row = requestResult[i];
+					teams[parseInt(row['tid'])] = row['nname'];
+				}
+
+				MarkMyCountry(nid,nname);
+			}
 		}
 }
 

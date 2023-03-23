@@ -365,105 +365,38 @@ function showData(){
 }
 
 function getData(){
-	if(ff){
-		var trnnum = 1
-		var x = localStorage['training']
-		debug('Get from GS ')
-		if(x != undefined){
-			xx = String(x).split(';')
-			for (var p in xx) {
-				var y = xx[p].split(',')
-				if (y[1]==trn[0][1] && 
-					y[2]==trn[0][2] && 
-					y[3]==trn[0][3] && 
-					y[4]==trn[0][4] && 
-					y[5]==trn[0][5] && 
-					y[6]==trn[0][6] && 
-					y[7]==trn[0][7]) trnnum = 0
-				trn[trnnum] = y
-				trnnum++
-			}
+	var trnnum = 1
+	var x = localStorage['training']
+	debug('Get from GS ')
+	if(x != undefined){
+		xx = String(x).split(';')
+		for (var p in xx) {
+			var y = xx[p].split(',')
+			if (y[1]==trn[0][1] &&
+				y[2]==trn[0][2] &&
+				y[3]==trn[0][3] &&
+				y[4]==trn[0][4] &&
+				y[5]==trn[0][5] &&
+				y[6]==trn[0][6] &&
+				y[7]==trn[0][7]) trnnum = 0
+			trn[trnnum] = y
+			trnnum++
 		}
-		saveData()
-	}else{
-		if(!db) DBConnect()
-		debug('Get DB go')
-		db.transaction(function(tx) {
-//			tx.executeSql("DROP TABLE IF EXISTS training")
-			tx.executeSql("SELECT * FROM training", [],
-				function(tx, result){
-					debug('Select trtable ok')
-					var trnnum = 1
-					for(var i = 0; i < result.rows.length; i++) {
-						if(trnnum>0) trn[trnnum] = []
-						var num = 0
-						if(i==0 && 
-							trn[0][1]==parseFloat(String(result.rows.item(0)['t1']).replace(',','.')) && 
-							trn[0][2]==parseFloat(String(result.rows.item(0)['t2']).replace(',','.')) && 
-							trn[0][3]==parseFloat(String(result.rows.item(0)['t3']).replace(',','.')) && 
-							trn[0][4]==parseFloat(String(result.rows.item(0)['t4']).replace(',','.')) && 
-							trn[0][5]==parseFloat(String(result.rows.item(0)['t5']).replace(',','.')) && 
-							trn[0][6]==parseFloat(String(result.rows.item(0)['t6']).replace(',','.')) && 
-							trn[0][7]==parseFloat(String(result.rows.item(0)['t7']).replace(',','.'))
-						){
-							trnnum=0
-							debug('Not need update')
-						}
-						for(var j in result.rows.item(i)) {
-							trn[trnnum][num] = parseFloat(String(result.rows.item(i)[j]).replace(',','.'))
-							num++
-						}
-						trnnum++
-					}
-					for (var i in trn) debug('trn:'+i+':'+trn[i])
-					saveData()
-				},
-				function(tx, error){
-					debug(error.message)
-					saveData()
-				}
-			)
-		})
 	}
+	saveData();
 }
 
-function saveData(){
-	showData()
-	if(ff){
-		var save = ''
-		for (var f=0;f<6;f++){
-			if (trn[f]){
-				for (var l in trn[f]) save += trn[f][l] + (l<trn[f].length-1 ? ',' : '')
-				save += (f<5 && trn[f+1] ? ';' :'')
-			}
+function saveData() {
+	showData();
+	var save = ''
+	for (var f=0;f<6;f++){
+		if (trn[f]){
+			for (var l in trn[f]) save += trn[f][l] + (l<trn[f].length-1 ? ',' : '')
+			save += (f<5 && trn[f+1] ? ';' :'')
 		}
-		localStorage['training'] = save
-		debug('Save GS ')
-	}else{
-		debug('Save DB go')
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS training",[],
-				function(tx, result){debug('drop trtable ok')},
-				function(tx, error) {debug('drop trtable error' + error.message)}
-			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS training (date, t1, t2, t3, t4, t5, t6, t7)", [],
-				function(tx, result){debug('create trtable ok')},
-				function(tx, error) {debug('create trtable error'+error.message)}
-			);
-			for (var f=0;f<6;f++){
-				var trnf = trn[f]
-				if (trnf && !isNaN(trnf[1])){
-					debug('tnrf:'+trnf)
-					tx.executeSql("INSERT INTO training (date, t1, t2, t3, t4, t5, t6, t7) values(?, ?, ?, ?, ?, ?, ?, ?)", 
-						[trnf[0], trnf[1], trnf[2], trnf[3], trnf[4], trnf[5], trnf[6], trnf[7]],
-						function(result){debug('insert trdata ok')},
-						function(tx, error) {debug('insert trdata error:'+error.message)
-					});
-				}
-			}
-		});
 	}
+	localStorage['training'] = save
+	Std.debug('Save GS');
 }
 
 function check(d) {return (d<10 ? "0"+d : d)}

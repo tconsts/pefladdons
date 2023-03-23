@@ -6,7 +6,7 @@ class Std {
 	 * @param  {...any=} args 
 	 */
 	static debug(v1, ...args) {
-        if ( this.#deb) {
+        if (this.#deb) {
             const scriptName = document.currentScript != null && document.currentScript != undefined 
                 ? document.currentScript.src.split('crab_')[1].split('.')[0]
                 : "???"
@@ -107,4 +107,6 @@ function UrlValue(key, url) { return Url.value(key, url) ?? false; }
  * @param  {...any=} args
  * @deprecated since 2.0.20, use Std.debug
  */
-function debug(text, ...args) { Std.debug(text, ...args); }
+function debug(text, ...args) {
+	Std.debug(text, ...args);
+}

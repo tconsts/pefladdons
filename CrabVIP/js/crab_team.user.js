@@ -175,8 +175,8 @@ function GetFinish(type, res) {
 	if(m.getdatapl === undefined && m.pg_teams){
 		m.getdatapl = true;
 
-		GetData('players')
-		GetInfoPagePl()
+		GetData('players');
+		GetInfoPagePl();
 	}
 	//
 	if (m.modifyteams === undefined && m.get_teams !== undefined && m.pg_teams && m.pg_players) {
@@ -1031,10 +1031,10 @@ function saveJSONlocalStorage(dataname,data){
  * @param dataName string db name
  * @returns {boolean}
  */
-function SaveData(dataName) {
+async function SaveData(dataName) {
 	Std.debug('SaveData:' + dataName + ':save=' + save);
 
-	if (!save || url.h==1 || (dataName=='players' && url.j!=99999)) {
+	if (!save || url.h == 1 || (dataName == 'players' && url.j != 99999)) {
 		return false
 	}
 
@@ -1054,55 +1054,33 @@ function SaveData(dataName) {
 	// If client use FF
 	if (ff) {
 		var text = ''
-		for (var i in data) {
-			text += (text!='' ? '#' : '')
+		for (let i in data) {
+			text += (text != '' ? '#' : '')
 			if(typeof(data[i])!='undefined') {
 				var dti = data[i]
 				var dtid = []
-				for(var j in head){
-					dtid.push(dti[head[j]]==undefined ? '' : dti[head[j]])
+				for(let j in head) {
+					dtid.push(dti[head[j]] === undefined ? '' : dti[head[j]])
 				}
 				text += dtid.join('|')
 			}
 		}
 		localStorage[dataName] = text
 	} else {
-		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS " + dataName,[],
-				function() {
-					Std.debug('SaveData:' + dataName + ':table drop ok')
-				},
-				function(tx, error) {
-					Std.debug('SaveData:' + dataName + ':table drop error:' + error.message)
-				}
-			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS " + dataName + " (" + list[dataName] + ")", [],
-				function() {
-					Std.debug('SaveData:' + dataName + ':table create ok')
-				},
-				function(tx, error) {
-					Std.debug('SaveData:' + dataName + ':table create error:' + error.message)
-				}
-			);
-			for(var i in data) {
-				var dti = data[i]
-				var x1 = []
-				var x2 = []
-				var x3 = []
-				for(var j in head){
-					x1.push(head[j])
-					x2.push('?')
-					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
-				}
-//				Std.debug(dataname+':s'+x3['0']+'_'+x3['1'])
-				tx.executeSql("INSERT INTO " + dataName + " (" + x1 + ") values(" + x2 + ")", x3,
-					function(tx, result){},
-					function(tx, error) {
-						Std.debug('SaveData:'+dataName+':insert(' + i + ') error:'+error.message)
-					}
-				);
+		for (let i in data) {
+			// Необходимый объект для записи в бд
+			let dti = data[i];
+			// Ключ по которому сохраняем в бд (id)
+			//let key = dti[head[0]];
+			// Небольшой костыль для таблицы команд, у них tid -> id
+			if (head[0] === 'tid') {
+				dti['id'] = dti['tid'];
 			}
-		});
+
+			let result = await addObject(dataName, dti);
+
+			Std.debug(result);
+		}
 	}
 }
 
@@ -1112,7 +1090,7 @@ function SaveData(dataName) {
  * @param dataName string Название таблицы
  * @returns {boolean}
  */
-function GetData(dataName) {
+async function GetData(dataName) {
 	Std.debug('Start --> GetData from ' + dataName);
 
 	let data = [];
@@ -1130,6 +1108,7 @@ function GetData(dataName) {
 		default:
 			return false;
 	}
+
 	// Если юзер сидит в FF
 	if (ff) {
 		var text1 = String(localStorage[dataName])
@@ -1151,32 +1130,33 @@ function GetData(dataName) {
 			GetFinish('get_' + dataName, false)
 		}			
 	} else {
-		// Если web db не законнекчена, пытаемся это сделать
+		// Если indexedDb not init, пытаемся это сделать
 		if (!db) {
-			DBConnect();
+			await DBConnect();
 		}
-		// Пытаемся получить наши данные из БД
-		db.transaction(function(tx) {
-			tx.executeSql("SELECT * FROM " + dataName, [],
-				function(tx, result) {
-					Std.debug('GetData from ' + dataName + ' --> success');
-					Std.debug('Found rows: ' + result.rows.length);
-					// Идем по столбцам и записываем себе
-					for (let i = 0; i < result.rows.length; i++) {
-						let row = result.rows.item(i)
-						let id = row[head[0]]
 
-						data[id] = row;
-					}
+		// Если хранилища не было -> выходим
+		if (!db.objectStoreNames.contains(dataName)) {
+			GetFinish('get_' + dataName, true);
+		}
 
-					GetFinish('get_' + dataName,true)
-				},
-				function(tx, error) {
-					Std.debug('GetData from ' + dataName + ' --> failed, error message: ' + error.message);
-					GetFinish('get_' + dataName, false);
-				}
-			)
-		})
+		// Получаем все данные из необходимой таблицы
+		const requestResult = await getAll(dataName);
+		// Если есть данные какие-либо данные в хранилище
+		if (requestResult !== undefined && requestResult.length > 0) {
+			Std.debug('GetData from ' + dataName + ' --> success');
+			Std.debug('Found rows: ' + requestResult.length);
+
+			// Идем по столбцам и записываем себе
+			for (let i = 0; i < requestResult.length; i++) {
+				let row = requestResult[i];
+				let id = row[head[0]];
+
+				data[id] = row;
+			}
+		}
+
+		GetFinish('get_' + dataName,true);
 	}
 }
 
@@ -1283,7 +1263,7 @@ function ModifyPlayers(vip = undefined) {
 	for(let i in players) {
 		let pl = players[i]
 //		Std.debug('Check:'+pl.id+':'+typeof(players2[pl.id]))
-		if(typeof(players2[pl.id])!='undefined'){
+		if (typeof(players2[pl.id])!='undefined') {
 			let pl2 = players2[pl.id]
 			if (!remember && (pl.morale != pl2.morale || pl.form != pl2.form || (pl.value!=0 && pl.value != pl2.value))){
 				remember = true

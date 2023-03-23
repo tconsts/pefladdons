@@ -94,10 +94,11 @@ function GetDivInfo(did, nname, dnum) {
 	divs[did].dprize = dprize.join(',')
 }
 
-function GetData2(){
-	debug('GetData2')
-	if(ff) {
-		debug('ff='+true)
+async function GetData2() {
+	Std.debug('GetData2');
+
+	if (ff) {
+		Std.debug('ff=' + true);
 		var head = list['divs'].split(',')
 		var text1 = String(localStorage['divs'])
 		if (text1 != 'undefined') {
@@ -141,55 +142,56 @@ function GetData2(){
 			GetFinish('tplace',false)
 		}			
 	} else {
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-			tx.executeSql("SELECT dprize,dnum,numteams,curtour FROM divs WHERE my='true'", [],
-				function(tx, result){
-					for(var i = 0; i < result.rows.length; i++) {
-						dprize = result.rows.item(i)['dprize'].split(',')
-						dnum2  = result.rows.item(i)['dnum']
-						dteams = result.rows.item(i)['numteams']
-						dtour  = result.rows.item(i)['curtour']
-					}
-					GetFinish('dprize',true)
-				},
-				function(tx, error){
-					debug(error.message)
-					GetFinish('dprize',false)
+		// Если indexedDb not init, пытаемся это сделать
+		if (!db) {
+			await DBConnect();
+		}
+
+		// Получаем все данные из необходимой таблицы
+		const requestResult = await getAll('divs');
+		// Если есть данные какие-либо данные в хранилище
+		if (requestResult !== undefined && requestResult.length > 0) {
+			for (let i = 0; i < requestResult.length; i++) {
+				if (requestResult[i]['my'] === 'true') {
+					dprize = requestResult[i]['dprize'].split(',');
+					dnum2  = requestResult[i]['dnum'];
+					dteams = requestResult[i]['numteams'];
+					dtour  = requestResult[i]['curtour'];
 				}
-			)
-		});
-		db.transaction(function(tx) {
-			tx.executeSql("SELECT tplace,my FROM teams WHERE my='true'", [],
-				function(tx, result){
-					for(var i = 0; i < result.rows.length; i++) {
-						tplace = result.rows.item(i)['tplace']
-						GetFinish('tplace', true)
-					}
-				},
-				function(tx, error){
-					debug(error.message)
-					GetFinish('tplace', false)
+			}
+			GetFinish('dprize',true);
+		} else {
+			GetFinish('dprize',false);
+		}
+
+		const requestResult2 = await getAll('teams');
+		// Если есть данные какие-либо данные в хранилище
+		if (requestResult2 !== undefined && requestResult2.length > 0) {
+			for (let i = 0; i < requestResult2.length; i++) {
+				if (requestResult2[i]['my'] === true) {
+					tplace  = requestResult2[i]['tplace'];
 				}
-			)
-		})
-/**/
+			}
+			GetFinish('tplace', true);
+		} else {
+			GetFinish('tplace', false);
+		}
 	}
 }
 
-function SaveData(dataname){
-	debug(dataname+':SaveData')
-	if(UrlValue('h')==1 || (dataname=='teams' && UrlValue('j')==99999)) return false
+async function SaveData(dataName) {
+	Std.debug(dataName + ':SaveData');
+	if(UrlValue('h')==1 || (dataName=='teams' && UrlValue('j')==99999)) return false
 
 	var data = []
-	var head = list[dataname].split(',')
-	switch (dataname){
+	var head = list[dataName].split(',')
+	switch (dataName) {
 		case 'players':	data = players;	break
 		case 'teams': 	data = teams;	break
 		case 'divs': 	data = divs;	break
 		default: 		return false
 	}
-	if(ff) {
+	if (ff) {
 		var text = ''
 		for (var i in data) {
 			text += (text!='' ? '#' : '')
@@ -202,48 +204,42 @@ function SaveData(dataname){
 				text += dtid.join('|')
 			}
 		}
-		localStorage[dataname] = text
+		localStorage[dataName] = text
 	} else {
-		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS "+dataname,[],
-				function(tx, result){},
-				function(tx, error) {debug(error.message)}
-			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" (" + list[dataname] + ")", [],
-				function(tx, result){debug(dataname+':create ok')},
-				function(tx, error) {debug(error.message)}
-			);
-			for(var i in data) {
-				var dti = data[i]
-				var x1 = []
-				var x2 = []
-				var x3 = []
-				for(var j in head){
-					x1.push(head[j])
-					x2.push('?')
-					x3.push(dti[head[j]])
-				}
-				tx.executeSql("INSERT INTO " + dataname + " (" + x1 + ") values(" + x2 + ")", x3,
-					function(tx, result){},
-					function(tx, error) {debug(dataname+':insert('+ i +') error:' + error.message)
-				});
+		for (let i in data) {
+			// Необходимый объект для записи в бд
+			let dti = data[i];
+			// Небольшой костыль для таблиц без ID
+			// в идеале бы конечно им его добавить в месте инициализации вместо этих tid/did, но боюсь на них какая-то логика завязана
+			switch (head[0]) {
+				case 'tid':
+					dti['id'] = dti['tid'];
+					break;
+				case 'did':
+					dti['id'] = dti['did'];
+					break;
+				default:
+					return false;
 			}
-		});
+
+			let result = await addObject(dataName, dti);
+			Std.debug(result);
+		}
 	}
 }
 
-function GetData(dataname){
-	debug(dataname+':GetData')
+async function GetData(dataName) {
+	Std.debug(dataName + ':GetData');
 	var data = []
-	var head = list[dataname].split(',')
-	switch (dataname){
+	var head = list[dataName].split(',')
+	switch (dataName) {
 		case 'players': data = players2;break
 		case 'teams': 	data = teams;	break
 		case 'divs'	: 	data = divs;	break
 		default: return false
 	}
-	if(ff) {
-		var text1 = String(localStorage[dataname])
+	if (ff) {
+		var text1 = String(localStorage[dataName])
 		if (text1 != 'undefined'){
 			var text = text1.split('#')
 			for (i in text) {
@@ -257,30 +253,33 @@ function GetData(dataname){
 				data[curt[head[0]]] = {}
 				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 			}
-			GetFinish('get_'+dataname, true)
+			GetFinish('get_'+dataName, true)
 		} else {
-			GetFinish('get_'+dataname, false)
+			GetFinish('get_'+dataName, false)
 		}			
 	} else {
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-			tx.executeSql("SELECT * FROM "+dataname, [],
-				function(tx, result){
-					debug(dataname+':Select ok')
-					for(var i = 0; i < result.rows.length; i++) {
-						var row = result.rows.item(i)
-						var id = row[head[0]]
-						data[id] = {}
-						for(j in row) data[id][j] = row[j]
-					}
-					GetFinish('get_'+dataname,true)
-				},
-				function(tx, error){
-					debug(error.message)
-					GetFinish('get_'+dataname, false)
+		// Если indexedDb not init, пытаемся это сделать
+		if (!db) {
+			await DBConnect();
+		}
+
+		// Получаем все данные из необходимой таблицы
+		const requestResult = await getAll(dataName);
+		// Если есть данные какие-либо данные в хранилище
+		if (requestResult !== undefined && requestResult.length > 0) {
+			for (let i = 0; i < requestResult.length; i++) {
+				let row = requestResult[i];
+				let id = row[head[0]];
+				data[id] = {};
+				for (let j in row) {
+					data[id][j] = row[j];
 				}
-			)
-		})
+			}
+
+			GetFinish('get_' + dataName,true);
+		} else {
+			GetFinish('get_' + dataName, false);
+		}
 	}
 }
 

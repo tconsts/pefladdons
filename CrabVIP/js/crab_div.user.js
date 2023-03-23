@@ -85,8 +85,8 @@ var list2 = {
 }
 
 function FixColors(){
-	$('td.back4 table table:first tr').removeAttr('bgcolor')
-	$('td.back4 table table tr:odd').addClass(fixclass)		          
+	$('td.back4 table table:first tr').removeAttr('bgcolor');
+	$('td.back4 table table tr:odd').addClass(fixclass);
 }
 
 var tasks	= ['','Чемпионство','Выйти в высший Д.','Медали','Зона Судамерикана','Зона ЛК','Попасть в 3А','Попасть в пятерку','Попасть в десятку','15 место','Не вылететь']
@@ -103,7 +103,6 @@ var def = '1-1=FCE94F,2-2=white,3-3=E9B96E'
 
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
-
 	fixclass = 'back2' // заменятся все bgcolor=#a3de8f на этот класс
     
 	FixColors();	
@@ -477,36 +476,34 @@ function CheckMy(){
 	GetFinish('checkmy', true)
 }
 
-function SaveData(dataname){
-	debug(dataname+':SaveData')
-	if(!save || (rseason!=dseason) || parseInt(UrlValue('h'))>=0) {
-		debug(dataname+':SaveData false')
+async function SaveData(dataName) {
+	Std.debug(dataName + ':SaveData');
+	if (!save || (rseason!=dseason) || parseInt(Url.value('h')) >= 0) {
+		Std.debug(dataName + ':SaveData false')
 		return false
 	}
-	var data = []
-	var idname = 'id'
-//	var head = list[dataname].split(',')
-	var head = []
-	for (let i in list2[dataname]) {
-		if (!list2[dataname][i].nsave) {
-			head[list2[dataname][i].num-1] = i;
+	let data = [],
+		head = [];
+
+	for (let i in list2[dataName]) {
+		if (!list2[dataName][i].nsave) {
+			head[list2[dataName][i].num-1] = i;
 		}
 	}
-	switch (dataname) {
+
+	switch (dataName) {
 		case 'players':
 			data = players;
 			break;
 		case 'teams':
 			data = teams;
-			idname='tid';
 			break;
 		case 'divs':
 			data = divs;
-			idname='did';
 			break;
 
 		default:
-			debug('dataname wrong');
+			Std.debug('DataName is wrong');
 			return false;
 	}
 	if (ff) {
@@ -524,96 +521,86 @@ function SaveData(dataname){
 		}
 		localStorage[dataname] = text
 	} else {
-		db.transaction(function(tx) {
-			tx.executeSql("DROP TABLE IF EXISTS " + dataname,[],
-				function(tx, result){debug(dataname+':drop ok')},
-				function(tx, error) {debug(error.message)}
-			);                                           
-			tx.executeSql("CREATE TABLE IF NOT EXISTS "+dataname+" ("+head+")", [],
-				function(tx, result){debug(dataname+':create ok')},
-				function(tx, error) {
-					debug('db table create error: ' + error.message);
-					debug(JSON.stringify(head))
+		for (let i in data) {
+			if (data[i].div === undefined) {
+				// Необходимый объект для записи в бд
+				let dti = data[i];
+				// Небольшой костыль для таблиц без ID
+				// в идеале бы конечно им его добавить в месте инициализации вместо этих tid/did, но боюсь на них какая-то логика завязана
+				switch (head[0]) {
+					case 'tid':
+						dti['id'] = dti['tid'];
+						break;
+					case 'did':
+						dti['id'] = dti['did'];
+						break;
+					default:
+						return false;
 				}
-			);
-			for(let i in data) {
-			  if(data[i].div==undefined) {
-				var dti = data[i]
-				var x1 = []
-				var x2 = []
-				var x3 = []
-				for(var j in head){
-					x1.push(head[j])
-					x2.push('?')
-					x3.push((dti[head[j]]==undefined ? '' : dti[head[j]]))
-				}
-				if(x3[0]==43) debug(dataname+':s'+x1[0]+'|'+x1[9]+'|'+x1[10]);
-				if(x3[0]==43) debug(dataname+':s'+x3[0]+'|'+x3[9]+'|'+x3[10]);
-				tx.executeSql("INSERT INTO "+dataname+" ("+x1+") values("+x2+")", x3,
-					function(tx, result){},
-					function(tx, error) {debug(dataname+':insert('+i+') error:'+error.message);
-				});
-			  }
+
+				let result = await addObject(dataName, dti);
+				Std.debug(result);
 			}
-		});
+		}
 	}
 }
 
-function GetData(dataname){
-	debug(dataname+':GetData')
+async function GetData(dataName) {
+	Std.debug(dataName + ':GetData');
 	var data = []
 	var idname = 'id'
-//	var head = list[dataname].split(',')
 	var head = []
-	for (i in list2[dataname]) {
-		if(!list2[dataname][i].nsave) head[list2[dataname][i].num-1] = i	
+	for (let i in list2[dataName]) {
+		if(!list2[dataName][i].nsave) head[list2[dataName][i].num-1] = i
 	}
-	switch (dataname){
+	switch (dataName) {
 		case 'players': data = players2;			break
 		case 'teams': 	data = teams;idname='tid';	break
 		case 'divs'	: 	data = divs; idname='did';	break
 		default: return false
 	}
-	if(ff) {
-		var text1 = String(localStorage[dataname])
+
+	if (ff) {
+		var text1 = String(localStorage[dataName])
 		if (text1 != 'undefined'){
 			var text = text1.split('#')
 			for (i in text) {
 				var x = text[i].split('|')
 				var curt = {}
 				var num = 0
-				for(j in head){
+				for(let j in head){
 					curt[head[j]] = (x[num]!=undefined ? x[num] : '')
 					num++
 				}
 				data[curt[head[0]]] = {}
 				if(curt[head[0]]!=undefined) data[curt[head[0]]] = curt
 			}
-			GetFinish('get_'+dataname, true)
+			GetFinish('get_'+dataName, true)
 		} else {
-			GetFinish('get_'+dataname, false)
+			GetFinish('get_'+dataName, false)
 		}			
-	}else{
-		if(!db) DBConnect()
-		db.transaction(function(tx) {
-			tx.executeSql("SELECT * FROM "+dataname, [],
-				function(tx, result){
-					debug(dataname+':Select ok')
-					for(var i = 0; i < result.rows.length; i++) {
-						var row = result.rows.item(i)
-						var id = row[idname]
-						data[id] = {}
-						for(j in row) data[id][j] = row[j]
-//						debug(dataname+':g'+id+':'+data[id].my)
-					}
-					GetFinish('get_'+dataname,true)
-				},
-				function(tx, error){
-					debug(error.message)
-					GetFinish('get_'+dataname, false)
+	} else {
+		// Если indexedDb not init, пытаемся это сделать
+		if (!db) {
+			await DBConnect();
+		}
+
+		// Получаем все данные из необходимой таблицы
+		const requestResult = await getAll(dataName);
+		// Если есть данные какие-либо данные в хранилище
+		if (requestResult !== undefined && requestResult.length > 0) {
+			for (let i = 0; i < requestResult.length; i++) {
+				let row = requestResult[i];
+				let id = row[idname];
+				data[id] = {};
+				for (let j in row) {
+					data[id][j] = row[j];
 				}
-			)
-		})
+			}
+			GetFinish('get_' + dataName,true);
+		} else {
+			GetFinish('get_' + dataName, false);
+		}
 	}
 }
 

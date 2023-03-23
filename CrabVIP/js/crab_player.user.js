@@ -79,11 +79,11 @@ function sSrt(i, ii) { // по убыванию
     return 0
 }
 
-function GetData(dataname) {
+function GetData(dataName) {
     var needsave = false
     var data = []
-    var head = list[dataname].split(',')
-    var text1 = String(localStorage[dataname])
+    var head = list[dataName].split(',')
+    var text1 = String(localStorage[dataName])
     if (text1 !== 'undefined' && text1 !== 'null') {
         var text = text1.split('#')
         var numpos = 0
@@ -98,7 +98,7 @@ function GetData(dataname) {
             data[numpos] = curt
             numpos++
         }
-        switch (dataname) {
+        switch (dataName) {
             case 'positions':
                 positions = data;
                 let isk = data[0].koff !== undefined ? parseFloat(data[0].koff.match(/idealsk\=([0-9]+)/)[1]) : plskillmax;
@@ -491,7 +491,8 @@ function ShowAdaptation(plnat, tnat) {
                 'Йемен': 208,
                 'Сербия': 209,
                 'Заир': 153,
-                /** 210, эт щас ДР Конго - поэтому сошлемся на его id/**/'Замбия': 211,
+                /** 210, эт щас ДР Конго - поэтому сошлемся на его id/**/
+                'Замбия': 211,
                 'Зимбабве': 212,
                 'Гваделупа': 213,
                 'Черногория': 214,
@@ -593,7 +594,7 @@ function ShowAdaptation(plnat, tnat) {
     }
 }
 
-function SetValue(vl, vlch) {
+async function SetValue(vl, vlch) {
     if (url.t === 'p') {
         if (ff) {
             var text1 = String(localStorage['players']).split('#');
@@ -607,15 +608,22 @@ function SetValue(vl, vlch) {
             }
             localStorage['players'] = text1.join('#');
         } else {
-            if (!db) DBConnect()
-            db.transaction(function (tx) {
-                tx.executeSql("UPDATE players SET value='" + vl + "', valuech='" + vlch + "' WHERE id='" + players[0].id + "'", []);
-            })
+            // Если web db without connect, пытаемся это сделать
+            if (!db) {
+                await DBConnect();
+            }
+
+            // Если запись об игроке есть -> обновляем его цену
+            const player = await getByKey('players', players[0].id);
+            if (player !== undefined) {
+                await setByName('players', 'value', vl);
+                await setByName('players', 'valuech', vlch);
+            }
         }
     }
 }
 
-function GetValue() {
+async function GetValue() {
     if (localStorage.myteamid === players[0].teamid) {
         var list = {'players': 'id,tid,num,form,morale,fchange,mchange,value,valuech,name'}
         var head = list['players'].split(',')
@@ -635,17 +643,22 @@ function GetValue() {
                 }
             }
         } else {
-            if (!db) DBConnect()
-            db.transaction(function (tx) {
-                tx.executeSql("SELECT * FROM players", [],
-                    function (tx, result) {
-                        for (var i = 0; i < result.rows.length; i++) {
-                            var row = result.rows.item(i)
-                            if (row['id'] === players[0].id) UpdateValue(row['value'], row['valuech'])
-                        }
+            // Если indexedDb not init, пытаемся это сделать
+            if (!db) {
+                await DBConnect();
+            }
+
+            // Получаем все данные из необходимой таблицы
+            const requestResult = await getAll('players');
+            // Если есть данные какие-либо данные в хранилище
+            if (requestResult !== undefined && requestResult.length > 0) {
+                for (let i = 0; i < requestResult.length; i++) {
+                    let row = requestResult[i];
+                    if (row['id'] === players[0].id) {
+                        UpdateValue(row['value'], row['valuech']);
                     }
-                );
-            })
+                }
+            }
         }
     }
 }
