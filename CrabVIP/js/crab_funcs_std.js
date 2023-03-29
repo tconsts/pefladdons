@@ -89,7 +89,7 @@ function drawEars()
     	+ '</tr></table>';
 	
 	$('body table.border:last').before(preparedhtml);
-	$('#crabglobalright').prepend('<table id="crabrighttable" class=back3 width=200><tr><td height=100% valign=top id="crabright" nowrap></td></tr></table>');
+	$('#crabglobalright').prepend('<table id="crabrighttable" class="back1 border" width=200><tr><td height=100% valign=top id="crabright" nowrap></td></tr></table>');
 
 	$('td.back4 script').remove();
 }
