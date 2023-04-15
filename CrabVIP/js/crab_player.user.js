@@ -285,6 +285,65 @@ function sNomPsum(i, ii) { // Сортировка
     else return 0
 }
 
+function ShowPolygon(pl) {
+    var ctx = document.getElementById('polygon').getContext('2d');
+
+    skill_groups = [
+        ['скор.', [pl.pace], -20, 3],
+        ['креатив.', [pl.vision, pl.passing, pl.dribbling, pl.crossing], -15, -1],
+        ['атака', [pl.finishing, pl.longshots], -10, -5],
+        ['техника', [pl.technique], -22, -3],
+        ['лид.', [pl.leadership], 0, 8],
+        ['в воздухе', [pl.heading], -22, 5],
+        ['защита', [pl.tackling, pl.positioning, pl.marking], -15, 10],
+        ['физика', [pl.strength, pl.stamina, pl.workrate], -10, 7],
+    ];
+
+    if (pl.position === 'GK') skill_groups[5] = ['вратарь.', [pl.heading, pl.handling, pl.reflexes, pl.positioning], -22, 5];
+
+    var numberOfSides = skill_groups.length;
+    var size = 80;
+    var Xcenter = 90;
+    var Ycenter = 90;
+
+    for (var k = 13; k > 0; k -= 1) {
+        ctx.fillStyle = ( k & 1 ) ? '#89E268' : '#A9EF8F';
+        ctx.beginPath();
+        ctx.moveTo(Xcenter + size * k * Math.cos(0) / 13, Ycenter + size * k * Math.sin(0) / 13);
+        for (var i = 0; i < numberOfSides; i += 1) {
+            var j = i + 1;
+            if (j >= numberOfSides) j=0;
+            ctx.lineTo(Xcenter + size * k * Math.cos(j * 2 * Math.PI / numberOfSides) / 13, Ycenter + size * k * Math.sin(j * 2 * Math.PI / numberOfSides) / 13);
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = '#000000';
+    ctx.font = "9px Arial";
+    for (var i = 0; i < numberOfSides; i += 1) {
+        ctx.fillText(skill_groups[i][0], Xcenter + 90 * Math.cos(i * 2 * Math.PI / numberOfSides) + skill_groups[i][2], Ycenter + 90 * Math.sin(i * 2 * Math.PI / numberOfSides) + skill_groups[i][3]);
+    }
+
+    ctx.beginPath();
+    for (var i = 0; i < numberOfSides; i += 1) {
+        var j = i + 1;
+        if (j >= numberOfSides) j=0;
+        var v1 = 0;
+        var v2 = 0;
+        for (s in skill_groups[i][1]) v1 += parseInt(String(skill_groups[i][1][s]).split('.')[0]);
+        for (s in skill_groups[j][1]) v2 += parseInt(String(skill_groups[j][1][s]).split('.')[0]);
+        v1 = (v1 / skill_groups[i][1].length) * size / 13;
+        v2 = (v2 / skill_groups[j][1].length) * size / 13;
+        ctx.moveTo(Xcenter + v1 * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + v1 * Math.sin(i * 2 * Math.PI / numberOfSides));
+        ctx.lineTo(Xcenter + v2 * Math.cos(j * 2 * Math.PI / numberOfSides), Ycenter + v2 * Math.sin(j * 2 * Math.PI / numberOfSides));
+    }
+
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+}
 
 function ShowAdaptation(plnat, tnat) {
     if (String(localStorage.mycountry) != 'undefined' && plnat != undefined && plnat != ' ') {
@@ -1679,6 +1738,8 @@ function doOldRoster() {
     // fill poss masive
 
     var text3 = ''
+    text3 += '<br><b>Карта умений: </b><b><sup><a href="#" onClick="alert(\'Карта умений игрока была создана по мотивам Football Manager.\nОтображает в графическом виде среднее значение умений игрока в различных категориях:\n  защита: Отбор мяча, Выбор позиции, Перс. опека\n  физика: Мощь, Выносливость, Работоспособность\n  скор.: Скорость\n  креатив.: Видение поля, Пас, Дриблинг, Навес\n  атака: Удар, Дальний удар\n  техника: Техника\n  лид.: Лидерство\n  в воздухе: Игра головой\\nДля вратаря будет отображено среднее значение основных вратарских умений: Реакция, Игра руками, Игра на выходах, Выбор позиции\')">?</a></sup></b><br>';
+    text3 += '<canvas id="polygon" width="181" height="181"></canvas><br>';
     text3 += '<br><b>Номинал+</b>: <b><sup><a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></sup></b><br>'
     text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
     text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">' + ('Запомнить игрока').fontsize(1) + '</a><br>'
@@ -1719,6 +1780,7 @@ function doOldRoster() {
     if (players.length > 1) PrintPlayers();
     GetValue()
     ShowAdaptation(players[0].natfull)
+    ShowPolygon(players[0])
     RelocateGetNomData()
     GetData('positions')
     printStrench()
@@ -1927,6 +1989,8 @@ function doNewRoster() {
     // fill poss masive
 
     var text3 = ''
+    text3 += '<br><b>Карта умений: </b><b><sup><a href="#" onClick="alert(\'Карта умений игрока была создана по мотивам Football Manager.\\nОтображает в графическом виде среднее значение умений игрока в различных категориях:\\n  защита: Отбор мяча, Выбор позиции, Перс. опека\\n  физика: Мощь, Выносливость, Работоспособность\\n  скор.: Скорость\\n  креатив.: Видение поля, Пас, Дриблинг, Навес\\n  атака: Удар, Дальний удар\\n  техника: Техника\\n  лид.: Лидерство\\n  в воздухе: Игра головой\\nДля вратаря будет отображено среднее значение основных вратарских умений: Реакция, Игра руками, Игра на выходах, Выбор позиции\')">?</a></sup></b><br>';
+    text3 += '<canvas id="polygon" width="181" height="181"></canvas><br>';
     text3 += '<br><b>Номинал+</b>: <b><sup><a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></sup></b><br>'
     text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
     text3 += '<br><a id="remember" href="javascript:void(RememberPl(0))">' + ('Запомнить игрока').fontsize(1) + '</a><br>'
@@ -1953,6 +2017,7 @@ function doNewRoster() {
     if (players.length > 1) PrintPlayers();
     GetValue();
     ShowAdaptation(players[0].natfull, players[0].teamnat);
+    ShowPolygon(players[0]);
     RelocateGetNomData();
     GetData('positions');
     printStrench();
