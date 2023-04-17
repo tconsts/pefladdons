@@ -28,13 +28,13 @@ class Player {
         let nums = 0, postfix = '$';
         if (!full) {
             if (value >= 1000) {
-                postfix = 'т$';
-                value = value/1000; // тысячи
+                postfix = 'С‚$';
+                value = value/1000; // С‚С‹СЃСЏС‡Рё
             }
             if (value >= 1000) {
-                postfix = 'м$';
+                postfix = 'Рј$';
                 nums = 1;
-                value = value/1000; // миллионы
+                value = value/1000; // РјРёР»Р»РёРѕРЅС‹
             }
         }
         return value.toLocaleString("en-US",{maximumFractionDigits: nums}) + postfix;
@@ -44,54 +44,54 @@ class Player {
 let positions = [],
 plskillmax = 15,
 skillnames = {
-	sor:{rshort:'срт',rlong:'Сортировка',hidden:true},
-    sostav: {rshort: 'зв', rlong: 'Игрок в заявке?', strmax: 0},
-    flag: {rshort: 'фл', rlong: 'Информационный флаг'},
-    fre: {rshort: 'иш', rlong: 'Исполнители штрафных',str:true},
-    frh: {rshort: 'ин', rlong: 'Исполнители навесов',str:true,state:3},
-    cor: {rshort: 'иу', rlong: 'Исполнители угловых',str:true},
-    pen: {rshort: 'пн', rlong: 'Исполнители пенальти',str:true},
-    cap: {rshort: 'кп', rlong: 'Капитаны',str:true},
+	sor:{rshort:'СЃСЂС‚',rlong:'РЎРѕСЂС‚РёСЂРѕРІРєР°',hidden:true},
+    sostav: {rshort: 'Р·РІ', rlong: 'РРіСЂРѕРє РІ Р·Р°СЏРІРєРµ?', strmax: 0},
+    flag: {rshort: 'С„Р»', rlong: 'РРЅС„РѕСЂРјР°С†РёРѕРЅРЅС‹Р№ С„Р»Р°Рі'},
+    fre: {rshort: 'РёС€', rlong: 'РСЃРїРѕР»РЅРёС‚РµР»Рё С€С‚СЂР°С„РЅС‹С…',str:true},
+    frh: {rshort: 'РёРЅ', rlong: 'РСЃРїРѕР»РЅРёС‚РµР»Рё РЅР°РІРµСЃРѕРІ',str:true,state:3},
+    cor: {rshort: 'РёСѓ', rlong: 'РСЃРїРѕР»РЅРёС‚РµР»Рё СѓРіР»РѕРІС‹С…',str:true},
+    pen: {rshort: 'РїРЅ', rlong: 'РСЃРїРѕР»РЅРёС‚РµР»Рё РїРµРЅР°Р»СЊС‚Рё',str:true},
+    cap: {rshort: 'РєРї', rlong: 'РљР°РїРёС‚Р°РЅС‹',str:true},
   
-    school: {rshort: 'шкл', rlong: 'Школьник?', strmax: 0, strinvert: 1},
-    srt: {rshort: 'сила', rlong: 'В % от идеала', type: 'float'},
-    stdat: {rshort: 'са', rlong: 'Идет на стд. атаки'},
-    stdbk: {rshort: 'со', rlong: 'Идет на стд. обороны'},
-    nation: {rshort: 'кСт', rlong: 'Код страны'},
-	natflag:{rshort:'фс',rlong:'Флаг страны',type:'flag'},
-    sname:{rshort:'Фам',rlong:'Фамилия',align:'left',nowrap:'1'},
-	fname:{rshort:'Имя',rlong:'Имя',align:'left',nowrap:'1'},
-    age: {rshort: 'взр', rlong: 'Возраст', str: true, strmax: 40},
-    id: {rshort: 'id', rlong: 'id игрока'},
-	value: {rshort: 'ном', rlong: 'Номинал', type: 'value',str:true, strmax: 50000000},
-	morale: {rshort: 'мрл', rlong: 'Мораль', str: true, strmax: 100},
-    form: {rshort: 'фрм', rlong: 'Форма', str: true, strmax: 100},
-	inj: {rshort: 'трв', rlong: 'Травма', str: true, strmax: 0, strinvert: 20},
-    sus: {rshort: 'дсв', rlong: 'Дисквалификация', str: true, strmax: 0, strinvert: 20},
-    syg: {rshort: 'сыг', rlong: 'Сыгранность', str: true, strmax: 20},
-	miss:{rshort:'пп',rlong:'Пропустил матчей',str:true},
-	position: {rshort: 'Поз', rlong: 'Позиция', align: 'left', nowrap: '1'},    
+    school: {rshort: 'С€РєР»', rlong: 'РЁРєРѕР»СЊРЅРёРє?', strmax: 0, strinvert: 1},
+    srt: {rshort: 'СЃРёР»Р°', rlong: 'Р’ % РѕС‚ РёРґРµР°Р»Р°', type: 'float'},
+    stdat: {rshort: 'СЃР°', rlong: 'РРґРµС‚ РЅР° СЃС‚Рґ. Р°С‚Р°РєРё'},
+    stdbk: {rshort: 'СЃРѕ', rlong: 'РРґРµС‚ РЅР° СЃС‚Рґ. РѕР±РѕСЂРѕРЅС‹'},
+    nation: {rshort: 'РєРЎС‚', rlong: 'РљРѕРґ СЃС‚СЂР°РЅС‹'},
+	natflag:{rshort:'С„СЃ',rlong:'Р¤Р»Р°Рі СЃС‚СЂР°РЅС‹',type:'flag'},
+    sname:{rshort:'Р¤Р°Рј',rlong:'Р¤Р°РјРёР»РёСЏ',align:'left',nowrap:'1'},
+	fname:{rshort:'РРјСЏ',rlong:'РРјСЏ',align:'left',nowrap:'1'},
+    age: {rshort: 'РІР·СЂ', rlong: 'Р’РѕР·СЂР°СЃС‚', str: true, strmax: 40},
+    id: {rshort: 'id', rlong: 'id РёРіСЂРѕРєР°'},
+	value: {rshort: 'РЅРѕРј', rlong: 'РќРѕРјРёРЅР°Р»', type: 'value',str:true, strmax: 50000000},
+	morale: {rshort: 'РјСЂР»', rlong: 'РњРѕСЂР°Р»СЊ', str: true, strmax: 100},
+    form: {rshort: 'С„СЂРј', rlong: 'Р¤РѕСЂРјР°', str: true, strmax: 100},
+	inj: {rshort: 'С‚СЂРІ', rlong: 'РўСЂР°РІРјР°', str: true, strmax: 0, strinvert: 20},
+    sus: {rshort: 'РґСЃРІ', rlong: 'Р”РёСЃРєРІР°Р»РёС„РёРєР°С†РёСЏ', str: true, strmax: 0, strinvert: 20},
+    syg: {rshort: 'СЃС‹Рі', rlong: 'РЎС‹РіСЂР°РЅРЅРѕСЃС‚СЊ', str: true, strmax: 20},
+	miss:{rshort:'РїРї',rlong:'РџСЂРѕРїСѓСЃС‚РёР» РјР°С‚С‡РµР№',str:true},
+	position: {rshort: 'РџРѕР·', rlong: 'РџРѕР·РёС†РёСЏ', align: 'left', nowrap: '1'},    
 	//skills
-    corners: {rshort: 'уг', rlong: 'Угловые', str: true},
-    crossing: {rshort: 'нв', rlong: 'Навесы', str: true},
-    dribbling: {rshort: 'др', rlong: 'Дриблинг', str: true},
-    finishing: {rshort: 'уд', rlong: 'Удары', str: true},
-    freekicks: {rshort: 'шт', rlong: 'Штрафные', str: true},
-    handling: {rshort: 'ру', rlong: 'Игра руками', str: true},
-    heading: {rshort: 'гл', rlong: 'Игра головой', str: true},
-    leadership: {rshort: 'лд', rlong: 'Лидерство', str: true},
-    longshots: {rshort: 'ду', rlong: 'Дальние удары', str: true},
-    marking: {rshort: 'по', rlong: 'Перс. опека', str: true},
-    pace: {rshort: 'ск', rlong: 'Скорость', str: true},
-    passing: {rshort: 'пс', rlong: 'Игра в пас', str: true},
-    positioning: {rshort: 'вп', rlong: 'Выбор позиции', str: true},
-    reflexes: {rshort: 'ре', rlong: 'Реакция', str: true},
-    stamina: {rshort: 'вн', rlong: 'Выносливость', str: true},
-    strength: {rshort: 'мщ', rlong: 'Мощь', str: true},
-    tackling: {rshort: 'от', rlong: 'Отбор мяча', str: true},
-    vision: {rshort: 'ви', rlong: 'Видение поля', str: true},
-    workrate: {rshort: 'рб', rlong: 'Работоспособность', str: true},
-    technique: {rshort: 'тх', rlong: 'Техника', str: true},
+    corners: {rshort: 'СѓРі', rlong: 'РЈРіР»РѕРІС‹Рµ', str: true},
+    crossing: {rshort: 'РЅРІ', rlong: 'РќР°РІРµСЃС‹', str: true},
+    dribbling: {rshort: 'РґСЂ', rlong: 'Р”СЂРёР±Р»РёРЅРі', str: true},
+    finishing: {rshort: 'СѓРґ', rlong: 'РЈРґР°СЂС‹', str: true},
+    freekicks: {rshort: 'С€С‚', rlong: 'РЁС‚СЂР°С„РЅС‹Рµ', str: true},
+    handling: {rshort: 'СЂСѓ', rlong: 'РРіСЂР° СЂСѓРєР°РјРё', str: true},
+    heading: {rshort: 'РіР»', rlong: 'РРіСЂР° РіРѕР»РѕРІРѕР№', str: true},
+    leadership: {rshort: 'Р»Рґ', rlong: 'Р›РёРґРµСЂСЃС‚РІРѕ', str: true},
+    longshots: {rshort: 'РґСѓ', rlong: 'Р”Р°Р»СЊРЅРёРµ СѓРґР°СЂС‹', str: true},
+    marking: {rshort: 'РїРѕ', rlong: 'РџРµСЂСЃ. РѕРїРµРєР°', str: true},
+    pace: {rshort: 'СЃРє', rlong: 'РЎРєРѕСЂРѕСЃС‚СЊ', str: true},
+    passing: {rshort: 'РїСЃ', rlong: 'РРіСЂР° РІ РїР°СЃ', str: true},
+    positioning: {rshort: 'РІРї', rlong: 'Р’С‹Р±РѕСЂ РїРѕР·РёС†РёРё', str: true},
+    reflexes: {rshort: 'СЂРµ', rlong: 'Р РµР°РєС†РёСЏ', str: true},
+    stamina: {rshort: 'РІРЅ', rlong: 'Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ', str: true},
+    strength: {rshort: 'РјС‰', rlong: 'РњРѕС‰СЊ', str: true},
+    tackling: {rshort: 'РѕС‚', rlong: 'РћС‚Р±РѕСЂ РјСЏС‡Р°', str: true},
+    vision: {rshort: 'РІРё', rlong: 'Р’РёРґРµРЅРёРµ РїРѕР»СЏ', str: true},
+    workrate: {rshort: 'СЂР±', rlong: 'Р Р°Р±РѕС‚РѕСЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ', str: true},
+    technique: {rshort: 'С‚С…', rlong: 'РўРµС…РЅРёРєР°', str: true},
 },
 list = {
 	positions: 'id,filter,name,num,koff,order'
@@ -111,7 +111,7 @@ function checkKoff(kf0){
 		if (custom) {
 			skillnames[res] = {}
 			skillnames[res].rshort = res;
-			skillnames[res].rlong = 'Custom параметр';
+			skillnames[res].rlong = 'Custom РїР°СЂР°РјРµС‚СЂ';
 			skillnames[res].type = 'custom';
 		}
 	}
@@ -159,12 +159,12 @@ function clcFr(s0,clcNum) {
 }
 
 function countStrength(pkoff,pl) {
-    const regxpFrm = new RegExp('=([0-9а-яА-Яa-zA-Z()+*\\-/.:?<>]+)','g');
+    const regxpFrm = new RegExp('=([0-9Р°-СЏРђ-РЇa-zA-Z()+*\\-/.:?<>]+)','g');
     let res = [],    
     formula_sort = '(' + pkoff.match(regxpFrm).join(')+(').replace(/=/g,'').replace(/\s/g,'') + ')',
     formula_strn = formula_sort,
-    formula_keys = [...new Set(formula_sort.match(/[а-яА-Яa-zA-Z]+/g))]
-    //names = pkoff.match(/([a-zA-Zа-яА-Я]+)=/g);
+    formula_keys = [...new Set(formula_sort.match(/[Р°-СЏРђ-РЇa-zA-Z]+/g))]
+    //names = pkoff.match(/([a-zA-ZР°-СЏРђ-РЇ]+)=/g);
     //names = $.map(names, function(i) { return i.replace('=','');});
 
     $.each(formula_keys, function (index, value) {
