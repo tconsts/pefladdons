@@ -407,6 +407,14 @@ function ShowPolygon() {
     ctx.stroke();
 }
 
+function ResetPolygon() {
+    total_check_players = 0;
+    PrintPlayers();
+    ShowPolygon();
+    $("td#thx a").unbind("click.mynamespace");
+    return false;
+}
+
 function ShowAdaptation(plnat, tnat) {
     if (String(localStorage.mycountry) != 'undefined' && plnat != undefined && plnat != ' ') {
         $.getScript("js/adaptation5.en.js", function () {
@@ -914,7 +922,7 @@ function PrintPlayers(cur) {
 }
 
 function CheckPlayerOld(nn) {
-    console.log("CheckPlayerOld", nn, total_check_players);
+    // console.log("CheckPlayerOld", nn, total_check_players);
     if (players[nn].secondname === players[0].secondname)
         return;
     if (total_check_players >= 3)
@@ -1065,12 +1073,16 @@ function CheckPlayerOld(nn) {
         default: $("font#cc_compare"+nn).css('color', '#555');
     }
 
+    $("td#thx a").bind('click.mynamespace', function(e) {
+        ResetPolygon();
+    });
+
     return false
 }
 
 
 function CheckPlayer(nn) {
-    console.log("CheckPlayer", nn, players[nn], total_check_players);
+    // console.log("CheckPlayer", nn, players[nn], total_check_players);
     if (players[nn].secondname === players[0].secondname)
         return;
     if (total_check_players >= 3)
@@ -1268,7 +1280,6 @@ function CheckPlayer(nn) {
                 break;
             case 'pname':
                 var x = data[i].split('|');
-				console.log('x',statTd.length,x)
                 statTd.after('<td nowrap>' + (x[0] === '' ? '' : '<img height="12" src="system/img/flags/mod/' + x[0] + '.gif"> <a href="plug.php?' + x[2] + '"><b>' + x[1] + '</b></a>') + '</td>');
                 break;
             default:
@@ -1287,6 +1298,10 @@ function CheckPlayer(nn) {
         case 3: $("font#cc_compare"+nn).css('color', '#2aa'); break;
         default: $("font#cc_compare"+nn).css('color', '#555');
     }
+
+    $("td#thx a").bind('click.mynamespace', function(e) {
+        ResetPolygon();
+    });
 
     return false
 }
