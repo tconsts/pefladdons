@@ -286,22 +286,79 @@ function sNomPsum(i, ii) { // Сортировка
     else return 0
 }
 
+function cl(skl) {
+    return parseInt(String(skl).split('.')[0])
+}
+
+function GetPlayerCleanSkillz(pl) {
+    return {
+        'pace': cl(pl.pace),
+        'vision': cl(pl.vision),
+        'passing': cl(pl.passing),
+        'dribbling': cl(pl.dribbling),
+        'crossing': cl(pl.crossing),
+        'finishing': cl(pl.finishing),
+        'longshots': cl(pl.longshots),
+        'technique': cl(pl.technique),
+        'leadership': cl(pl.leadership),
+        'heading': cl(pl.heading),
+        'strength': cl(pl.strength),
+        'positioning': cl(pl.positioning),
+        'tackling': cl(pl.tackling),
+        'marking': cl(pl.marking),
+        'stamina': cl(pl.stamina),
+        'workrate': cl(pl.workrate),
+        'corners': cl(pl.corners),
+        'freekicks': cl(pl.freekicks),
+        'handling': cl(pl.handling),
+        'reflexes': cl(pl.reflexes),
+    }
+}
+
+function GetPolygonSkillGroups(pl) {
+    var p = GetPlayerCleanSkillz(pl);
+    var skill_labels = [
+        ['энерг.', -22, 5],
+        ['передачи', -22, 3],
+        ['владение', -15, -1],
+        ['дриблинг', -24, -1],
+        ['удары', -17, 0],
+        ['скор.', 0, 3],
+        ['голов.', -15, 8],
+        ['позиц.', -20, 8],
+        ['отбор', -10, 8],
+        ['мощь', -7, 7],
+    ];
+    var skill_groups = [
+        [p.stamina, p.workrate],  //энергия
+        [p.passing, p.crossing],  //пасы
+        [p.vision, p.technique],  //владение
+        [p.dribbling], //дрибл
+        [p.finishing, p.longshots],  //удар
+        [p.pace],  // скор.
+        [p.heading],  //головой ил на выходах
+        [p.positioning],  //поз.
+        [p.tackling],  //отбор
+        [p.strength],  //физика
+    ];
+    if (pl.position === 'GK') {
+        skill_labels[3][0] = 'руками';
+        skill_groups[3] = [[p.handling]];  //руками
+        skill_labels[4][0] = 'реакц.';
+        skill_groups[4] = [[p.reflexes]];  //реакц.
+        skill_labels[6][0] = 'на выход.';
+    }
+    var skill_groups_merged = [];
+    for (var i = 0; i < skill_labels.length; i += 1)
+        skill_groups_merged[i] = [skill_labels[i][0], skill_groups[i], skill_labels[i][1], skill_labels[i][2]];
+    return skill_groups_merged;
+}
+
 function ShowPolygonCheckPlayer(nn) {
     pl = players[nn];
     var ctx = document.getElementById('polygon').getContext('2d');
 
-    skill_groups = [
-        ['скор.', [pl.pace], -20, 3],
-        ['креатив.', [pl.vision, pl.passing, pl.dribbling, pl.crossing], -15, -1],
-        ['атака', [pl.finishing, pl.longshots], -10, -5],
-        ['техника', [pl.technique], -22, -3],
-        ['лид.', [pl.leadership], 0, 8],
-        ['в воздухе', [pl.heading], -22, 5],
-        ['защита', [pl.tackling, pl.positioning, pl.marking], -15, 10],
-        ['физика', [pl.strength, pl.stamina, pl.workrate], -10, 7],
-    ];
-
-    if (pl.position === 'GK') skill_groups[5] = ['вратарь.', [pl.heading, pl.handling, pl.reflexes, pl.positioning], -22, 5];
+    var skill_groups = GetPolygonSkillGroups(pl);
 
     var numberOfSides = skill_groups.length;
     var size = 80;
@@ -321,8 +378,8 @@ function ShowPolygonCheckPlayer(nn) {
         if (j >= numberOfSides) j=0;
         var v1 = 0;
         var v2 = 0;
-        for (s in skill_groups[i][1]) v1 += parseInt(String(skill_groups[i][1][s]).split('.')[0]);
-        for (s in skill_groups[j][1]) v2 += parseInt(String(skill_groups[j][1][s]).split('.')[0]);
+        for (s in skill_groups[i][1]) v1 += skill_groups[i][1][s];
+        for (s in skill_groups[j][1]) v2 += skill_groups[j][1][s];
         v1 = (v1 / skill_groups[i][1].length) * size / 13;
         v2 = (v2 / skill_groups[j][1].length) * size / 13;
         ctx.moveTo(Xcenter + v1 * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + v1 * Math.sin(i * 2 * Math.PI / numberOfSides));
@@ -335,18 +392,7 @@ function ShowPolygon() {
     var pl = players[0];
     var ctx = document.getElementById('polygon').getContext('2d');
 
-    skill_groups = [
-        ['скор.', [pl.pace], -20, 3],
-        ['креатив.', [pl.vision, pl.passing, pl.dribbling, pl.crossing], -15, -1],
-        ['атака', [pl.finishing, pl.longshots], -10, -5],
-        ['техника', [pl.technique], -22, -3],
-        ['лид.', [pl.leadership], 0, 8],
-        ['в воздухе', [pl.heading], -22, 5],
-        ['защита', [pl.tackling, pl.positioning, pl.marking], -15, 10],
-        ['физика', [pl.strength, pl.stamina, pl.workrate], -10, 7],
-    ];
-
-    if (pl.position === 'GK') skill_groups[5] = ['вратарь.', [pl.heading, pl.handling, pl.reflexes, pl.positioning], -22, 5];
+    var skill_groups = GetPolygonSkillGroups(pl);
 
     var numberOfSides = skill_groups.length;
     var size = 80;
@@ -370,7 +416,7 @@ function ShowPolygon() {
         ctx.fill();
     }
 
-    ctx.strokeStyle = "#bbb";
+    ctx.strokeStyle = "#c8c8c8";
     ctx.fillStyle = '#000000';
     ctx.lineWidth = 1;
     for (var k = 13; k > 0; k -= 1) {
@@ -397,14 +443,22 @@ function ShowPolygon() {
         if (j >= numberOfSides) j=0;
         var v1 = 0;
         var v2 = 0;
-        for (s in skill_groups[i][1]) v1 += parseInt(String(skill_groups[i][1][s]).split('.')[0]);
-        for (s in skill_groups[j][1]) v2 += parseInt(String(skill_groups[j][1][s]).split('.')[0]);
+        for (s in skill_groups[i][1]) v1 += skill_groups[i][1][s];
+        for (s in skill_groups[j][1]) v2 += skill_groups[j][1][s];
         v1 = (v1 / skill_groups[i][1].length) * size / 13;
         v2 = (v2 / skill_groups[j][1].length) * size / 13;
         ctx.moveTo(Xcenter + v1 * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + v1 * Math.sin(i * 2 * Math.PI / numberOfSides));
         ctx.lineTo(Xcenter + v2 * Math.cos(j * 2 * Math.PI / numberOfSides), Ycenter + v2 * Math.sin(j * 2 * Math.PI / numberOfSides));
     }
     ctx.stroke();
+}
+
+function ResetPolygon() {
+    total_check_players = 0;
+    PrintPlayers();
+    ShowPolygon();
+    $("td#thx a").unbind("click.mynamespace");
+    return false;
 }
 
 function ShowAdaptation(plnat, tnat) {
@@ -914,7 +968,7 @@ function PrintPlayers(cur) {
 }
 
 function CheckPlayerOld(nn) {
-    console.log("CheckPlayerOld", nn, total_check_players);
+    // console.log("CheckPlayerOld", nn, total_check_players);
     if (players[nn].secondname === players[0].secondname)
         return;
     if (total_check_players >= 3)
@@ -1065,12 +1119,16 @@ function CheckPlayerOld(nn) {
         default: $("font#cc_compare"+nn).css('color', '#555');
     }
 
+    $("td#thx a").bind('click.mynamespace', function(e) {
+        ResetPolygon();
+    });
+
     return false
 }
 
 
 function CheckPlayer(nn) {
-    console.log("CheckPlayer", nn, players[nn], total_check_players);
+    // console.log("CheckPlayer", nn, players[nn], total_check_players);
     if (players[nn].secondname === players[0].secondname)
         return;
     if (total_check_players >= 3)
@@ -1268,7 +1326,6 @@ function CheckPlayer(nn) {
                 break;
             case 'pname':
                 var x = data[i].split('|');
-				console.log('x',statTd.length,x)
                 statTd.after('<td nowrap>' + (x[0] === '' ? '' : '<img height="12" src="system/img/flags/mod/' + x[0] + '.gif"> <a href="plug.php?' + x[2] + '"><b>' + x[1] + '</b></a>') + '</td>');
                 break;
             default:
@@ -1287,6 +1344,10 @@ function CheckPlayer(nn) {
         case 3: $("font#cc_compare"+nn).css('color', '#2aa'); break;
         default: $("font#cc_compare"+nn).css('color', '#555');
     }
+
+    $("td#thx a").bind('click.mynamespace', function(e) {
+        ResetPolygon();
+    });
 
     return false
 }
@@ -1829,7 +1890,7 @@ function doOldRoster() {
     // fill poss masive
 
     var text3 = ''
-    text3 += '<br><b>Карта умений: </b><b><sup><a href="#" onClick="alert(\'Карта умений игрока была создана по мотивам Football Manager.\nОтображает в графическом виде среднее значение умений игрока в различных категориях:\n  защита: Отбор мяча, Выбор позиции, Перс. опека\n  физика: Мощь, Выносливость, Работоспособность\n  скор.: Скорость\n  креатив.: Видение поля, Пас, Дриблинг, Навес\n  атака: Удар, Дальний удар\n  техника: Техника\n  лид.: Лидерство\n  в воздухе: Игра головой\\nДля вратаря будет отображено среднее значение основных вратарских умений: Реакция, Игра руками, Игра на выходах, Выбор позиции\')">?</a></sup></b><br>';
+    text3 += '<br><b>Карта умений: </b><b><sup><a href="#" onClick="alert(\'Карта умений игрока была создана по мотивам Football Manager. Отображает в графическом виде умения игрока в различных категориях:\\n\\n  отбор: Отбор мяча\\n  мощь: Мощь\\n  энерг.: (Выносливость+Работоспособность)/2\\n  передачи: (Пас+Навес)/2\\n  владение: (Видение поля+Техника)/2\\n  дриблинг: Дриблинг\\n  удары: (Удар+Дальний удар)/2\\n  скор.: Скорость\\n  голов.:  Игра головой\\n  позиц.: Выбор позиции\')">?</a></sup></b><br>';
     text3 += '<canvas id="polygon" width="181" height="181"></canvas><br>';
     text3 += '<br><b>Номинал+</b>: <b><sup><a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></sup></b><br>'
     text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
@@ -2080,7 +2141,7 @@ function doNewRoster() {
     // fill poss masive
 
     var text3 = ''
-    text3 += '<br><b>Карта умений: </b><b><sup><a href="#" onClick="alert(\'Карта умений игрока была создана по мотивам Football Manager.\\nОтображает в графическом виде среднее значение умений игрока в различных категориях:\\n  защита: Отбор мяча, Выбор позиции, Перс. опека\\n  физика: Мощь, Выносливость, Работоспособность\\n  скор.: Скорость\\n  креатив.: Видение поля, Пас, Дриблинг, Навес\\n  атака: Удар, Дальний удар\\n  техника: Техника\\n  лид.: Лидерство\\n  в воздухе: Игра головой\\nДля вратаря будет отображено среднее значение основных вратарских умений: Реакция, Игра руками, Игра на выходах, Выбор позиции\')">?</a></sup></b><br>';
+    text3 += '<br><b>Карта умений: </b><b><sup><a href="#" onClick="alert(\'Карта умений игрока была создана по мотивам Football Manager. Отображает в графическом виде умения игрока в различных категориях:\\n\\n  отбор: Отбор мяча\\n  мощь: Мощь\\n  энерг.: (Выносливость+Работоспособность)/2\\n  передачи: (Пас+Навес)/2\\n  владение: (Видение поля+Техника)/2\\n  дриблинг: Дриблинг\\n  удары: (Удар+Дальний удар)/2\\n  скор.: Скорость\\n  голов.:  Игра головой\\n  позиц.: Выбор позиции\')">?</a></sup></b><br>';
     text3 += '<canvas id="polygon" width="181" height="181"></canvas><br>';
     text3 += '<br><b>Номинал+</b>: <b><sup><a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></sup></b><br>'
     text3 += '<div id="SValue"><a href="javascript:void(RelocateGetNomData())">Показать</a></div>'
