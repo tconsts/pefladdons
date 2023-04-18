@@ -331,7 +331,8 @@ function ShowPolygonCheckPlayer(nn) {
     ctx.stroke();
 }
 
-function ShowPolygon(pl) {
+function ShowPolygon() {
+    var pl = players[0];
     var ctx = document.getElementById('polygon').getContext('2d');
 
     skill_groups = [
@@ -352,8 +353,27 @@ function ShowPolygon(pl) {
     var Xcenter = 90;
     var Ycenter = 90;
 
+    for (var k = 3; k > 0; k -= 1) {
+        switch (k) {
+            case 3: ctx.fillStyle = "#a3de8f"; break;
+            case 2: ctx.fillStyle = "#c4de8f"; break;
+            case 1: ctx.fillStyle = "#ded78f"; break;
+        }
+        ctx.beginPath();
+        ctx.moveTo(Xcenter + size * k * Math.cos(0) / 3, Ycenter + size * k * Math.sin(0) / 3);
+        for (var i = 0; i < numberOfSides; i += 1) {
+            var j = i + 1;
+            if (j >= numberOfSides) j=0;
+            ctx.lineTo(Xcenter + size * k * Math.cos(j * 2 * Math.PI / numberOfSides) / 3, Ycenter + size * k * Math.sin(j * 2 * Math.PI / numberOfSides) / 3);
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    ctx.strokeStyle = "#bbb";
+    ctx.fillStyle = '#000000';
+    ctx.lineWidth = 1;
     for (var k = 13; k > 0; k -= 1) {
-        ctx.fillStyle = ( k & 1 ) ? '#89E268' : '#A9EF8F';
         ctx.beginPath();
         ctx.moveTo(Xcenter + size * k * Math.cos(0) / 13, Ycenter + size * k * Math.sin(0) / 13);
         for (var i = 0; i < numberOfSides; i += 1) {
@@ -361,8 +381,7 @@ function ShowPolygon(pl) {
             if (j >= numberOfSides) j=0;
             ctx.lineTo(Xcenter + size * k * Math.cos(j * 2 * Math.PI / numberOfSides) / 13, Ycenter + size * k * Math.sin(j * 2 * Math.PI / numberOfSides) / 13);
         }
-        ctx.closePath();
-        ctx.fill();
+        ctx.stroke();
     }
 
     ctx.strokeStyle = "#000000";
@@ -373,7 +392,6 @@ function ShowPolygon(pl) {
     }
 
     ctx.beginPath();
-    ctx.lineWidth = 1;
     for (var i = 0; i < numberOfSides; i += 1) {
         var j = i + 1;
         if (j >= numberOfSides) j=0;
@@ -1853,7 +1871,7 @@ function doOldRoster() {
     if (players.length > 1) PrintPlayers();
     GetValue()
     ShowAdaptation(players[0].natfull)
-    ShowPolygon(players[0])
+    ShowPolygon()
     RelocateGetNomData()
     GetData('positions')
     printStrench()
@@ -2090,7 +2108,7 @@ function doNewRoster() {
     if (players.length > 1) PrintPlayers();
     GetValue();
     ShowAdaptation(players[0].natfull, players[0].teamnat);
-    ShowPolygon(players[0]);
+    ShowPolygon();
     RelocateGetNomData();
     GetData('positions');
     printStrench();
