@@ -21,6 +21,8 @@ var sklfr = [];
 var compare = false;
 var mh = false;
 var total_check_players = 0;
+var maxSkill = 15;
+
 
 var ups = {
     "a0e": "-2",
@@ -380,8 +382,8 @@ function ShowPolygonCheckPlayer(nn) {
         var v2 = 0;
         for (s in skill_groups[i][1]) v1 += skill_groups[i][1][s];
         for (s in skill_groups[j][1]) v2 += skill_groups[j][1][s];
-        v1 = (v1 / skill_groups[i][1].length) * size / 13;
-        v2 = (v2 / skill_groups[j][1].length) * size / 13;
+        v1 = (v1 / skill_groups[i][1].length) * size / maxSkill;
+        v2 = (v2 / skill_groups[j][1].length) * size / maxSkill;
         ctx.moveTo(Xcenter + v1 * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + v1 * Math.sin(i * 2 * Math.PI / numberOfSides));
         ctx.lineTo(Xcenter + v2 * Math.cos(j * 2 * Math.PI / numberOfSides), Ycenter + v2 * Math.sin(j * 2 * Math.PI / numberOfSides));
     }
@@ -419,13 +421,13 @@ function ShowPolygon() {
     ctx.strokeStyle = "#c8c8c8";
     ctx.fillStyle = '#000000';
     ctx.lineWidth = 1;
-    for (var k = 13; k > 0; k -= 1) {
+    for (var k = maxSkill; k > 0; k -= 1) {
         ctx.beginPath();
-        ctx.moveTo(Xcenter + size * k * Math.cos(0) / 13, Ycenter + size * k * Math.sin(0) / 13);
+        ctx.moveTo(Xcenter + size * k * Math.cos(0) / maxSkill, Ycenter + size * k * Math.sin(0) / maxSkill);
         for (var i = 0; i < numberOfSides; i += 1) {
             var j = i + 1;
             if (j >= numberOfSides) j=0;
-            ctx.lineTo(Xcenter + size * k * Math.cos(j * 2 * Math.PI / numberOfSides) / 13, Ycenter + size * k * Math.sin(j * 2 * Math.PI / numberOfSides) / 13);
+            ctx.lineTo(Xcenter + size * k * Math.cos(j * 2 * Math.PI / numberOfSides) / maxSkill, Ycenter + size * k * Math.sin(j * 2 * Math.PI / numberOfSides) / maxSkill);
         }
         ctx.stroke();
     }
@@ -445,8 +447,8 @@ function ShowPolygon() {
         var v2 = 0;
         for (s in skill_groups[i][1]) v1 += skill_groups[i][1][s];
         for (s in skill_groups[j][1]) v2 += skill_groups[j][1][s];
-        v1 = (v1 / skill_groups[i][1].length) * size / 13;
-        v2 = (v2 / skill_groups[j][1].length) * size / 13;
+        v1 = (v1 / skill_groups[i][1].length) * size / maxSkill;
+        v2 = (v2 / skill_groups[j][1].length) * size / maxSkill;
         ctx.moveTo(Xcenter + v1 * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + v1 * Math.sin(i * 2 * Math.PI / numberOfSides));
         ctx.lineTo(Xcenter + v2 * Math.cos(j * 2 * Math.PI / numberOfSides), Ycenter + v2 * Math.sin(j * 2 * Math.PI / numberOfSides));
     }
