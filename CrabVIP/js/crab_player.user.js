@@ -139,7 +139,7 @@ function countPosition(posnum) {
     var ps = positions[posnum]
     ps.strmax = countStrength(ps.koff)[0];
     var pls = []
-    
+
     //TODO надо зарефакторить
     var j=0;
     var pl = {};
@@ -953,15 +953,15 @@ function PrintPlayers(cur) {
         if ((i > 0 || cur === 0) && players[i].secondname !== undefined) {
             var secname = String(players[i].secondname).split(' ')
             var fname = String(players[i].firstname)
-			var plhref = (players[i].t === undefined 
-				? '' 
+			var plhref = (players[i].t === undefined
+				? ''
 				: ' href="plug.php?p=refl&t=' + players[i].t + (players[i].k !== undefined? '&k='+players[i].k : '') + '&j=' + players[i].id + '&z=' + players[i].hash + '"')
             htmltext += '<tr><td nowrap><font size=1>'
             htmltext += '<a id="compare' + i + '" href="javascript:void(CheckPlayer' + (isOldRoster ? 'Old' : '') + '(' + i + '))"><</a>|'
             htmltext += '<a href="javascript:void(RememberPl(' + players[i].id + '))">x</a>|'
             htmltext += '<a' + (players[i].t === 'yp' ? '' : ' href="javascript:hist(\'' + players[i].id + '\',\'n\')"') + '>и</a>|'
             htmltext += '<font color="' + (players[i].secondname === players[0].secondname ? '#000' : '#aaa') + '" id="cc_compare' + i + '">cc'+players[i].sumskills + '</font>|'
-            htmltext += '<a' + plhref + ' title="id'+players[i].id+'">' + (players[i].t !== 'yp' ? secname[secname.length - 1] : 'шкл') + '</a>' + (players[i].t === undefined || players[i].t === 'yp' ? '<sup>' + players[i].position + '</sup>' : '') 
+            htmltext += '<a' + plhref + ' title="id'+players[i].id+'">' + (players[i].t !== 'yp' ? secname[secname.length - 1] : 'шкл') + '</a>' + (players[i].t === undefined || players[i].t === 'yp' ? '<sup>' + players[i].position + '</sup>' : '')
             htmltext += '</font></td></tr>'
         }
     }
@@ -1688,7 +1688,7 @@ function ShowLastStats() {
 }
 
 function doOldRoster() {
-    
+
     if (url.t === 'plast' || url.t === 'plast2') return false
 
     drawEars();
@@ -1955,10 +1955,10 @@ function doNewRoster() {
         var ses = parseInt($('a[href*=SavePl]').prev().prev().prev().text(), 10);
         if (!isNaN(ses)) localStorage.season = ses;
     }
-   
+
 
     //пририсовываем справа панель
-    drawEars();   
+    drawEars();
 
     // get player skills
     $('table#skills td[id]').each(function () {
@@ -2195,7 +2195,137 @@ function getPlayers() {
     }
 }
 
+function DrowCompareAdvanced(data,season){
+  var arrowsName = [];
+  arrowsName['a6n.gif'] = 0; arrowsName['a6s.gif'] = 0; arrowsName['a6e.gif'] = 0;
+  arrowsName['next.gif'] = 0; arrowsName['next.gif'] = 0;
+  arrowsName['a0n.gif'] = 1; arrowsName['a0s.gif'] = 1; arrowsName['a0e.gif'] = 1;
+  arrowsName['a1n.gif'] = 2; arrowsName['a1s.gif'] = 2; arrowsName['a1e.gif'] = 2;
+  arrowsName['a0n.png'] = 3; arrowsName['a0s.png'] = 3; arrowsName['a0e.png'] = 3;
+  arrowsName['a2n.gif'] = 4; arrowsName['a2s.gif'] = 4; arrowsName['a2e.gif'] = 4;
+  arrowsName['a3n.gif'] = 5; arrowsName['a3s.gif'] = 5; arrowsName['a3e.gif'] = 5;
+  arrowsName['a5n.gif'] = 6; arrowsName['a5s.gif'] = 6; arrowsName['a5e.gif'] = 6;
+  arrowsName['last.gif'] = 6; arrowsName['last.gif'] = 6;
+  var totalUp = 0, totalDown = 0;
+
+  $('table#stat,span#err,#dcode1').hide();
+  $('#dcode1').html('');
+  $('table#res,table#skills').show();
+  if(sknum==3){
+    sknum=0;
+    $('table[id^="res"], td[id^="res"]').remove();
+  }
+  if(sknum==0) $('table#stat').before('<table id=res class=back1 align=center width=70% cellpadding=2 cellspacing=1><tr><td nowrap id=thx align=center class=back2>[<a href="javascript:void(SkReset())"><font color=red>Х</font> сбросить</a>]</td></tr></table>');
+  sknum++;
+  $('td#thx').after('<td nowrap>'+(season!=0 ? '<b>'+season+' сезон</b>' : ' ')+'</td>');
+  var ssn = 0;
+  if(data['pname']==undefined) data['pname']='';
+  for(i in data){
+    var nm = (lc[i]==undefined ? i : lc[i].rn);
+    if($('td#'+i).length==0){
+      $('table#res').prepend('<tr class=back2><td nowrap id='+i+'>'+nm+'</td><td nowrap>'+(cur!=undefined && cur[i]!=undefined ? cur[i] : '')+'</td></tr>');
+    }
+    switch(i){
+      case 'dribbling':
+      case 'finishing':
+      case 'passing':
+      case 'crossing':
+      case 'longshots':
+      case 'technique':
+      case 'tackling':
+      case 'heading':
+      case 'handling':
+      case 'corners':
+      case 'freekicks':
+      case 'positioning':
+      case 'vision':
+      case 'workrate':
+      case 'reflexes':
+      case 'marking':
+      case 'leadership':
+      case 'pace':
+      case 'strength':
+      case 'stamina':
+        if($('td#'+i).length>0){
+          var x=data[i].split('.');
+          if(data['position']=='GK') {
+            if ((i!='marking')&&(i!='corners')&&($('td#'+i).find('span.skills').length==0)) ssn = ssn+(isNaN(parseInt(x[0])) ? 0 : parseInt(x[0]));
+          } else {
+            if ((i!='reflexes')&&(i!='handling')&&($('td#'+i).find('span.skills').length==0)) ssn = ssn+(isNaN(parseInt(x[0])) ? 0 : parseInt(x[0]));
+          }
+          var ch = parseInt($('td#'+i).next().find('span.skills').text())-parseInt(x[0]);
+          if(ch>0) ch = '<font color=green size=1>+'+ch+'</font>';
+          else if(ch<0) ch ='<font color=red size=1>'+ch+'</font>'
+          else ch='';
+          if (i != 'leadership') {
+            if ($('td#'+i).next().find('img').length > 0) {
+              var currentSkillArrow = $('td#'+i).next().find('img').attr('src');
+              currentSkillArrow = currentSkillArrow.replace(/system\/img\/g\//, '')
+            } else {
+              var currentSkillArrow = 'a0n.png';
+            }
+
+            var currentSkill = parseInt($('td#'+i).next().text());
+            var newSkill = parseInt(x[0]);
+            var newSkillPart;
+            if (x[1]) {
+              newSkillPart = arrowsName[x[1] + '.gif'];
+            } else {
+              newSkillPart = arrowsName['a0n.png'];
+            }
+            var currentSkillPart = arrowsName[currentSkillArrow] || 0;
+            var skillArrowChange = (currentSkill*7+currentSkillPart) - (newSkill*7+newSkillPart);
+            console.log(i, x[1], 'arrowChange='+skillArrowChange, `seasonSkill=${currentSkill}.${currentSkillPart}`, `nowSkill=${newSkill}.${newSkillPart}` );
+            if (skillArrowChange < 0) {
+              totalDown += skillArrowChange;
+            } else {
+              totalUp += skillArrowChange;
+            }
+            // стрелкоапы по каждому скиллу
+            ch += '<font color=gray>('+(skillArrowChange>0?'+':'')+skillArrowChange+')<font>';
+          }
+
+          var m = $('td#'+i).next().clone()
+            .attr('id','res')
+            .find('span.arrow,span.form').remove().end()
+            .each(function(){
+              if($(this).find('span.skills').length>0) $(this).find('span.skills').html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>')
+              else $(this).html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>')
+            })
+          $('td#'+i).after(m);
+        }
+        break;
+      case 'int':
+      case 'u21':
+        var x=data[i].split('.');
+        $('td#'+i).after('<td nowrap><font color=gray>'+(x[0]>0 ? 'матчей '+x[0]+', голов '+x[1] : '')+'</font></td>');
+        break;
+      case 'pname':
+        var x=data[i].split('|');
+        $('td#'+i).after('<td nowrap>'+(x[0]==''?'':'<img height="12" src="system/img/flags/mod/'+x[0]+'.gif"> <a href="plug.php?'+x[2]+'"><b>'+x[1]+'</b></a>')+'</td>');
+        break;
+      case 'age':
+        if(season!=0 && cur!=undefined && cur['curseason']!=undefined && cur['age']!=undefined){
+          $('td#'+i).after('<td nowrap><font color=gray>'+(parseInt(cur['age'])+season-parseInt(cur['curseason']))+'</font></td>');
+        }else{
+          $('td#'+i).after('<td nowrap><font color=gray>'+data[i]+'</font></td>');
+        }
+        break;
+      default:
+        $('td#'+i).after('<td nowrap><font color=gray>'+data[i]+'</font></td>');
+    }
+  }
+  $('td[id^="ss"]').attr('colSpan',sknum+2);
+  $('#s').after('<td class=back1 id=res>'+ssn+'</td>');
+
+  if($('td#upNdown').length==0){
+    $('table#res td#pname').parent().after('<tr class=back2><td nowrap id="upNdown">Стрелкоапы</td><td nowrap></td></tr>');
+  }
+  $('td#upNdown').after('<td nowrap><font color=gray>+'+totalUp+(totalDown==0?'-':'')+totalDown+'='+(totalUp+totalDown)+'</font></td>');
+}
+
 $().ready(function () {
+  DrowCompare = DrowCompareAdvanced;
     Std.debug('url t=%s p=%s',url.t, Url.value('p'));
     if ($('table#hd1').length === 0) {
         isOldRoster = true;
