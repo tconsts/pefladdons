@@ -1481,24 +1481,24 @@ function EditFinance(){
 	var txt2 = ''
 	switch (txt){
 		case 'банкрот': 				 txt2 += 'меньше 0';	break;
-		case 'жалкое': 					 txt2 += '1$т-200$т';	break;
-		case 'бедное': 					 txt2 += '200$т-500$т';	break;
-		case 'среднее': 				 txt2 += '500$т-1$м';	break;
-		case 'нормальное': 				 txt2 += '1$м-3$м';		break;
-		case 'благополучное': 			 txt2 += '3$м-6$м';		break;
-		case 'отличное': 				 txt2 += '6$м-15$м';	break;
-		case 'богатое': 				 txt2 += '15$м-40$м';	break;
-		case 'некуда деньги девать :-)': txt2 += 'больше 40$м';	break;
+		case 'жалкое': 					 txt2 += '1$т-500$т';	break;
+		case 'бедное': 					 txt2 += '500$т-2$м';	break;
+		case 'удовлетворительное': 		 txt2 += '2$м-5$м';		break;
+		case 'нормальное': 				 txt2 += '5$м-15$м';	break;
+		case 'благополучное': 			 txt2 += '15$м-30$м';	break;
+		case 'отличное': 				 txt2 += '30$м-50$м';	break;
+		case 'богатое': 				 txt2 += '50$м-80$м';	break;
+		case 'некуда деньги девать :-)': txt2 += 'больше 80$м';	break;
 		default:
 			var fin = parseInt(txt.replace(/,/g,'').replace('$',''))
-			if 		(fin >  40000000)	{txt = 'некуда деньги девать';	txt2 = 'больше 40$м'}
-			else if (fin >= 15000000)	{txt = 'богатое';				txt2 = '15$м-40$м'}
-			else if (fin >=  6000000) 	{txt = 'отличное';				txt2 = '6$м-15$м'}
-			else if (fin >=  3000000) 	{txt = 'благополучное';			txt2 = '3$м-6$м'}
-			else if (fin >=  1000000) 	{txt = 'нормальное';			txt2 = '1$м-3$м'}
-			else if (fin >=   500000) 	{txt = 'среднее';				txt2 = '500$т-1$м'}
-			else if (fin >=   200000) 	{txt = 'бедное';				txt2 = '200$т-500$т'}
-			else if (fin >=		   0)	{txt = 'жалкое';				txt2 = '1$т-200$т'}
+			if 		(fin >  80000000)	{txt = 'некуда деньги девать';	txt2 = 'больше 80$м'}
+			else if (fin >= 50000000)	{txt = 'богатое';				txt2 = '50$м-80$м'}
+			else if (fin >= 30000000) 	{txt = 'отличное';				txt2 = '30$м-50$м'}
+			else if (fin >= 15000000) 	{txt = 'благополучное';			txt2 = '15$м-30$м'}
+			else if (fin >=  5000000) 	{txt = 'нормальное';			txt2 = '5$м-15$м'}
+			else if (fin >=  2000000) 	{txt = 'удовлетворительное';	txt2 = '2$м-5$м'}
+			else if (fin >=   500000) 	{txt = 'бедное';				txt2 = '500$т-2$м'}
+			else if (fin >=		   0)	{txt = 'жалкое';				txt2 = '1$т-500$т'}
 			else if (fin < 		   0)	{txt = 'банкрот';				txt2 = 'меньше 0'}
 	}
 	$('#finance1').html(txt)
