@@ -2275,7 +2275,6 @@ function DrowCompareAdvanced(data,season){
             }
             var currentSkillPart = arrowsName[currentSkillArrow] || 0;
             var skillArrowChange = (currentSkill*7+currentSkillPart) - (newSkill*7+newSkillPart);
-            console.log(i, x[1], 'arrowChange='+skillArrowChange, `seasonSkill=${currentSkill}.${currentSkillPart}`, `nowSkill=${newSkill}.${newSkillPart}` );
             if (skillArrowChange < 0) {
               totalDown += skillArrowChange;
             } else {
@@ -2291,7 +2290,8 @@ function DrowCompareAdvanced(data,season){
             .each(function(){
               if($(this).find('span.skills').length>0) $(this).find('span.skills').html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>')
               else $(this).html('<font color=gray>'+x[0]+'</font>'+(x[1]!=undefined ? ' <img height=10 src=system/img/g/'+x[1]+'.gif>' :'')+'<sup>'+ch+'</sup>')
-            })
+            });
+	  m.find('sup>font>font').remove();
           $('td#'+i).after(m);
         }
         break;
