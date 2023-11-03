@@ -519,7 +519,7 @@ async function SaveData(dataName) {
 				text += dtid.join('|')
 			}
 		}
-		localStorage[dataname] = text
+		localStorage[dataName] = text
 	} else {
 		for (let i in data) {
 			if (data[i].div === undefined) {
