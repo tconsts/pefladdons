@@ -2,9 +2,9 @@
 // @name           peflmain
 // @namespace      pefl
 // @description    modify site
-// @include        http://*pefl.*/*
-// @exclude        http://*pefl.*/profile.php
-// @exclude        http://*pefl.*/auth.php
+// @include        https://*pefl.*/*
+// @exclude        https://*pefl.*/profile.php
+// @exclude        https://*pefl.*/auth.php
 // @author         const
 // ==/UserScript==
 
