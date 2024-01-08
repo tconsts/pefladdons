@@ -2,8 +2,8 @@
 // @name           peflplayer
 // @namespace      pefl
 // @description    modification player page and school boys
-// @include        http://*pefl.*/plug.php?p=refl&t=p*
-// @include        http://*pefl.*/plug.php?p=refl&t=yp*
+// @include        https://*pefl.*/plug.php?p=refl&t=p*
+// @include        https://*pefl.*/plug.php?p=refl&t=yp*
 // @require			crab_funcs_db.js
 // @require			crab_funcs_std.js
 // @require			crab_funcs_pls.js

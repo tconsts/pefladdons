@@ -2,8 +2,8 @@
 // @name           peflskin1
 // @namespace      pefl
 // @description    Alternative skin for PEFL #1
-// @include        http://*pefl.*/*
-// @exclude        http://*pefl.*/hist.php*
+// @include        https://*pefl.*/*
+// @exclude        https://*pefl.*/hist.php*
 // @version        1.0
 // ==/UserScript==
 

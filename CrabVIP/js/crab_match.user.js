@@ -2,8 +2,8 @@
 // @name           peflmatch
 // @namespace      pefl
 // @description    match page modification
-// @include        http://*pefl.*/*&t=if&*
-// @include        http://*pefl.*/*&t=code&*
+// @include        https://*pefl.*/*&t=if&*
+// @include        https://*pefl.*/*&t=code&*
 // @require			crab_funcs_std.js
 // @encoding	   windows-1251
 // ==/UserScript==

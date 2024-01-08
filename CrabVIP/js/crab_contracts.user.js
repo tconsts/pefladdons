@@ -2,8 +2,8 @@
 // @name           peflcontracts
 // @namespace      pefl
 // @description    contracts modification
-// @include        http://*pefl.*/plug.php?p=fin&t=ctr&*
-// @include        http://*pefl.*/plug.php?p=tr&*
+// @include        https://*pefl.*/plug.php?p=fin&t=ctr&*
+// @include        https://*pefl.*/plug.php?p=tr&*
 // @require			crab_funcs_db.js
 // @encoding	   windows-1251
 // ==/UserScript==

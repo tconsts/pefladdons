@@ -2,8 +2,8 @@
 // @name			peflindex
 // @namespace		pefl
 // @description		index.php
-// @include			http://*pefl.*/index.php
-// @include			http://*pefl.*/
+// @include			https://*pefl.*/index.php
+// @include			https://*pefl.*/
 // @encoding	   windows-1251
 // ==/UserScript==
 

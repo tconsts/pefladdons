@@ -2,7 +2,7 @@
 // @name           peflref
 // @namespace      pefl
 // @description    referee page modification
-// @include        http://*pefl.*/*&t=ref&*
+// @include        https://*pefl.*/*&t=ref&*
 // @encoding	   windows-1251
 // ==/UserScript==
 

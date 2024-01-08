@@ -2,7 +2,7 @@
 // @name           pefladaptation
 // @namespace      pefl
 // @description    adaptaton map
-// @include        http://*pefl.*/?adaptation
+// @include        https://*pefl.*/?adaptation
 // @encoding	   windows-1251
 // ==/UserScript==
 

@@ -2,7 +2,7 @@
 // @name           peflcalendar
 // @namespace      pefl
 // @description    calendar modification
-// @include        http://*pefl.*/plug.php?p=calendar&*
+// @include        https://*pefl.*/plug.php?p=calendar&*
 // @encoding	   windows-1251
 // ==/UserScript==
 

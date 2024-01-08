@@ -2,8 +2,8 @@
 // @name           pefltraining
 // @namespace      pefl
 // @description    modification training page
-// @include        http://*pefl.*/plug.php?p=training*
-// @include        http://*pefl.*/plug.php?p=trainplan*
+// @include        https://*pefl.*/plug.php?p=training*
+// @include        https://*pefl.*/plug.php?p=trainplan*
 // @require			crab_funcs_db.js
 // @encoding	   windows-1251
 // ==/UserScript==

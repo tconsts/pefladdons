@@ -2,10 +2,10 @@
 // @name           peflturnaments
 // @namespace      pefl
 // @description    pefl turnaments page modification
-// @include        http://*pefl.*/plug.php?p=refl&t=cup&j=*
-// @include        http://*pefl.*/plug.php?p=refl&t=ec&j=*
-// @include        http://*pefl.*/plug.php?p=refl&t=t&j=*
-// @include        http://*pefl.*/plug.php?p=refl&t=f&j=*
+// @include        https://*pefl.*/plug.php?p=refl&t=cup&j=*
+// @include        https://*pefl.*/plug.php?p=refl&t=ec&j=*
+// @include        https://*pefl.*/plug.php?p=refl&t=t&j=*
+// @include        https://*pefl.*/plug.php?p=refl&t=f&j=*
 // @encoding	   windows-1251
 // ==/UserScript==
 

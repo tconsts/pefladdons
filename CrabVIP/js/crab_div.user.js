@@ -2,7 +2,7 @@
 // @name           pefldivtable
 // @namespace      pefl
 // @description    division table page modification
-// @include        http://*pefl.*/plug.php?p=refl&t=s&*
+// @include        https://*pefl.*/plug.php?p=refl&t=s&*
 // @require			crab_funcs_db.js
 // @require			crab_funcs_std.js
 // @encoding	   windows-1251

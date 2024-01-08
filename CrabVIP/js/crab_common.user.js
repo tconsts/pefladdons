@@ -2,11 +2,11 @@
 // @name           peflmenu
 // @namespace      pefl
 // @description    add menu
-// @include        http://*pefl.*/*
-// @exclude        http://*pefl.*/profile.php
-// @exclude        http://*pefl.*/auth.php
-// @exclude        http://*pefl.*/hist.php*
-// @exclude        http://*pefl.*/loadplayer.php*
+// @include        https://*pefl.*/*
+// @exclude        https://*pefl.*/profile.php
+// @exclude        https://*pefl.*/auth.php
+// @exclude        https://*pefl.*/hist.php*
+// @exclude        https://*pefl.*/loadplayer.php*
 // @require			crab_funcs_std.js
 // @encoding	   windows-1251
 // ==/UserScript==

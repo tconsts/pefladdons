@@ -2,8 +2,8 @@
 // @name			peflfinance
 // @namespace		pefl
 // @description		finance page modification
-// @include			http://*pefl.*/plug.php?p=fin&z=*
-// @include			http://*pefl.*/plug.php?p=rules&z=*
+// @include			https://*pefl.*/plug.php?p=fin&z=*
+// @include			https://*pefl.*/plug.php?p=rules&z=*
 // @require			crab_funcs_db.js
 // @require			crab_funcs_std.js
 // @encoding	   windows-1251

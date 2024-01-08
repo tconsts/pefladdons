@@ -2,7 +2,7 @@
 // @name           peflskin1
 // @namespace      pefl
 // @description    Alternative skin for PEFL #2
-// @include        http://*pefl.*/*
+// @include        https://*pefl.*/*
 // @version        1.0
 // ==/UserScript==
 

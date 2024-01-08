@@ -2,7 +2,7 @@
 // @name           peflschedule
 // @namespace      pefl
 // @description    modification schedule page
-// @include        http://*pefl.*/plug.php?p=refl&t=last&j=*
+// @include        https://*pefl.*/plug.php?p=refl&t=last&j=*
 // @encoding	   windows-1251
 // ==/UserScript==
 

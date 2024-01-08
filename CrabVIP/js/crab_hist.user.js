@@ -2,7 +2,7 @@
 // @name           peflhist
 // @namespace      pefl
 // @description    history page modification
-// @include        http://*pefl.*/hist.php?*
+// @include        https://*pefl.*/hist.php?*
 // @encoding	   windows-1251
 // ==/UserScript==
 

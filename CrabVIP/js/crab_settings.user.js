@@ -2,7 +2,7 @@
 // @name           peflsettings
 // @namespace      pefl
 // @description    add menu link to sostav
-// @include        http://*pefl.*/?settings
+// @include        https://*pefl.*/?settings
 // @encoding	   windows-1251
 // ==/UserScript==
 

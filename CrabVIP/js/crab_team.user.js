@@ -2,7 +2,7 @@
 // @name           peflteam
 // @namespace      pefl
 // @description    team page modification
-// @include        http://*pefl.*/plug.php?p=refl&t=k&j=*
+// @include        https://*pefl.*/plug.php?p=refl&t=k&j=*
 // @require			crab_funcs_db.js
 // @encoding	   windows-1251
 // ==/UserScript==

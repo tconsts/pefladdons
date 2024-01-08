@@ -2,7 +2,7 @@
 // @name           peflschool
 // @namespace      pefl
 // @description    modification school page
-// @include        http://*pefl.*/plug.php?p=refl&t=school&k=*
+// @include        https://*pefl.*/plug.php?p=refl&t=school&k=*
 // @encoding	   windows-1251
 // ==/UserScript==
 

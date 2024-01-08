@@ -2,7 +2,7 @@
 // @name           pefldoverie
 // @namespace      pefl
 // @description    doverie
-// @include        http://*pefl.*/plug.php?p=refl&t=dov&k=*
+// @include        https://*pefl.*/plug.php?p=refl&t=dov&k=*
 // @encoding	   windows-1251
 // ==/UserScript==
 

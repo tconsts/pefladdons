@@ -2,7 +2,7 @@
 // @name           new_sostav
 // @namespace      pefl
 // @description    sostav na match
-// @include        http://*pefl.*/plug.php?p=squad*&t=*
+// @include        https://*pefl.*/plug.php?p=squad*&t=*
 // @encoding	   windows-1251
 // ==/UserScript==
 
