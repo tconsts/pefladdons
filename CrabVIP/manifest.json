@@ -66,6 +66,10 @@
 	"http://pefl.ru/*",
 	"http://pefl.org/*",
 	"http://www.pefl.ru/*",
-	"http://www.pefl.org/*"
+	"http://www.pefl.org/*",
+	"https://pefl.ru/*",
+	"https://pefl.org/*",
+	"https://www.pefl.ru/*",
+	"https://www.pefl.org/*"
   ]
 }
