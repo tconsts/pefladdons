@@ -1417,7 +1417,12 @@ function GetPl(pid) {
 	players[pid].contract 	= parseInt(head.split('Контракт: ')[1])
 	players[pid].wage 		= parseInt(head.split('г., ')[1].split('$')[0].replace(/,/g,''))
 
-	players[pid].svalue		= GetNomData(pid)
+	try {
+        players[pid].svalue = GetNomData(pid)
+    } catch (err) {
+        players[pid].svalue = 0
+		Std.debug("can't add svalue for pid "+ pid +": " + err)
+    }
 	//Std.debug(players[pid].value+':'+players[pid].svalue)
 
 	team_cur.twage	+= players[pid].wage
