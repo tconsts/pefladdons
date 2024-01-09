@@ -142,14 +142,14 @@ async function GetData2() {
 			GetFinish('tplace',false)
 		}			
 	} else {
-		// Если indexedDb not init, пытаемся это сделать
+		// Р•СЃР»Рё indexedDb not init, РїС‹С‚Р°РµРјСЃСЏ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ
 		if (!db) {
 			await DBConnect();
 		}
 
-		// Получаем все данные из необходимой таблицы
+		// РџРѕР»СѓС‡Р°РµРј РІСЃРµ РґР°РЅРЅС‹Рµ РёР· РЅРµРѕР±С…РѕРґРёРјРѕР№ С‚Р°Р±Р»РёС†С‹
 		const requestResult = await getAll('divs');
-		// Если есть данные какие-либо данные в хранилище
+		// Р•СЃР»Рё РµСЃС‚СЊ РґР°РЅРЅС‹Рµ РєР°РєРёРµ-Р»РёР±Рѕ РґР°РЅРЅС‹Рµ РІ С…СЂР°РЅРёР»РёС‰Рµ
 		if (requestResult !== undefined && requestResult.length > 0) {
 			for (let i = 0; i < requestResult.length; i++) {
 				if (requestResult[i]['my'] === 'true') {
@@ -165,7 +165,7 @@ async function GetData2() {
 		}
 
 		const requestResult2 = await getAll('teams');
-		// Если есть данные какие-либо данные в хранилище
+		// Р•СЃР»Рё РµСЃС‚СЊ РґР°РЅРЅС‹Рµ РєР°РєРёРµ-Р»РёР±Рѕ РґР°РЅРЅС‹Рµ РІ С…СЂР°РЅРёР»РёС‰Рµ
 		if (requestResult2 !== undefined && requestResult2.length > 0) {
 			for (let i = 0; i < requestResult2.length; i++) {
 				if (requestResult2[i]['my'] === true) {
@@ -207,10 +207,10 @@ async function SaveData(dataName) {
 		localStorage[dataName] = text
 	} else {
 		for (let i in data) {
-			// Необходимый объект для записи в бд
+			// РќРµРѕР±С…РѕРґРёРјС‹Р№ РѕР±СЉРµРєС‚ РґР»СЏ Р·Р°РїРёСЃРё РІ Р±Рґ
 			let dti = data[i];
-			// Небольшой костыль для таблиц без ID
-			// в идеале бы конечно им его добавить в месте инициализации вместо этих tid/did, но боюсь на них какая-то логика завязана
+			// РќРµР±РѕР»СЊС€РѕР№ РєРѕСЃС‚С‹Р»СЊ РґР»СЏ С‚Р°Р±Р»РёС† Р±РµР· ID
+			// РІ РёРґРµР°Р»Рµ Р±С‹ РєРѕРЅРµС‡РЅРѕ РёРј РµРіРѕ РґРѕР±Р°РІРёС‚СЊ РІ РјРµСЃС‚Рµ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РІРјРµСЃС‚Рѕ СЌС‚РёС… tid/did, РЅРѕ Р±РѕСЋСЃСЊ РЅР° РЅРёС… РєР°РєР°СЏ-С‚Рѕ Р»РѕРіРёРєР° Р·Р°РІСЏР·Р°РЅР°
 			switch (head[0]) {
 				case 'tid':
 					dti['id'] = dti['tid'];
@@ -258,14 +258,14 @@ async function GetData(dataName) {
 			GetFinish('get_'+dataName, false)
 		}			
 	} else {
-		// Если indexedDb not init, пытаемся это сделать
+		// Р•СЃР»Рё indexedDb not init, РїС‹С‚Р°РµРјСЃСЏ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ
 		if (!db) {
 			await DBConnect();
 		}
 
-		// Получаем все данные из необходимой таблицы
+		// РџРѕР»СѓС‡Р°РµРј РІСЃРµ РґР°РЅРЅС‹Рµ РёР· РЅРµРѕР±С…РѕРґРёРјРѕР№ С‚Р°Р±Р»РёС†С‹
 		const requestResult = await getAll(dataName);
-		// Если есть данные какие-либо данные в хранилище
+		// Р•СЃР»Рё РµСЃС‚СЊ РґР°РЅРЅС‹Рµ РєР°РєРёРµ-Р»РёР±Рѕ РґР°РЅРЅС‹Рµ РІ С…СЂР°РЅРёР»РёС‰Рµ
 		if (requestResult !== undefined && requestResult.length > 0) {
 			for (let i = 0; i < requestResult.length; i++) {
 				let row = requestResult[i];
@@ -287,13 +287,13 @@ function EditFinance(school, dteams, dtour) {
 	debug('EditFinance('+school+','+dteams+','+dtour+')');
 		var finance = [];
 		var ffn 	= $('td.back4 > table td:eq(1)').html();
-		zp	 		= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,'')) * 1000;
-		sponsors 	= parseInt(ffn.split('Всего ')[1].split(',000$')[0].replace(/\,/g,'')) * 1000;
-		last_sp		= parseInt(ffn.split(',000$ в ИД / 4 г.')[0].split('$ в ИД / 3 г.')[1].split('>')[1].replace(/\,/g,''));
-		cur.bablo	= parseInt(ffn.split('Финансы: ')[1].split('$')[0].replace(/\,/g,''));
-		cur.bonus	= (ffn.indexOf('Бонус:') !== -1 ? parseInt(ffn.split('Бонус:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0);
+		zp	 		= parseInt(ffn.split('РЎСѓРјРјР° Р·Р°СЂРїР»Р°С‚: ')[1].split(',000$')[0].replace(/\,/g,'')) * 1000;
+		sponsors 	= parseInt(ffn.split('Р’СЃРµРіРѕ ')[1].split(',000$')[0].replace(/\,/g,'')) * 1000;
+		last_sp		= parseInt(ffn.split(',000$ РІ РР” / 4 Рі.')[0].split('$ РІ РР” / 3 Рі.')[1].split('>')[1].replace(/\,/g,''));
+		cur.bablo	= parseInt(ffn.split('Р¤РёРЅР°РЅСЃС‹: ')[1].split('$')[0].replace(/\,/g,''));
+		cur.bonus	= (ffn.indexOf('Р‘РѕРЅСѓСЃ:') !== -1 ? parseInt(ffn.split('Р‘РѕРЅСѓСЃ:')[1].split('<br>')[0].replace(/\,/g,'').replace('$','')) : 0);
 
-		var tmenu = $('td.topmenu table td:contains(" ФИД")').text();
+		var tmenu = $('td.topmenu table td:contains(" Р¤РР”")').text();
 		cur.fid = isNaN(parseInt(tmenu.split('(')[1],10)) ? 0 : parseInt(tmenu.split('(')[1],10);
 		fin.fid = localStorage['finFID'] != undefined ? localStorage['finFID'] : (!isNaN(parseInt(tmenu.split('/')[1],10)) ? parseInt(tmenu.split('/')[1],10) : 81);
 
@@ -310,21 +310,21 @@ function EditFinance(school, dteams, dtour) {
 		}
 
 		if(isNaN(school) || school == 0) {
-			school = finance[1]['Школа'] - Math.floor(((finance[0]['Продажа'] + finance[1]['Покупка'])*0.05 - finance[1]['Бонусы'])/1000)*1000;
+			school = finance[1]['РЁРєРѕР»Р°'] - Math.floor(((finance[0]['РџСЂРѕРґР°Р¶Р°'] + finance[1]['РџРѕРєСѓРїРєР°'])*0.05 - finance[1]['Р‘РѕРЅСѓСЃС‹'])/1000)*1000;
 		}
 		//fill finances
-		cur.sponsors = finance[2]['Спонсоры'];
-		cur.stadion = finance[2]['Стадион'];
-		cur.priz = finance[2]['Призовые'];
-		cur.sale = finance[2]['Продажа'];
-		cur.allup =	finance[2]['Всего'];
+		cur.sponsors = finance[2]['РЎРїРѕРЅСЃРѕСЂС‹'];
+		cur.stadion = finance[2]['РЎС‚Р°РґРёРѕРЅ'];
+		cur.priz = finance[2]['РџСЂРёР·РѕРІС‹Рµ'];
+		cur.sale = finance[2]['РџСЂРѕРґР°Р¶Р°'];
+		cur.allup =	finance[2]['Р’СЃРµРіРѕ'];
 
-		cur.zp = finance[3]['Зарплаты'];
-		cur.buy = finance[3]['Покупка'];
-		cur.school = finance[3]['Школа'];
-		cur.dopFond = finance[3]['Дополнительный'];
-		cur.agentsBonus = finance[3]['Бонусы'];
-		cur.alldown = finance[3]['Всего'];
+		cur.zp = finance[3]['Р—Р°СЂРїР»Р°С‚С‹'];
+		cur.buy = finance[3]['РџРѕРєСѓРїРєР°'];
+		cur.school = finance[3]['РЁРєРѕР»Р°'];
+		cur.dopFond = finance[3]['Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№'];
+		cur.agentsBonus = finance[3]['Р‘РѕРЅСѓСЃС‹'];
+		cur.alldown = finance[3]['Р’СЃРµРіРѕ'];
 		cur.plusminus =	cur.allup - cur.alldown;
 		cur.zpperc = (cur.sponsors === 0 ? 0 + '%' : (cur.zp/cur.sponsors * 100).toFixed(1) + '%');
 		cur.schoolperc = (cur.sponsors === 0 ? 0 + '%' : (cur.school/cur.sponsors * 100).toFixed(1) + '%');
@@ -334,14 +334,14 @@ function EditFinance(school, dteams, dtour) {
 
 		// set div prizes
 		var divprizmark = (' <i>*1</i>').fontcolor('red').fontsize(1)
-		var divpriztext = ('<i>*1 - без учета бонуса по итогам чемпионата, требуется сходить в "Дополнительный призовой фонд".</i>').fontcolor('red').fontsize(1)
+		var divpriztext = ('<i>*1 - Р±РµР· СѓС‡РµС‚Р° Р±РѕРЅСѓСЃР° РїРѕ РёС‚РѕРіР°Рј С‡РµРјРїРёРѕРЅР°С‚Р°, С‚СЂРµР±СѓРµС‚СЃСЏ СЃС…РѕРґРёС‚СЊ РІ "Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ РїСЂРёР·РѕРІРѕР№ С„РѕРЅРґ".</i>').fontcolor('red').fontsize(1)
 		if(divpriz !== 0){
-			if (finance[1]['Зарплаты'] === 0 && cur.zp > zp * 10) {
+			if (finance[1]['Р—Р°СЂРїР»Р°С‚С‹'] === 0 && cur.zp > zp * 10) {
 				divprizmark = ('<i>*1</i>').fontsize(1);
-				divpriztext = ('<i>*1 - бонус по итогам чемпионата: ' + divpriz/1000 + ',000$ за ' + (1000-tplace-dnum2*100) + ' место.</i>').fontsize(1);
+				divpriztext = ('<i>*1 - Р±РѕРЅСѓСЃ РїРѕ РёС‚РѕРіР°Рј С‡РµРјРїРёРѕРЅР°С‚Р°: ' + divpriz/1000 + ',000$ Р·Р° ' + (1000-tplace-dnum2*100) + ' РјРµСЃС‚Рѕ.</i>').fontsize(1);
 			} else {
 				divprizmark = ('<i>*1</i>').fontcolor('green').fontsize(1);
-				divpriztext = ('<i>*1 - учтен бонус по итогам чемпионата: ' + divpriz/1000 + ',000$ за ' + (1000-tplace-dnum2*100) + ' место.</i>').fontcolor('green').fontsize(1);
+				divpriztext = ('<i>*1 - СѓС‡С‚РµРЅ Р±РѕРЅСѓСЃ РїРѕ РёС‚РѕРіР°Рј С‡РµРјРїРёРѕРЅР°С‚Р°: ' + divpriz/1000 + ',000$ Р·Р° ' + (1000-tplace-dnum2*100) + ' РјРµСЃС‚Рѕ.</i>').fontcolor('green').fontsize(1);
 			}
 		}
 
@@ -350,17 +350,17 @@ function EditFinance(school, dteams, dtour) {
 		$('table#0 td:odd, table#1 td:odd').attr('width','14%').attr('align','right').after('<td width=56%></td>');
 		$('table#2 td:odd, table#3 td:odd').attr('width','15%').attr('align','right').attr('id','cur').after('<td></td><td width=15% id=fin align=right></td><td></td>');
 
-		var preparedhtml = '<tr><th width=40%></th><th width=30% class=back3 colspan=2>Текущий ' + cur.fid + ' ФИД</th>';
+		var preparedhtml = '<tr><th width=40%></th><th width=30% class=back3 colspan=2>РўРµРєСѓС‰РёР№ ' + cur.fid + ' Р¤РР”</th>';
 		if(fin.fid !== cur.fid) {
-			preparedhtml += '<th width=30% class=back3 colspan=2>Прогноз на <span class="ffid">' + fin.fid + '</span> ФИД (<a href="javascript:void(ChangeFID(\'-\'))">&ndash;</a> <a href="javascript:void(ChangeFID(\'+\'))">+</a>)</th>'
-		} else if(finance[1]['Зарплаты'] === 0 && cur.zp > zp * 10) {
-			preparedhtml += '<th width=30% class=back3 colspan=2>В следующем сезоне</th>';
+			preparedhtml += '<th width=30% class=back3 colspan=2>РџСЂРѕРіРЅРѕР· РЅР° <span class="ffid">' + fin.fid + '</span> Р¤РР” (<a href="javascript:void(ChangeFID(\'-\'))">&ndash;</a> <a href="javascript:void(ChangeFID(\'+\'))">+</a>)</th>'
+		} else if(finance[1]['Р—Р°СЂРїР»Р°С‚С‹'] === 0 && cur.zp > zp * 10) {
+			preparedhtml += '<th width=30% class=back3 colspan=2>Р’ СЃР»РµРґСѓСЋС‰РµРј СЃРµР·РѕРЅРµ</th>';
 		} //bgcolor=#A3DE8F
 		preparedhtml += '</tr>';
 		$('table#2, table#3').prepend(preparedhtml);
 
 		preparedhtml  = '<hr><table width=100% id="4">';
-		preparedhtml += '<tr><td width=40%><b>Плюс\\Минус</b></td>';
+		preparedhtml += '<tr><td width=40%><b>РџР»СЋСЃ\\РњРёРЅСѓСЃ</b></td>';
 		preparedhtml += '<td width=15% align=right>' + (format(cur.plusminus)).bold() + '</td><td></td>';
 
 		if(fin.fid !== cur.fid) {
@@ -370,7 +370,7 @@ function EditFinance(school, dteams, dtour) {
 		}
 
 		preparedhtml += '</tr>';
-		preparedhtml += '<tr><td><b>На счету</b></td>';
+		preparedhtml += '<tr><td><b>РќР° СЃС‡РµС‚Сѓ</b></td>';
 		preparedhtml += '<td align=right>' + (format(cur.bablo)).bold() + '</td><td></td>';
 		if(fin.fid !== cur.fid) {
 			preparedhtml += '<td align=right id="fbablo"></td><td></td>';
@@ -382,15 +382,15 @@ function EditFinance(school, dteams, dtour) {
 		$('td[id=cur]:eq(7)').next().append('&nbsp;<sup>' + cur.schoolperc + '</sup>');
 
 		$('table#2 tr:eq(2) td:first').append((' <i>*3</i>').fontsize(1));
-		var ttt = '<i>*3 - считаем что уже сыгранно домашних игр:';
-		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;чемпионат: ' + curhometour + ' (максимум ' + maxhometour + ')';
-		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;остальное: <font size=1 id="cm">'+cm+'</font> (<a href="javascript:void(CountStad(\'-\'))">&ndash;</a> <a href="javascript:void(CountStad(\'+\'))">+</a>)';
+		var ttt = '<i>*3 - СЃС‡РёС‚Р°РµРј С‡С‚Рѕ СѓР¶Рµ СЃС‹РіСЂР°РЅРЅРѕ РґРѕРјР°С€РЅРёС… РёРіСЂ:';
+		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;С‡РµРјРїРёРѕРЅР°С‚: ' + curhometour + ' (РјР°РєСЃРёРјСѓРј ' + maxhometour + ')';
+		ttt += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;РѕСЃС‚Р°Р»СЊРЅРѕРµ: <font size=1 id="cm">'+cm+'</font> (<a href="javascript:void(CountStad(\'-\'))">&ndash;</a> <a href="javascript:void(CountStad(\'+\'))">+</a>)';
 		ttt += '</i><br>';
 		$('table#4').after(ttt.fontsize(1));
 
 		$('table#3 tr:eq(3) td:first').append((' <i>*2</i>').fontsize(1));
-		$('table#3 tr:eq(5) td:first').append('<b><sup><a href = "#" onClick = "alert(\'5% от сделки при продаже игрока, что не сыграл в команде 30 офц игр после покупки\')"> ?</a></sup></b>');
-		$('table#4').after(('<i>*2 - в скобках указано соотношение вложений в школу по сравнению со спонсорскими.</i><br>').fontsize(1));
+		$('table#3 tr:eq(5) td:first').append('<b><sup><a href = "#" onClick = "alert(\'5% РѕС‚ СЃРґРµР»РєРё РїСЂРё РїСЂРѕРґР°Р¶Рµ РёРіСЂРѕРєР°, С‡С‚Рѕ РЅРµ СЃС‹РіСЂР°Р» РІ РєРѕРјР°РЅРґРµ 30 РѕС„С† РёРіСЂ РїРѕСЃР»Рµ РїРѕРєСѓРїРєРё\')"> ?</a></sup></b>');
+		$('table#4').after(('<i>*2 - РІ СЃРєРѕР±РєР°С… СѓРєР°Р·Р°РЅРѕ СЃРѕРѕС‚РЅРѕС€РµРЅРёРµ РІР»РѕР¶РµРЅРёР№ РІ С€РєРѕР»Сѓ РїРѕ СЃСЂР°РІРЅРµРЅРёСЋ СЃРѕ СЃРїРѕРЅСЃРѕСЂСЃРєРёРјРё.</i><br>').fontsize(1));
 		$('table#2 tr:eq(3) td:first').append(divprizmark);
 		$('table#4').after(divpriztext + '<br>');
 
@@ -446,7 +446,7 @@ function setFin(){
 			$('td[id=fin]:eq(8)').html(format(fin.dopFond).bold());
 			$('td[id=fin]:eq(9)').html(format(fin.agentsBonus).bold());
 			$('td[id=fin]:eq(10)').html(format(fin.alldown).bold());
-		} else if (finance[1]['Зарплаты'] === 0 && cur.zp > zp * 10) {
+		} else if (finance[1]['Р—Р°СЂРїР»Р°С‚С‹'] === 0 && cur.zp > zp * 10) {
 			let spraz = parseInt((sponsors - (cur.sponsors) / fin.fid) / 1000)
 			if(spraz !== 0){
 				var prev_sp = last_sp - spraz
@@ -455,8 +455,8 @@ function setFin(){
 					spraz = '+' + spraz
 				}
 				var nhtml = $('td.back4 > table td:eq(1)').html()
-				var sp_text = ('Спонсорские контракты:<br><font color="red">' + prev_sp + ',000$ в ИД / ушедший</font>')
-				$('td.back4 > table td:eq(1)').html(nhtml.replace('Спонсорские контракты:', sp_text))
+				var sp_text = ('РЎРїРѕРЅСЃРѕСЂСЃРєРёРµ РєРѕРЅС‚СЂР°РєС‚С‹:<br><font color="red">' + prev_sp + ',000$ РІ РР” / СѓС€РµРґС€РёР№</font>')
+				$('td.back4 > table td:eq(1)').html(nhtml.replace('РЎРїРѕРЅСЃРѕСЂСЃРєРёРµ РєРѕРЅС‚СЂР°РєС‚С‹:', sp_text))
 			}
 			$('td[id=fin]:eq(0)').html(format(fin.sponsors).bold())
 			$('td[id=fin]:eq(5)').html(format(zp*fin.fid).bold())
@@ -515,9 +515,9 @@ $().ready(function() {
 	}else if(urltype == 'fin' && $('div.debug').length === 0){
 		GetData2()
 		$('td.back4').prepend('<div id=debug style="display: none;"></div>')
-		$('#debug').load($('a:contains("изменить")').attr('href') + ' span.text2b',function(){
+		$('#debug').load($('a:contains("РёР·РјРµРЅРёС‚СЊ")').attr('href') + ' span.text2b',function(){
 			school = parseInt($('#debug').html().split(' ')[3])
-			if(!isNaN(school)) $('a:contains("изменить")').before(' ' + format(school) + ' в ИД | ')
+			if(!isNaN(school)) $('a:contains("РёР·РјРµРЅРёС‚СЊ")').before(' ' + format(school) + ' РІ РР” | ')
 			else school = 0
 			GetFinish('school',true)
 		})

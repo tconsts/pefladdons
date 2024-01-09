@@ -9,18 +9,18 @@
 $().ready(function() {
     saveLoadForm = '<table>'
     + '<tr>'
-    + '    <td>Сохранить как:</td>'
+    + '    <td>РЎРѕС…СЂР°РЅРёС‚СЊ РєР°Рє:</td>'
     + '    <td><input id="inputFileNameToSaveAs"></input></td>'
-    + '    <td><button onclick="saveTextAsFile()">Скачать состав</button></td>'
+    + '    <td><button onclick="saveTextAsFile()">РЎРєР°С‡Р°С‚СЊ СЃРѕСЃС‚Р°РІ</button></td>'
     + '</tr>'
     + '<tr>'
-    + '    <td>Выбрать файл:</td>'
+    + '    <td>Р’С‹Р±СЂР°С‚СЊ С„Р°Р№Р»:</td>'
     + '    <td><input type="file" id="fileToLoad"></td>'
-    + '    <td><button onclick="loadFileAsText()">Загрузить состав из файла</button><td>'
+    + '    <td><button onclick="loadFileAsText()">Р—Р°РіСЂСѓР·РёС‚СЊ СЃРѕСЃС‚Р°РІ РёР· С„Р°Р№Р»Р°</button><td>'
     + '</tr>'
     + ' </table>';
 
-    $('<button class="back2 butt" id="save2" onclick="saveKrab()">Сохранить Краб</button>').insertAfter($('#save'));
+    $('<button class="back2 butt" id="save2" onclick="saveKrab()">РЎРѕС…СЂР°РЅРёС‚СЊ РљСЂР°Р±</button>').insertAfter($('#save'));
 
 	$('#tabs-4').append(saveLoadForm);
 
@@ -39,11 +39,11 @@ function saveKrab(){
 			type: 'POST',
 			dataType : 'json',
 			data: 'jsonData=' + JSON.stringify(sData),
-			beforeSend: function (xhr){ $('#sres').html('Сохраняем...');	},
+			beforeSend: function (xhr){ $('#sres').html('РЎРѕС…СЂР°РЅСЏРµРј...');	},
 			complete: function (xhr,status){	save = false; },
-			error: function (xhr,status,error){ $('#sres').html('<font color=red>ОШИБКА!</font> данные не были сохранены!'); },
+			error: function (xhr,status,error){ $('#sres').html('<font color=red>РћРЁРР‘РљРђ!</font> РґР°РЅРЅС‹Рµ РЅРµ Р±С‹Р»Рё СЃРѕС…СЂР°РЅРµРЅС‹!'); },
 			success: function (res){
-                $('#sres').html((res[0] == 0 || res[0] == 10 ? '<font color=green>СОХРАНЕНО</font>: ' : '<font color=red>ОШИБКА СОХРАНЕНИЯ СОСТАВА</font>:<br>') + res[1]);
+                $('#sres').html((res[0] == 0 || res[0] == 10 ? '<font color=green>РЎРћРҐР РђРќР•РќРћ</font>: ' : '<font color=red>РћРЁРР‘РљРђ РЎРћРҐР РђРќР•РќРРЇ РЎРћРЎРўРђР’Рђ</font>:<br>') + res[1]);
                 if (res[0] == 0 || res[0] == 10) {
                     saveTextAsFile($('td.topmenu:first td:last').html().substr(7,3)+'-'
                     +$('.cback33:nth-child(2) .dopinfo a').html()+'-'

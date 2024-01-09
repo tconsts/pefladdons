@@ -61,7 +61,7 @@ $().ready(function() {
 
 function getPlayers() {
 	if (jsonSostav === undefined || jsonSostav.players === undefined) {console.error('none players');return;}
-	// Подгрузить игроков из списка мониторинга если их тут нету еще с флагом "чужой".
+	// РџРѕРґРіСЂСѓР·РёС‚СЊ РёРіСЂРѕРєРѕРІ РёР· СЃРїРёСЃРєР° РјРѕРЅРёС‚РѕСЂРёРЅРіР° РµСЃР»Рё РёС… С‚СѓС‚ РЅРµС‚Сѓ РµС‰Рµ СЃ С„Р»Р°РіРѕРј "С‡СѓР¶РѕР№".
 	if (showscout) {
 		var text1 = String(localStorage.peflplayer);
 		var pl2 = [];
@@ -91,7 +91,7 @@ function getPlayers() {
 			}
 		}
 	}
-	//обрабатываем игроков
+	//РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј РёРіСЂРѕРєРѕРІ
 	for(y in jsonSostav.players) {
 		var pl = jsonSostav.players[y];
 		pl.form = parseInt(pl.form,10);
@@ -119,14 +119,14 @@ function getPlayers() {
 		players['p'+pl.id] = pl;
 	}
 
-	//оцениваем кто в составе
+	//РѕС†РµРЅРёРІР°РµРј РєС‚Рѕ РІ СЃРѕСЃС‚Р°РІРµ
 	for(k in jsonSostav.sostav) if(k>0) {
 		var plsid = 'p'+jsonSostav.sostav[k];
 		if (players[plsid] === undefined) createFakePlayer(jsonSostav.sostav[k]);
 		players[plsid]['sostav'] = (k<12 ? 2 : 1);
 	}
 
-	//собираем ходящих стандарты
+	//СЃРѕР±РёСЂР°РµРј С…РѕРґСЏС‰РёС… СЃС‚Р°РЅРґР°СЂС‚С‹
 	for(l=1;l<=5;l++){
 		for(m=1;m<=11;m++) {
 			if (jsonSostav['sostav'+l] !== undefined && jsonSostav['sostav'+l][m] !== undefined){
@@ -139,7 +139,7 @@ function getPlayers() {
 		}
 	}
 
-	//стандартчики
+	//СЃС‚Р°РЅРґР°СЂС‚С‡РёРєРё
 	// for (g=1; g<=10; g++) {
 	// 	if (g <= 5) {
 	// 		if (players['p'+jsonSostav.cap[g]] !== undefined) players['p'+jsonSostav.cap[g]].cap = g;
@@ -149,7 +149,7 @@ function getPlayers() {
 	// 	}
 	// 	if (players['p'+jsonSostav.pen[g]] !== undefined) players['p'+jsonSostav.pen[g]].pen = g;
 	// }
-	//определяем годность позиции
+	//РѕРїСЂРµРґРµР»СЏРµРј РіРѕРґРЅРѕСЃС‚СЊ РїРѕР·РёС†РёРё
 	for (j in players) {
 		players[j].psn = [];
 		var plposition = String(players[j].position);
@@ -167,14 +167,14 @@ function getDataSelected(){
 
 	if(datavalue === 'undefined'){
 		datavalue = ''
-			+',0,0'			// линия Gk & SW
-			+',0,0,0,0,0'	// линия DF
-			+',0,0,0,0,0'	// линия DM
-			+',0,0,0,0,0'	// линия MF
-			+',0,0,0,0,0'	// линия AM
-			+',0,0,0'		// линия FW
-			+',27,28,29,0,0'	// доп таблицы 1
-			+',30,31,0,0,0'	// доп таблицы 2
+			+',0,0'			// Р»РёРЅРёСЏ Gk & SW
+			+',0,0,0,0,0'	// Р»РёРЅРёСЏ DF
+			+',0,0,0,0,0'	// Р»РёРЅРёСЏ DM
+			+',0,0,0,0,0'	// Р»РёРЅРёСЏ MF
+			+',0,0,0,0,0'	// Р»РёРЅРёСЏ AM
+			+',0,0,0'		// Р»РёРЅРёСЏ FW
+			+',27,28,29,0,0'	// РґРѕРї С‚Р°Р±Р»РёС†С‹ 1
+			+',30,31,0,0,0'	// РґРѕРї С‚Р°Р±Р»РёС†С‹ 2
 	}
 	return datavalue
 }
@@ -182,7 +182,7 @@ function createFakePlayer(id) {
 	players['p'+id] = {
 		id: id,
 		fname: '',
-		sname: 'Игрок-' + id,
+		sname: 'РРіСЂРѕРє-' + id,
 		flag: 6,
 		syg: 0,
 		stdA: [false, false, false, false, false, false],
@@ -197,7 +197,7 @@ function saveDataSelected(){
 }
 
 
-function sSrt(i, ii) { // по убыванию
+function sSrt(i, ii) { // РїРѕ СѓР±С‹РІР°РЅРёСЋ
 	let s = 'sor'
 	if 		(i[s] < ii[s])	return  1
 	else if	(i[s] > ii[s])	return -1
@@ -226,40 +226,40 @@ function GetData(dataname){
 		}
 	}else{
 		needsave = true
-		// TODO: загрузить дефоултные positions(from forum) вместо констант тут.
+		// TODO: Р·Р°РіСЂСѓР·РёС‚СЊ РґРµС„РѕСѓР»С‚РЅС‹Рµ positions(from forum) РІРјРµСЃС‚Рѕ РєРѕРЅСЃС‚Р°РЅС‚ С‚СѓС‚.
 		data = [
 			{filter:'',			name:'&nbsp;',		num:0, koff:'idealsk=15,idealage=40,idealval=50000000,maxt=10'},
-			/**  1 **/	{filter:'GK', 		name:'Вратарь',		num:5, koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*2,!мщ=мщ,фл,Фам,сила,зв'},
-			/**  2 **/	{filter:'GK', 		name:'Либеро',		num:5, koff:'ре=ре*3,вп=вп*2,гл=гл*2,ру=ру*2,ск=ск,!мщ=мщ,!ви=ви,!пс=пс,!тх=тх,фл,Фам,сила,зв'},
-			/**  3 **/	{filter:'C SW',		name:'Либеро',		num:5, koff:'вп=вп*2,от=от*1.5,гл=гл,мщ=мщ,ск=ск,фл,Фам,сила,зв'},
-			/**  4 **/	{filter:'C SW/DF',	name:'Диспетчер',	num:5, koff:'вп=вп*2,от=от*1.5,гл=гл,!мщ=мщ,ск=ск,ви=ви,пс=пс,!нв=нв,!тх=тх,фл,Фам,сила,зв'},
-			/**  5 **/	{filter:'LR DF',	name:'Крайний',		num:5, koff:'от=от*3,вп=вп*2,ск=ск*3,нв=нв,фл,Фам,сила,зв'},
-			/**  6 **/	{filter:'LR DF',	name:'Атакующий',	num:5, koff:'от=от*3,вп=вп*2,ск=ск*3,нв=нв,др=др,!уд=уд,!тх=тх,фл,Фам,сила,зв'},
-			/**  7 **/	{filter:'LR DF/DM/MF',name:'Латераль',	num:5, koff:'ск=ск*3,рб=рб*2,вн=вн*3,от=от*2,др=др,!нв=нв,!тх=тх,фл,Фам,сила,зв'},
-			/**  8 **/	{filter:'LCR DF/DM,C MF',name:'Персональщик',num:5, koff:'по=по*5,от=от*3,вп=вп*3,ск=ск*3,фл,Фам,сила,зв'},
-			/**  9 **/	{filter:'C DF',		name:'Центральный',	num:5,	koff:'от=от*4,гл=гл*3,вп=вп*2,мщ=мщ*2,ск=ск*2,фл,Фам,сила,зв'},
-			/** 10 **/	{filter:'C DF',		name:'Ведущий',		num:5,	koff:'от=от*4,гл=гл*3,вп=вп*2,мщ=мщ*2,ск=ск*2,ви=ви,!лд=лд,!взр=взр,фл,Фам,сила,зв'},
-			/** 11 **/	{filter:'LR DM/MF',	name:'Оборонительный',num:5,koff:'от=от*3,ск=ск*3,нв=нв,тх=тх,фл,Фам,сила,зв'},
-			/** 12 **/	{filter:'LR DM/MF',	name:'Крайний',		num:5,	koff:'ск=ск*1.5,от=от*1.5,др=др,нв=нв,пс=пс,!тх=тх,фл,Фам,сила,зв'},
-			/** 13 **/	{filter:'C DM/MF',	name:'Оборонительный',num:5,koff:'рб=рб*2,от=от*3,пс=пс*2,вп=вп*3,гл=гл*2,фл,Фам,сила,зв'},
-			/** 14 **/	{filter:'C DM/MF/AM',name:'Диспетчер',	num:5,	koff:'ви=ви*4,пс=пс*4,др=др*2,тх=тх*2,от=от,!ду=ду,фл,Фам,сила,зв'},
-			/** 15 **/	{filter:'C DM/MF',	name:'Бокс-ту-Бокс',num:5,	koff:'вн=вн*2,рб=рб*2,от=от*3,пс=пс*2,ск=ск,!ду=ду,фл,Фам,сила,зв'},
-			/** 16 **/	{filter:'LR MF/AM',	name:'Атакующий',	num:5,	koff:'ск=ск*2,др=др*2,пс=пс*2,нв=нв*1.5,!тх=тх,фл,Фам,сила,зв'},
-			/** 17 **/	{filter:'LR MF/AM',	name:'Инсайд',		num:5,	koff:'др=др*2,пс=пс*2,ви=ви*2,ду=ду*1.5,!уд=уд,!ск=ск,фл,Фам,сила,зв'},
-			/** 18 **/	{filter:'C MF',		name:'Центральный',	num:5,	koff:'пс=пс*3,ви=ви*3,тх=тх*2,ду=ду,фл,Фам,сила,зв'},
-			/** 19 **/	{filter:'C MF/AM',	name:'Атакующий',	num:5,	koff:'пс=пс*3,ви=ви*3,др=др*2,тх=тх*2,ду=ду,уд=уд,фл,Фам,сила,зв'},
-			/** 20 **/	{filter:'LCR AM/FW,C MF',name:'Художник',	num:5,	koff:'ск=ск*3,др=др*3,тх=тх*2,ви=ви*3,уд=уд,ду=ду,фл,Фам,сила,зв'},
-			/** 21 **/	{filter:'LR AM',	name:'Вингер',		num:5,	koff:'ск=ск*3,др=др*3,уд=уд*2,тх=тх*2,фл,Фам,сила,зв'},
-			/** 22 **/	{filter:'C AM/FW',	name:'Оттянутый нап',num:5,	koff:'уд=уд*3,др=др*3,пс=пс*2,тх=тх*2,!ду=ду,!ви=ви,фл,Фам,сила,зв'},
-			/** 23 **/	{filter:'C FW',		name:'Нападающий',	num:5,	koff:'уд=уд*3,др=др*3,вп=вп*3,ск=ск*2,гл=гл*2,тх=тх,фл,Фам,сила,зв'},
-			/** 24 **/	{filter:'C FW',		name:'Столб',		num:5,	koff:'гл=гл*5,мщ=мщ*3,вп=вп*2,пс=пс,уд=уд*2,фл,Фам,сила,зв'},
-			/** 25 **/	{filter:'C FW',		name:'На грани',	num:5,	koff:'вп=вп*5,ск=ск*3,уд=уд*2,тх=тх,фл,Фам,сила,зв'},
-			/** 26 **/	{filter:'C FW',		name:'Наконечник',	num:5,	koff:'уд=уд*5,гл=гл*2,ск=ск*2,вп=вп*2,ду=ду,фл,Фам,сила,зв'},
-			/** 27 **/	{filter:'',		name:'Стандарты',		num:18,	koff:'зв=зв*200,гл=гл*5,вп=вп,мщ=мщ*0.5,са,со,иш,ин,иу,фл,Фам,сила,от,ск,др'},
-			/** 28 **/	{filter:'',		name:'Исп. угловых',	num:18,	koff:'зв=зв*200,уг=уг*10,нв=нв*2,ви=ви,фл,Фам,иу,сила,гл,вп,мщ'},
-			/** 29 **/	{filter:'',		name:'Исп. штрафных',	num:18,koff:'зв=зв*200,шт=шт*10,ду=ду,нв=нв,ви=ви,фл,Фам,иш,ин,сила,гл,вп,мщ'},
-			/** 30 **/	{filter:'',		name:'!Сыгранность',	num:0,	koff:'зв,сыг=сыг,фл,Фам,Поз,!сила,трв,дсв'},
-			/** 31 **/	{filter:'',		name:'!Номиналы',		num:0,	koff:'ном=ном,взр=взр,фл,фс,Имя,Фам,!сила'}
+			/**  1 **/	{filter:'GK', 		name:'Р’СЂР°С‚Р°СЂСЊ',		num:5, koff:'СЂРµ=СЂРµ*3,РІРї=РІРї*2,РіР»=РіР»*2,СЂСѓ=СЂСѓ*2,!РјС‰=РјС‰,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/**  2 **/	{filter:'GK', 		name:'Р›РёР±РµСЂРѕ',		num:5, koff:'СЂРµ=СЂРµ*3,РІРї=РІРї*2,РіР»=РіР»*2,СЂСѓ=СЂСѓ*2,СЃРє=СЃРє,!РјС‰=РјС‰,!РІРё=РІРё,!РїСЃ=РїСЃ,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/**  3 **/	{filter:'C SW',		name:'Р›РёР±РµСЂРѕ',		num:5, koff:'РІРї=РІРї*2,РѕС‚=РѕС‚*1.5,РіР»=РіР»,РјС‰=РјС‰,СЃРє=СЃРє,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/**  4 **/	{filter:'C SW/DF',	name:'Р”РёСЃРїРµС‚С‡РµСЂ',	num:5, koff:'РІРї=РІРї*2,РѕС‚=РѕС‚*1.5,РіР»=РіР»,!РјС‰=РјС‰,СЃРє=СЃРє,РІРё=РІРё,РїСЃ=РїСЃ,!РЅРІ=РЅРІ,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/**  5 **/	{filter:'LR DF',	name:'РљСЂР°Р№РЅРёР№',		num:5, koff:'РѕС‚=РѕС‚*3,РІРї=РІРї*2,СЃРє=СЃРє*3,РЅРІ=РЅРІ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/**  6 **/	{filter:'LR DF',	name:'РђС‚Р°РєСѓСЋС‰РёР№',	num:5, koff:'РѕС‚=РѕС‚*3,РІРї=РІРї*2,СЃРє=СЃРє*3,РЅРІ=РЅРІ,РґСЂ=РґСЂ,!СѓРґ=СѓРґ,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/**  7 **/	{filter:'LR DF/DM/MF',name:'Р›Р°С‚РµСЂР°Р»СЊ',	num:5, koff:'СЃРє=СЃРє*3,СЂР±=СЂР±*2,РІРЅ=РІРЅ*3,РѕС‚=РѕС‚*2,РґСЂ=РґСЂ,!РЅРІ=РЅРІ,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/**  8 **/	{filter:'LCR DF/DM,C MF',name:'РџРµСЂСЃРѕРЅР°Р»СЊС‰РёРє',num:5, koff:'РїРѕ=РїРѕ*5,РѕС‚=РѕС‚*3,РІРї=РІРї*3,СЃРє=СЃРє*3,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/**  9 **/	{filter:'C DF',		name:'Р¦РµРЅС‚СЂР°Р»СЊРЅС‹Р№',	num:5,	koff:'РѕС‚=РѕС‚*4,РіР»=РіР»*3,РІРї=РІРї*2,РјС‰=РјС‰*2,СЃРє=СЃРє*2,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 10 **/	{filter:'C DF',		name:'Р’РµРґСѓС‰РёР№',		num:5,	koff:'РѕС‚=РѕС‚*4,РіР»=РіР»*3,РІРї=РІРї*2,РјС‰=РјС‰*2,СЃРє=СЃРє*2,РІРё=РІРё,!Р»Рґ=Р»Рґ,!РІР·СЂ=РІР·СЂ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 11 **/	{filter:'LR DM/MF',	name:'РћР±РѕСЂРѕРЅРёС‚РµР»СЊРЅС‹Р№',num:5,koff:'РѕС‚=РѕС‚*3,СЃРє=СЃРє*3,РЅРІ=РЅРІ,С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 12 **/	{filter:'LR DM/MF',	name:'РљСЂР°Р№РЅРёР№',		num:5,	koff:'СЃРє=СЃРє*1.5,РѕС‚=РѕС‚*1.5,РґСЂ=РґСЂ,РЅРІ=РЅРІ,РїСЃ=РїСЃ,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 13 **/	{filter:'C DM/MF',	name:'РћР±РѕСЂРѕРЅРёС‚РµР»СЊРЅС‹Р№',num:5,koff:'СЂР±=СЂР±*2,РѕС‚=РѕС‚*3,РїСЃ=РїСЃ*2,РІРї=РІРї*3,РіР»=РіР»*2,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 14 **/	{filter:'C DM/MF/AM',name:'Р”РёСЃРїРµС‚С‡РµСЂ',	num:5,	koff:'РІРё=РІРё*4,РїСЃ=РїСЃ*4,РґСЂ=РґСЂ*2,С‚С…=С‚С…*2,РѕС‚=РѕС‚,!РґСѓ=РґСѓ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 15 **/	{filter:'C DM/MF',	name:'Р‘РѕРєСЃ-С‚Сѓ-Р‘РѕРєСЃ',num:5,	koff:'РІРЅ=РІРЅ*2,СЂР±=СЂР±*2,РѕС‚=РѕС‚*3,РїСЃ=РїСЃ*2,СЃРє=СЃРє,!РґСѓ=РґСѓ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 16 **/	{filter:'LR MF/AM',	name:'РђС‚Р°РєСѓСЋС‰РёР№',	num:5,	koff:'СЃРє=СЃРє*2,РґСЂ=РґСЂ*2,РїСЃ=РїСЃ*2,РЅРІ=РЅРІ*1.5,!С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 17 **/	{filter:'LR MF/AM',	name:'РРЅСЃР°Р№Рґ',		num:5,	koff:'РґСЂ=РґСЂ*2,РїСЃ=РїСЃ*2,РІРё=РІРё*2,РґСѓ=РґСѓ*1.5,!СѓРґ=СѓРґ,!СЃРє=СЃРє,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 18 **/	{filter:'C MF',		name:'Р¦РµРЅС‚СЂР°Р»СЊРЅС‹Р№',	num:5,	koff:'РїСЃ=РїСЃ*3,РІРё=РІРё*3,С‚С…=С‚С…*2,РґСѓ=РґСѓ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 19 **/	{filter:'C MF/AM',	name:'РђС‚Р°РєСѓСЋС‰РёР№',	num:5,	koff:'РїСЃ=РїСЃ*3,РІРё=РІРё*3,РґСЂ=РґСЂ*2,С‚С…=С‚С…*2,РґСѓ=РґСѓ,СѓРґ=СѓРґ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 20 **/	{filter:'LCR AM/FW,C MF',name:'РҐСѓРґРѕР¶РЅРёРє',	num:5,	koff:'СЃРє=СЃРє*3,РґСЂ=РґСЂ*3,С‚С…=С‚С…*2,РІРё=РІРё*3,СѓРґ=СѓРґ,РґСѓ=РґСѓ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 21 **/	{filter:'LR AM',	name:'Р’РёРЅРіРµСЂ',		num:5,	koff:'СЃРє=СЃРє*3,РґСЂ=РґСЂ*3,СѓРґ=СѓРґ*2,С‚С…=С‚С…*2,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 22 **/	{filter:'C AM/FW',	name:'РћС‚С‚СЏРЅСѓС‚С‹Р№ РЅР°Рї',num:5,	koff:'СѓРґ=СѓРґ*3,РґСЂ=РґСЂ*3,РїСЃ=РїСЃ*2,С‚С…=С‚С…*2,!РґСѓ=РґСѓ,!РІРё=РІРё,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 23 **/	{filter:'C FW',		name:'РќР°РїР°РґР°СЋС‰РёР№',	num:5,	koff:'СѓРґ=СѓРґ*3,РґСЂ=РґСЂ*3,РІРї=РІРї*3,СЃРє=СЃРє*2,РіР»=РіР»*2,С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 24 **/	{filter:'C FW',		name:'РЎС‚РѕР»Р±',		num:5,	koff:'РіР»=РіР»*5,РјС‰=РјС‰*3,РІРї=РІРї*2,РїСЃ=РїСЃ,СѓРґ=СѓРґ*2,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 25 **/	{filter:'C FW',		name:'РќР° РіСЂР°РЅРё',	num:5,	koff:'РІРї=РІРї*5,СЃРє=СЃРє*3,СѓРґ=СѓРґ*2,С‚С…=С‚С…,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 26 **/	{filter:'C FW',		name:'РќР°РєРѕРЅРµС‡РЅРёРє',	num:5,	koff:'СѓРґ=СѓРґ*5,РіР»=РіР»*2,СЃРє=СЃРє*2,РІРї=РІРї*2,РґСѓ=РґСѓ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,Р·РІ'},
+			/** 27 **/	{filter:'',		name:'РЎС‚Р°РЅРґР°СЂС‚С‹',		num:18,	koff:'Р·РІ=Р·РІ*200,РіР»=РіР»*5,РІРї=РІРї,РјС‰=РјС‰*0.5,СЃР°,СЃРѕ,РёС€,РёРЅ,РёСѓ,С„Р»,Р¤Р°Рј,СЃРёР»Р°,РѕС‚,СЃРє,РґСЂ'},
+			/** 28 **/	{filter:'',		name:'РСЃРї. СѓРіР»РѕРІС‹С…',	num:18,	koff:'Р·РІ=Р·РІ*200,СѓРі=СѓРі*10,РЅРІ=РЅРІ*2,РІРё=РІРё,С„Р»,Р¤Р°Рј,РёСѓ,СЃРёР»Р°,РіР»,РІРї,РјС‰'},
+			/** 29 **/	{filter:'',		name:'РСЃРї. С€С‚СЂР°С„РЅС‹С…',	num:18,koff:'Р·РІ=Р·РІ*200,С€С‚=С€С‚*10,РґСѓ=РґСѓ,РЅРІ=РЅРІ,РІРё=РІРё,С„Р»,Р¤Р°Рј,РёС€,РёРЅ,СЃРёР»Р°,РіР»,РІРї,РјС‰'},
+			/** 30 **/	{filter:'',		name:'!РЎС‹РіСЂР°РЅРЅРѕСЃС‚СЊ',	num:0,	koff:'Р·РІ,СЃС‹Рі=СЃС‹Рі,С„Р»,Р¤Р°Рј,РџРѕР·,!СЃРёР»Р°,С‚СЂРІ,РґСЃРІ'},
+			/** 31 **/	{filter:'',		name:'!РќРѕРјРёРЅР°Р»С‹',		num:0,	koff:'РЅРѕРј=РЅРѕРј,РІР·СЂ=РІР·СЂ,С„Р»,С„СЃ,РРјСЏ,Р¤Р°Рј,!СЃРёР»Р°'}
 		]
 	}
 	//translate all to rshort and fix order
@@ -335,7 +335,7 @@ function SaveData(dataname){
 	localStorage[dataname] = text
 }
 
-//проверяем что plpos входит в fl
+//РїСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ plpos РІС…РѕРґРёС‚ РІ fl
 function filterPosition(plpos,fl) {
 	if (fl=='') return true;
 	var flpos = fl.split(',');
@@ -357,7 +357,7 @@ function filterPosition(plpos,fl) {
 	return false;
 }
 
-//обсчитываем конкретную позицию и записываем игроков
+//РѕР±СЃС‡РёС‚С‹РІР°РµРј РєРѕРЅРєСЂРµС‚РЅСѓСЋ РїРѕР·РёС†РёСЋ Рё Р·Р°РїРёСЃС‹РІР°РµРј РёРіСЂРѕРєРѕРІ
 function countPosition(posnum,ppsn)
 {	
 	if (ppsn == undefined) ppsn = 0;
@@ -413,9 +413,9 @@ function krPrint(val,sn) {
 		case 'float':
 			return (val).toFixed(1);
 		case 'value':
-			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'м';
+			if(val>=1000000) return parseFloat(val/1000000).toFixed(3)+'Рј';
 			else if(val==0) return '??';
-			else return parseInt(val/1000)+'т';
+			else return parseInt(val/1000)+'С‚';
 		case 'flag':
 			return '<img src="system/img/flags/mod/'+val+'.gif" width="15">';
 		default:
@@ -423,13 +423,13 @@ function krPrint(val,sn) {
 	}
 }
 
-//заполнение карточки позиции данными
+//Р·Р°РїРѕР»РЅРµРЅРёРµ РєР°СЂС‚РѕС‡РєРё РїРѕР·РёС†РёРё РґР°РЅРЅС‹РјРё
 function FillData(nt)
 {
 	//var maxsrt = 0;
 	$('#table'+nt).remove();
 
-	var selpl = 0;//выбраный игрок на позиции в составе
+	var selpl = 0;//РІС‹Р±СЂР°РЅС‹Р№ РёРіСЂРѕРє РЅР° РїРѕР·РёС†РёРё РІ СЃРѕСЃС‚Р°РІРµ
 	if (jsonSostav['sostav'+tacNum] != undefined) {
 		for(h in jsonSostav['sostav'+tacNum]) if(jsonSostav['sostav'+tacNum][h].pos == nt) {
 			selpl = jsonSostav.sostav[h];
@@ -630,7 +630,7 @@ function printBetter() {
 		if(b==24||b==2||b==1) trres ='<td></td>'+trres+'<td></td>';
 		if(b==24||b==22||b==17||b==12||b==7||b==2||b==1) {bres = '<tr>'+trres+'</tr>'+bres;trres='';}
 	}
-	$('#ltd4').html('Лучшие: <table id=res>'+bres+'</table>');
+	$('#ltd4').html('Р›СѓС‡С€РёРµ: <table id=res>'+bres+'</table>');
 }
 
 function fillPosEdit(num){
@@ -639,22 +639,22 @@ function fillPosEdit(num){
 	html += '<td width=400>'
 
 	html += '<div style="margin-bottom:5px;">'
-	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>Коэффициент</b></label></div>';
-	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Название:</label><input maxlength=40 class=back1 style="border:1px solid;" id=iname name="name" type="text" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></div>';
-	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Фильтр:</label><input maxlength=20 class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"><label> LC DF/DM"(пусто=все)</label></div>';
-	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Кол-во:</label><input maxlength=4 class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"><label> Сколько игроков отображать(0=все)</label></div>';
+	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>РљРѕСЌС„С„РёС†РёРµРЅС‚</b></label></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">РќР°Р·РІР°РЅРёРµ:</label><input maxlength=40 class=back1 style="border:1px solid;" id=iname name="name" type="text" value="'+(num!=undefined && num!=0 ? positions[num].name :'')+'"></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">Р¤РёР»СЊС‚СЂ:</label><input maxlength=20 class=back1 style="border:1px solid;" id=ifilter name="filter" type="text" value="'+(num!=undefined && num!=0  ? positions[num].filter :'')+'"><label> LC DF/DM"(РїСѓСЃС‚Рѕ=РІСЃРµ)</label></div>';
+	html += '<div style="margin:2px;"><label style="width:70px;margin:2px;display:inline-block;">РљРѕР»-РІРѕ:</label><input maxlength=4 class=back1 style="border:1px solid;" id=inum name="num" type="text" size="3" value="'+(num!=undefined && num!=0 && positions[num].num!=undefined ? positions[num].num :'')+'"><label> РЎРєРѕР»СЊРєРѕ РёРіСЂРѕРєРѕРІ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊ(0=РІСЃРµ)</label></div>';
 	html += '<div style="margin:2px;"><textarea class=back1 style="width:100%;border:1px solid;" id=ikoff name="koff" rows="5">'+(num!=undefined && num!=0  ? positions[num].koff :'')+'</textarea></div>';
 	html += '</div>';
 	html += '<br><div style="margin-bottom:5px;">'
-	html += '<label style="margin:2px 2px;padding:5px;text-align:center;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;" class="back2 button" onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'">Сохранить</label>'
-	html += '<label style="margin:2px 2px;padding:5px;text-align:center;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;" class="back2 button" onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'">Удалить</label>'
+	html += '<label style="margin:2px 2px;padding:5px;text-align:center;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;" class="back2 button" onmousedown="javascript:void(PosSave())" onMouseOver="this.style.cursor=\'pointer\'">РЎРѕС…СЂР°РЅРёС‚СЊ</label>'
+	html += '<label style="margin:2px 2px;padding:5px;text-align:center;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;" class="back2 button" onmousedown="javascript:void(PosDel())" onMouseOver="this.style.cursor=\'pointer\'">РЈРґР°Р»РёС‚СЊ</label>'
 	html += '</div>'
 	html += '<br><div style="margin-bottom:5px;">'
-	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>Список</b></label></div>';
+	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>РЎРїРёСЃРѕРє</b></label></div>';
 	html += '<div style="display:inline-block; vertical-align:top; overflow:hidden; border:solid grey 1px;width:400px;"><select size=40 style="width:425px;padding:10px; margin:-5px -20px -5px -5px;" id=selpos class=back2 onChange="javascript:void(PosChange())">'
 
-	html += '<option value=0'+(num==0 ? ' selected' :'')+'>--- Создать ---</option>'
-	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- Создать ---' : positions[i].name + (positions[i].filter==''?'':' ('+positions[i].filter+')'))+'</option>'
+	html += '<option value=0'+(num==0 ? ' selected' :'')+'>--- РЎРѕР·РґР°С‚СЊ ---</option>'
+	for(i=1;i<positions.length;i++)	html += '<option value='+i+(num==i ? ' selected' :'')+'>'+(i==0 ? '--- РЎРѕР·РґР°С‚СЊ ---' : positions[i].name + (positions[i].filter==''?'':' ('+positions[i].filter+')'))+'</option>'
 	html += '</select>'
 	html += '</div></div>';
 
@@ -662,10 +662,10 @@ function fillPosEdit(num){
 	html += '<td>';
 	html += '<div style="padding:5px;text-align:center;" class=back2><label><b>Help</b></label></div>';
 	html += '<div><label style="width:30px;margin:2px;display:inline-block;"></label><label style="color:green"><img height=10 src="system/img/g/next.gif"> ' +
-		'можно применять конструкцию (гл>6?гл*5:гл*2)' +
+		'РјРѕР¶РЅРѕ РїСЂРёРјРµРЅСЏС‚СЊ РєРѕРЅСЃС‚СЂСѓРєС†РёСЋ (РіР»>6?РіР»*5:РіР»*2)' +
 		'</label></div>';
-	html += '<div><label style="width:30px;margin:2px;display:inline-block;">!</label><label>значит по дефоулту поле не отображать</label></div>';
-	html += '<div><label style="width:30px;margin:2px;display:inline-block;">=</label><label>эти скилы учавствуют в подсчете силы</label></div>' ;
+	html += '<div><label style="width:30px;margin:2px;display:inline-block;">!</label><label>Р·РЅР°С‡РёС‚ РїРѕ РґРµС„РѕСѓР»С‚Сѓ РїРѕР»Рµ РЅРµ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊ</label></div>';
+	html += '<div><label style="width:30px;margin:2px;display:inline-block;">=</label><label>СЌС‚Рё СЃРєРёР»С‹ СѓС‡Р°РІСЃС‚РІСѓСЋС‚ РІ РїРѕРґСЃС‡РµС‚Рµ СЃРёР»С‹</label></div>' ;
 	for(m in skillnames){
 		var style = '';
 		var pic = '';
@@ -692,28 +692,28 @@ function fillPosEdit(num){
 	html = '<table width=100% class=back1>'
 	html += '<tr valign=top>';
 	html +=  '<td width=300><table width=100%>';
-	html += 	'<tr><th colspan=3 style="padding:5px;" class=back2>Основные</th></tr>';
-	html += 	'<tr><th style="width:15%;" align=right>Таблиц:</th><td colspan=2><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (Кол-во доп. таблиц)</td></tr>';
+	html += 	'<tr><th colspan=3 style="padding:5px;" class=back2>РћСЃРЅРѕРІРЅС‹Рµ</th></tr>';
+	html += 	'<tr><th style="width:15%;" align=right>РўР°Р±Р»РёС†:</th><td colspan=2><input class=back1 style="border:1px solid;" id=itables name="itables" type="text" size="10" value="'+(maxtables-25)+'"> (РљРѕР»-РІРѕ РґРѕРї. С‚Р°Р±Р»РёС†)</td></tr>';
 	html += 	'<tr><th colspan=3>&nbsp;</th></tr>'
-	html += 	'<tr><th colspan=3 style="padding:5px;" class=back2>Идеальный игрок</th></tr>'
-	html += 	'<tr><th align=right>Скиллы:</th><td colspan=2><input class=back1 style="border:1px solid;" id=iskills name="iskills" type="text" size="10" value="'+plskillmax+'"></td></tr>'
-	html += 	'<tr><th align=right>Номинал:</th><td colspan=2><input class=back1 style="border:1px solid;" id=inominal name="inominal" type="text" size="10" value="'+skillnames.value.strmax+'"></td></tr>'
-	html += 	'<tr><th align=right>Возраст:</th><td colspan=2><input class=back1 style="border:1px solid;" id=iage name="iage" type="text" size="10" value="'+skillnames.age.strmax+'"></td></tr>'
+	html += 	'<tr><th colspan=3 style="padding:5px;" class=back2>РРґРµР°Р»СЊРЅС‹Р№ РёРіСЂРѕРє</th></tr>'
+	html += 	'<tr><th align=right>РЎРєРёР»Р»С‹:</th><td colspan=2><input class=back1 style="border:1px solid;" id=iskills name="iskills" type="text" size="10" value="'+plskillmax+'"></td></tr>'
+	html += 	'<tr><th align=right>РќРѕРјРёРЅР°Р»:</th><td colspan=2><input class=back1 style="border:1px solid;" id=inominal name="inominal" type="text" size="10" value="'+skillnames.value.strmax+'"></td></tr>'
+	html += 	'<tr><th align=right>Р’РѕР·СЂР°СЃС‚:</th><td colspan=2><input class=back1 style="border:1px solid;" id=iage name="iage" type="text" size="10" value="'+skillnames.age.strmax+'"></td></tr>'
 	html += 	'<tr><th colspan=3>&nbsp;</th></tr>'
-	html += 	'<tr><td></td><th width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сохранить</th><td></td></tr>'
+	html += 	'<tr><td></td><th width=100 class=back2 onmousedown="javascript:void(PosSaveAll())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">РЎРѕС…СЂР°РЅРёС‚СЊ</th><td></td></tr>'
 	html +=  '</table></td>';
 	html +=  '<td><table width=100%>'
-	html += 	'<tr><th colspan=2 style="padding:5px;" class=back2>BackUp <span style="font-weight: normal;">(сохранение и загрузка своих коэфициентов)</span></th></tr>';
-	html += 	'<tr id=svbktr><th title="Сделать бекап коэффициентов на сервере из поля ввода" width=100 class=back2 onmousedown="javascript:void(sendBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Backup</th><td>нет сохраненого бекапа, нажмите что бы сделать(данные возьмутся из поля ввода!)</td></tr>';
-//	html += 	'<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(removeBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Удалить</th><td id=tdbk></td></tr>';
-	html += 	'<tr id=rmbktr><th title="Загрузить коэффициенты из бекапа в форму ввода" width=100 class=back2 onmousedown="javascript:void(getBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Загрузить</th><td>бекап за <b><span id=dtbk></span></b> [<a href="javascript:void(removeBackUp())">удалить</a>]</td></tr>';
+	html += 	'<tr><th colspan=2 style="padding:5px;" class=back2>BackUp <span style="font-weight: normal;">(СЃРѕС…СЂР°РЅРµРЅРёРµ Рё Р·Р°РіСЂСѓР·РєР° СЃРІРѕРёС… РєРѕСЌС„РёС†РёРµРЅС‚РѕРІ)</span></th></tr>';
+	html += 	'<tr id=svbktr><th title="РЎРґРµР»Р°С‚СЊ Р±РµРєР°Рї РєРѕСЌС„С„РёС†РёРµРЅС‚РѕРІ РЅР° СЃРµСЂРІРµСЂРµ РёР· РїРѕР»СЏ РІРІРѕРґР°" width=100 class=back2 onmousedown="javascript:void(sendBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Backup</th><td>РЅРµС‚ СЃРѕС…СЂР°РЅРµРЅРѕРіРѕ Р±РµРєР°РїР°, РЅР°Р¶РјРёС‚Рµ С‡С‚Рѕ Р±С‹ СЃРґРµР»Р°С‚СЊ(РґР°РЅРЅС‹Рµ РІРѕР·СЊРјСѓС‚СЃСЏ РёР· РїРѕР»СЏ РІРІРѕРґР°!)</td></tr>';
+//	html += 	'<tr><th height=20 width=100 class=back2 onmousedown="javascript:void(removeBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">РЈРґР°Р»РёС‚СЊ</th><td id=tdbk></td></tr>';
+	html += 	'<tr id=rmbktr><th title="Р—Р°РіСЂСѓР·РёС‚СЊ РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ РёР· Р±РµРєР°РїР° РІ С„РѕСЂРјСѓ РІРІРѕРґР°" width=100 class=back2 onmousedown="javascript:void(getBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Р—Р°РіСЂСѓР·РёС‚СЊ</th><td>Р±РµРєР°Рї Р·Р° <b><span id=dtbk></span></b> [<a href="javascript:void(removeBackUp())">СѓРґР°Р»РёС‚СЊ</a>]</td></tr>';
 	html += 	'<tr><th colspan=2>&nbsp;</th></tr>'
-	html += 	'<tr><th title="Применить коэффициенты введеные в форму ввода" width=100 class=back2 onmousedown="javascript:void(applyBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Применить</th>'
+	html += 	'<tr><th title="РџСЂРёРјРµРЅРёС‚СЊ РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ РІРІРµРґРµРЅС‹Рµ РІ С„РѕСЂРјСѓ РІРІРѕРґР°" width=100 class=back2 onmousedown="javascript:void(applyBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">РџСЂРёРјРµРЅРёС‚СЊ</th>'
 	html += 		'<td rowspan=7><textarea class=back1 style="width:100%;border:1px solid;" id=bk name="bk" rows="25"></textarea></td></tr>';
 	html += 	'<tr><td style="height:20px;">&nbsp;</td><td></td></tr>'
-	html += 	'<tr><th title="Вставить в форму ввода текущие коэффициенты" width=100 class=back2 onmousedown="javascript:void(printToBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Текущее</th><td></td></tr>'
+	html += 	'<tr><th title="Р’СЃС‚Р°РІРёС‚СЊ РІ С„РѕСЂРјСѓ РІРІРѕРґР° С‚РµРєСѓС‰РёРµ РєРѕСЌС„С„РёС†РёРµРЅС‚С‹" width=100 class=back2 onmousedown="javascript:void(printToBackUp())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">РўРµРєСѓС‰РµРµ</th><td></td></tr>'
 	html += 	'<tr><td style="height:20px;">&nbsp;</td><td></td></tr>'
-	html += 	'<tr><th title="Сбросить коэффициенты на значения по умолчанию" width=100 class=back2 onmousedown="javascript:void(PosDrop())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">Сбросить</th><td></td></tr>'
+	html += 	'<tr><th title="РЎР±СЂРѕСЃРёС‚СЊ РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ РЅР° Р·РЅР°С‡РµРЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ" width=100 class=back2 onmousedown="javascript:void(PosDrop())" onMouseOver="this.style.cursor=\'pointer\'" style="height:20px;padding:3px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;">РЎР±СЂРѕСЃРёС‚СЊ</th><td></td></tr>'
 	html += 	'<tr><td>&nbsp;</td><td></td></tr>'
 	html +=  '</table></td><tr>';
 	html += '</table>'
@@ -758,7 +758,7 @@ function PosSaveAll(){
 		|| pr.inominal!=parseInt(pr.inominal)
 		|| pr.iage!=parseInt(pr.iage)
 	){
-		alert('Неправильно введены параметры!');
+		alert('РќРµРїСЂР°РІРёР»СЊРЅРѕ РІРІРµРґРµРЅС‹ РїР°СЂР°РјРµС‚СЂС‹!');
 		return false;
 	}
 	positions[0].koff = 'idealsk='+pr.iskills+',idealage='+pr.iage+',idealval='+pr.inominal+',maxt='+pr.itables;
@@ -786,12 +786,12 @@ function PosSave(){
 		koff: 	$('#ikoff').val(),
 		order:	order
 	}
-	// провалидировать поля и обновить
+	// РїСЂРѕРІР°Р»РёРґРёСЂРѕРІР°С‚СЊ РїРѕР»СЏ Рё РѕР±РЅРѕРІРёС‚СЊ
 	if(ps.num!=parseInt(ps.num) ||
 		ps.name == '' ||
 		ps.koff == ''
 	){
-		alert('Неправильно введены параметры!');
+		alert('РќРµРїСЂР°РІРёР»СЊРЅРѕ РІРІРµРґРµРЅС‹ РїР°СЂР°РјРµС‚СЂС‹!');
 		return false;
 	}
 	positions[num] = ps;
@@ -812,7 +812,7 @@ function postBackUpData() {
 			dda=senddata;
 			senddata = '';
 		}
-		//console.log('отправляем: '+dda+', осталось: '+senddata);
+		//console.log('РѕС‚РїСЂР°РІР»СЏРµРј: '+dda+', РѕСЃС‚Р°Р»РѕСЃСЊ: '+senddata);
 		$.ajax({
 			type: "POST",
 			url: postBackupUrl,
@@ -848,7 +848,7 @@ function sendBackUp(){
 	if (postBackupUrl!='') {
 		postBackUpData();
 	} else {
-		alert('Неизвестно куда делать бекап, урл пуст');
+		alert('РќРµРёР·РІРµСЃС‚РЅРѕ РєСѓРґР° РґРµР»Р°С‚СЊ Р±РµРєР°Рї, СѓСЂР» РїСѓСЃС‚');
 		return false;
 	}
 }
@@ -861,7 +861,7 @@ function removeBackUp(){
 			return false;
 		}
 		delBackupUrl = delarr.slice(1).join('|');
-		//console.log('удаляем '+delarr[0] + ', осталось '+delBackupUrl);
+		//console.log('СѓРґР°Р»СЏРµРј '+delarr[0] + ', РѕСЃС‚Р°Р»РѕСЃСЊ '+delBackupUrl);
 
 		$.ajax({
 			type: "GET",
@@ -873,7 +873,7 @@ function removeBackUp(){
 			}
 		});
 	} else {
-		console.log('урлы удаления закончились');
+		console.log('СѓСЂР»С‹ СѓРґР°Р»РµРЅРёСЏ Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ');
 		loadBackUpPage();
 	}
 }
@@ -991,13 +991,13 @@ function krOpen(){
 function PrintTables() {
 	krOpen()
 
-	var html = '<div align=right style="margin:0px 5px">[<a href="javascript:void(close())">закрыть</a>]</div>'
+	var html = '<div align=right style="margin:0px 5px">[<a href="javascript:void(close())">Р·Р°РєСЂС‹С‚СЊ</a>]</div>'
 	html += '<table align=center id=tmenu width=98% class=back1 style="border-spacing:1px 0px" cellpadding=5><tr height=25>'
 	html += '<td width=5 style="border-bottom:1px solid">&nbsp;</td>'
-	html += '<th id=tdsost width=130 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">Состав+</th>'
-	html += '<th id=tddopt width=130 onmousedown="javascript:void(chMenu(\'tddopt\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Доп. таблицы</th>'
-	html += '<th id=tdkoff width=130 onmousedown="javascript:void(chMenu(\'tdkoff\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Коэфициенты</th>'
-	html += '<th id=tdedit width=130 onmousedown="javascript:void(chMenu(\'tdedit\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Настройки</th>'
+	html += '<th id=tdsost width=130 onmousedown="javascript:void(chMenu(\'tdsost\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border-top:1px solid;border-left:1px solid;border-right:1px solid" onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back1\'">РЎРѕСЃС‚Р°РІ+</th>'
+	html += '<th id=tddopt width=130 onmousedown="javascript:void(chMenu(\'tddopt\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">Р”РѕРї. С‚Р°Р±Р»РёС†С‹</th>'
+	html += '<th id=tdkoff width=130 onmousedown="javascript:void(chMenu(\'tdkoff\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">РљРѕСЌС„РёС†РёРµРЅС‚С‹</th>'
+	html += '<th id=tdedit width=130 onmousedown="javascript:void(chMenu(\'tdedit\'))" style="border-top-left-radius:7px;border-top-right-radius:7px;border:1px solid;" class=back2 onMouseOver="this.className=\'back1\';this.style.cursor=\'pointer\'" onMouseOut="this.className=\'back2\'">РќР°СЃС‚СЂРѕР№РєРё</th>'
 	html += '<td style="border-bottom:1px solid;">&nbsp;</td><tr>'
 	html += '<tr><td style="border-left:1px solid;border-right:1px solid;border-bottom:1px solid;" colspan=6>'
 	html += '<br><table id=tablesost width=100% class=back1>' //#C9F8B7	#A3DE8F
@@ -1096,7 +1096,7 @@ function MouseOff(num){
 }
 function translit(text, engToRus, replace){
 	var
-		rus = "щшчцюяёжъыэабвгдезийклмнопрстуфхь".split(""),
+		rus = "С‰С€С‡С†СЋСЏС‘Р¶СЉС‹СЌР°Р±РІРіРґРµР·РёР№РєР»РјРЅРѕРїСЂСЃС‚СѓС„С…СЊ".split(""),
 		eng = "shh sh ch cz yu ya yo zh `` y' e` a b v g d e z i j k l m n o p r s t u f x `".split(" ")
 	for(var x = 0; x < rus.length; x++){
 		text = text.split(engToRus ? eng[x] : rus[x]).join(engToRus ? rus[x] : eng[x]);
@@ -1118,15 +1118,15 @@ function ShowHelp(){
 	var html = ''
 	html += '<table class=back2>';
 	html += '<tr><th colspan=4>'+'HELP'.fontsize(1)+'</th></tr>';
-	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'основа'.fontsize(1)+'</td>';
-	html += '<td bgcolor=#BABDB6 colspan=2>'+'в заявке'.fontsize(1)+'</td></tr>';
-	html += '<tr><td colspan=4><font color=red size=1>не своя позиция</font></td></tr>';
-	html += '<tr><td bgcolor='+fl[1]+'></td><td>'+'трв'.fontsize(1)+'</td>';
-	html += '<td bgcolor='+fl[2]+'></td><td>'+'дск'.fontsize(1)+'</td></tr>';
-	html += '<tr><td bgcolor='+fl[3]+'></td><td>'+'фрм<90'.fontsize(1)+'</td>';
-	html += '<td bgcolor='+fl[4]+'></td><td>'+'мрл<80'.fontsize(1)+'</td></tr>';
-	html += '<tr><td bgcolor='+fl[5]+'></td><td>'+'шкл'.fontsize(1)+'</td>';
-	html += '<td bgcolor='+fl[6]+'></td><td>'+(showscout ? '<font color=888A85>'+'чужой'.fontsize(1)+'</font>' : '&nbsp;')+'</td>';
+	html += '<tr><td bgcolor=#FFFFFF colspan=2>'+'РѕСЃРЅРѕРІР°'.fontsize(1)+'</td>';
+	html += '<td bgcolor=#BABDB6 colspan=2>'+'РІ Р·Р°СЏРІРєРµ'.fontsize(1)+'</td></tr>';
+	html += '<tr><td colspan=4><font color=red size=1>РЅРµ СЃРІРѕСЏ РїРѕР·РёС†РёСЏ</font></td></tr>';
+	html += '<tr><td bgcolor='+fl[1]+'></td><td>'+'С‚СЂРІ'.fontsize(1)+'</td>';
+	html += '<td bgcolor='+fl[2]+'></td><td>'+'РґСЃРє'.fontsize(1)+'</td></tr>';
+	html += '<tr><td bgcolor='+fl[3]+'></td><td>'+'С„СЂРј<90'.fontsize(1)+'</td>';
+	html += '<td bgcolor='+fl[4]+'></td><td>'+'РјСЂР»<80'.fontsize(1)+'</td></tr>';
+	html += '<tr><td bgcolor='+fl[5]+'></td><td>'+'С€РєР»'.fontsize(1)+'</td>';
+	html += '<td bgcolor='+fl[6]+'></td><td>'+(showscout ? '<font color=888A85>'+'С‡СѓР¶РѕР№'.fontsize(1)+'</font>' : '&nbsp;')+'</td>';
 	html += '</tr>';
 	html += '</table>';
 	return html;

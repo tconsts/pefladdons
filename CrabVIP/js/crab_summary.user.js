@@ -115,11 +115,11 @@ $().ready(function() {
 	sumTable.css("min-width", "400px");
 
 	let frendlies;
-	if (TOURN["Товарищеский"]) {
-		debug("eject frendlies", TOURN["Товарищеский"]);
-		frendlies = summaryTotal.splice(TOURN["Товарищеский"],1);	
+	if (TOURN["РўРѕРІР°СЂРёС‰РµСЃРєРёР№"]) {
+		debug("eject frendlies", TOURN["РўРѕРІР°СЂРёС‰РµСЃРєРёР№"]);
+		frendlies = summaryTotal.splice(TOURN["РўРѕРІР°СЂРёС‰РµСЃРєРёР№"],1);	
 	}
-	const totalIndex = summaryTotal.push(newSummaryLine("ВСЕГО",CUP_TYPE)) - 1;
+	const totalIndex = summaryTotal.push(newSummaryLine("Р’РЎР•Р“Рћ",CUP_TYPE)) - 1;
 
 	for (let r = 0; r < summaryTotal.length - 1; r++) {
 		for (let c = 0; c < summaryTotal[r].length - 1; c++) {
@@ -130,17 +130,17 @@ $().ready(function() {
 	const titles = $("<tr>");
 	titles.attr("style","font-weight:bold; font-size:normal");
 	titles.attr("font-size","normal");
-	titles.append($("<td> </td><td>Игр</td><td>Выг</td><td>Нич</td><td>Пор</td><td>ГлЗ</td><td>ГлП</td>"));
+	titles.append($("<td> </td><td>РРіСЂ</td><td>Р’С‹Рі</td><td>РќРёС‡</td><td>РџРѕСЂ</td><td>Р“Р»Р—</td><td>Р“Р»Рџ</td>"));
 	sumTable.append(titles);
 
 	for (r = 0; r < summaryTotal.length; r++) {
 		sumTable.append(dressUpRow(summaryTotal[r], summaryTotal[r][CUP_TYPE], r % 2 === 0 ? DARK : false) );
 	}
 
-	if (TOURN["Товарищеский"])	{
-		sumTable.append(dressUpRow(frendlies[0], "Товарищеский", false) );
+	if (TOURN["РўРѕРІР°СЂРёС‰РµСЃРєРёР№"])	{
+		sumTable.append(dressUpRow(frendlies[0], "РўРѕРІР°СЂРёС‰РµСЃРєРёР№", false) );
 	}
 
 	$("td.back4 > table").after(sumTable);
-	$('#summary').after('<p>* - игры официальных товарищеских турниров учитываются как игры Кубков, по техничеcким причинам</p>');
+	$('#summary').after('<p>* - РёРіСЂС‹ РѕС„РёС†РёР°Р»СЊРЅС‹С… С‚РѕРІР°СЂРёС‰РµСЃРєРёС… С‚СѓСЂРЅРёСЂРѕРІ СѓС‡РёС‚С‹РІР°СЋС‚СЃСЏ РєР°Рє РёРіСЂС‹ РљСѓР±РєРѕРІ, РїРѕ С‚РµС…РЅРёС‡РµcРєРёРј РїСЂРёС‡РёРЅР°Рј</p>');
 })

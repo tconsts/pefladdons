@@ -9,32 +9,32 @@
 var flag = '<img height=13 src="/system/img/g/tick.gif"></img>'
 var scflags = '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:0:0'.split(':')
 var scnames = [
-	{'name':'Настройки',			'desc':''},
-	{'name':'Состав +',				'desc':''},
-	{'name':'Ростер игрока',		'desc':''},
-	{'name':'Страница контрактов',	'desc':''},
-	{'name':'Ростер команды',		'desc':''},
-	{'name':'Турнирная таблица',	'desc':''},
-	{'name':'Рейтинг чемпионатов',	'desc':'удален так как реализован на проекте','del':true},
-	{'name':'Расписание',			'desc':''},
-	{'name':'Финансы',				'desc':''},
-	{'name':'Состав на матч',		'desc':'сохранение состава локально (c)BallaK'},
-	{'name':'Рейтинг школ',			'desc':'временно отключен так как практически реализован на проекте','del':true},
-	{'name':'Ненужные',				'desc':'удален так как реализован на проекте','del':true},
-	{'name':'История',				'desc':''},
-	{'name':'Кредит доверия',		'desc':''},
-	{'name':'Матч',					'desc':''},
-	{'name':'Index',				'desc':'модифицирует заглавную страницу'},
-	{'name':'Личные сообщения',		'desc':'удален так как реализован на проекте','del':true},
-	{'name':'Тренировки',			'desc':''},
-	{'name':'Турниры',				'desc':''},
-	{'name':'Календарь',			'desc':''},
-	{'name':'Форум',				'desc':'пока в разработке, недоделан'},
-	{'name':'Рефери',				'desc':'позволяет сортировку страницы списка рефери'},
-	{'name':'Адаптация',			'desc':'Карта адаптации в цифрах'},
-	{'name':'ТВ без флеша',			'desc':'удален так как поменялось ТВ на проекте','del':true},
-	{'name':'История встреч',		'desc':'подводит итоги встреч между командами'},
-	{'name':'Школа',				'desc':''}
+	{'name':'РќР°СЃС‚СЂРѕР№РєРё',			'desc':''},
+	{'name':'РЎРѕСЃС‚Р°РІ +',				'desc':''},
+	{'name':'Р РѕСЃС‚РµСЂ РёРіСЂРѕРєР°',		'desc':''},
+	{'name':'РЎС‚СЂР°РЅРёС†Р° РєРѕРЅС‚СЂР°РєС‚РѕРІ',	'desc':''},
+	{'name':'Р РѕСЃС‚РµСЂ РєРѕРјР°РЅРґС‹',		'desc':''},
+	{'name':'РўСѓСЂРЅРёСЂРЅР°СЏ С‚Р°Р±Р»РёС†Р°',	'desc':''},
+	{'name':'Р РµР№С‚РёРЅРі С‡РµРјРїРёРѕРЅР°С‚РѕРІ',	'desc':'СѓРґР°Р»РµРЅ С‚Р°Рє РєР°Рє СЂРµР°Р»РёР·РѕРІР°РЅ РЅР° РїСЂРѕРµРєС‚Рµ','del':true},
+	{'name':'Р Р°СЃРїРёСЃР°РЅРёРµ',			'desc':''},
+	{'name':'Р¤РёРЅР°РЅСЃС‹',				'desc':''},
+	{'name':'РЎРѕСЃС‚Р°РІ РЅР° РјР°С‚С‡',		'desc':'СЃРѕС…СЂР°РЅРµРЅРёРµ СЃРѕСЃС‚Р°РІР° Р»РѕРєР°Р»СЊРЅРѕ (c)BallaK'},
+	{'name':'Р РµР№С‚РёРЅРі С€РєРѕР»',			'desc':'РІСЂРµРјРµРЅРЅРѕ РѕС‚РєР»СЋС‡РµРЅ С‚Р°Рє РєР°Рє РїСЂР°РєС‚РёС‡РµСЃРєРё СЂРµР°Р»РёР·РѕРІР°РЅ РЅР° РїСЂРѕРµРєС‚Рµ','del':true},
+	{'name':'РќРµРЅСѓР¶РЅС‹Рµ',				'desc':'СѓРґР°Р»РµРЅ С‚Р°Рє РєР°Рє СЂРµР°Р»РёР·РѕРІР°РЅ РЅР° РїСЂРѕРµРєС‚Рµ','del':true},
+	{'name':'РСЃС‚РѕСЂРёСЏ',				'desc':''},
+	{'name':'РљСЂРµРґРёС‚ РґРѕРІРµСЂРёСЏ',		'desc':''},
+	{'name':'РњР°С‚С‡',					'desc':''},
+	{'name':'Index',				'desc':'РјРѕРґРёС„РёС†РёСЂСѓРµС‚ Р·Р°РіР»Р°РІРЅСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ'},
+	{'name':'Р›РёС‡РЅС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ',		'desc':'СѓРґР°Р»РµРЅ С‚Р°Рє РєР°Рє СЂРµР°Р»РёР·РѕРІР°РЅ РЅР° РїСЂРѕРµРєС‚Рµ','del':true},
+	{'name':'РўСЂРµРЅРёСЂРѕРІРєРё',			'desc':''},
+	{'name':'РўСѓСЂРЅРёСЂС‹',				'desc':''},
+	{'name':'РљР°Р»РµРЅРґР°СЂСЊ',			'desc':''},
+	{'name':'Р¤РѕСЂСѓРј',				'desc':'РїРѕРєР° РІ СЂР°Р·СЂР°Р±РѕС‚РєРµ, РЅРµРґРѕРґРµР»Р°РЅ'},
+	{'name':'Р РµС„РµСЂРё',				'desc':'РїРѕР·РІРѕР»СЏРµС‚ СЃРѕСЂС‚РёСЂРѕРІРєСѓ СЃС‚СЂР°РЅРёС†С‹ СЃРїРёСЃРєР° СЂРµС„РµСЂРё'},
+	{'name':'РђРґР°РїС‚Р°С†РёСЏ',			'desc':'РљР°СЂС‚Р° Р°РґР°РїС‚Р°С†РёРё РІ С†РёС„СЂР°С…'},
+	{'name':'РўР’ Р±РµР· С„Р»РµС€Р°',			'desc':'СѓРґР°Р»РµРЅ С‚Р°Рє РєР°Рє РїРѕРјРµРЅСЏР»РѕСЃСЊ РўР’ РЅР° РїСЂРѕРµРєС‚Рµ','del':true},
+	{'name':'РСЃС‚РѕСЂРёСЏ РІСЃС‚СЂРµС‡',		'desc':'РїРѕРґРІРѕРґРёС‚ РёС‚РѕРіРё РІСЃС‚СЂРµС‡ РјРµР¶РґСѓ РєРѕРјР°РЅРґР°РјРё'},
+	{'name':'РЁРєРѕР»Р°',				'desc':''}
 ]
 
 $().ready(function() {
@@ -46,11 +46,11 @@ $().ready(function() {
 		delete localStorage.datatop
 	}
 
-	$('td.back4').html('<br><br><div align=center><font size=3>Настройки CrabVIP скриптов</font></div>')
+	$('td.back4').html('<br><br><div align=center><font size=3>РќР°СЃС‚СЂРѕР№РєРё CrabVIP СЃРєСЂРёРїС‚РѕРІ</font></div>')
 
-	var html = '<div align=right><a href="javascript:void(DropAll())">сбросить все настройки</a>&nbsp;</div>'
+	var html = '<div align=right><a href="javascript:void(DropAll())">СЃР±СЂРѕСЃРёС‚СЊ РІСЃРµ РЅР°СЃС‚СЂРѕР№РєРё</a>&nbsp;</div>'
 	html += '<br><table width=90% align=center class=back2>'
-	html += '<tr class=back2><th width=5%>N</th><th width=5%>Вкл</th><th colspan=2 width=30%>Имя скрипта</th><th>Описание</th></tr>'
+	html += '<tr class=back2><th width=5%>N</th><th width=5%>Р’РєР»</th><th colspan=2 width=30%>РРјСЏ СЃРєСЂРёРїС‚Р°</th><th>РћРїРёСЃР°РЅРёРµ</th></tr>'
 	for (i=1;i<scnames.length;i++) {
 		var trclass = 1;
 		if(scnames[i].del){
@@ -63,25 +63,25 @@ $().ready(function() {
 		html += '<td colspan=2>'+(scnames[i].del ? scnames[i].name : '<a href="javascript:void(SwitchScFlag('+i+(scnames[i].versions!=undefined ? ','+parseInt(scnames[i].versions) : '')+'))">'+scnames[i].name+'</a>')+'</td>'
 		html += '<td><i>'+scnames[i].desc+(scnames[i].desc != '' ? '<br>' :'')
 		if(i==4){
-			html += 'Номинал+: <a id="nomdata" href="javascript:void(NomDataSwitch(\''+datatop+'\'))">'+datatop+'</a> (топ с данными)'
+			html += 'РќРѕРјРёРЅР°Р»+: <a id="nomdata" href="javascript:void(NomDataSwitch(\''+datatop+'\'))">'+datatop+'</a> (С‚РѕРї СЃ РґР°РЅРЅС‹РјРё)'
 		}
 		html += '</i></td>'
 		html += '</tr>'
 	}
 	html += '</table>'
 	html += '<br>'
-	html += 'Картинка вместо лого: <input name="logo" id="logo" type="text" size="40" value="'+(String(localStorage.logopic)!='undefined'?localStorage.logopic:'')+'"> <a href="javascript:void(setLogo())">установить</a>'
+	html += 'РљР°СЂС‚РёРЅРєР° РІРјРµСЃС‚Рѕ Р»РѕРіРѕ: <input name="logo" id="logo" type="text" size="40" value="'+(String(localStorage.logopic)!='undefined'?localStorage.logopic:'')+'"> <a href="javascript:void(setLogo())">СѓСЃС‚Р°РЅРѕРІРёС‚СЊ</a>'
 
-	html += '<br><br>&nbsp;* - <i>Вы можете поддержать проект (или например запросить сделать определенную фичу в первую очередь, или в персональное пользование), перечислив какую-либо сумму одним из следующих способов (оплата возможна через любой платёжный терминал)</i>'
-	html += '<table align=center class=back2 width=50%><tr class=back1 height=50 valign=top><td><b>WebMoney (Руб)</b><br>'
+	html += '<br><br>&nbsp;* - <i>Р’С‹ РјРѕР¶РµС‚Рµ РїРѕРґРґРµСЂР¶Р°С‚СЊ РїСЂРѕРµРєС‚ (РёР»Рё РЅР°РїСЂРёРјРµСЂ Р·Р°РїСЂРѕСЃРёС‚СЊ СЃРґРµР»Р°С‚СЊ РѕРїСЂРµРґРµР»РµРЅРЅСѓСЋ С„РёС‡Сѓ РІ РїРµСЂРІСѓСЋ РѕС‡РµСЂРµРґСЊ, РёР»Рё РІ РїРµСЂСЃРѕРЅР°Р»СЊРЅРѕРµ РїРѕР»СЊР·РѕРІР°РЅРёРµ), РїРµСЂРµС‡РёСЃР»РёРІ РєР°РєСѓСЋ-Р»РёР±Рѕ СЃСѓРјРјСѓ РѕРґРЅРёРј РёР· СЃР»РµРґСѓСЋС‰РёС… СЃРїРѕСЃРѕР±РѕРІ (РѕРїР»Р°С‚Р° РІРѕР·РјРѕР¶РЅР° С‡РµСЂРµР· Р»СЋР±РѕР№ РїР»Р°С‚С‘Р¶РЅС‹Р№ С‚РµСЂРјРёРЅР°Р»)</i>'
+	html += '<table align=center class=back2 width=50%><tr class=back1 height=50 valign=top><td><b>WebMoney (Р СѓР±)</b><br>'
 	html += '--</td>'
 
 	html += '<td><b>WebMoney ($)</b><br>'
 	html += '--</td></tr>'
 
-	html += '<tr class=back1 height=50 valign=top><td><b>Ю-money</b><br>'
-	html += 'Счет: <a href="https://yoomoney.ru/to/41001993673065">41001993673065</a><br>';
-	html += 'ставьте пароль, кидайте его в личку</td>'
+	html += '<tr class=back1 height=50 valign=top><td><b>Р®-money</b><br>'
+	html += 'РЎС‡РµС‚: <a href="https://yoomoney.ru/to/41001993673065">41001993673065</a><br>';
+	html += 'СЃС‚Р°РІСЊС‚Рµ РїР°СЂРѕР»СЊ, РєРёРґР°Р№С‚Рµ РµРіРѕ РІ Р»РёС‡РєСѓ</td>'
 
 	html += '<td><b>PayPal</b><br>'
 	html += '--</td></tr></table>'
@@ -127,7 +127,7 @@ function DropAll(){
 }
 
 function NomDataSwitch(curtop){
-	var newtop = parseInt(prompt('Введите номер сообщения с форума с данными\nДефоултный вариант 9107893:', curtop));
+	var newtop = parseInt(prompt('Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ СЃРѕРѕР±С‰РµРЅРёСЏ СЃ С„РѕСЂСѓРјР° СЃ РґР°РЅРЅС‹РјРё\nР”РµС„РѕСѓР»С‚РЅС‹Р№ РІР°СЂРёР°РЅС‚ 9107893:', curtop));
 	if (!isNaN(newtop)) {
 		localStorage.datatop = newtop
 		delete localStorage.getnomdata

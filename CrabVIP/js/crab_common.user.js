@@ -22,14 +22,14 @@ function getIDnum(){
 	datecur5 = datecur4.valueOf(),
 	getID = (datecur5>datestr ? true : false);	
 	if (getID) {
-		realday = parseInt($('td.topmenu table td:contains(" ИД")').text().split('(')[1],10);
+		realday = parseInt($('td.topmenu table td:contains(" РР”")').text().split('(')[1],10);
 		if(isNaN(realday)) return false;
 		localStorage.gday = datecur5+'.'+realday
 	}
 }
 
 function SetNation(){
-	let id = parseInt(Url.value('j',$('td.back4 a:contains(Команда)')[0]))
+	let id = parseInt(Url.value('j',$('td.back4 a:contains(РљРѕРјР°РЅРґР°)')[0]))
 	if(isNaN(id)) delete localStorage.myintid
 	else localStorage.myintid = (id>1000 ? id-1000 : id)
 }
@@ -53,7 +53,7 @@ function SetCFF(){
 		tables.push($(val).attr('id'));
 	})
 	var text = '</script><script type="text/javascript" src="js/fcode5.js"></script>';
-	text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">код для форума</a></div>';
+	text+='<div align=right><a href="javascript:void(ShowCode([],\''+tables.join(',')+'\',\'forumcode\'))">РєРѕРґ РґР»СЏ С„РѕСЂСѓРјР°</a></div>';
 	$('td.back4 table table:first').before(text);
 }
 
@@ -65,7 +65,7 @@ $().ready(function() {
 		if(clubs!=undefined) for(i=0;i<3;i++) if(clubs[i]!=undefined) localStorage['sostavurl'+clubs[i].id] = jsonsostav+'?'+clubs[i].gurl;
 	}
 
-	if($('td.topmenu:first table td:eq(1) a:contains("Вход")').length>0) return false
+	if($('td.topmenu:first table td:eq(1) a:contains("Р’С…РѕРґ")').length>0) return false
 	setLogo()
 	getIDnum()
 	//FixSize()
@@ -85,13 +85,13 @@ $().ready(function() {
 	settingimg 	= '<img width=16 height=16 src="system/img/g/stats.gif"></img>',
 	adaptimg 	= '<img width=16 height=16 src="system/img/g/scout.gif"></img>',
 	crab = '<hr><div align=center><b>CrabVIP</b></div>'
-		+ settingimg + ' <a href=\'/?settings\'>Настройки</a><br>';
-	if(parseInt(scflag[1])!=1)	crab += teamimg +	' <a id=sostav href=\'/?sostav\'>Состав+(ком)</a><br>';
-	if(parseInt(scflag[1])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg	+	' <a id=sostav_n href=\'/?sostav_n\'>Состав+(int)</a><br>';
-	if(parseInt(scflag[22])!=1)	crab += adaptimg+	' <a href=\'/?adaptation\'>Адаптация</a><br>';
-	crab += crabimg +	' <a href="/forums.php?m=posts&q=244387">Crab&nbsp;форум</a><br>';
+		+ settingimg + ' <a href=\'/?settings\'>РќР°СЃС‚СЂРѕР№РєРё</a><br>';
+	if(parseInt(scflag[1])!=1)	crab += teamimg +	' <a id=sostav href=\'/?sostav\'>РЎРѕСЃС‚Р°РІ+(РєРѕРј)</a><br>';
+	if(parseInt(scflag[1])!=1 && !isNaN(parseInt(localStorage.myintid))) crab += intimg	+	' <a id=sostav_n href=\'/?sostav_n\'>РЎРѕСЃС‚Р°РІ+(int)</a><br>';
+	if(parseInt(scflag[22])!=1)	crab += adaptimg+	' <a href=\'/?adaptation\'>РђРґР°РїС‚Р°С†РёСЏ</a><br>';
+	crab += crabimg +	' <a href="/forums.php?m=posts&q=244387">Crab&nbsp;С„РѕСЂСѓРј</a><br>';
 	crab += ' <img src="system/img/g/stats.gif" width="16" height="16">' +	' <a href="/ban.txt">ban.txt</a>';
-	$('td.back3 table td:first a:contains(Ссылки):first').after(crab);
+	$('td.back3 table td:first a:contains(РЎСЃС‹Р»РєРё):first').after(crab);
 
 	if(
 	 (p == 'tr' && 

@@ -27,59 +27,59 @@ var list2 = {
 		'tid':	{'num':1,'nshow':true,'type':'int'},
 		'my':	{'num':2,'nshow':true},
 		'did':	{'num':3,'nshow':true,'type':'int'},
-		'num':	{'num':4,'nsel':true,'name':'М','com':'(номер)'},
-		'tdate':{'num':5,'nsel':true,'name':'дата'},
-		'tplace':{'num':6,'name':'№','al':'left','type':'int','com':'(место)'},
-		'ncode':{'num':7, 'nsel':true,'name':'стр','type':'int'},
-		'nname':{'num':8, 'name':'Страна','nsel':true,'al':'left'},
-		'tname':{'num':9, 'name':'Команда',	'al':'left'},
-		'mname':{'num':10, 'name':'Менеджер','al':'left'},
-		'ttask':{'num':11, 'name':'Задача',	'al':'left','type':'int'},
-		'tvalue':{'num':12,'name':'Ном', 'type':'int','com':'<sup><font color=red>vip</font></sup>'},
-		'twage':{'num':13, 'name':'ЗП',	'nsel':true, 'type':'int','com':'<sup><font color=red>vip</font></sup>'},
-		'tss':	{'num':14, 'name':'СС','type':'float','com':'<sup><font color=red>vip</font></sup>'},
-		'avTopSumSkills': {'num': 15,'name':'СС16','type':'float','com': '<sup><font color=red>vip</font></sup>'},
-		'age':	{'num':16, 'name':'Возр','nsel':true,'type':'float'},
-		'pnum':	{'num':17, 'name':'кол','nsel':true,'type':'int','com':'(игр-ов)'},
-		'tfin':	{'num':18, 'name':'Фин','nsel':true,'al':'left'},
-		'screit':{'num':19,'name':'ШкРейт','nsel':true,'al':'left'},
-		'scbud':{'num':20, 'name':'ШкБюд','nsel':true,'type':'int'},
-		'ttown':{'num':21, 'name':'Город','nsel':true,'al':'left'},
-		'sname':{'num':22, 'name':'Стадион','nsel':true,'al':'left'},
-		'ssize':{'num':23, 'name':'СтРазм','nsel':true,'type':'int'},
+		'num':	{'num':4,'nsel':true,'name':'Рњ','com':'(РЅРѕРјРµСЂ)'},
+		'tdate':{'num':5,'nsel':true,'name':'РґР°С‚Р°'},
+		'tplace':{'num':6,'name':'в„–','al':'left','type':'int','com':'(РјРµСЃС‚Рѕ)'},
+		'ncode':{'num':7, 'nsel':true,'name':'СЃС‚СЂ','type':'int'},
+		'nname':{'num':8, 'name':'РЎС‚СЂР°РЅР°','nsel':true,'al':'left'},
+		'tname':{'num':9, 'name':'РљРѕРјР°РЅРґР°',	'al':'left'},
+		'mname':{'num':10, 'name':'РњРµРЅРµРґР¶РµСЂ','al':'left'},
+		'ttask':{'num':11, 'name':'Р—Р°РґР°С‡Р°',	'al':'left','type':'int'},
+		'tvalue':{'num':12,'name':'РќРѕРј', 'type':'int','com':'<sup><font color=red>vip</font></sup>'},
+		'twage':{'num':13, 'name':'Р—Рџ',	'nsel':true, 'type':'int','com':'<sup><font color=red>vip</font></sup>'},
+		'tss':	{'num':14, 'name':'РЎРЎ','type':'float','com':'<sup><font color=red>vip</font></sup>'},
+		'avTopSumSkills': {'num': 15,'name':'РЎРЎ16','type':'float','com': '<sup><font color=red>vip</font></sup>'},
+		'age':	{'num':16, 'name':'Р’РѕР·СЂ','nsel':true,'type':'float'},
+		'pnum':	{'num':17, 'name':'РєРѕР»','nsel':true,'type':'int','com':'(РёРіСЂ-РѕРІ)'},
+		'tfin':	{'num':18, 'name':'Р¤РёРЅ','nsel':true,'al':'left'},
+		'screit':{'num':19,'name':'РЁРєР РµР№С‚','nsel':true,'al':'left'},
+		'scbud':{'num':20, 'name':'РЁРєР‘СЋРґ','nsel':true,'type':'int'},
+		'ttown':{'num':21, 'name':'Р“РѕСЂРѕРґ','nsel':true,'al':'left'},
+		'sname':{'num':22, 'name':'РЎС‚Р°РґРёРѕРЅ','nsel':true,'al':'left'},
+		'ssize':{'num':23, 'name':'РЎС‚Р Р°Р·Рј','nsel':true,'type':'int'},
 		'mid':  {'num':24, 'nshow':true,'type':'int'},
-		'tform':  {'num':25,'name':'Форма','nsel':true,'type':'float'},
-		'tmorale':{'num':26,'name':'Мораль','nsel':true,'type':'float'},
-		'tsvalue':{'num':27,'name':'Ном+','nsel':true,'type':'int','com':'<sup><font color=red>vip</font></sup>'},
-		'cast1':{'num':28,'name':'Каст1','nsel':true,'al':'left'},
-		'cast2':{'num':29,'name':'Каст2','nsel':true,'al':'right'},
-		'dname':{'num':30,'name':'Дивизион','nsave':true,'nsel':true,'al':'left'},
-		'tprize':{'num':31,'name':'Приз','nsave':true,'nsel':true},
+		'tform':  {'num':25,'name':'Р¤РѕСЂРјР°','nsel':true,'type':'float'},
+		'tmorale':{'num':26,'name':'РњРѕСЂР°Р»СЊ','nsel':true,'type':'float'},
+		'tsvalue':{'num':27,'name':'РќРѕРј+','nsel':true,'type':'int','com':'<sup><font color=red>vip</font></sup>'},
+		'cast1':{'num':28,'name':'РљР°СЃС‚1','nsel':true,'al':'left'},
+		'cast2':{'num':29,'name':'РљР°СЃС‚2','nsel':true,'al':'right'},
+		'dname':{'num':30,'name':'Р”РёРІРёР·РёРѕРЅ','nsave':true,'nsel':true,'al':'left'},
+		'tprize':{'num':31,'name':'РџСЂРёР·','nsave':true,'nsel':true},
 		'dnum': {'num':32,'nsave':true,'nshow':true},
-		'timg':	{'num':33,'name':'Лого','nsave':true,'nsel':true},
-		'nomzp':{'num':34,'name':'Н/ЗП','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
-		'zpnom':{'num':35,'name':'ЗП/Н','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
-		'games':{'num':36,'name':'И&nbsp;','nsave':true,'nsel':true,'com':'(игр)'},
-		'wins':	{'num':37,'name':'В&nbsp;','nsave':true,'nsel':true,'com':'(поб)'},
-		'draws':{'num':38,'name':'Н&nbsp;','nsave':true,'nsel':true,'com':'(нич)'},
-		'loses':{'num':39,'name':'П&nbsp;','nsave':true,'nsel':true,'com':'(пор)'},
-		'gup':	{'num':40,'name':'ГЗ','nsave':true,'nsel':true,'com':'(забито)'},
-		'gdown':{'num':41,'name':'ГП','nsave':true,'nsel':true,'com':'(проп)'},
-		'gpm':	{'num':42,'name':'+-','nsave':true,'nsel':true,'com':'(разн)'},
-		'score':{'num':43,'name':'О&nbsp;','nsave':true,'nsel':true,'com':'(очки)'},
-		'hide':	{'num':44,'name':'Скр','nsave':true,'nsel':true,'al':'center','com':'(скрыть)'},
-		'del':	{'num':45,'name':'Удл','nsave':true,'nsel':true,'al':'center','com':'(удал)'}
+		'timg':	{'num':33,'name':'Р›РѕРіРѕ','nsave':true,'nsel':true},
+		'nomzp':{'num':34,'name':'Рќ/Р—Рџ','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
+		'zpnom':{'num':35,'name':'Р—Рџ/Рќ','nsave':true,'nsel':true,'com':'<sup><font color=red>vip</font></sup>'},
+		'games':{'num':36,'name':'Р&nbsp;','nsave':true,'nsel':true,'com':'(РёРіСЂ)'},
+		'wins':	{'num':37,'name':'Р’&nbsp;','nsave':true,'nsel':true,'com':'(РїРѕР±)'},
+		'draws':{'num':38,'name':'Рќ&nbsp;','nsave':true,'nsel':true,'com':'(РЅРёС‡)'},
+		'loses':{'num':39,'name':'Рџ&nbsp;','nsave':true,'nsel':true,'com':'(РїРѕСЂ)'},
+		'gup':	{'num':40,'name':'Р“Р—','nsave':true,'nsel':true,'com':'(Р·Р°Р±РёС‚Рѕ)'},
+		'gdown':{'num':41,'name':'Р“Рџ','nsave':true,'nsel':true,'com':'(РїСЂРѕРї)'},
+		'gpm':	{'num':42,'name':'+-','nsave':true,'nsel':true,'com':'(СЂР°Р·РЅ)'},
+		'score':{'num':43,'name':'Рћ&nbsp;','nsave':true,'nsel':true,'com':'(РѕС‡РєРё)'},
+		'hide':	{'num':44,'name':'РЎРєСЂ','nsave':true,'nsel':true,'al':'center','com':'(СЃРєСЂС‹С‚СЊ)'},
+		'del':	{'num':45,'name':'РЈРґР»','nsave':true,'nsel':true,'al':'center','com':'(СѓРґР°Р»)'}
 		},
 	'divs':{
 		'did':	{'num':1, 'name':'id'},
 		'my':	{'num':2, 'name':'my'},
 		'dnum':	{'num':3, 'name':'dnum'},
-		'nname':{'num':4, 'name':'Страна'},
-		'dname':{'num':5, 'name':'Див'},
+		'nname':{'num':4, 'name':'РЎС‚СЂР°РЅР°'},
+		'dname':{'num':5, 'name':'Р”РёРІ'},
 		'drotate':{'num':6, 'name':'+-'},
-		'drotcom':{'num':7, 'name':'Комент'},
-		'dprize': {'num':8, 'name':'Призовые'},
-		'color':  {'num':9, 'name':'Расскрас'},
+		'drotcom':{'num':7, 'name':'РљРѕРјРµРЅС‚'},
+		'dprize': {'num':8, 'name':'РџСЂРёР·РѕРІС‹Рµ'},
+		'color':  {'num':9, 'name':'Р Р°СЃСЃРєСЂР°СЃ'},
 		'numteams':{'num':10, 'name':'NumTeams'},
 		'curtour':{'num':11, 'name':'CurTour'}}
 }
@@ -89,8 +89,8 @@ function FixColors(){
 	$('td.back4 table table tr:odd').addClass(fixclass);
 }
 
-var tasks	= ['','Чемпионство','Выйти в высший Д.','Медали','Зона Судамерикана','Зона ЛК','Попасть в 3А','Попасть в пятерку','Попасть в десятку','15 место','Не вылететь']
-var schools	= ['','очень слабая','слабая','средняя','хорошая','отличная','мирового уровня','одна из лучших в мире']
+var tasks	= ['','Р§РµРјРїРёРѕРЅСЃС‚РІРѕ','Р’С‹Р№С‚Рё РІ РІС‹СЃС€РёР№ Р”.','РњРµРґР°Р»Рё','Р—РѕРЅР° РЎСѓРґР°РјРµСЂРёРєР°РЅР°','Р—РѕРЅР° Р›Рљ','РџРѕРїР°СЃС‚СЊ РІ 3Рђ','РџРѕРїР°СЃС‚СЊ РІ РїСЏС‚РµСЂРєСѓ','РџРѕРїР°СЃС‚СЊ РІ РґРµСЃСЏС‚РєСѓ','15 РјРµСЃС‚Рѕ','РќРµ РІС‹Р»РµС‚РµС‚СЊ']
+var schools	= ['','РѕС‡РµРЅСЊ СЃР»Р°Р±Р°СЏ','СЃР»Р°Р±Р°СЏ','СЃСЂРµРґРЅСЏСЏ','С…РѕСЂРѕС€Р°СЏ','РѕС‚Р»РёС‡РЅР°СЏ','РјРёСЂРѕРІРѕРіРѕ СѓСЂРѕРІРЅСЏ','РѕРґРЅР° РёР· Р»СѓС‡С€РёС… РІ РјРёСЂРµ']
 
 var showfl = false
 //var filt = {}
@@ -103,7 +103,7 @@ var def = '1-1=FCE94F,2-2=white,3-3=E9B96E'
 
 //document.addEventListener('DOMContentLoaded', function(){
 $().ready(function() {
-	fixclass = 'back2' // заменятся все bgcolor=#a3de8f на этот класс
+	fixclass = 'back2' // Р·Р°РјРµРЅСЏС‚СЃСЏ РІСЃРµ bgcolor=#a3de8f РЅР° СЌС‚РѕС‚ РєР»Р°СЃСЃ
     
 	FixColors();	
 	drawEars();
@@ -120,13 +120,13 @@ $().ready(function() {
 
 	GetInfoPageDiv()
 	var text = '<table width=100%>'
-	text += '<tr id="color"><td><a id="colorit" href="">Раскрасить</a>&nbsp(<a href="javascript:void(ColorDel())">x</a>)</td></tr>'
-	text += '<tr id="CodeTableForForum"><td><a href="javascript:void(TableCodeForForum())">Код для форума</a>&nbsp;</td></tr>'
-	text += '<tr id="trmon"><td id="tdmon"><a id="amon" href="javascript:void(Monitor())">Мониторить страну</a></td></tr>'
+	text += '<tr id="color"><td><a id="colorit" href="">Р Р°СЃРєСЂР°СЃРёС‚СЊ</a>&nbsp(<a href="javascript:void(ColorDel())">x</a>)</td></tr>'
+	text += '<tr id="CodeTableForForum"><td><a href="javascript:void(TableCodeForForum())">РљРѕРґ РґР»СЏ С„РѕСЂСѓРјР°</a>&nbsp;</td></tr>'
+	text += '<tr id="trmon"><td id="tdmon"><a id="amon" href="javascript:void(Monitor())">РњРѕРЅРёС‚РѕСЂРёС‚СЊ СЃС‚СЂР°РЅСѓ</a></td></tr>'
 	text += '</table><br>'
 
 	text += '<table width=100%>'
-	text += '<tr id="showteams"><td colspan=4><a id="teams_cur" href="javascript:void(Print(\'teams\'))">Сравнить&nbsp;команды</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('фильтр').fontsize(1)+'</a>)</td></tr>'
+	text += '<tr id="showteams"><td colspan=4><a id="teams_cur" href="javascript:void(Print(\'teams\'))">РЎСЂР°РІРЅРёС‚СЊ&nbsp;РєРѕРјР°РЅРґС‹</a></td><td>(<a id="tfilter" href="javascript:void(SetFilter(\'teams\'))">'+('С„РёР»СЊС‚СЂ').fontsize(1)+'</a>)</td></tr>'
 	text += '</table><br>'
 	$("#crabright").html(text)
 
@@ -233,9 +233,9 @@ function SetFilter(dataname){
 			}
 		}
 		text += '<tr class="fl"><td width=10%></td><td colspan=4 width=white><hr></td></tr>'
-		text += '<tr class="fl"><td></td><td align=right id=teams>'+(sh['teams']? imgok :'')+'</td><td colspan=3><a href="javascript:void(ShowType(\'teams\'))">'+('команды').fontsize(1)+'</a></td></tr>'
-		text += '<tr class="fl"><td></td><td align=right id=sum>'+(sh['sum']? imgok :'')+'</td><td colspan=3><a href="javascript:void(ShowType(\'sum\'))">'+('сумма по диву').fontsize(1)+'</a></td></tr>'
-		text += '<tr class="fl"><td></td><td align=right id=srd>'+(sh['srd']? imgok :'')+'</td><td colspan=3><a href="javascript:void(ShowType(\'srd\'))">'+('среднее по диву').fontsize(1)+'</a></td></tr>'
+		text += '<tr class="fl"><td></td><td align=right id=teams>'+(sh['teams']? imgok :'')+'</td><td colspan=3><a href="javascript:void(ShowType(\'teams\'))">'+('РєРѕРјР°РЅРґС‹').fontsize(1)+'</a></td></tr>'
+		text += '<tr class="fl"><td></td><td align=right id=sum>'+(sh['sum']? imgok :'')+'</td><td colspan=3><a href="javascript:void(ShowType(\'sum\'))">'+('СЃСѓРјРјР° РїРѕ РґРёРІСѓ').fontsize(1)+'</a></td></tr>'
+		text += '<tr class="fl"><td></td><td align=right id=srd>'+(sh['srd']? imgok :'')+'</td><td colspan=3><a href="javascript:void(ShowType(\'srd\'))">'+('СЃСЂРµРґРЅРµРµ РїРѕ РґРёРІСѓ').fontsize(1)+'</a></td></tr>'
 		text += '<tr class="fl"><td width=10%></td><td colspan=4 width=white><hr></td></tr>'
 		var p = 0
 		for(i in head){
@@ -255,13 +255,13 @@ function ClosePrint(){
 	$('table#orig').show()	
 }
 
-function sSort(i, ii) { //от большего к меньшему
+function sSort(i, ii) { //РѕС‚ Р±РѕР»СЊС€РµРіРѕ Рє РјРµРЅСЊС€РµРјСѓ
     if 		(i[srt] < ii[srt])	return  1
     else if	(i[srt] > ii[srt])	return -1
     else						return  0
 }
 
-function sSortR(i, ii) { //реверт, от меньшего к большему
+function sSortR(i, ii) { //СЂРµРІРµСЂС‚, РѕС‚ РјРµРЅСЊС€РµРіРѕ Рє Р±РѕР»СЊС€РµРјСѓ
     if 		(i[srt] > ii[srt])	return  1
     else if	(i[srt] < ii[srt])	return -1
     else						return  0
@@ -367,7 +367,7 @@ function Print(dataname, sr){
 							break;
 						case 'tvalue':
 						case 'tsvalue':
-						case 'tprize':	tt = ShowValueFormat(tt)+'т';break;
+						case 'tprize':	tt = ShowValueFormat(tt)+'С‚';break;
 						case 'twage':	tt = ShowValueFormat(tt);break;
 						case 'nomzp':	tt = (isNaN(tt) ? '' : (tt/100).toFixed(2));break;
 						case 'zpnom':	tt = (isNaN(tt) ? '' : ShowValueFormat(tt*10));break;
@@ -377,7 +377,7 @@ function Print(dataname, sr){
 						case 'ttask':	tt = (tasks[tt]!=undefined ? tasks[tt] : tt);break;
 						case 'screit':	tt = (schools[tt]!=undefined ? schools[tt] : tt);break;
 						case 'num':		tt = num;break;
-						case 'del':		tt = '<a class="del" href="javascript:void(DeleteTeam('+dti.tid+'))">х</a> ';break
+						case 'del':		tt = '<a class="del" href="javascript:void(DeleteTeam('+dti.tid+'))">С…</a> ';break
 						case 'hide':	tt = '<a class="hide" href="javascript:void(HideTeam('+dti.tid+'))">&ndash;</a> ';break
 						case 'cast1':
 						case 'cast2': 	tt = tt+' '+'<a class="'+head[j].key+'" id="'+dti.tid+'_'+head[j].key+'" href="javascript:void(AddInfo('+dti.tid+',\''+head[j].key+'\','+i+'))"><b>*</b></a> '
@@ -393,7 +393,7 @@ function Print(dataname, sr){
 		}
 	}
 	text += '</table>'
-	text += '<div align=right id="svod"><a href="javascript:void(ClosePrint())">(Закрыть)&nbsp;</a></div>'
+	text += '<div align=right id="svod"><a href="javascript:void(ClosePrint())">(Р—Р°РєСЂС‹С‚СЊ)&nbsp;</a></div>'
 	$('table#orig').before(text)
 	$('table#svod tr:even:gt(0)').attr('bgcolor','#A3DE8F')
 //	ColorIt()
@@ -404,7 +404,7 @@ function Print(dataname, sr){
 }
 
 function AddInfo(itid,icast,ii){
-	var prres = prompt('Добавьте данные', '');
+	var prres = prompt('Р”РѕР±Р°РІСЊС‚Рµ РґР°РЅРЅС‹Рµ', '');
 	if(prres!=null && prres!='') {
 		$('#'+itid+'_'+icast).parent().html(prres);
 		teams[ii][icast] = prres;
@@ -523,10 +523,10 @@ async function SaveData(dataName) {
 	} else {
 		for (let i in data) {
 			if (data[i].div === undefined) {
-				// Необходимый объект для записи в бд
+				// РќРµРѕР±С…РѕРґРёРјС‹Р№ РѕР±СЉРµРєС‚ РґР»СЏ Р·Р°РїРёСЃРё РІ Р±Рґ
 				let dti = data[i];
-				// Небольшой костыль для таблиц без ID
-				// в идеале бы конечно им его добавить в месте инициализации вместо этих tid/did, но боюсь на них какая-то логика завязана
+				// РќРµР±РѕР»СЊС€РѕР№ РєРѕСЃС‚С‹Р»СЊ РґР»СЏ С‚Р°Р±Р»РёС† Р±РµР· ID
+				// РІ РёРґРµР°Р»Рµ Р±С‹ РєРѕРЅРµС‡РЅРѕ РёРј РµРіРѕ РґРѕР±Р°РІРёС‚СЊ РІ РјРµСЃС‚Рµ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РІРјРµСЃС‚Рѕ СЌС‚РёС… tid/did, РЅРѕ Р±РѕСЋСЃСЊ РЅР° РЅРёС… РєР°РєР°СЏ-С‚Рѕ Р»РѕРіРёРєР° Р·Р°РІСЏР·Р°РЅР°
 				switch (head[0]) {
 					case 'tid':
 						dti['id'] = dti['tid'];
@@ -580,14 +580,14 @@ async function GetData(dataName) {
 			GetFinish('get_'+dataName, false)
 		}			
 	} else {
-		// Если indexedDb not init, пытаемся это сделать
+		// Р•СЃР»Рё indexedDb not init, РїС‹С‚Р°РµРјСЃСЏ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ
 		if (!db) {
 			await DBConnect();
 		}
 
-		// Получаем все данные из необходимой таблицы
+		// РџРѕР»СѓС‡Р°РµРј РІСЃРµ РґР°РЅРЅС‹Рµ РёР· РЅРµРѕР±С…РѕРґРёРјРѕР№ С‚Р°Р±Р»РёС†С‹
 		const requestResult = await getAll(dataName);
-		// Если есть данные какие-либо данные в хранилище
+		// Р•СЃР»Рё РµСЃС‚СЊ РґР°РЅРЅС‹Рµ РєР°РєРёРµ-Р»РёР±Рѕ РґР°РЅРЅС‹Рµ РІ С…СЂР°РЅРёР»РёС‰Рµ
 		if (requestResult !== undefined && requestResult.length > 0) {
 			for (let i = 0; i < requestResult.length; i++) {
 				let row = requestResult[i];
@@ -618,14 +618,14 @@ function ModifyTeams(){
 			teams[id].tid = id
 			teams[id].tname = $(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]').text()
 		}
-		teams[id].games = $(val).find('td:eq('+zag['И']+')').text()
-		teams[id].wins 	= $(val).find('td:eq('+zag['В']+')').text()
-		teams[id].draws	= $(val).find('td:eq('+zag['Н']+')').html()
-		teams[id].loses	= $(val).find('td:eq('+zag['П']+')').html()
-		teams[id].gup	= $(val).find('td:eq('+zag['ГЗ']+')').html()
-		teams[id].gdown	= $(val).find('td:eq('+zag['ГП']+')').html()
+		teams[id].games = $(val).find('td:eq('+zag['Р']+')').text()
+		teams[id].wins 	= $(val).find('td:eq('+zag['Р’']+')').text()
+		teams[id].draws	= $(val).find('td:eq('+zag['Рќ']+')').html()
+		teams[id].loses	= $(val).find('td:eq('+zag['Рџ']+')').html()
+		teams[id].gup	= $(val).find('td:eq('+zag['Р“Р—']+')').html()
+		teams[id].gdown	= $(val).find('td:eq('+zag['Р“Рџ']+')').html()
 		teams[id].gpm	= $(val).find('td:eq('+zag['+-']+')').html()
-		teams[id].score	= $(val).find('td:eq('+zag['О']+')').html()
+		teams[id].score	= $(val).find('td:eq('+zag['Рћ']+')').html()
 		teams[id].thash = Url.value('z',$(val).find('a[href^="plug.php?p=refl&t=k&j='+id+'&z="]')[0])
 		teams[id].tplace= 1000-div_cur.dnum*100-i-1
 		teams[id].did   = div_cur.did
@@ -665,8 +665,8 @@ function ModifyTeams(){
 			for(p in tmi) {
 				switch(p){
 					case 'tname':
-						tmd[p] = '<b>Сумма</b> ('+tmd.div+')';
-						tms[p] = '<b>Среднее</b> ('+tms.div+')';
+						tmd[p] = '<b>РЎСѓРјРјР°</b> ('+tmd.div+')';
+						tms[p] = '<b>РЎСЂРµРґРЅРµРµ</b> ('+tms.div+')';
 						break;
 					case 'did':
 					case 'dname':
@@ -713,7 +713,7 @@ function ModifyDivs(){
 		divt[i] = (div_cur[i] != '' ? div_cur[i] : (typeof(divs[id][i])!='undefined' ? divs[id][i] : ''))
 	}
 	divs[id] = divt
-	if(divs[id].drotcom!='') $('td.back4 table:eq(1)').after('<br><i><b>Выдержка из правил о переходах команд между дивизионами</b>:<br>*'+divs[id].drotcom+'</i><br>')
+	if(divs[id].drotcom!='') $('td.back4 table:eq(1)').after('<br><i><b>Р’С‹РґРµСЂР¶РєР° РёР· РїСЂР°РІРёР» Рѕ РїРµСЂРµС…РѕРґР°С… РєРѕРјР°РЅРґ РјРµР¶РґСѓ РґРёРІРёР·РёРѕРЅР°РјРё</b>:<br>*'+divs[id].drotcom+'</i><br>')
 
 	GetFinish('md_divs',true)
 	SaveData('divs')
@@ -745,8 +745,8 @@ function GetInfoPageDiv(){
 
 function ShowPriz(x){
 	var y = x.split('-')
-	$('td.back1 span.text2b').append(' (призовые)')
-	$('td.back4 table table th[width=13%]').before('<th>Призовые\n\t')
+	$('td.back1 span.text2b').append(' (РїСЂРёР·РѕРІС‹Рµ)')
+	$('td.back4 table table th[width=13%]').before('<th>РџСЂРёР·РѕРІС‹Рµ\n\t')
 	$("td.back4 table table tr:gt(0)").each(function(i,val){
 		var htm = 	'<td align=right>'
 		htm += 		(y[i] == undefined || y[i] == 0 ? 0 : y[i]+',000')
@@ -768,7 +768,7 @@ function PlusMinus(){
 	$('td.back4 table table th[width="13%"]').attr('width','11%')
 	$('td.back4 table table th[width="44%"]').attr('width','41%')
 	$('th:last').before('<th width="6%">+-\n\t').append('\n')
-	$('th:contains(№)').parent().parent().find('tr').each(function(){
+	$('th:contains(в„–)').parent().parent().find('tr').each(function(){
 		var gz = +$(this).find('td:last').prev().prev().text()
 		var gp = +$(this).find('td:last').prev().text()
 		var td  = '<td>' +  (gz > gp ? '+' : '') + (gz-gp) + '</td>'
@@ -840,7 +840,7 @@ function ColorTable(tableid){
 
 function ColorGet(curVal){
 	debug('ColorGet:'+div_cur.did)
-	var retVal = prompt('Задайте цвет таблицы', curVal);
+	var retVal = prompt('Р—Р°РґР°Р№С‚Рµ С†РІРµС‚ С‚Р°Р±Р»РёС†С‹', curVal);
 	if (retVal != null) {
 		divs[div_cur.did].color = retVal
 		diap[div_cur.did] = retVal.split(',');
@@ -896,82 +896,82 @@ function TableCodeForForum(){
 //	debug($(this).attr('src'))
 	// need fill base key=peflid, value=2 symbols tag: system/img/flags/155.gif -> system/img/flags/f-ru.gif
 		var f = []
-		f[1]='al';	//Албания
-		f[2]='dz';	//Алжир
-		f[8]='ar';	//Аргентина
-		f[9]='am';	//Армения
-		f[11]='au';	//Австралия
-		f[12]='at';	//Австрия
-		f[13]='az';	//Азербайджан
-		f[18]='by';	//Беларусь
-		f[19]='be';	//Бельгия
-		f[24]='bo';	//Боливия
-		f[25]='ba';	//Босния
-		f[27]='br';	//Бразилия
-		f[30]='bg';	//Болгария
-		f[41]='cl';	//Чили
-		f[42]='cn';	//Китай
-		f[44]='co';	//Колумбия
-		f[47]='cr';	//Коста-Рика
-		f[48]='hr';	//Хорватия
-		f[50]='cy';	//Кипр
-		f[51]='cz';	//Чехия
-		f[53]='dk';	//Дания
-		f[58]='ec';	//Эквадор
-		f[59]='eg';	//Египет
-		f[61]='en';	//Англия
-		f[64]='ee';	//Эстония
-		f[66]='mk';	//Македония
-		f[69]='fi';	//Финляндия
-		f[70]='fr';	//Aранция
-		f[73]='ge';	//Грузия
-		f[74]='de';	//Германия
-		f[76]='gr';	//Греция
-		f[84]='nl';	//Голландия
-		f[87]='hu';	//Венгрия
-		f[88]='is';	//Исландия
-		f[91]='ir';	//Иран
-		f[93]='ie';	//Ирландия
-		f[94]='il';	//Израиль
-		f[95]='it';	//Италия
-		f[96]='ci';	//Кот`д`Ивуар
-		f[98]='jp';	//Япония
-		f[100]='kz';	//Казахстан
-		f[105]='lv';	//Латвия
-		f[111]='lt';	//Литва
-		f[122]='mx';	//Мексика
-		f[123]='md';	//Молдова
-		f[126]='ma';	//Морокко
-		f[129]='nt';	//Сев. Ирландия
-		f[137]='ng';	//Нигерия
-		f[139]='no';	//Норвегия
-		f[145]='py';	//Парагвай
-		f[147]='pe';	//Перу
-		f[149]='pl';	//Польша
-		f[150]='pt';	//Португалия
-		f[152]='qa';	//Катар
-		f[154]='ro';	//Румыния
-		f[155]='ru';	//Россия
-		f[160]='sa';	//Сау. Аравия
-		f[161]='st';	//Шотландия	
-		f[166]='sk';	//Словакия
-		f[167]='si';	//Словения
-		f[170]='za';	//ЮАР
-		f[171]='kr';	//Корея
-		f[172]='es';	//Испания
-		f[180]='se';	//Швеция
-		f[181]='ch';	//Швейцария
-		f[191]='tn';	//Тунис
-		f[192]='tr';	//Турция
-		f[195]='ae';	//ОАЭ
-		f[196]='us';	//США
-		f[200]='ua';	//Украина
-		f[201]='uy';	//Уругвай
-		f[202]='uz';	//Узбекистан
-		f[204]='ve';	//Венесуэла
-		f[207]='wl';	//Уэльс
-		f[209]='rs';	//!!Сербия
-		f[214]='me';	//Черногория
+		f[1]='al';	//РђР»Р±Р°РЅРёСЏ
+		f[2]='dz';	//РђР»Р¶РёСЂ
+		f[8]='ar';	//РђСЂРіРµРЅС‚РёРЅР°
+		f[9]='am';	//РђСЂРјРµРЅРёСЏ
+		f[11]='au';	//РђРІСЃС‚СЂР°Р»РёСЏ
+		f[12]='at';	//РђРІСЃС‚СЂРёСЏ
+		f[13]='az';	//РђР·РµСЂР±Р°Р№РґР¶Р°РЅ
+		f[18]='by';	//Р‘РµР»Р°СЂСѓСЃСЊ
+		f[19]='be';	//Р‘РµР»СЊРіРёСЏ
+		f[24]='bo';	//Р‘РѕР»РёРІРёСЏ
+		f[25]='ba';	//Р‘РѕСЃРЅРёСЏ
+		f[27]='br';	//Р‘СЂР°Р·РёР»РёСЏ
+		f[30]='bg';	//Р‘РѕР»РіР°СЂРёСЏ
+		f[41]='cl';	//Р§РёР»Рё
+		f[42]='cn';	//РљРёС‚Р°Р№
+		f[44]='co';	//РљРѕР»СѓРјР±РёСЏ
+		f[47]='cr';	//РљРѕСЃС‚Р°-Р РёРєР°
+		f[48]='hr';	//РҐРѕСЂРІР°С‚РёСЏ
+		f[50]='cy';	//РљРёРїСЂ
+		f[51]='cz';	//Р§РµС…РёСЏ
+		f[53]='dk';	//Р”Р°РЅРёСЏ
+		f[58]='ec';	//Р­РєРІР°РґРѕСЂ
+		f[59]='eg';	//Р•РіРёРїРµС‚
+		f[61]='en';	//РђРЅРіР»РёСЏ
+		f[64]='ee';	//Р­СЃС‚РѕРЅРёСЏ
+		f[66]='mk';	//РњР°РєРµРґРѕРЅРёСЏ
+		f[69]='fi';	//Р¤РёРЅР»СЏРЅРґРёСЏ
+		f[70]='fr';	//AСЂР°РЅС†РёСЏ
+		f[73]='ge';	//Р“СЂСѓР·РёСЏ
+		f[74]='de';	//Р“РµСЂРјР°РЅРёСЏ
+		f[76]='gr';	//Р“СЂРµС†РёСЏ
+		f[84]='nl';	//Р“РѕР»Р»Р°РЅРґРёСЏ
+		f[87]='hu';	//Р’РµРЅРіСЂРёСЏ
+		f[88]='is';	//РСЃР»Р°РЅРґРёСЏ
+		f[91]='ir';	//РСЂР°РЅ
+		f[93]='ie';	//РСЂР»Р°РЅРґРёСЏ
+		f[94]='il';	//РР·СЂР°РёР»СЊ
+		f[95]='it';	//РС‚Р°Р»РёСЏ
+		f[96]='ci';	//РљРѕС‚`Рґ`РРІСѓР°СЂ
+		f[98]='jp';	//РЇРїРѕРЅРёСЏ
+		f[100]='kz';	//РљР°Р·Р°С…СЃС‚Р°РЅ
+		f[105]='lv';	//Р›Р°С‚РІРёСЏ
+		f[111]='lt';	//Р›РёС‚РІР°
+		f[122]='mx';	//РњРµРєСЃРёРєР°
+		f[123]='md';	//РњРѕР»РґРѕРІР°
+		f[126]='ma';	//РњРѕСЂРѕРєРєРѕ
+		f[129]='nt';	//РЎРµРІ. РСЂР»Р°РЅРґРёСЏ
+		f[137]='ng';	//РќРёРіРµСЂРёСЏ
+		f[139]='no';	//РќРѕСЂРІРµРіРёСЏ
+		f[145]='py';	//РџР°СЂР°РіРІР°Р№
+		f[147]='pe';	//РџРµСЂСѓ
+		f[149]='pl';	//РџРѕР»СЊС€Р°
+		f[150]='pt';	//РџРѕСЂС‚СѓРіР°Р»РёСЏ
+		f[152]='qa';	//РљР°С‚Р°СЂ
+		f[154]='ro';	//Р СѓРјС‹РЅРёСЏ
+		f[155]='ru';	//Р РѕСЃСЃРёСЏ
+		f[160]='sa';	//РЎР°Сѓ. РђСЂР°РІРёСЏ
+		f[161]='st';	//РЁРѕС‚Р»Р°РЅРґРёСЏ	
+		f[166]='sk';	//РЎР»РѕРІР°РєРёСЏ
+		f[167]='si';	//РЎР»РѕРІРµРЅРёСЏ
+		f[170]='za';	//Р®РђР 
+		f[171]='kr';	//РљРѕСЂРµСЏ
+		f[172]='es';	//РСЃРїР°РЅРёСЏ
+		f[180]='se';	//РЁРІРµС†РёСЏ
+		f[181]='ch';	//РЁРІРµР№С†Р°СЂРёСЏ
+		f[191]='tn';	//РўСѓРЅРёСЃ
+		f[192]='tr';	//РўСѓСЂС†РёСЏ
+		f[195]='ae';	//РћРђР­
+		f[196]='us';	//РЎРЁРђ
+		f[200]='ua';	//РЈРєСЂР°РёРЅР°
+		f[201]='uy';	//РЈСЂСѓРіРІР°Р№
+		f[202]='uz';	//РЈР·Р±РµРєРёСЃС‚Р°РЅ
+		f[204]='ve';	//Р’РµРЅРµСЃСѓСЌР»Р°
+		f[207]='wl';	//РЈСЌР»СЊСЃ
+		f[209]='rs';	//!!РЎРµСЂР±РёСЏ
+		f[214]='me';	//Р§РµСЂРЅРѕРіРѕСЂРёСЏ
 
 		var tarr = $(this).attr('src').split('.')[0].split('/')
 		var fid = tarr[tarr.length-1]
@@ -997,7 +997,7 @@ function TableCodeForForum(){
 
 	// generate code for forum
 	var x = '<div align="right">(<a href="'+window.location.href+'">x</a>)&nbsp;</div>'
-	x += '<br>Код для форума<br><br><textarea rows="20" cols="80" readonly="readonly" id="CodeTableForForum" selected>'
+	x += '<br>РљРѕРґ РґР»СЏ С„РѕСЂСѓРјР°<br><br><textarea rows="20" cols="80" readonly="readonly" id="CodeTableForForum" selected>'
 	if(value.length==1){
 		x += '[b][url=plug.php?' + location.search.substring(1) + ']#[/url] '
 		x += $('td.back4 td.back1').text()
@@ -1038,9 +1038,9 @@ function TableCodeForForum(){
 
 	x += '\n\n[center]--------------- [url=forums.php?m=posts&q=173605]CrabVIP[/url] ---------------[/center]\n';
 	x += '</textarea><br>'
-	x += '<br>1. Ctrl+A: выделить весь текст в форме'
-	x += '<br>2. Ctrl+C: скопировать выделеное в буфер'
-	x += '<br>3. Ctrl+V: вставить из буфера в форум'
+	x += '<br>1. Ctrl+A: РІС‹РґРµР»РёС‚СЊ РІРµСЃСЊ С‚РµРєСЃС‚ РІ С„РѕСЂРјРµ'
+	x += '<br>2. Ctrl+C: СЃРєРѕРїРёСЂРѕРІР°С‚СЊ РІС‹РґРµР»РµРЅРѕРµ РІ Р±СѓС„РµСЂ'
+	x += '<br>3. Ctrl+V: РІСЃС‚Р°РІРёС‚СЊ РёР· Р±СѓС„РµСЂР° РІ С„РѕСЂСѓРј'
 
 	$('td.back4').html(x)
 	$('#CodeTableForForum').select()

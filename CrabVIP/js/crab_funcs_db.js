@@ -1,11 +1,11 @@
 let db = null;
 
 /**
- * Подключение к indexedDb
+ * РџРѕРґРєР»СЋС‡РµРЅРёРµ Рє indexedDb
  * @returns {Promise<boolean>}
  */
 async function DBConnect() {
-	// Работаем через промис, иначе не успевает создаться бд
+	// Р Р°Р±РѕС‚Р°РµРј С‡РµСЂРµР· РїСЂРѕРјРёСЃ, РёРЅР°С‡Рµ РЅРµ СѓСЃРїРµРІР°РµС‚ СЃРѕР·РґР°С‚СЊСЃСЏ Р±Рґ
 	return new Promise((resolve, reject) => {
 		const request = indexedDB.open('PEFL', 1);
 
@@ -17,14 +17,14 @@ async function DBConnect() {
 			console.log('IndexedDB init!');
 		}
 
-		// Обработчик на успешное соединение
+		// РћР±СЂР°Р±РѕС‚С‡РёРє РЅР° СѓСЃРїРµС€РЅРѕРµ СЃРѕРµРґРёРЅРµРЅРёРµ
 		request.onsuccess = function (event) {
 			db = event.target.result;
 			console.log("IndexedDB open!");
 			resolve(db);
 		}
 
-		// Обработчик на ошибку
+		// РћР±СЂР°Р±РѕС‚С‡РёРє РЅР° РѕС€РёР±РєСѓ
 		request.onerror = function (event) {
 			console.log('Problem with opening DB. Go to CRAB VIP forum!');
 			reject('IndexedDB error connect!');
@@ -39,12 +39,12 @@ async function createObjetStores(storeNames) {
 		}
 
 		storeNames.forEach((storeName) => {
-			// Если хранилище было -> удаляем его
+			// Р•СЃР»Рё С…СЂР°РЅРёР»РёС‰Рµ Р±С‹Р»Рѕ -> СѓРґР°Р»СЏРµРј РµРіРѕ
 			if (db.objectStoreNames.contains(storeName)) {
 				db.deleteObjectStore(storeName);
 			}
 
-			// Создаем новое (пустое) хранилище
+			// РЎРѕР·РґР°РµРј РЅРѕРІРѕРµ (РїСѓСЃС‚РѕРµ) С…СЂР°РЅРёР»РёС‰Рµ
 			let objectStore = db.createObjectStore(storeName, {keyPath: 'id'});
 			objectStore.transaction.oncomplete = function () {
 				Std.debug("All objectStores has created.");
@@ -56,10 +56,10 @@ async function createObjetStores(storeNames) {
 }
 
 /**
- * Добавление объекта в переданную таблицу.
- * Если по такому ключу уже был какой то объект -> перезапись.
+ * Р”РѕР±Р°РІР»РµРЅРёРµ РѕР±СЉРµРєС‚Р° РІ РїРµСЂРµРґР°РЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ.
+ * Р•СЃР»Рё РїРѕ С‚Р°РєРѕРјСѓ РєР»СЋС‡Сѓ СѓР¶Рµ Р±С‹Р» РєР°РєРѕР№ С‚Рѕ РѕР±СЉРµРєС‚ -> РїРµСЂРµР·Р°РїРёСЃСЊ.
  *
- * @param storeName Название store (таблицы)
+ * @param storeName РќР°Р·РІР°РЅРёРµ store (С‚Р°Р±Р»РёС†С‹)
  * @param object
  * @returns {Promise<unknown>}
  */
@@ -69,9 +69,9 @@ async function addObject(storeName, object) {
 			reject('IndexedDB not connected!');
 		}
 
-		// Создаем транзакцию на наше хранилище
+		// РЎРѕР·РґР°РµРј С‚СЂР°РЅР·Р°РєС†РёСЋ РЅР° РЅР°С€Рµ С…СЂР°РЅРёР»РёС‰Рµ
 		const transaction = db.transaction(storeName, 'readwrite');
-		// Получаем хранилище для работы с ним
+		// РџРѕР»СѓС‡Р°РµРј С…СЂР°РЅРёР»РёС‰Рµ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РЅРёРј
 		const table = transaction.objectStore(storeName);
 
 		table.put(object);
@@ -86,7 +86,7 @@ async function addObject(storeName, object) {
 }
 
 /**
- * Сохранение значения по его переданному имени в таблице
+ * РЎРѕС…СЂР°РЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ РїРѕ РµРіРѕ РїРµСЂРµРґР°РЅРЅРѕРјСѓ РёРјРµРЅРё РІ С‚Р°Р±Р»РёС†Рµ
  * @param storeName
  * @param name
  * @param val
@@ -98,9 +98,9 @@ async function setByName(storeName, name, val) {
 			reject('IndexedDB not connected!');
 		}
 
-		// Создаем транзакцию на наше хранилище
+		// РЎРѕР·РґР°РµРј С‚СЂР°РЅР·Р°РєС†РёСЋ РЅР° РЅР°С€Рµ С…СЂР°РЅРёР»РёС‰Рµ
 		const transaction = db.transaction(storeName, 'readwrite');
-		// Получаем хранилище для работы с ним
+		// РџРѕР»СѓС‡Р°РµРј С…СЂР°РЅРёР»РёС‰Рµ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РЅРёРј
 		const table = transaction.objectStore(storeName);
 
 		table.put(val, name);
@@ -115,7 +115,7 @@ async function setByName(storeName, name, val) {
 }
 
 /**
- * Получение всех записей в таблице
+ * РџРѕР»СѓС‡РµРЅРёРµ РІСЃРµС… Р·Р°РїРёСЃРµР№ РІ С‚Р°Р±Р»РёС†Рµ
  * @param storeName
  * @returns {Promise<unknown>}
  */
@@ -125,9 +125,9 @@ async function getAll(storeName) {
 			reject('IndexedDB not connected!');
 		}
 
-		// Создаем транзакцию на наше хранилище
+		// РЎРѕР·РґР°РµРј С‚СЂР°РЅР·Р°РєС†РёСЋ РЅР° РЅР°С€Рµ С…СЂР°РЅРёР»РёС‰Рµ
 		const transaction = db.transaction(storeName, 'readonly');
-		// Получаем хранилище для работы с ним
+		// РџРѕР»СѓС‡Р°РµРј С…СЂР°РЅРёР»РёС‰Рµ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РЅРёРј
 		const table = transaction.objectStore(storeName);
 
 		const request = table.getAll();
@@ -142,9 +142,9 @@ async function getAll(storeName) {
 }
 
 /**
- * Получение объекта по его ключу в переданной таблице
+ * РџРѕР»СѓС‡РµРЅРёРµ РѕР±СЉРµРєС‚Р° РїРѕ РµРіРѕ РєР»СЋС‡Сѓ РІ РїРµСЂРµРґР°РЅРЅРѕР№ С‚Р°Р±Р»РёС†Рµ
  *
- * @param storeName Название store (таблицы)
+ * @param storeName РќР°Р·РІР°РЅРёРµ store (С‚Р°Р±Р»РёС†С‹)
  * @param key
  * @returns {Promise<unknown>}
  */
@@ -154,9 +154,9 @@ async function getByKey(storeName, key) {
 			reject('IndexedDB not connected!');
 		}
 
-		// Создаем транзакцию на наше хранилище
+		// РЎРѕР·РґР°РµРј С‚СЂР°РЅР·Р°РєС†РёСЋ РЅР° РЅР°С€Рµ С…СЂР°РЅРёР»РёС‰Рµ
 		const transaction = db.transaction(storeName, 'readonly');
-		// Получаем хранилище для работы с ним
+		// РџРѕР»СѓС‡Р°РµРј С…СЂР°РЅРёР»РёС‰Рµ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РЅРёРј
 		const table = transaction.objectStore(storeName);
 
 		const request = table.get(key);
