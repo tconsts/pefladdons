@@ -91,7 +91,7 @@ $().ready(function() {
 	if(parseInt(scflag[22])!=1)	crab += adaptimg+	' <a href=\'/?adaptation\'>Адаптация</a><br>';
 	crab += crabimg +	' <a href="/forums.php?m=posts&q=244387">Crab&nbsp;форум</a><br>';
 	crab += ' <img src="system/img/g/stats.gif" width="16" height="16">' +	' <a href="/ban.txt">ban.txt</a>';
-	$('td.back3 table td:first a:contains(Ссылки):first').after(crab);
+	$('td.back3 table td:first a:contains(Статьи):first').after(crab);
 
 	if(
 	 (p == 'tr' && 
