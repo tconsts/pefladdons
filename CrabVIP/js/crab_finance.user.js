@@ -30,6 +30,8 @@ var cm = 0
 var curhometour = 0;
 var maxhometour = 0;
 var divpriz = 0;
+var finance = [];
+
 
 function GetFinish(type, res) {
 	debug('GetFinish:type=' + type + ':res=' + res);
@@ -285,7 +287,6 @@ async function GetData(dataName) {
 
 function EditFinance(school, dteams, dtour) {
 	debug('EditFinance('+school+','+dteams+','+dtour+')');
-		var finance = [];
 		var ffn 	= $('td.back4 > table td:eq(1)').html();
 		zp	 		= parseInt(ffn.split('Сумма зарплат: ')[1].split(',000$')[0].replace(/\,/g,'')) * 1000;
 		sponsors 	= parseInt(ffn.split('Всего ')[1].split(',000$')[0].replace(/\,/g,'')) * 1000;
