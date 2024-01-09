@@ -27,7 +27,7 @@ $().ready(function() {
 		pl.nat = parseInt($(this).find('td:eq(1) img').attr('src').split('flags/mod/')[1], 10);
 		pl.age = parseInt($(this).find('td:eq(2)').text(), 10);
 		pl.position = $(this).find('td:eq(3)').text();
-		if (pl.name.indexOf('игрок') >-1 ) pl.name = pl.name + ' ('+pl.position+')';
+		if (pl.name.indexOf('РёРіСЂРѕРє') >-1 ) pl.name = pl.name + ' ('+pl.position+')';
 
 		players.push(pl);
 	});

@@ -18,7 +18,7 @@ $().ready(function() {
 		if (i === 4) $(th).append(' (<a href="javascript:void(PrintTable(\'ycr\'))">#</a>)');
 		if (i === 5) $(th).append(' (<a href="javascript:void(PrintTable(\'rcr\'))">#</a>)');
 	});	
-	tb.find('tr:eq(0)').append('<th><a href="javascript:void(PrintTable(\'acn\'))">æê+êê*3</a> (<a href="javascript:void(PrintTable(\'acr\'))">#</a>)</th>');
+	tb.find('tr:eq(0)').append('<th><a href="javascript:void(PrintTable(\'acn\'))">Ð¶Ðº+ÐºÐº*3</a> (<a href="javascript:void(PrintTable(\'acr\'))">#</a>)</th>');
 
 	tb.find('tr:gt(0)').each(function() {
 		var id = 0
