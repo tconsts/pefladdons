@@ -70,7 +70,7 @@ switch (location.pathname.substring(1)) {
 	case 'plug.php':
 		switch (UrlValue('p')) {
 			case 'refl':
-				if (t == 'p' || t == 'p2' || t == 'pp' || t == 'yp2' || t == 'yp') { AddScriptJS(2,'funcs_pls'); }
+				if (t == 'p' || t == 'p2' || t == 'p3' || t == 'pp' || t == 'yp2' || t == 'yp') { AddScriptJS(2,'funcs_pls'); }
 				if (t == 'k') { AddScriptJS(4); }
 				if (t == 's') { AddScriptJS(5); }
 				if (t == 'last') { AddScriptJS(7); }
@@ -110,7 +110,7 @@ switch (location.pathname.substring(1)) {
 		break;
 }
 
-function AddScriptJS(flag,name,name2) {	
+function AddScriptJS(flag,name,name2) {
 	if (scflag[flag] == 0 || scflag[flag] == undefined) {		
 		if (name != undefined) InsertScript(name);
 		if (name2 != undefined) InsertScript(name2);
