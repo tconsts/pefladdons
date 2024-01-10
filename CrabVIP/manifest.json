@@ -1,9 +1,9 @@
 {
   "name": "PEFL CrabVIP",
-  "version": "2.0.25",
-  "manifest_version": 2,
+  "version": "2.0.26",
+  "manifest_version": 3,
 
-  "browser_action": {
+  "action": {
      "default_icon": {
     	"36": "img/icon36.png",
     	"128": "img/icon128.png"
@@ -11,7 +11,6 @@
      "default_popup": "popup.html",
      "default_title": "PEFL CrabVIP"
   },
-
   "icons": {
      "36": "img/icon36.png",
      "128": "img/icon128.png"
@@ -34,35 +33,40 @@
 	"run_at": "document_end"
     }
   ],
-  "web_accessible_resources": [
-	"img/*",
-	"js/crab_funcs_db.js",
-	"js/crab_funcs_std.js",
-	"js/crab_funcs_pls.js",
-	"js/crab_common.user.js",
-	"js/crab_settings.user.js",
-	"js/crab_sostav.user.js",
-	"js/crab_player.user.js",
-	"js/crab_contracts.user.js",
-	"js/crab_team.user.js",
-	"js/crab_div.user.js",
-	"js/crab_schedule.user.js",
-	"js/crab_school.user.js",
-	"js/crab_finance.user.js",
-	"js/crab_hist.user.js",
-	"js/crab_dov.user.js",
-	"js/crab_train.user.js",
-	"js/crab_match.user.js",
-	"js/crab_tournaments.user.js",
-	"js/crab_adaptation.user.js",
-	"js/crab_calendar.user.js",
-	"js/crab_index.user.js",
-	"js/crab_forum.user.js",
-	"js/crab_ref.user.js",
-	"js/crab_summary.user.js",
-	"js/crab_new_sostav.user.js"
-  ],
-  "permissions":[
+  "web_accessible_resources": [{
+	"resources": [
+		"img/*",
+		"js/crab_funcs_db.js",
+		"js/crab_funcs_std.js",
+		"js/crab_funcs_pls.js",
+		"js/crab_common.user.js",
+		"js/crab_settings.user.js",
+		"js/crab_sostav.user.js",
+		"js/crab_player.user.js",
+		"js/crab_contracts.user.js",
+		"js/crab_team.user.js",
+		"js/crab_div.user.js",
+		"js/crab_schedule.user.js",
+		"js/crab_school.user.js",
+		"js/crab_finance.user.js",
+		"js/crab_hist.user.js",
+		"js/crab_dov.user.js",
+		"js/crab_train.user.js",
+		"js/crab_match.user.js",
+		"js/crab_tournaments.user.js",
+		"js/crab_adaptation.user.js",
+		"js/crab_calendar.user.js",
+		"js/crab_index.user.js",
+		"js/crab_forum.user.js",
+		"js/crab_ref.user.js",
+		"js/crab_summary.user.js",
+		"js/crab_new_sostav.user.js"
+	],
+	"matches": ["<all_urls>"],
+ 	"extension_ids": []
+  }],
+  "permissions":[],
+  "host_permissions":[	
 	"http://pefl.ru/*",
 	"http://pefl.org/*",
 	"http://www.pefl.ru/*",
