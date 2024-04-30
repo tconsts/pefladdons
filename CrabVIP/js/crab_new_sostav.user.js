@@ -35,7 +35,7 @@ function saveKrab(){
 		save = true;
 		savePrepare();
 		$.ajax({
-			url: 'jsonsostav4.php?' + clubs[curc].uurl,
+			url: 'jsonsostav6.php?' + clubs[curc].uurl,
 			type: 'POST',
 			dataType : 'json',
 			data: 'jsonData=' + JSON.stringify(sData),
