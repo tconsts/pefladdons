@@ -1151,15 +1151,15 @@ function GetInfoPagePl() {
 		players[pid].tid 	= cid
 		players[pid].num 	= i
 		players[pid].hash	= Url.value('z',$(val).find('td.name a')[0])
-		players[pid].name	= Std.trim($(val).find('td.name .nameUrl').html()
+		players[pid].name	= Std.trim($(val).find('td.name .nameUrl').text()
 								//.split('<img')[0]
 								//.replace('(*)','')
 								//.replace('<i>','')
 								//.replace('</i>','')
 								)
-		players[pid].d		= ($(val).find('.extra img[src*=system/img/g/d.png]').html()==null ? 0 : $(val).find('.extraimg[src*=system/img/g/d.png]').attr('src'))
+		players[pid].d		= ($(val).find('.extra img[src*=system/img/g/d.png]').html()==null ? 0 : $(val).find('.extra img[src*=system/img/g/d.png]').attr('src'))
 		players[pid].t		= ($(val).find('.extra img[src*=system/img/g/t]').html()==null ? 0 : $(val).find('.extra img[src*=system/img/g/t]').attr('src'))
-		players[pid].nid	= $(val).find('td.nation img').attr('src')
+		players[pid].nid	= $(val).find('img.nation').attr('src')
 								.split('/')[4]
 								.split('.')[0]
 		players[pid].age	= age
