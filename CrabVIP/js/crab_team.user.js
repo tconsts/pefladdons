@@ -4,7 +4,6 @@
 // @description    team page modification
 // @include        https://*pefl.*/plug.php?p=refl&t=k&j=*
 // @require			crab_funcs_db.js
-// @encoding	   windows-1251
 // ==/UserScript==
 
 var type 	= 'num'
@@ -29,9 +28,7 @@ var save = false
 // Rows from web db
 const list = {
 	'players':	'id,tid,num,form,morale,fchange,mchange,value,valuech,name,goals,passes,ims,rate',
-	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,avTopSumSkills,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale,tsvalue',
-//	'matches':	'id,su,place,schet,pen,weather,eid,ename,emanager,ref,hash,minutes',
-//	'matchespl':'id,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16,n17,n18'
+	'teams':	'tid,my,did,num,tdate,tplace,ncode,nname,tname,mname,ttask,tvalue,twage,tss,avTopSumSkills,age,pnum,tfin,screit,scbud,ttown,sname,ssize,mid,tform,tmorale,tsvalue'
 }
 var skl = {}
 	skl['corners']	= 'Угловые'
@@ -238,15 +235,6 @@ function modifyPage() {
 	preparedhtml += '<td width=10%>&nbsp;<a href="#" onClick="alert(\'Средний скилл по 16 лучшим игрокам в команде(11 + 5)\')">?</a></td>'
 	preparedhtml += '</tr>'
 
-	// Face value+
-	/*
-	preparedhtml += '<tr id="ossvalue">'
-	preparedhtml += '<th align=left width=50% nowrap><a href="javascript:void(ShowPlayersSValue())">номиналы+</a>:</th>'
-	preparedhtml += '<th id=ossvalue align=right nowrap></th>'
-	preparedhtml += '<td width=10%>&nbsp;<a href="#" onClick="alert(\'Корректировка номинала получена с помощью оценки сделок предыдущего ТО по игрокам данной категории (позиция, возраст, номинал, некоторые профы)\')">?</a></td>'
-	preparedhtml += '</tr>'
-	/* */
-
 	// Face value
 	preparedhtml += '<tr id="osnom">'
 	preparedhtml += '<th align=left width=50% nowrap><a id="osnom" href="javascript:void(ShowPlayersValue())">номиналы</a>:</th>'
@@ -266,135 +254,6 @@ function modifyPage() {
 	preparedhtml += '<br><a id=teamsu href="javascript:void(ShowSU())" style="display: none;"><b>Сверхусталость</b></a>'
 	preparedhtml += '<br><br>'
 	$("#crabright").html(preparedhtml)
-}
-
-/* function RelocateGetNomData(arch){
-	Std.debug('RelocateGetNomData('+arch+')')
-	if(arch==undefined) arch = '';
-	if(localStorage.getnomdata != undefined && String(localStorage.getnomdata).indexOf('1.1$')!=-1){
-		Std.debug('Storage.getnomdata ok!')
-		//GetNomData(0)
-		GetFinish('getnomdata', true)
-	}else{
-		var top = (localStorage.datatop != undefined ? localStorage.datatop : 9885110) //9107893
-		Std.debug('Storage.getnomdata('+top+')')
-		var url_top = 'm=posts'+arch+'&p='+top
-
-		if($('#debval').length==0) $('td.back4').prepend('<div style="display: none;" id=debval></div>') 
-		$('div#debval').load('forums.php?'+url_top+' td.back3:contains(#CrabNom1.1.'+top+'#) blockquote pre', function(){
-			if($('#debval').html()=='' && arch==''){
-				RelocateGetNomData('&arch=1')
-			}else{
-				$('div#debval').find('hr').remove()
-				var data = $('#debval pre').html().split('#').map(function(val,i){
-					return val.split('<br>').map(function(val2,i2){
-						return $.grep(val2.split('	'),function(num, index) {return !isNaN(index)})
-					})
-				})
-				var text = ''
-				var nm = []
-				for (i in data){
-					var x = []
-					for(j in data[i]) x[j] = data[i][j].join('!')
-					nm[i] = x.join('|')
-				}
-				text = nm.join('#')
-				localStorage.getnomdata ='1.1$'+text.replace('Code','')
-				//GetNomData(0)
-				GetFinish('getnomdata', true)
-			}
-		})
-	}
-}
-/* */
-
-function GetNomData(id){
-//	Std.debug('GetNomData:id='+id)
-	var sdata = []
-	var pl = players[id]
-	var tkp = 0
-	var fp = {}
-	var svalue = 0
-	var kpkof = 1.1
-	var plnom = []
-	nm = String(localStorage.getnomdata).split('$')[1].split('#')
-	for (i in nm){
-		sdata[i] = []
-		x = nm[i].split('|')
-		for (j in x){
-			sdata[i][j] = x[j].split('!')
-		}
-	}
-	kpkof = parseFloat(sdata[0][0][0])
-	//Std.debug('GetNomData:pl:'+pl.value+':'+pl.age)
-
-	var saleAge = 0
-	var ages = (sdata[0][0][1]+',100').split(',')
-	for(i in ages) 	if(pl.age<ages[i]) 	{saleAge = i;break;}
-	//Std.debug('SaleAge:'+saleAge+':'+ages[saleAge])
-
-	var saleValue = 0
-	var vals = ('0,'+sdata[0][0][2]+',100000').split(',')
-	for(i in vals) 	if(pl.value<vals[i]*1000)	{saleValue = i-1;break;}
-	//Std.debug('SaleValue:'+saleValue+':'+vals[saleValue])
-
-	//Std.debug('ТСЗ:'+sdata[0][saleValue+1][0])
-	fp.av = parseFloat(sdata[0][saleValue+1][0])
-	fp.mn = parseFloat(sdata[0][saleValue+1][1])
-	fp.mx = parseFloat(sdata[0][saleValue+1][2])
-	var saleNom = ''
-	var t = 0
-	for(i=1;i<sdata.length;i++){
-		for(n in sdata[i]){
-			if(isNaN(parseInt(sdata[i][n][0])) && Std.trim(sdata[i][n][0])!=''){
-				t++
-				plnom[t] = {psum:0,tkp:sdata[i][saleValue][saleAge]}
-
-				var pos1 = (sdata[i][n][0].split(' ')[1]!=undefined ? sdata[i][n][0].split(' ')[0] : '')
-				if(pos1=='') plnom[t].pos1 = true
-				else for(h in pos1) if(pl.position.indexOf(pos1[h])!=-1) plnom[t].pos1 = true
-
-				var pos2 = (sdata[i][n][0].split(' ')[1]==undefined ? Std.trim(sdata[i][n][0].split(' ')[0]) : sdata[i][n][0].split(' ')[1]).split('/')
-				for(h in pos2) if(pl.position.indexOf(pos2[h])!=-1) plnom[t].pos2 = true
-
-				if(plnom[t].pos1 && plnom[t].pos2){
-					plnom[t].psum = 1
-					plnom[t].id = t
-					plnom[t].pos = sdata[i][n][0]
-					var count = 0
-					for(j=1;j<sdata[i][n].length;j++) {
-						var kof = parseFloat(sdata[i][n][j].split('-')[0])
-						//var skl = parseInt(pl[skl[sdata[i][n][j].split('-')[1]]])
-						var skil = parseInt(pl[skl[sdata[i][n][j].split('-')[1]]])
-						if(!isNaN(skil)){
-							plnom[t].psum = plnom[t].psum*Math.pow((skil<1 ? 1 : skil) ,kof)
-							count += kof
-						}
-						//Std.debug(skil+'^'+kof+':'+sdata[i][n][j].split('-')[1])
-					}
-					plnom[t].psum = Math.pow(plnom[t].psum,1/count)
-					//Std.debug(plnom[t].id+':'+plnom[t].pos+':'+(plnom[t].psum).toFixed(2)+':'+plnom[t].tkp)
-				}else{
-					//Std.debug('----- no ----'+sdata[i][n][0])
-				}
-			}
-		}
-	}
-	plnom = plnom.sort(sNomPsum)
-	fp.res = plnom[0].psum/fp.av
-	fp.res = (fp.res<fp.mn ? fp.mn : (fp.res > fp.mx ? fp.mx : fp.res))
-	tkp = plnom[0].tkp/100
-	//for (i=0;i<2;i++) Std.debug('psum'+plnom[i].id+':'+(plnom[i].psum).toFixed(2))
-	//Std.debug('КП:'+(plnom[0].psum/plnom[1].psum).toFixed(3) + ' < '+kpkof)
-	if(plnom[1].psum!=0 && ((plnom[0].psum/plnom[1].psum)<kpkof)) {
-		tkp = Math.max(plnom[0].tkp,plnom[1].tkp)/100
-	}
-	//for (i=0;i<2;i++) Std.debug('tkp:'+plnom[i].tkp)
-	svalue = parseInt(pl.value*tkp*fp.res/1000)
-	svalue = (svalue == 0 ? 1 : svalue)
-	//Std.debug('РН='+(pl.value/1000)+'*'+tkp+'*'+(fp.res).toFixed(3)+'='+svalue)
-	//$('div#SValue').html('~<font size=2>'+ShowValueFormat(svalue)+'</font>')
-	return svalue*1000
 }
 
 function sNomPsum(i, ii) { // Сортировка
@@ -815,8 +674,8 @@ function CheckTrash() {
 	var pls = players.sort(sSkills)
 	var num = 0
 	var ss = 0
-	for(i in players){
-		if(num<11) ss += players[i].sumskills
+	for(i in pls){
+		if (num<11) ss += pls[i].sumskills
 		num++
 	}
 	ss = (ss/11)*0.8
@@ -828,7 +687,7 @@ function CheckTrash() {
 	team_cur.pnum = 0
 	for (let i in players) {
 		var pli = players[i]
-		if (pli.sumskills<ss) {
+		if (pli.sumskills < ss) {
 			pli.trash = true
 		} else {
 			team_cur.tss 	= ((team_cur.tss * team_cur.pnum) + pli.sumskills)/(team_cur.pnum+1)
@@ -1138,51 +997,47 @@ function GetInfoPagePl() {
 	Std.debug('GetInfoPagePl()')
 	$('tr[id^=tblRosterTr]').each(function(i,val) {
 
-		var eurl	= $(val).find('a[trp="1"]').attr('href')
-		var playerUrl = $(val).find('td.name a').attr('href')
-		var pid 	= Url.value('j',$(val).find('td.name a')[0])		
-		var age		= parseInt($(val).find('td.age').html())
-		var morale	= parseInt($(val).find('td.morale span').html())
-		var form	= parseInt($(val).find('td.condition span').html())
+		const eurl	= $(val).find('a[trp="1"]').attr('href'),
+			nameElement = $(val).find('.nameUrl a'),			
+			pid 	= Url.value('j',nameElement[0]),
+			age		= parseInt($(val).find('.age').text()),
+			morale	= parseInt($(val).find('.moraleFormat').text()),
+			form	= parseInt($(val).find('.conditionFormat').text());
 
-		players[pid] = {}
-		players[pid].pn 	= parseInt($(val).find('td.npp').text())
-		players[pid].id 	= pid
-		players[pid].tid 	= cid
-		players[pid].num 	= i
-		players[pid].hash	= Url.value('z',$(val).find('td.name a')[0])
-		players[pid].name	= Std.trim($(val).find('td.name .nameUrl').text()
-								//.split('<img')[0]
-								//.replace('(*)','')
-								//.replace('<i>','')
-								//.replace('</i>','')
-								)
-		players[pid].d		= ($(val).find('.extra img[src*=system/img/g/d.png]').html()==null ? 0 : $(val).find('.extra img[src*=system/img/g/d.png]').attr('src'))
-		players[pid].t		= ($(val).find('.extra img[src*=system/img/g/t]').html()==null ? 0 : $(val).find('.extra img[src*=system/img/g/t]').attr('src'))
-		players[pid].nid	= $(val).find('img.nation').attr('src')
-								.split('/')[4]
-								.split('.')[0]
-		players[pid].age	= age
-		players[pid].morale	= morale
-		players[pid].mchange= 0
-		players[pid].form	= form
-		players[pid].fchange= 0
-		players[pid].games	= parseInt($(val).find('td.game').text())
-		players[pid].goals	= parseInt($(val).find('td.goals').text())
-		players[pid].passes	= parseInt($(val).find('td.pass').text())
-		players[pid].ims	= parseInt($(val).find('td.im').text())
-		players[pid].rate	= parseFloat($(val).find('td.ar').text())
-		players[pid].position= $(val).find('td.position').text()
-		players[pid].value 	= 0
-		players[pid].valuech= 0
-		if(eurl!=undefined) players[pid].eurl = eurl
-		if(playerUrl!=undefined) players[pid].playerUrl = playerUrl
-		Std.debug('pl url', eurl);
+		players[pid] = {
+			'num': 		i,
+			'id':		pid,
+			'tid':		cid,
+			'pn':		parseInt($(val).find('td.npp').text()),
+			'name':		Std.trim(nameElement.text()),
+			'playerUrl':nameElement.attr('href'),
+			'hash':		Url.value('z',nameElement[0]),
+			'position':	$(val).find('td.position').text(),
+			'age':		age,
+			'morale':	morale,
+			'mchange':	0,
+			'form':		form,
+			'fchange':	0,
+			'value':	0,
+			'valuech':	0,
+			'games':	parseInt($(val).find('td.game').text()),
+			'goals':	parseInt($(val).find('td.goals').text()),
+			'passes':	parseInt($(val).find('td.pass').text()),
+			'ims':		parseInt($(val).find('td.im').text()),
+			'rate':		parseFloat($(val).find('td.ar').text()),
+			'd':		$(val).find('.extra img[src*=system/img/g/d.png]').attr('src') || 0,
+			't':		$(val).find('.extra img[src*=system/img/g/t]').attr('src') || 0,
+			'nid':		$(val).find('img.nation').attr('alt')
+		}
 
-		team_cur.tform 		= ((team_cur.tform*team_cur.pnum)+ form)/(team_cur.pnum+1)
-		team_cur.tmorale 	= ((team_cur.tmorale*team_cur.pnum)+ morale)/(team_cur.pnum+1)
-		team_cur.age 		= ((team_cur.age*team_cur.pnum)+ age)/(team_cur.pnum+1)
-		team_cur.pnum 		= team_cur.pnum+1
+		if (eurl !== undefined) players[pid].eurl = eurl		
+		
+		Std.debug('pl', players[pid]);		
+
+		team_cur.tform 		= ((team_cur.tform * team_cur.pnum) + form)/(team_cur.pnum + 1);
+		team_cur.tmorale 	= ((team_cur.tmorale * team_cur.pnum) + morale)/(team_cur.pnum + 1);
+		team_cur.age 		= ((team_cur.age * team_cur.pnum) +  age)/(team_cur.pnum+1);
+		team_cur.pnum 		= team_cur.pnum + 1;
 
 		Ready()
 	})
@@ -1374,14 +1229,6 @@ function GetPl(pid) {
 	players[pid].contract 	= parseInt(head.split('Контракт: ')[1])
 	players[pid].wage 		= parseInt(head.split('г., ')[1].split('$')[0].replace(/,/g,''))
 
-	try {
-        players[pid].svalue = GetNomData(pid)
-    } catch (err) {
-        players[pid].svalue = 0
-		Std.debug("can't add svalue for pid "+ pid +": " + err)
-    }
-	//Std.debug(players[pid].value+':'+players[pid].svalue)
-
 	team_cur.twage	+= players[pid].wage
 	team_cur.tvalue	+= players[pid].value/1000
 	team_cur.tsvalue+= players[pid].svalue/1000
@@ -1500,62 +1347,25 @@ function ShowPlayersValue() {
 		for(let i in pls) {
 			numpl++
 			sumval += pls[i].value
-			var bgcolor = ''
+			var clss = ''
 			var style = '';
-			if(i === 15) style = ' style="border-bottom:1px black solid;"'
-			if(i<18) bgcolor = ' class=back4'//3
-			if(i<5)  bgcolor = ' class=back3'//1
+			if (i == 15) style = ' style="border-bottom:1px black solid;"'
+			if (i < 5)  clss = 'back3'//1
 			var f1 = (pls[i].trash ? '<font color=#888A85>' : '')
 			var f2 = (pls[i].trash ? '</font>' : '')
-			nomtext += '<tr id="nom"'+bgcolor+'>'
+			nomtext += '<tr class="nom '+clss+'">'
 			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+' nowrap'+style+'>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
 			nomtext += '<td align=right'+style+'>' + (ShowValueFormat(pls[i].value/1000) + 'т').fontsize(1) + '</td>'
 			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
 			nomtext += '</tr>'
 		}
-		nomtext += '<tr id="nom"><td><i>'+('средняя').fontsize(1)+'</i></td><td align=right><i>'+(ShowValueFormat(parseInt(sumval/numpl)/1000) + 'т').fontsize(1)+'</i></td><td></td><tr>'
-		$('#osnom').after(nomtext + '<tr id="nom"><td>&nbsp;</td></tr>')
+		nomtext += '<tr class="nom"><td><i>'+('средняя').fontsize(1)+'</i></td><td align=right><i>'+(ShowValueFormat(parseInt(sumval/numpl)/1000) + 'т').fontsize(1)+'</i></td><td></td></tr>'
+		$('#osnom').after(nomtext + '<tr class="nom"><td>&nbsp;</td></tr>')
 	} else {
 		nom = true
-		$('tr#nom').remove()
+		$('tr.nom').remove()
 	}
 }
-
-/**
- * Calculate and show face value+
- */
-/* function ShowPlayersSValue() {
-	Std.debug('Start --> ShowPlayersSValue()');
-
-	if (team_cur.tsvalue === 0) {
-		return false
-	}
-
-	if (svalue) {
-		svalue = false;
-		var nomtext = ''
-		var pls = players.sort(sSValue);
-		for (let i in pls) {
-			var bgcolor = ''
-			if(i<18) bgcolor = ' class=back4'
-			if(i<5)  bgcolor = ' class=back3'
-			var f1 = (pls[i].trash ? '<font color=#888A85>' : '') //888A85
-			var f2 = (pls[i].trash ? '</font>' : '')
-			nomtext += '<tr id="svalue"'+bgcolor+'>'
-			nomtext += '<td'+(pls[i].rent ? ' bgcolor=#a3de0f' : '')+' nowrap>' +f1+ ShowShortName(pls[i].name).fontsize(1) +f2+ '</td>'
-			nomtext += '<td align=right>' + (ShowValueFormat(pls[i].svalue/1000) + 'т').fontsize(1) + '</td>'
-//			nomtext += (pls[i].valuech==0 ? '' : '<td>&nbsp;'+ShowChange(pls[i].valuech/1000)+'</td>')
-			nomtext += '</tr>'
-		}
-		$('#ossvalue').after(nomtext + '<tr id="svalue"><td>&nbsp;</td></tr>')
-	} else {
-		svalue = true
-		$('tr#svalue').remove()
-	}
-
-	Std.debug('End --> ShowPlayersSValue()');
-}
-/* */
 
 function ShowPlayersZp() {
 	Std.debug('Start --> ShowPlayersZp()');
@@ -1618,7 +1428,7 @@ function ShowPlayersAge(){
 
 function ShowPlayersSkillChange(){
 	Std.debug('ShowPlayersSkillChange()')
-//	if(team_cur.tss == 0) return false
+	if(team_cur.tss == 0) return false
 	if(sk) {
 		sk = false
 		var text = ''
@@ -1632,7 +1442,7 @@ function ShowPlayersSkillChange(){
 			text += '</td>'
 			text += '<td align=right>'+f1 + (pls[i].sumskills + '&nbsp;').fontsize(1) + f2 +'</td>'
 //			text += '<td>' + (pls[i].contract + (pls[i].contract == 5 ? 'л.' : 'г.')).fontsize(1) + '</td>'
-			if(pls[i].skchange != '') {
+			if (pls[i].skchange != '') {
 				var skillchange = pls[i].skchange.split(',')
 				for(j in skillchange) {
 					text += '<tr id="skills"><td align=right colspan=2><i>'+f1+(skillchange[j] + '&nbsp;').fontsize(1)
