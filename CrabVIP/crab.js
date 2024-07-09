@@ -75,7 +75,7 @@ switch (location.pathname.substring(1)) {
 				if (t == 's') { AddScriptJS(5); }
 				if (t == 'last') { AddScriptJS(7); }
 				if (t == 'dov') { AddScriptJS(13); }
-				if (t == 'if' || t == 'code') { AddScriptJS(14); }
+				if (t == 'if') { AddScriptJS(14); }
 				if (t == 'cup' || t == 'ec' || t == 't' || t == 'f') { AddScriptJS(18); }
 				if (t == 'ref') { AddScriptJS(21); }
 				if (t == 'khist') { AddScriptJS(24); }
