@@ -3,6 +3,11 @@
   "version": "2.0.27",
   "manifest_version": 3,
 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{4a500822-9c05-48e4-acac-15c41e8bd77c}"
+    }
+  },
   "action": {
      "default_icon": {
     	"36": "img/icon36.png",
@@ -12,6 +17,7 @@
      "default_title": "PEFL CrabVIP"
   },
   "icons": {
+     "32": "img/icon32.png",
      "36": "img/icon36.png",
      "128": "img/icon128.png"
   },
