@@ -53,14 +53,6 @@ $().ready(function(){
 		 + '</td></tr></table>'
 	$('table.back3 li:eq(3)').html(text)
 
-	// last links
-	text = '<table width=100% class=back1 cellpadding=3 cellspacing=2><tr><td>'
-		 + $('table.back3 li:eq(4)').html()
-			.replace('</b>','</b></td></tr><tr class=back2><td>')
-			.replace(/\<br\>/g,'</td></tr><tr class=back2><td>')
-		 + '</td></tr></table>'
-	$('table.back3 li:eq(4)').html(text)
-
 	//common
 	text = $('table.back3').html()
 		.replace(/\<li\>/g,'')
