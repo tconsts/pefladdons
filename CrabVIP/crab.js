@@ -103,7 +103,7 @@ switch (location.pathname.substring(1)) {
 			case 'calendar':
 				AddScriptJS(19);
 				break;
-			case 'squad8':
+			case 'squad9':
 				AddScriptJS(9);
 				break;
 		}
