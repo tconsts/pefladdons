@@ -49,7 +49,7 @@ $().ready(function() {
 
 	let strg = sostavteam ? localStorage['sostavurl'+localStorage.myteamid] : localStorage['sostavurl'+(60000+parseInt(localStorage.myintid))];
 	if (strg !== undefined) {
-		let geturl2 = (strg.indexOf('?') > 0 ? '' : 'jsonsostav3.php?') + strg;
+		let geturl2 = (strg.indexOf('?') > 0 ? '' : 'jsonsostav7.php?') + strg;
 		PrintTables();
 		$.get(geturl2, {}, function(datatext2) {
 			jsonSostav = JSON.parse(datatext2);
