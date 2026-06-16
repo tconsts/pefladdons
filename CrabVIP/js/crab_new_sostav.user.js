@@ -20,46 +20,30 @@ $().ready(function() {
     + '</tr>'
     + ' </table>';
 
-    $('<button class="back2 butt" id="save2" onclick="saveKrab()">Сохранить Краб</button>').insertAfter($('#save'));
+    $('<button class="ui-button team-update" style="width: 110px;" id="save2" onclick="saveKrab()">Сохранить Краб</button>').insertAfter($('#team-update-'));
 
 	$('#tabs-4').append(saveLoadForm);
 
+    $(document).ajaxSuccess(function(event, xhr, settings) {
+        if (typeof krabsave!=='undefined' && krabsave=='_' && settings.indexValue!==undefined && settings.indexValue=='team-update-') {
+            if (xhr.responseJSON !== undefined && xhr.responseJSON.messages !== undefined) {
+		        krabsave = xhr.responseJSON.messages[0][1].replaceAll(':','_');
+	        }
+            saveTextAsFile($('td.topmenu:first td:last').html().substr(7,3)+'-'+$('.cback33:nth-child(2) .dopinfo a').html()+'-'+krabsave+'.json');
+            krabsave='';
+        }
+    });
 }, false);
 
-function saveKrab(){
-    debug('postjson(): start');
-	if(!save){
-		if(!checkErrors()){
-			return false;
-		}
-		save = true;
-		savePrepare();
-		$.ajax({
-			url: 'jsonsostav6.php?' + clubs[curc].uurl,
-			type: 'POST',
-			dataType : 'json',
-			data: 'jsonData=' + JSON.stringify(sData),
-			beforeSend: function (xhr){ $('#sres').html('Сохраняем...');	},
-			complete: function (xhr,status){	save = false; },
-			error: function (xhr,status,error){ $('#sres').html('<font color=red>ОШИБКА!</font> данные не были сохранены!'); },
-			success: function (res){
-                $('#sres').html((res[0] == 0 || res[0] == 10 ? '<font color=green>СОХРАНЕНО</font>: ' : '<font color=red>ОШИБКА СОХРАНЕНИЯ СОСТАВА</font>:<br>') + res[1]);
-                if (res[0] == 0 || res[0] == 10) {
-                    saveTextAsFile($('td.topmenu:first td:last').html().substr(7,3)+'-'
-                    +$('.cback33:nth-child(2) .dopinfo a').html()+'-'
-                    +res[1]+'.json');
-                }
-			}			
-		});
-	}
-	return false;
-
+function saveKrab() {
+    krabsave = '_';
+	$('#team-update-').click();
+    return false;
 }
 
 function saveTextAsFile(fileName)
 {
-    savePrepare();
-    var textToSave = JSON.stringify(data);
+    var textToSave = JSON.stringify(savePrepare(data,'team',''));
 
     var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
     var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
