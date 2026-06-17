@@ -8,7 +8,8 @@
 
 $().ready(function() {
     let krabsave = '',
-        filePrefix = $('td.topmenu:first td:last').text().replace(/.*\((\d+).*/,'$1')+'ИД'
+        filePrefix = (localStorage.season !== undefined ? localStorage.season+'.':'')
+            + $('td.topmenu:first td:last').text().replace(/.*\((\d+).*/,'$1')+'ИД'
             +'-'+$('.cback33:nth-child(2) .dopinfo a').text().replace('Назначить ',''),
         saveLoadForm = '<tbody>'
         +'<tr style="background-color: inherit;">'
