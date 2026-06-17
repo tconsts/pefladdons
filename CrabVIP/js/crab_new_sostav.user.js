@@ -43,7 +43,8 @@ function saveKrab() {
 
 function saveTextAsFile(fileName)
 {
-    var textToSave = JSON.stringify(savePrepare(data,'team',''));
+    //var textToSave = JSON.stringify(savePrepare(data,'team',''));
+    var textToSave = JSON.stringify(data);
 
     var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
     var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
@@ -72,8 +73,13 @@ function loadFileAsText()
     var fileReader = new FileReader();
     fileReader.onload = function(fileLoadedEvent) 
     {
-        var textFromFileLoaded = fileLoadedEvent.target.result;
-        draw(JSON.parse(textFromFileLoaded), 1);
+        var textFromFileLoaded = fileLoadedEvent.target.result;        
+        data = checkReceivedData(JSON.parse(textFromFileLoaded));
+        draw(data, 'bk');
+        appendMessage('Загружен состав из файла')
     };
+    $('#tabs').hide();
+    $('#loading').html('Загрузка состава из файла...<br>Придётся немного подождать...').show();
+    
     fileReader.readAsText(fileToLoad, "UTF-8");
 }
