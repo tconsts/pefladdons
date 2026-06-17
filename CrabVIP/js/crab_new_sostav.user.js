@@ -7,31 +7,41 @@
 // ==/UserScript==
 
 $().ready(function() {
-    saveLoadForm = '<table>'
-    + '<tr>'
-    + '    <td>Сохранить как:</td>'
-    + '    <td><input id="inputFileNameToSaveAs"></input></td>'
-    + '    <td><button onclick="saveTextAsFile()">Скачать состав</button></td>'
-    + '</tr>'
-    + '<tr>'
-    + '    <td>Выбрать файл:</td>'
-    + '    <td><input type="file" id="fileToLoad"></td>'
-    + '    <td><button onclick="loadFileAsText()">Загрузить состав из файла</button><td>'
-    + '</tr>'
-    + ' </table>';
+    let krabsave = '',
+        filePrefix = $('td.topmenu:first td:last').text().replace(/.*\((\d+).*/,'$1')+'ИД'
+            +'-'+$('.cback33:nth-child(2) .dopinfo a').text().replace('Назначить ',''),
+        saveLoadForm = '<tbody>'
+        +'<tr style="background-color: inherit;">'
+        + '    <td>Сохранить как:</td>'
+        + '    <td colspan="2"><input style="width: 100%" id="inputFileNameToSaveAs" value="'+filePrefix+'-'+(new Date()).toLocaleString().replace(/[^0-9]/g,'')+'.json"></input></td>'
+        + '    <td colspan="2"><button class="ui-button team-update" onclick="saveTextAsFile()" style="width:100%">Скачать состав</button></td>'
+        + '</tr>'
+        + '<tr style="background-color: inherit;">'
+        + '    <td>Выбрать файл:</td>'
+        + '    <td colspan="2"><input type="file" id="fileToLoad"></td>'
+        + '    <td colspan="2"><button class="ui-button team-update" onclick="loadFileAsText()" style="width:100%">Загрузить состав из файла</button></td>'
+        + '</tr>'
+        + ' </tbody>';
 
     $('<button class="ui-button team-update" style="width: 110px;" id="save2" onclick="saveKrab()">Сохранить Краб</button>').insertAfter($('#team-update-'));
 
-	$('#tabs-4').append(saveLoadForm);
+	$('#tbackup tbody').after(saveLoadForm);
 
     $(document).ajaxSuccess(function(event, xhr, settings) {
-        if (typeof krabsave!=='undefined' && krabsave=='_' && settings.indexValue!==undefined && settings.indexValue=='team-update-') {
+        if (typeof krabsave!=='undefined' && krabsave==='_' && settings.indexValue!==undefined && settings.indexValue==='team-update-') {
             if (xhr.responseJSON !== undefined && xhr.responseJSON.messages !== undefined) {
 		        krabsave = xhr.responseJSON.messages[0][1].replaceAll(':','_');
 	        }
-            saveTextAsFile($('td.topmenu:first td:last').html().substr(7,3)+'-'+$('.cback33:nth-child(2) .dopinfo a').html()+'-'+krabsave+'.json');
+            saveTextAsFile(filePrefix+'-'+krabsave+'.json');
             krabsave='';
         }
+    });
+    $('a.ui-tabs-anchor:last').on('click',function() {
+        $('#inputFileNameToSaveAs').val(
+            (filePrefix + '-'
+            + (new Date()).toLocaleString().replace(/[^0-9\s]/g, '')
+            + '.json').replaceAll(' ','_')
+        );
     });
 }, false);
 
@@ -43,14 +53,15 @@ function saveKrab() {
 
 function saveTextAsFile(fileName)
 {
-    //var textToSave = JSON.stringify(savePrepare(data,'team',''));
-    var textToSave = JSON.stringify(data);
-
-    var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
-    var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
-    var fileNameToSaveAs = fileName == undefined ?inputFileNameToSaveAs.value : fileName;
+    if (typeof(data) == 'undefined') {
+        appendMessage('Нет данных для загрузки!',1);
+    }
+    let textToSave = JSON.stringify(data),
+        textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"}),
+        textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob),
+        fileNameToSaveAs = fileName === undefined ? inputFileNameToSaveAs.value : fileName;
  
-    var downloadLink = document.createElement("a");
+    let downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
     downloadLink.innerHTML = "Download File";
     downloadLink.href = textToSaveAsURL;
@@ -68,18 +79,28 @@ function destroyClickedElement(event)
  
 function loadFileAsText()
 {
-    var fileToLoad = document.getElementById("fileToLoad").files[0];
- 
-    var fileReader = new FileReader();
+    let fileToLoad = document.getElementById("fileToLoad").files[0],
+        fileReader = new FileReader();
+    fileReader.fileName = typeof(fileToLoad)==='undefined' ? "-не выбран-" : fileToLoad.name;
     fileReader.onload = function(fileLoadedEvent) 
     {
-        var textFromFileLoaded = fileLoadedEvent.target.result;        
-        data = checkReceivedData(JSON.parse(textFromFileLoaded));
-        draw(data, 'bk');
-        appendMessage('Загружен состав из файла')
+        let textFromFileLoaded = fileLoadedEvent.target.result;
+        try {
+            data = checkReceivedData(JSON.parse(textFromFileLoaded));
+            draw(data, 'team');
+            appendMessage('Загрузка состава из файла "'+fileLoadedEvent.target.fileName+'"',0)
+        } catch (e) {
+            appendMessage('Загрузка состава из файла "'+fileLoadedEvent.target.fileName +'": '+e.message,1);
+            $('#loading').hide();
+            $('#tabs').show();
+        }
     };
-    $('#tabs').hide();
-    $('#loading').html('Загрузка состава из файла...<br>Придётся немного подождать...').show();
-    
-    fileReader.readAsText(fileToLoad, "UTF-8");
+    if ($('#fileToLoad').val() !== '') {
+        appendMessage('');
+        $('#tabs').hide();
+        $('#loading').html('Загрузка состава из файла...<br>Придётся немного подождать...').show();
+        fileReader.readAsText(fileToLoad, "UTF-8");
+    } else {
+        appendMessage('Необходимо выбрать файл для загрузки!',1,true);
+    }
 }
