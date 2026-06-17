@@ -52,7 +52,7 @@ $().ready(function() {
 		let geturl2 = (strg.indexOf('?') > 0 ? '' : 'jsonsostav7.php?') + strg;
 		PrintTables();
 		$.get(geturl2, {}, function(datatext2) {
-			jsonSostav = JSON.parse(datatext2);
+			jsonSostav = JSON.parse(datatext2).data;
 			getPlayers();
 			GetData('positions');
 		});
