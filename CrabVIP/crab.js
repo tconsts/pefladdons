@@ -8,7 +8,9 @@
 // @author         const
 // ==/UserScript==
 
-const scflag = (localStorage.scripts != undefined && localStorage.scripts != null ? localStorage.scripts : '0:0:0:0:0:0:1:0:0:0:1:1:0:0:0:0:1:0:0:0:1:0:0:1:0:0').split(':'),
+const scflag = (localStorage.scripts !== undefined && localStorage.scripts !== null
+		? localStorage.scripts
+		: '0:0:0:0:0:0:1:0:0:1:1:1:0:0:0:0:1:0:0:0:1:0:0:1:0:0').split(':'),
 scriptnames = [
 	'settings', 
 	'sostav', 
@@ -19,7 +21,7 @@ scriptnames = [
 	'', //  6 removed
 	'schedule', 
 	'finance', 
-	'new_sostav', //  9 SostavNaMatch
+	'', //  9 SostavNaMatch (removed)
 	'', // 10 ReitSchool (removed)
 	'', // 11 NN (removed)
 	'hist', 
@@ -44,7 +46,7 @@ let newScriptMenu;
 
 InsertScript('funcs_std');
 newScriptMenu.onload = function() {	
-	evt = new CustomEvent("getCrabImageUrlEvent", { 
+	let evt = new CustomEvent("getCrabImageUrlEvent", {
 		detail: chrome.runtime.getURL("img/icon36.png") 
 	});
 	document.dispatchEvent(evt);
@@ -54,15 +56,15 @@ InsertScript('common.user');
 
 switch (location.pathname.substring(1)) {
 	case 'forums.php':
-		if (UrlValue('m') == 'posts') { AddScriptJS(20); }
+		if (UrlValue('m') === 'posts') { AddScriptJS(20); }
 		break;
 	
 	case 'index.php':
 	case '':
-		if (url2 == '') {AddScriptJS(15); }
-		if (url2 == 'settings') {AddScriptJS(0); }
-		if (url2 == 'sostav' || url2 == 'sostav_n') { AddScriptJS(1,'funcs_pls');}
-		if (url2 == 'adaptation') { AddScriptJS(22); }
+		if (url2 === '') {AddScriptJS(15); }
+		if (url2 === 'settings') {AddScriptJS(0); }
+		if (url2 === 'sostav' || url2 === 'sostav_n') { AddScriptJS(1,'funcs_pls');}
+		if (url2 === 'adaptation') { AddScriptJS(22); }
 		break;
 		
 	case 'hist.php': AddScriptJS(12); break;
@@ -70,21 +72,21 @@ switch (location.pathname.substring(1)) {
 	case 'plug.php':
 		switch (UrlValue('p')) {
 			case 'refl':
-				if (t == 'p' || t == 'pp' || t == 'yp') { AddScriptJS(2,'funcs_pls'); }
-				if (t == 'k') { AddScriptJS(4); }
-				if (t == 's') { AddScriptJS(5); }
-				if (t == 'last') { AddScriptJS(7); }
-				if (t == 'dov') { AddScriptJS(13); }
-				if (t == 'if') { AddScriptJS(14); }
-				if (t == 'cup' || t == 'ec' || t == 't' || t == 'f') { AddScriptJS(18); }
-				if (t == 'ref') { AddScriptJS(21); }
-				if (t == 'khist') { AddScriptJS(24); }
-				if (t == 'school') { AddScriptJS(25); }
+				if (t === 'p' || t === 'pp' || t === 'yp') { AddScriptJS(2,'funcs_pls'); }
+				if (t === 'k') { AddScriptJS(4); }
+				if (t === 's') { AddScriptJS(5); }
+				if (t === 'last') { AddScriptJS(7); }
+				if (t === 'dov') { AddScriptJS(13); }
+				if (t === 'if') { AddScriptJS(14); }
+				if (t === 'cup' || t === 'ec' || t === 't' || t === 'f') { AddScriptJS(18); }
+				if (t === 'ref') { AddScriptJS(21); }
+				if (t === 'khist') { AddScriptJS(24); }
+				if (t === 'school') { AddScriptJS(25); }
 				break;
 
 			case 'fin':
-				if (t == 'ctr') { AddScriptJS(3); }
-				if (!t || t == 'prizef') { AddScriptJS(8); }
+				if (t === 'ctr') { AddScriptJS(3); }
+				if (!t || t === 'prizef') { AddScriptJS(8); }
 				break;
 				
 			case 'rules':
@@ -103,17 +105,14 @@ switch (location.pathname.substring(1)) {
 			case 'calendar':
 				AddScriptJS(19);
 				break;
-			case 'squad':
-				AddScriptJS(9);
-				break;
 		}
 		break;
 }
 
 function AddScriptJS(flag,name,name2) {
-	if (scflag[flag] == 0 || scflag[flag] == undefined) {		
-		if (name != undefined) InsertScript(name);
-		if (name2 != undefined) InsertScript(name2);
+	if (parseInt(scflag[flag]) === 0 || scflag[flag] === undefined) {
+		if (name !== undefined) InsertScript(name);
+		if (name2 !== undefined) InsertScript(name2);
 		InsertScript(scriptnames[flag] + '.user');
 	}	
 }
@@ -128,6 +127,6 @@ function InsertScript(name) {
 
 function UrlValue (key, url) {
 	const pf = (url ? url.split('?',2)[1] : location.search.substring(1)).split('&');
-	for (n in pf) { if(pf[n].split('=')[0] == key) { return pf[n].split('=')[1].replace(/\d+$/, ""); }}
+	for (let n in pf) { if(pf[n].split('=')[0] === key) { return pf[n].split('=')[1].replace(/\d+$/, ""); }}
 	return false;
 }
