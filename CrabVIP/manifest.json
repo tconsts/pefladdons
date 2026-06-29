@@ -1,6 +1,6 @@
 {
   "name": "PEFL CrabVIP",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "manifest_version": 3,
 
   "browser_specific_settings": {
@@ -65,8 +65,7 @@
 		"js/crab_index.user.js",
 		"js/crab_forum.user.js",
 		"js/crab_ref.user.js",
-		"js/crab_summary.user.js",
-		"js/crab_new_sostav.user.js"
+		"js/crab_summary.user.js"
 	],
 	"matches": ["<all_urls>"],
  	"extension_ids": []
